@@ -1,0 +1,53 @@
+
+#' Generate a vector of environmental confounding effects
+#'
+#' This function allows you to simulate an environmental confounding effect. This is used by genDataPS(), which scales the generated vector in order to comply with the user specified desired variance in the outcome attributable to the environmental effect.
+#' @param structureGamma A character argument describing the desired structure.
+#' @param J Number of subpopulations.
+#' @keywords
+#' @export
+#' @examples
+
+genGammaUnscaled <- function(structureGamma, J){
+  UseMethod("genGammaUnscaled")
+}
+
+genGammaUnscaled.default <- function(structureGamma, J){
+  warning("No valid structure specified - defaulting to 'linear_increasing_homogeneous'")
+  gamma_unscaled <- 1:J
+  return(gamma_unscaled)
+}
+
+genGammaUnscaled.character <- function(structureGamma, J){
+
+  dat <- strsplit(structureGamma, "_")[[1]]
+
+  if (dat[1] == "linear"){
+    g <- 1:J
+  } else if (dat[1] == "exponential"){
+    g <- rep(2, J)^(1:J)
+  } else if (dat[1] == "halfandhalf"){
+    first <- floor(J/2)
+    second <- J - first
+    g <- rep(c(0.5, 1), times = c(first, second))
+  }
+
+  if (dat[2] == "decreasing"){
+    g <- rev(g)
+  }
+
+  if (dat[3] == "heterogeneous"){
+    j <- 1:J
+    s <- c(-1, 1)[j%%2 + 1]
+    g <- g * s
+  }
+
+  return(g)
+}
+
+genGammaUnscaled.numeric <- function(structureGamma, J){
+  if (length(structureGamma) != J){
+    stop("Length of numeric argument 'structureGamma' must equal argument 'J'")
+  }
+  return(structureGamma)
+}
