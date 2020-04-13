@@ -1,8 +1,12 @@
 
 #' Preprocess PLINK files
 #'
-#' This function allows you to preprocess PLINK bed/bim/fam files for use with penalizedLMM functions. Unreliable SNPs are removed and missing values are imptued using either SnpStats, or if not tagged, the HWE mean value.
+#' This function allows you to preprocess PLINK bed/bim/fam files for use with \code{penalizedLMM} functions. Unreliable SNPs are removed and missing values are imptued using either \code{snpStats}, or if not tagged, the HWE mean value.
 #' @param group Character argument that is the prefix of your bed/bim/fam files.
+#' @return A three element list object:
+#' @param genotypes The filtered and imputed genotypes in a snpMatrix object with subjects in rows and SNPs in columns.
+#' @param map A matrix of SNP data.
+#' @param fam A matrix of subject data.
 #' @keywords
 #' @export
 #' @examples
@@ -10,7 +14,6 @@
 preprocess <- function(group){
 
   require(snpStats)
-  require(magrittr)
 
   cat("\nPreprocessing", group, "data:\n")
 

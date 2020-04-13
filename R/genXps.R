@@ -19,7 +19,6 @@ genXps <- function(n, nJ, p,
                    Fst = NULL,
                    inbr = c("homogeneous", "heterogeneous"),
                    standardizeX = TRUE, plot = FALSE){
-  require(ncvreg)
   structureX <- match.arg(structureX)
   if (structureX == "admixture"){
     dat <- read.delim("https://s3.amazonaws.com/pbreheny-data-sets/admixture.txt")

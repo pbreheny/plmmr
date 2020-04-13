@@ -1,17 +1,15 @@
-#' Fit an LMM with lasso regularization
+#' Fit a linear mixed model with lasso regularization
 #'
-#' This function allows you to fit an approximate LMM (using the rotation method) with lasso regularization.
+#' This function allows you to fit a linear mixed model via lasso-penalized maximum likelihood.
 #' @param X Design matrix.
 #' @param y Continuous outcome vector.
 #' @param p1 Number of causal SNPs. Lambda will be selected such that <= p1 variables enter the model.
-#' @param standardize Should standardization be performed within glmnet()? Defaults to FALSE.
+#' @param standardize Should standardization be performed within \code{glmnet()}? Defaults to FALSE.
 #' @keywords
 #' @export
 #' @examples
 
 lmm_lasso_eta <- function(X, y, p1, standardize = FALSE) {
-  require(stats)
-  require(zeallot)
   c(S, U, eta) %<-% lmm_lasso_eta_null(X, y)
   W <- diag((eta * S + (1 - eta))^(-1/2))
   SUX <- W %*% crossprod(U, X)

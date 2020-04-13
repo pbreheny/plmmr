@@ -12,5 +12,5 @@ genGammaUnscaled(structureGamma, J)
 \item{J}{Number of subpopulations.}
 }
 \description{
-This function allows you to simulate an environmental confounding effect. This is used by genDataPS(), which scales the generated vector in order to comply with the user specified desired variance in the outcome attributable to the environmental effect.
+This function allows you to simulate an environmental confounding effect. This is used by \code{genDataPS()}, which scales the generated vector in order to comply with the user specified desired variance in the outcome attributable to the environmental effect.
 }

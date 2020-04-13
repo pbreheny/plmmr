@@ -12,5 +12,5 @@ lmm_lasso_eta_null(X, y)
 \item{y}{Continuous outcome vector.}
 }
 \description{
-This function allows you to estimate eta (the signal to noise ratio, or narrow-sense variability) under the assumption of a null model in order to estimate the variance parameter, eta.
+This function allows you to estimate eta (the signal to noise ratio, or narrow-sense variability) under the assumption of a null model.
 }

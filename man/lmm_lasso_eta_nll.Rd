@@ -14,5 +14,5 @@ lmm_lasso_eta_nll(eta, Uy, S)
 \item{S}{The eigenvalues of the similarity matrix, K.}
 }
 \description{
-This function allows you to evaluate the negtive log-likelihood of the approximate LMM (using the rotation method) under the assumption of a null model in order to estimate the variance parameter, eta.
+This function allows you to evaluate the negtive log-likelihood of a linear mixed model under the assumption of a null model in order to estimate the variance parameter, eta.
 }

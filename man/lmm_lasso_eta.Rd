@@ -2,7 +2,7 @@
 % Please edit documentation in R/lmm_lasso_eta.R
 \name{lmm_lasso_eta}
 \alias{lmm_lasso_eta}
-\title{Fit an LMM with lasso regularization}
+\title{Fit a linear mixed model with lasso regularization}
 \usage{
 lmm_lasso_eta(X, y, p1, standardize = FALSE)
 }
@@ -13,8 +13,8 @@ lmm_lasso_eta(X, y, p1, standardize = FALSE)
 
 \item{p1}{Number of causal SNPs. Lambda will be selected such that <= p1 variables enter the model.}
 
-\item{standardize}{Should standardization be performed within glmnet()? Defaults to FALSE.}
+\item{standardize}{Should standardization be performed within \code{glmnet()}? Defaults to FALSE.}
 }
 \description{
-This function allows you to fit an approximate LMM (using the rotation method) with lasso regularization.
+This function allows you to fit a linear mixed model via lasso-penalized maximum likelihood.
 }

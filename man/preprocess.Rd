@@ -8,7 +8,16 @@ preprocess(group)
 }
 \arguments{
 \item{group}{Character argument that is the prefix of your bed/bim/fam files.}
+
+\item{genotypes}{The filtered and imputed genotypes in a snpMatrix object with subjects in rows and SNPs in columns.}
+
+\item{map}{A matrix of SNP data.}
+
+\item{fam}{A matrix of subject data.}
+}
+\value{
+A three element list object:
 }
 \description{
-This function allows you to preprocess PLINK bed/bim/fam files for use with penalizedLMM functions. Unreliable SNPs are removed and missing values are imptued using either SnpStats, or if not tagged, the HWE mean value.
+This function allows you to preprocess PLINK bed/bim/fam files for use with \code{penalizedLMM} functions. Unreliable SNPs are removed and missing values are imptued using either \code{snpStats}, or if not tagged, the HWE mean value.
 }

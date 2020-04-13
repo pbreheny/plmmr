@@ -23,20 +23,6 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
                       inbr = c("heterogeneous", "homogeneous"),
                       structureGamma = c("halfandhalf_decreasing_heterogeneous"),
                       eta, xi, standardizeX = TRUE){
-  # n = sample size
-  # p = number of features
-  # p1 = number of causal features
-  # J = number of subpopulations
-  # nJ = number of subjects per subpopulation - default is n/J plus remainder...
-  # structureGamma = description of structure of unscaled gamma vec - currently only equally spaced implemented
-  # structureX = what method of simulating X should be used
-  # eta = proportion of y attributable to genetic signal
-  # xi = proportion of non-genetic-signal attributable to environmental effects
-  # partition_var = should components of y be scaled such that eta and xi parition the variance of y (TRUE), or simply y (FALSE)
-
-  require(mvtnorm)
-  require(ncvreg)
-  require(Matrix)
 
   structureX <- match.arg(structureX)
   J <- length(nJ)
