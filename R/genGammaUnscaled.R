@@ -4,9 +4,7 @@
 #' This function allows you to simulate an environmental confounding effect. This is used by \code{genDataPS()}, which scales the generated vector in order to comply with the user specified desired variance in the outcome attributable to the environmental effect.
 #' @param structureGamma A character argument describing the desired structure.
 #' @param J Number of subpopulations.
-#' @keywords
 #' @export
-#' @examples
 
 genGammaUnscaled <- function(structureGamma, J){
   UseMethod("genGammaUnscaled")

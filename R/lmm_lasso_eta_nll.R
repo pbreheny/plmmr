@@ -4,9 +4,7 @@
 #' @param eta The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR. Sometimes referred to as the narrow-sense heritability.
 #' @param Uy The the continuous outcome, y, rotated by the eigenvectors of the similarity matrix, K.
 #' @param S The eigenvalues of the similarity matrix, K.
-#' @keywords
 #' @export
-#' @examples
 
 lmm_lasso_eta_nll <- function(eta, Uy, S){
 

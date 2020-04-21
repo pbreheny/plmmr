@@ -13,9 +13,7 @@
 #' @param eta The desired proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR.
 #' @param xi The desired proportion of the non-signal variance in the outcome that is attributable to unobserved environmental confounding effects.
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
-#' @keywords
 #' @export
-#' @examples
 
 genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
                       structureX = c("admixture", "indep_subpops", "1d_linear", "independent"),
@@ -55,7 +53,7 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
   s <- rep(1, times = p)
   b <- (j <= p1)
   b <- b * s
-  covX <- var(X) * (n - 1)/n
+  covX <- stats::var(X) * (n - 1)/n
   beta <- b * scaleXbeta / sqrt(drop(crossprod(b, covX) %*% b)) # this scales Xbeta
   Xbeta <- X%*%beta
   # Xbeta <- X%*%beta - mean(X%*%beta) # this centers Xbeta to mean 0
@@ -80,13 +78,11 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
     gamma_unscaled <- genGammaUnscaled(structureGamma, J)
   }
   env <- Z %*% gamma_unscaled
-  # env <- drop(as.matrix(std(env))) * scaleZgamma
   env_sd <- sqrt(varp(env))
   env <- env/env_sd * scaleZgamma
-  # gamma <- (gamma_unscaled - attributes(env)$center)/attributes(env)$scale * scaleZgamma
   gamma <- gamma_unscaled/env_sd * scaleZgamma
   # Gen Y
-  y <- Xbeta + env + scaleEps * drop(std(as.matrix(rnorm(n))))
+  y <- Xbeta + env + scaleEps * drop(ncvreg::std(as.matrix(stats::rnorm(n))))
 
   # name things
   w <- 1 + floor(log10(p))

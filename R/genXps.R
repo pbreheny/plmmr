@@ -10,9 +10,7 @@
 #' @param inbr Indicates whether the desired inbreeding is homogeneous or heterogeneous. Defaults to heterogeneous.
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
 #' @param plot Should a plot of the kinship matrix be generated? Defaults to FALSE.
-#' @keywords
 #' @export
-#' @examples
 
 genXps <- function(n, nJ, p,
                    structureX = c("admixture", "indep_subpops", "1d_linear", "independent"),
@@ -21,19 +19,16 @@ genXps <- function(n, nJ, p,
                    standardizeX = TRUE, plot = FALSE){
   structureX <- match.arg(structureX)
   if (structureX == "admixture"){
-    dat <- read.delim("https://s3.amazonaws.com/pbreheny-data-sets/admixture.txt")
+    dat <- utils::read.delim("https://s3.amazonaws.com/pbreheny-data-sets/admixture.txt")
     XX <- as.matrix(dat[,-1])
-    polymorphic <- apply(XX, 2, sd) != 0
+    polymorphic <- apply(XX, 2, stats::sd) != 0
     X <- XX[, polymorphic]
   } else if (structureX == "independent"){
     pi <- 0.2
-    X <- matrix(rbinom(n*p, 2, pi), nrow = n, ncol = p)
+    X <- matrix(stats::rbinom(n*p, 2, pi), nrow = n, ncol = p)
   } else if (structureX == "indep_subpops"){
-    require(bnpsd)
-    require(popkin)
-    require(RColorBrewer)
     subpops <- rep(c(paste0("S", 1:length(nJ))), times = nJ)
-    admix_proportions <- admix_prop_indep_subpops(subpops)
+    admix_proportions <- bnpsd::admix_prop_indep_subpops(subpops)
     if (is.null(Fst)){
       Fst <- 0.2
     }
@@ -42,10 +37,10 @@ genXps <- function(n, nJ, p,
     } else {
       inbr_subpops <- rep(1, length(nJ))
     }
-    inbr_subpops <- inbr_subpops / fst(inbr_subpops) * Fst
-    coancestry <- coanc_admix(admix_proportions, inbr_subpops)
-    weights <- weights_subpops(subpops) # function from `popkin` package
-    X <- t(draw_all_admix(admix_proportions = admix_proportions,
+    inbr_subpops <- inbr_subpops / popkin::fst(inbr_subpops) * Fst
+    coancestry <- bnpsd::coanc_admix(admix_proportions, inbr_subpops)
+    weights <- popkin::weights_subpops(subpops) # function from `popkin` package
+    X <- t(bnpsd::draw_all_admix(admix_proportions = admix_proportions,
                           inbr_subpops = inbr_subpops,
                           m_loci = p)$X)
     ### plot things
@@ -58,14 +53,11 @@ genXps <- function(n, nJ, p,
       # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 2, 7))
       # barplot(t(admix_proportions), col = col_subpops, border = NA, space = 0, ylab = 'Admix prop')
       # mtext('Individuals', 1)
-      plot_popkin(coancestry, mar = c(1, 1, 1, 3))
+      popkin::plot_popkin(coancestry, mar = c(1, 1, 1, 3))
       # dev.off()
     }
 
   } else if (structureX == "1d_linear"){
-    require(bnpsd)
-    require(popkin)
-    require(RColorBrewer)
     subpops <- rep(c(paste0("S", 1:length(nJ))), times = nJ)
     if (inbr == "heterogeneous"){
       inbr_subpops <- 1:length(nJ)
@@ -79,15 +71,15 @@ genXps <- function(n, nJ, p,
     # bigger means more blurred together and indistinguishable
     # 0.35 - 0.5 seems reasonable
     bias_coeff <- 0.5
-    tmp <- admix_prop_1d_linear(n_ind = n,
+    tmp <- bnpsd::admix_prop_1d_linear(n_ind = n,
                                 k_subpops = length(nJ),
                                 bias_coeff = bias_coeff,
                                 coanc_subpops = inbr_subpops,
                                 fst = Fst)
     admix_proportions <- tmp$admix_proportions
     inbr_subpops <- tmp$coanc_subpops
-    coancestry <- coanc_admix(admix_proportions, inbr_subpops)
-    X <- t(draw_all_admix(admix_proportions = admix_proportions,
+    coancestry <- bnpsd::coanc_admix(admix_proportions, inbr_subpops)
+    X <- t(bnpsd::draw_all_admix(admix_proportions = admix_proportions,
                           inbr_subpops = inbr_subpops,
                           m_loci = p)$X)
     ### plot things
@@ -100,7 +92,7 @@ genXps <- function(n, nJ, p,
       # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 2, 7))
       # barplot(t(admix_proportions), col = col_subpops, border = NA, space = 0, ylab = 'Admix prop')
       # mtext('Individuals', 1)
-      plot_popkin(coancestry, mar = c(1, 1, 1, 3))
+      popkin::plot_popkin(coancestry, mar = c(1, 1, 1, 3))
       # dev.off()
     }
   }
@@ -110,6 +102,6 @@ genXps <- function(n, nJ, p,
   # make numeric, not integer
   X <- apply(X, 2, as.numeric)
   # standardize
-  if (standardizeX == TRUE) X <- std(X)
+  if (standardizeX == TRUE) X <- ncvreg::std(X)
   return(X)
 }

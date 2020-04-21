@@ -4,19 +4,20 @@
 \alias{preprocess}
 \title{Preprocess PLINK files}
 \usage{
-preprocess(group)
+preprocess(prefix, dataDir)
 }
 \arguments{
-\item{group}{Character argument that is the prefix of your bed/bim/fam files.}
+\item{prefix}{Character argument that is the prefix of your bed/bim/fam files.}
 
-\item{genotypes}{The filtered and imputed genotypes in a snpMatrix object with subjects in rows and SNPs in columns.}
-
-\item{map}{A matrix of SNP data.}
-
-\item{fam}{A matrix of subject data.}
+\item{dataDir}{Directory where plink files are located}
 }
 \value{
 A three element list object:
+\itemize{
+\item \code{genotypes} The filtered and imputed genotypes in a snpMatrix object with subjects in rows and SNPs in columns.
+\item \code{map} A matrix of SNP data.
+\item \code{fam} A matrix of subject data.
+}
 }
 \description{
 This function allows you to preprocess PLINK bed/bim/fam files for use with \code{penalizedLMM} functions. Unreliable SNPs are removed and missing values are imptued using either \code{snpStats}, or if not tagged, the HWE mean value.
