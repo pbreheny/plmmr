@@ -1,0 +1,23 @@
+#' Fit a linear model with lasso regularization and PC adjutment
+#'
+#' This function allows you to fit a linear model via lasso-penalized maximum likelihood, adjusted for the first 10 principal components (unpenalized), with the same output values as those of lmm_lasso_eta. Primarily used for simulation and comparison with lmm_lasso_eta.
+#' @param X Design matrix.
+#' @param y Continuous outcome vector.
+#' @param p1 Number of causal SNPs. Lambda will be selected such that <= p1 variables enter the model.
+#' @param standardize Should standardization be performed within \code{glmnet()}? Defaults to FALSE.
+#' @export
+
+
+lasso_pca10 <- function(X, y, p1, standardize = FALSE){
+  pca <- stats::prcomp(X, center=standardize, scale=standardize) # x already standardized
+  pc <- pca$x[, 1:10]
+  XX <- cbind(pc, X)
+  fit <- glmnet::glmnet(XX, y, penalty.factor = rep(c(0, 1), times=c(10, ncol(X))), standardize = standardize)
+  sel <- sapply(stats::predict(fit, type='nonzero'), length) - 10 # remove unpenalized effects
+  coef <- coef(fit, min(fit$lambda[sel <= p1]))[-c(1:11)] # remove intercept and unpenalized effects
+  return(list(fit = fit,
+              nonzero = length(which(coef != 0)),
+              coef = coef,
+              delta = NA,
+              eta = NA))
+}

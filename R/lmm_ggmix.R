@@ -6,27 +6,21 @@
 #' @param p1 Number of causal SNPs. Lambda will be selected such that <= p1 variables enter the model.
 #' @param standardize Should standardization be performed within \code{glmnet()}? Defaults to FALSE.
 #' @param X_for_K X matrix used to compute the similarity matrix, K. For multi-chromosome analysis this may be supplied in order to perform a leave-one-chromosome-out correction. The objective here is to adjust for population stratification and unobserved confounding without rotating out the causal SNP effects.
-#' @importFrom zeallot %<-%
 #' @export
 
 
-
-lmm_lasso_eta <- function(X, y, p1, X_for_K = NULL, standardize = FALSE) {
-  S <- U <- eta <- NULL
+lmm_ggmix <- function(X, y, p1, X_for_K = NULL, standardize = FALSE){
   if (is.null(X_for_K)){
-    c(S, U, eta) %<-% lmm_lasso_eta_null(X, y)
+    fit <- ggmix::ggmix(x=X, y=y, kinship=tcrossprod(ncvreg::std(X))/ncol(X), estimation="full", standardize = standardize)
   } else {
-    c(S, U, eta) %<-% lmm_lasso_eta_null(X_for_K, y)
+    fit <- ggmix::ggmix(x=X, y=y, kinship=tcrossprod(ncvreg::std(X_for_K))/ncol(X_for_K), estimation="full", standardize = standardize)
   }
-  W <- diag((eta * S + (1 - eta))^(-1/2))
-  SUX <- W %*% crossprod(U, X)
-  SUy <- drop(W %*% crossprod(U, y))
-  fit <- glmnet::glmnet(SUX, SUy, standardize = standardize)
-  sel <- sapply(stats::predict(fit, type='nonzero'), length)
+  sel <- sapply(stats::predict(fit, type='nonzero'), length) - 3 # minus 3 for int, and 2 var comp.
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]
+  eta_hat <- fit$eta[which.min(fit$lambda[sel <= p1])]
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
-              delta = (1/eta) - 1,
-              eta = eta))
+              delta = (1/eta_hat) - 1,
+              eta = eta_hat))
 }
