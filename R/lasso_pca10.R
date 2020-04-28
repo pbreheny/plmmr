@@ -15,6 +15,7 @@ lasso_pca10 <- function(X, y, p1, standardize = FALSE){
   fit <- glmnet::glmnet(XX, y, penalty.factor = rep(c(0, 1), times=c(10, ncol(X))), standardize = standardize)
   sel <- sapply(stats::predict(fit, type='nonzero'), length) - 10 # remove unpenalized effects
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-c(1:11)] # remove intercept and unpenalized effects
+  names(coef) <- colnames(X)
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,

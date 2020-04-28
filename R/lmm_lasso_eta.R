@@ -24,6 +24,7 @@ lmm_lasso_eta <- function(X, y, p1, X_for_K = NULL, standardize = FALSE) {
   fit <- glmnet::glmnet(SUX, SUy, standardize = standardize)
   sel <- sapply(stats::predict(fit, type='nonzero'), length)
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]
+  names(coef) <- colnames(X)
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
