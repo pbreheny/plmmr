@@ -22,4 +22,5 @@ Imports:
     methods,
     utils,
     bnpsd,
-    zeallot
+    zeallot,
+    data.table
