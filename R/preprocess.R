@@ -78,6 +78,7 @@ preprocess <- function(prefix, dataDir){
 
   # keep corresponding fam data
   fam <- obj$fam[rownames(out3),]
+  fam$prefix <- prefix
 
   # done...
   cat("\nPreprocessing", prefix, "data DONE!\n\n",
