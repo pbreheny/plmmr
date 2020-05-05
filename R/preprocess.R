@@ -23,7 +23,7 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
                                snpStats::col.summary(obj$genotypes)$P.AB != 1 &
                                snpStats::col.summary(obj$genotypes)$P.BB != 1 & obj$map$chromosome %in% 1:22]
 
-  cat("\nRemoving ", dim(obj$geno)[2] - dim(genotypes)[2], "SNPS that are monomorphic or outside of chr 1:22\n")
+  cat("\nRemoving ", dim(obj$geno)[2] - dim(genotypes)[2], "SNPs that are monomorphic or outside of chromosomes 1-22.\n")
 
   # if sexcheck = TRUE, remove subjects with sex discrepancies
   if (sexcheck == TRUE) {
@@ -32,13 +32,13 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
     if (length(iid_sex_discrep) > 0){
       genotypes <- genotypes[-match(iid_sex_discrep, rownames(genotypes)), ]
     }
-    cat("\nRemoving", ifelse(length(iid_sex_discrep) > 0, length(iid_sex_discrep), 0), "subjects with sex discrepancies\n")
+    cat("\nRemoving", ifelse(length(iid_sex_discrep) > 0, length(iid_sex_discrep), 0), "subjects with sex discrepancies.\n")
 
   }
 
   # Now how many SNPs have missing data?
   missing <- table(snpStats::col.summary(genotypes)$Call.rate == 1)
-  cat("\n", ifelse(length(missing) == 2, missing[1], 0), "SNPS with missing data that we will attempt to impute\n")
+  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data that we will attempt to impute.\n")
 
   # Impute missing values
   rules <- snpStats::snp.imputation(genotypes, minA=0)
@@ -46,18 +46,18 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
 
   # How many SNPs have missing data after imputation?
   missing <- table(snpStats::col.summary(out)$Call.rate == 1)
-  cat("\n", ifelse(length(missing) == 2, missing[1], 0), "SNPS with missing data after imputation\n")
+  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data after imputation.\n")
 
   # How many SNPs cannot be imputed and still have >= 50% missing values?
   missing <- table(snpStats::col.summary(out)$Call.rate <= 0.5)
-  cat("\n", ifelse(length(missing) == 2, missing[2], 0), "of these SNPs have call rates <= 50% and will be removed\n")
+  cat("\nOf these SNPs,", ifelse(length(missing) == 2, missing[2], 0), "have call rates <= 50% and will be removed.\n")
 
   # Throw out SNPs that have >= 50% missingness, even after imputation
   out2 <- out[, snpStats::col.summary(out)$Call.rate > 0.5]
 
   # How many SNPs will be imputed with mean values?
   missing <- table(snpStats::col.summary(out2)$Call.rate == 1)
-  cat("\n", ifelse(length(missing) == 2, missing[1], 0), "SNPS still have missing data that will be imputed with the HWE expected value\n")
+  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs that still have missing data which will be imputed with the HWE expected value.\n")
 
   # keep snp order for later
   order_snps <- colnames(out2)
@@ -77,14 +77,14 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
   out3@.Data[, to_impute] <- imputed_mean
 
   # make sure there are no missing values remaining
-  # missing <- 0
-  # chunks <- ceiling(nrow(out3) / 100)
-  # start <- 1
-  # for (i in 1:chunks){
-  #   stop <- min(i*100, nrow(out3))
-  #   missing <- missing + sum(is.na(out3[start:stop]))
-  #   start <- stop + 1
-  # }
+  missing <- 0
+  chunks <- ceiling(nrow(out3) / 100)
+  start <- 1
+  for (i in 1:chunks){
+    stop <- min(i*100, nrow(out3))
+    missing <- missing + sum(is.na(out3[start:stop]))
+    start <- stop + 1
+  }
 
   # keep corresponding map data
   map <- obj$map[colnames(out3),]
@@ -94,8 +94,10 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
   fam$prefix <- prefix
 
   # done...
-  cat("\nPreprocessing", prefix, "data DONE!\n\n",
-      nrow(out3), "subjects,", ncol(out3), "SNPs,", missing, "missing values\n")
+  cat("\nPreprocessing", prefix, "data DONE!\n",
+      "\nSubjects:", nrow(out3),
+      "\nSNPs:", ncol(out3),
+      "\nMissing values:", missing, "\n")
 
   return(list(genotypes = out3,
               map = map,
