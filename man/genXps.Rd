@@ -8,11 +8,12 @@ genXps(
   n,
   nJ,
   p,
-  structureX = c("admixture", "indep_subpops", "1d_linear", "independent"),
+  structureX = c("admixture", "indep_subpops", "1d_linear", "independent", "other"),
   Fst = NULL,
   inbr = c("homogeneous", "heterogeneous"),
   standardizeX = TRUE,
-  plot = FALSE
+  plot = FALSE,
+  other_rds = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ genXps(
 \item{standardizeX}{Should the generated X matrix be standardized? Defaults to TRUE.}
 
 \item{plot}{Should a plot of the kinship matrix be generated? Defaults to FALSE.}
+
+\item{other_rds}{If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.}
 }
 \description{
 This function allows you to simulate structured genetic data (SNP).

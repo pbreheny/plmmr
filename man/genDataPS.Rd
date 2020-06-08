@@ -9,13 +9,14 @@ genDataPS(
   p = 98,
   p1 = floor(p/2),
   nJ = c(47, 50, 50, 50),
-  structureX = c("admixture", "indep_subpops", "1d_linear", "independent"),
+  structureX = c("admixture", "indep_subpops", "1d_linear", "independent", "other"),
   Fst = NULL,
   inbr = c("heterogeneous", "homogeneous"),
   structureGamma = c("halfandhalf_decreasing_heterogeneous"),
   eta,
   xi,
-  standardizeX = TRUE
+  standardizeX = TRUE,
+  other_rds = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ genDataPS(
 \item{xi}{The desired proportion of the non-signal variance in the outcome that is attributable to unobserved environmental confounding effects.}
 
 \item{standardizeX}{Should the generated X matrix be standardized? Defaults to TRUE.}
+
+\item{other_rds}{If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.}
 }
 \description{
 This function allows you to simulate structured genetic data (SNP) with an unobserved environmental confounding effect.

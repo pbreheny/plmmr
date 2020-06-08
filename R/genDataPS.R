@@ -13,16 +13,18 @@
 #' @param eta The desired proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR.
 #' @param xi The desired proportion of the non-signal variance in the outcome that is attributable to unobserved environmental confounding effects.
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
+#' @param other_rds If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.
 #' @export
 
 genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
-                      structureX = c("admixture", "indep_subpops", "1d_linear", "independent"),
+                      structureX = c("admixture", "indep_subpops", "1d_linear", "independent", "other"),
                       Fst = NULL,
                       inbr = c("heterogeneous", "homogeneous"),
                       structureGamma = c("halfandhalf_decreasing_heterogeneous"),
-                      eta, xi, standardizeX = TRUE){
+                      eta, xi, standardizeX = TRUE, other_rds = NULL){
 
   structureX <- match.arg(structureX)
+  if (structureX == "other" & is.null(other_rds)) stop("An RDS file must be supplied to the argument `other_rds` if structureX == `other`")
   J <- length(nJ)
 
   # dimension checks
