@@ -10,19 +10,19 @@
 #' @param inbr Indicates whether the desired inbreeding is homogeneous or heterogeneous. Defaults to heterogeneous.
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
 #' @param plot Should a plot of the kinship matrix be generated? Defaults to FALSE.
-#' @param other_rds If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.
+#' @param structureX_other If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.
 #' @export
 
 genXps <- function(n, nJ, p,
                    structureX = c("admixture", "indep_subpops", "1d_linear", "independent", "other"),
                    Fst = NULL,
                    inbr = c("homogeneous", "heterogeneous"),
-                   standardizeX = TRUE, plot = FALSE, other_rds = NULL){
+                   standardizeX = TRUE, plot = FALSE, structureX_other = NULL){
   structureX <- match.arg(structureX)
-  if (structureX == "other" & is.null(other_rds)) stop("An RDS file must be supplied to the argument `other_rds` if structureX == `other`")
+  if (structureX == "other" & is.null(structureX_other)) stop("A matrix or SnpMatrix object must be supplied to the argument `structureX_other` if structureX == `other`")
 
   if (structureX == "other"){
-    X <- readRDS(other_rds)
+    X <- methods::as(structureX_other, "numeric")
   } else if (structureX == "admixture"){
     dat <- utils::read.delim("https://s3.amazonaws.com/pbreheny-data-sets/admixture.txt")
     XX <- as.matrix(dat[,-1])

@@ -13,7 +13,7 @@
 #' @param eta The desired proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR.
 #' @param xi The desired proportion of the non-signal variance in the outcome that is attributable to unobserved environmental confounding effects.
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
-#' @param other_rds If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.
+#' @param structureX_other If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.
 #' @export
 
 genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
@@ -21,10 +21,10 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
                       Fst = NULL,
                       inbr = c("heterogeneous", "homogeneous"),
                       structureGamma = c("halfandhalf_decreasing_heterogeneous"),
-                      eta, xi, standardizeX = TRUE, other_rds = NULL){
+                      eta, xi, standardizeX = TRUE, structureX_other = NULL){
 
   structureX <- match.arg(structureX)
-  if (structureX == "other" & is.null(other_rds)) stop("An RDS file must be supplied to the argument `other_rds` if structureX == `other`")
+  if (structureX == "other" & is.null(structureX_other)) stop("A matrix or SnpMatrix object must be supplied to the argument `structureX_other` if structureX == `other`")
   J <- length(nJ)
 
   # dimension checks
@@ -48,7 +48,7 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
   scaleEps <- sqrt((1 - eta) * (1 - xi))
 
   # Gen X
-  X <- genXps(n, nJ, p, structureX, Fst, inbr, standardizeX)
+  X <- genXps(n, nJ, p, structureX, Fst, inbr, standardizeX, structureX_other = structureX_other)
 
   # Gen (scaled) beta and standardized Xbeta (scale by eta)
   j <- 1:p
@@ -73,12 +73,7 @@ genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
   Z <- as.matrix(Matrix::bdiag(mlist))
 
   # Gen (scaled) gamma and standardized Zgamma (scale by eta and xi)
-  if (!is.numeric(structureGamma) && structureGamma == "banded"){
-    gamma_unscaled <- (1:n)/n
-    Z <- diag(n)
-  } else {
-    gamma_unscaled <- genGammaUnscaled(structureGamma, J)
-  }
+  gamma_unscaled <- genGammaUnscaled(structureGamma, J)
   env <- Z %*% gamma_unscaled
   env_sd <- sqrt(varp(env))
   env <- env/env_sd * scaleZgamma

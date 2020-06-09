@@ -13,7 +13,7 @@ genXps(
   inbr = c("homogeneous", "heterogeneous"),
   standardizeX = TRUE,
   plot = FALSE,
-  other_rds = NULL
+  structureX_other = NULL
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ genXps(
 
 \item{plot}{Should a plot of the kinship matrix be generated? Defaults to FALSE.}
 
-\item{other_rds}{If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.}
+\item{structureX_other}{If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.}
 }
 \description{
 This function allows you to simulate structured genetic data (SNP).

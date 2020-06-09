@@ -16,7 +16,7 @@ genDataPS(
   eta,
   xi,
   standardizeX = TRUE,
-  other_rds = NULL
+  structureX_other = NULL
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ genDataPS(
 
 \item{standardizeX}{Should the generated X matrix be standardized? Defaults to TRUE.}
 
-\item{other_rds}{If \code{structureX == "other"}, an rds file of the X data frame to be used must be supplied here.}
+\item{structureX_other}{If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.}
 }
 \description{
 This function allows you to simulate structured genetic data (SNP) with an unobserved environmental confounding effect.
