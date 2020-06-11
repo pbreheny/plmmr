@@ -6,7 +6,7 @@
 #' @param S The eigenvalues of the similarity matrix, K.
 #' @export
 
-lmm_lasso_eta_nll <- function(eta, Uy, S){
+lmm_lasso_nll <- function(eta, Uy, S){
 
   n <- dim(Uy)[1]
 

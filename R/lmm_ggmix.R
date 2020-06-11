@@ -9,7 +9,7 @@
 #' @export
 
 
-lmm_ggmix <- function(X, y, p1, X_for_K = NULL, standardize = FALSE){
+lmm_ggmix <- function(X, y, p1, standardize = FALSE, X_for_K = NULL){
   if (is.null(X_for_K)){
     fit <- ggmix::ggmix(x=X, y=y, kinship=tcrossprod(ncvreg::std(X))/ncol(X), estimation="full", standardize = standardize)
   } else {
