@@ -10,12 +10,15 @@ genGammaUnscaled <- function(structureGamma, J){
   UseMethod("genGammaUnscaled")
 }
 
+#' @export
 genGammaUnscaled.default <- function(structureGamma, J){
   warning("No valid structure specified - defaulting to 'linear_increasing_homogeneous'")
   gamma_unscaled <- 1:J
   return(gamma_unscaled)
 }
 
+
+#' @export
 genGammaUnscaled.character <- function(structureGamma, J){
 
   dat <- strsplit(structureGamma, "_")[[1]]
@@ -43,6 +46,8 @@ genGammaUnscaled.character <- function(structureGamma, J){
   return(g)
 }
 
+
+#' @export
 genGammaUnscaled.numeric <- function(structureGamma, J){
   if (length(structureGamma) != J){
     stop("Length of numeric argument 'structureGamma' must equal argument 'J'")
