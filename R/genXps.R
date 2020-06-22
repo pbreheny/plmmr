@@ -14,7 +14,7 @@
 #' @export
 
 genXps <- function(n, nJ, p,
-                   structureX = c("admixture", "indep_subpops", "1d_linear", "independent", "other"),
+                   structureX = c("admixture", "indep_subpops", "1d_linear", "1d_circular", "independent", "other"),
                    Fst = NULL,
                    inbr = c("homogeneous", "heterogeneous"),
                    standardizeX = TRUE, plot = FALSE, structureX_other = NULL){
@@ -50,16 +50,7 @@ genXps <- function(n, nJ, p,
                           m_loci = p)$X)
     ### plot things
     if (plot == TRUE) {
-      # fname <- paste0("n=", n, "-p=", p, "-nJ=", length(nJ), "-structureX=", structureX, "-Fst=", Fst, "-inbr=", inbr, ".pdf")
-      # pdf(file = fname, width = 15, height =15)
-      # col_subpops <- brewer.pal(length(nJ), "Paired")
-      # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 1, 7), mgp = c(1.5, 0.5, 0))
-      # barplot(inbr_subpops, col = col_subpops, names.arg = colnames(admix_proportions), xlab = 'Subpopulation', ylab = 'Inbr')
-      # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 2, 7))
-      # barplot(t(admix_proportions), col = col_subpops, border = NA, space = 0, ylab = 'Admix prop')
-      # mtext('Individuals', 1)
       popkin::plot_popkin(coancestry, mar = c(1, 1, 1, 3))
-      # dev.off()
     }
 
   } else if (structureX == "1d_linear"){
@@ -75,7 +66,13 @@ genXps <- function(n, nJ, p,
     # making this smaller makes blocks more distinct
     # bigger means more blurred together and indistinguishable
     # 0.35 - 0.5 seems reasonable
-    bias_coeff <- 0.5
+    if (length(nJ) == 4){
+      bias_coeff <- 0.5
+    } else if (length(nJ) == 10){
+      bias_coeff <- 0.5
+    } else if (length(nJ) == 50){
+      bias_coeff <- 0.1
+    }
     tmp <- bnpsd::admix_prop_1d_linear(n_ind = n,
                                 k_subpops = length(nJ),
                                 bias_coeff = bias_coeff,
@@ -89,20 +86,47 @@ genXps <- function(n, nJ, p,
                           m_loci = p)$X)
     ### plot things
     if (plot == TRUE) {
-      # fname <- paste0("n=", n, "-p=", p, "-nJ=", length(nJ), "-structureX=", structureX, "-Fst=", Fst, "-inbr=", inbr, ".pdf")
-      # pdf(file = fname, width = 15, height =15)
-      # col_subpops <- brewer.pal(length(nJ), "Paired")
-      # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 1, 7), mgp = c(1.5, 0.5, 0))
-      # barplot(inbr_subpops, col = col_subpops, names.arg = colnames(admix_proportions), xlab = 'Subpopulation', ylab = 'Inbr')
-      # par(mar = c(2.5, 2.5, 0, 0) + 1, lab = c(2, 2, 7))
-      # barplot(t(admix_proportions), col = col_subpops, border = NA, space = 0, ylab = 'Admix prop')
-      # mtext('Individuals', 1)
       popkin::plot_popkin(coancestry, mar = c(1, 1, 1, 3))
-      # dev.off()
+    }
+  } else if (structureX == "1d_circular"){
+    subpops <- rep(c(paste0("S", 1:length(nJ))), times = nJ)
+    if (inbr == "heterogeneous"){
+      inbr_subpops <- 1:length(nJ)
+    } else {
+      inbr_subpops <- rep(1, length(nJ))
+    }
+    if (is.null(Fst)){
+      Fst <- 0.1
+    }
+    # making this smaller makes blocks more distinct
+    # bigger means more blurred together and indistinguishable
+    # 0.35 - 0.5 seems reasonable
+    if (length(nJ) == 4){
+      bias_coeff <- 0.5
+    } else if (length(nJ) == 10){
+      bias_coeff <- 0.5
+    } else if (length(nJ) == 50){
+      bias_coeff <- 0.1
+    }
+
+    tmp <- bnpsd::admix_prop_1d_circular(n_ind = n,
+                                       k_subpops = length(nJ),
+                                       bias_coeff = bias_coeff,
+                                       coanc_subpops = inbr_subpops,
+                                       fst = Fst)
+    admix_proportions <- tmp$admix_proportions
+    inbr_subpops <- tmp$coanc_subpops
+    coancestry <- bnpsd::coanc_admix(admix_proportions, inbr_subpops)
+    X <- t(bnpsd::draw_all_admix(admix_proportions = admix_proportions,
+                                 inbr_subpops = inbr_subpops,
+                                 m_loci = p)$X)
+    ### plot things
+    if (plot == TRUE) {
+      popkin::plot_popkin(coancestry, mar = c(1, 1, 1, 3))
     }
   }
 
-  # randomize column order so there's no LD
+  # randomize column order so causal SNPs will change
   X <- X[, sample(1:ncol(X), ncol(X), replace = FALSE)]
   # make numeric, not integer
   X <- apply(X, 2, as.numeric)
