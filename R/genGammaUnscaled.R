@@ -33,11 +33,9 @@ genGammaUnscaled.character <- function(structureGamma, J){
     g <- rep(c(0.5, 1), times = c(first, second))
   }
 
-  if (dat[2] == "decreasing"){
-    g <- rev(g)
-  }
+  g <- rev(g)
 
-  if (dat[3] == "heterogeneous"){
+  if (dat[2] == "heterogeneous"){
     j <- 1:J
     s <- c(-1, 1)[j%%2 + 1]
     g <- g * s

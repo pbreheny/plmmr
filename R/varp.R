@@ -1,5 +1,7 @@
+#' Calculate the population variance
+#'
+#' This function allows you to calculate the population variance; we assume our sample is the population.
+#' @param x numeric vector
 
-### function to calculate population variance
-### used in conjunction with our standardized X matrix
-### since we assume that is our reference population and not a sample
+#' @export
 varp <- function(x) mean((x-mean(x))^2)

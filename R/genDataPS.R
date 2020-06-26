@@ -16,14 +16,19 @@
 #' @param structureX_other If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.
 #' @export
 
-genDataPS <- function(n = 197, p = 98, p1 = floor(p/2), nJ = c(47, 50, 50, 50),
-                      structureX = c("admixture", "indep_subpops", "1d_linear", "1d_circular", "independent", "other"),
+genDataPS <- function(n = 200, p = 1000, p1 = floor(p/2), nJ = rep(50, 4),
+                      # structureX = c("admixture", "indep_subpops", "1d_linear", "1d_circular", "independent", "other"),
+                      structureX = "indep_subpops",
                       Fst = NULL,
-                      inbr = c("heterogeneous", "homogeneous"),
+                      # inbr = c("heterogeneous", "homogeneous"),
+                      inbr = "heterogeneous",
                       structureGamma = c("halfandhalf_decreasing_heterogeneous"),
-                      eta, xi, standardizeX = TRUE, structureX_other = NULL){
+                      eta = 0.8,
+                      xi = 0,
+                      standardizeX = TRUE,
+                      structureX_other = NULL){
 
-  structureX <- match.arg(structureX)
+  # structureX <- match.arg(structureX)
   if (structureX == "other" & is.null(structureX_other)) stop("A matrix or SnpMatrix object must be supplied to the argument `structureX_other` if structureX == `other`")
   J <- length(nJ)
 
