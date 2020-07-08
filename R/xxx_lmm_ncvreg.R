@@ -7,30 +7,36 @@
 #' @importFrom zeallot %<-%
 #' @export
 
-
+### need to create a non-testing version of this function
 
 penalizedLMM <- function(X,
-                       y,
-                       X_for_K = NULL,
-                       init = rep(0, ncol(X)),
-                       penalty = c("MCP", "SCAD", "lasso"),
-                       gamma = switch(penalty, SCAD = 3.7, 3),
-                       alpha = 1,
-                       lambda.min = ifelse(n>p,.001,.05),
-                       nlambda = 100,
-                       lambda,
-                       eps = 1e-04,
-                       max.iter = 1000,
-                       convex = FALSE,
-                       dfmax = p + 1,
-                       penalty.factor = rep(1, ncol(X)),
-                       warn = TRUE) {
+                         y,
+                         X_for_K = NULL,
+                         init = rep(0, ncol(X)),
+                         penalty = c("MCP", "SCAD", "lasso"),
+                         gamma = switch(penalty, SCAD = 3.7, 3),
+                         alpha = 1,
+                         lambda.min = ifelse(n>p,.001,.05),
+                         nlambda = 100,
+                         lambda,
+                         eps = 1e-04,
+                         max.iter = 1000,
+                         convex = FALSE,
+                         dfmax = p + 1,
+                         penalty.factor = rep(1, ncol(X)),
+                         warn = TRUE,
+                         standardize = TRUE,
+                         intercept = TRUE,
+                         rotation = FALSE,
+                         returnX = TRUE,
+                         ...) {
 
   S <- U <- eta <- NULL
 
   ### from ncvreg ##############################################################
   # Coersion
   penalty <- match.arg(penalty)
+  if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
   if (!inherits(X, "matrix")) {
     tmp <- try(X <- model.matrix(~0+., data=X), silent=TRUE)
     if (inherits(tmp, "try-error")) stop("X must be a matrix or able to be coerced to a matrix", call.=FALSE)
@@ -61,34 +67,92 @@ penalizedLMM <- function(X,
   if ("n.lambda" %in% names(dots)) nlambda <- dots$n.lambda
 
   ## Set up XX, yy, lambda
-  XX <- std(X)
+  if (standardize){
+    XX <- ncvreg::std(X)
+    if (!is.null(X_for_K)) X_for_K <- ncvreg::std(X_for_K)
+  } else {
+    XX <- X
+    attributes(XX)$center <- rep(0, ncol(XX))
+    attributes(XX)$scale <- rep(1, ncol(XX))
+    attributes(XX)$nonsingular <- 1:ncol(XX)
+  }
   ns <- attr(XX, "nonsingular")
   penalty.factor <- penalty.factor[ns]
-  p <- ncol(XX)
-  if (!is.null(X_for_K)) X_for_K <- ncvreg::std(X_for_K)
+  # yy <- y - mean(y) ### SHOULD THIS BE CENTERED???
   yy <- y
+  p <- ncol(XX)
   n <- length(yy)
   ##############################################################################
   ### get things working w/o rotation first
 
   ## Calculate eta
-  if (is.null(X_for_K)){
-    c(S, U, eta) %<-% lmm_lasso_null(XX, yy) ### change names so doesn't contain lasso
+  if (rotation){
+    if (is.null(X_for_K)){
+      c(S, U, eta) %<-% lmm_lasso_null(XX, yy) ### change names so doesn't contain lasso
+    } else {
+      c(S, U, eta) %<-% lmm_lasso_null(X_for_K, yy)
+    }
+    W <- diag((eta * S + (1 - eta))^(-1/2))
   } else {
-    c(S, U, eta) %<-% lmm_lasso_null(X_for_K, yy)
+    U <- diag(n)
+    W <- diag(n)
   }
-  W <- diag((eta * S + (1 - eta))^(-1/2))
 
-  ## Add manual intercept - is this necessary or will centering SUy work?
-  # XXX <- cbind(1, XX)
-  # if (missing(penalty.factor) || length(penalty.factor) != ncol(XXX)){
-  #   penalty.factor <- rep(c(0, 1), times = c(1, ncol(XX)))
-  # }
+
+  if (intercept){ # fit manual intercept
+    tmpXX <- cbind(1, XX)
+    attributes(tmpXX)$center <- c(0, attr(XX, "center"))
+    attributes(tmpXX)$scale <- c(1, attr(XX, "scale"))
+    attributes(tmpXX)$nonsingular <- c(1, attr(XX, "nonsingular") + 1)
+    XX <- tmpXX
+    ns <- attr(XX, "nonsingular")
+    if (missing(penalty.factor) || length(penalty.factor) != ncol(XX)){
+      penalty.factor <- rep(c(0, 1), times = c(1, ncol(XX) - 1))
+    }
+  }
+
+
 
   ## Rotate data
   SUX <- W %*% crossprod(U, XX)
   SUy_uncentered <- drop(W %*% crossprod(U, yy))
-  SUy <- SUy_uncentered - mean(SUy_uncentered)
+  if (intercept){
+    SUy <- SUy_uncentered
+  } else {
+    SUy <- SUy_uncentered - mean(SUy_uncentered)
+    # SUy <- drop(W %*% crossprod(U, yy))
+    # SUy <- SUy - mean(SUy)
+  }
+
+  # if (rotation){
+  #   ## Rotate data
+  #   SUX <- W %*% crossprod(U, XX)
+  #   # SUy_uncentered <- drop(W %*% crossprod(U, yy))
+  #   if (intercept){
+  #     SUy <- drop(W %*% crossprod(U, yy))
+  #   } else {
+  #     SUy <- drop(W %*% crossprod(U, yy - mean(yy)))
+  #   }
+  # } else {
+  #   SUX <- XX
+  #   if (intercept){
+  #     SUy <- yy
+  #   } else {
+  #     SUy <- yy - mean(yy)
+  #   }
+  #   # SUy_uncentered <- yy
+  # }
+
+  # if (intercept){ # fit manual intercept
+  #   SUy <- SUy_uncentered
+  # } else {
+  #   # SUy <- SUy_uncentered - mean(SUy_uncentered)
+  #   # ones <- matrix(1, nrow = n, ncol = 1)
+  #   SUy <- SUy_uncentered - W %*% crossprod(U, rep(mean(yy), n))
+  #   # drop(W %*% crossprod(U, yy)) - W %*% crossprod(U, mean(y) * ones)
+  #   # drop(W %*% crossprod(U, yy - mean(y) * ones))
+  #
+  # }
 
   ## Set up lambda
   if (missing(lambda)) {
@@ -99,47 +163,27 @@ penalizedLMM <- function(X,
     user.lambda <- TRUE
   }
 
-  fit_ncv <- ncvreg(SUX, SUy)
-
-  # fit <- ncvreg::ncvreg(std(SUX)[,-1], SUy_uncentered) # using this with std(SUX) and no intercept to check
-  # fit_gl <- glmnet::glmnet(std(SUX), SUy, intercept = FALSE, standardize = FALSE, penalty.factor = penalty.factor, lambda = lambda)
-
   ## Set placeholders for results
   b <- matrix(NA, ncol(SUX), nlambda)
-  a <- rep(mean(SUy_uncentered), nlambda)
+  if (!intercept){ # no manual intercept
+    a <- rep(mean(SUy_uncentered), nlambda)
+    # a <- W %*% crossprod(U, rep(mean(yy), n))
+  }
   iter <- integer(nlambda)
   loss <- numeric(nlambda)
   for (ll in 1:nlambda){
-    ### need to pass in previous beta values as move from one lambda to the next...duh
     lam <- lambda[ll]
     res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
-    b[, ll] <- init <- res$beta # does this include intercept?
+    b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     loss[ll] <- res$loss
   }
-
-  fit_gl <- glmnet(SUX, SUy_uncentered, intercept = TRUE, standardize = FALSE, lambda = lambda)
-  fit_lam <- glmnet(SUX, SUy_uncentered, intercept = TRUE, standardize = FALSE) # do setupLambda and glmnet lambda get the same values?
-  head(coefficients(fit_gl, s = lambda[16]))
-
-  ### check against glmnet for a particular lambda...
-  # checkFun <- function(l){
-  #   these <- which(coefficients(fit_gl, s = lambda[l]) != 0)
-  #   # print("glmnet:\n")
-  #   r1 <- coefficients(fit_gl, s = lambda[l])[these]
-  #   those <- which(beta[, l] != 0)
-  #   # print("penalizedLMM:\n")
-  #   r2 <- beta[those, l]
-  #   list(glmnet_res = r1,
-  #        plmm_res = r2)
-  # }
-
 
   ### from ncvreg ##############################################################
 
   ## Eliminate saturated lambda values, if any
   ind <- !is.na(iter)
-  a <- a[ind]
+  if (!intercept) a <- a[ind]
   b <- b[, ind, drop=FALSE]
   iter <- iter[ind]
   lambda <- lambda[ind]
@@ -149,11 +193,19 @@ penalizedLMM <- function(X,
   ## Local convexity? - later?
   # convex.min <- if (convex) convexMin(b, XX, penalty, gamma, lambda*(1-alpha), family, penalty.factor, a=a) else NULL
 
-  ## Unstandardize
-  beta <- matrix(0, nrow=(ncol(XX) + 1), ncol=length(lambda))
-  bb <- b/attr(XX, "scale")[ns]
-  beta[ns+1,] <- bb
-  beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
+  ## Unstandardize - if needed, with and without manual intercept
+  if (intercept){ # manual intercept
+    beta <- matrix(0, nrow=(ncol(XX)), ncol=length(lambda))
+    bb <- b/attr(XX, "scale")[ns]
+    beta[ns[-1],] <- bb[-1,]
+    a <- bb[1,]
+    beta[1,] <- a - crossprod(attr(XX, "center")[ns[-1]], bb[-1,])
+  } else { # no manual standardization, no manual intercept
+    beta <- matrix(0, nrow=(ncol(XX) + 1), ncol=length(lambda))
+    bb <- b/attr(XX, "scale")[ns]
+    beta[ns+1,] <- bb
+    beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
+  }
 
   ## Names
   lamNames <- function(l) {
@@ -190,8 +242,9 @@ penalizedLMM <- function(X,
     }
   }
   if (returnX) {
-    val$X <- SUX ### return standardized version?
-    val$y <- SUy
+    val$X <- SUX
+    val$y <- SUy_uncentered
+    # val$y <- SUy
   }
   return(val)
 }
