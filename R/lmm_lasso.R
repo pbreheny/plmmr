@@ -21,7 +21,7 @@ lmm_lasso <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   W <- diag((eta * S + (1 - eta))^(-1/2))
   SUX <- W %*% crossprod(U, cbind(1, X))
   SUy <- drop(W %*% crossprod(U, y))
-  fit <- glmnet::glmnet(SUX, SUy, standardize = standardize, intercept = FALSE)
+  fit <- glmnet::glmnet(SUX, SUy, standardize = standardize, intercept = FALSE, penalty.factor = c(0, rep(1, ncol(X))))
   sel <- sapply(stats::predict(fit, type='nonzero'), length)
   coef <- coef(fit, min(fit$lambda[sel <= (p1 + 1)]))[-c(1:2)]
   names(coef) <- colnames(X)
