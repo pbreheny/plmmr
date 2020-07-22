@@ -1,8 +1,16 @@
 
-set.seed(7)
-Data <- genData(5, 2, 1) # can change this to check more high-dimensional data
-X <- Data$X
-y <- Data$y
+# set.seed(7)
+# Data <- hdrm::genData(5, 2, 1) # can change this to check more high-dimensional data
+# X <- Data$X
+# y <- Data$y
+
+nn <- 5
+pp <- 2
+p1 <- 1
+
+X <- matrix(rnorm(nn * pp), nrow = nn, ncol = pp)
+B <- rep(c(1, 0), times = c(p1, pp - p1))
+y <- X %*% B + rnorm(nn)
 
 dont_run <- FALSE
 
