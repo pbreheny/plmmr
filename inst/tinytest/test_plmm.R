@@ -1,5 +1,6 @@
 
-Data <- readRDS('testdata/testdata.Rds')
+set.seed(7)
+Data <- genData(5, 2, 1) # can change this to check more high-dimensional data
 X <- Data$X
 y <- Data$y
 
