@@ -9,8 +9,12 @@
 
 
 lasso_pca10 <- function(X, y, p1, standardize = FALSE){
-  pca <- stats::prcomp(X, center=standardize, scale=standardize) # x already standardized
-  pc <- pca$x[, 1:10]
+  # pca <- stats::prcomp(X, center=standardize, scale=standardize) # x already standardized
+  # pc <- pca$x[, 1:10]
+  # XX <- cbind(pc, X)
+  K <- tcrossprod(ncvreg::std(X))/ncol(X)
+  c(S, U) %<-% methods::as(eigen(K), "list")
+  pc <- U[, 1:10]
   XX <- cbind(pc, X)
   fit <- glmnet::glmnet(XX, y, penalty.factor = rep(c(0, 1), times=c(10, ncol(X))), standardize = standardize)
   sel <- sapply(stats::predict(fit, type='nonzero'), length) - 10 # remove unpenalized effects
