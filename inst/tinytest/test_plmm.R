@@ -99,19 +99,27 @@ if (nrow(X) > ncol(X)){
   expect_equivalent(as.numeric(plmm4$beta), coef(ols_soln), tol = 1e-3)
 }
 
+### try comparing to glmnet - to plmm, relax tol
+
+### try  upping thresh for glmnet...
+
+
 
 ### I don't think this is going to work in general for glmnet - it's not the same for a manual int with int = F
 # https://stackoverflow.com/questions/49495494/glmnet-is-different-with-intercept-true-compared-to-intercept-false-and-with-pen
-# glm3 <- glmnet::glmnet(plmm3$X, plmm3$y, "gaussian", standardize = FALSE,
-#                        intercept = FALSE,
-#                        penalty.factor = rep(c(0, 1), c(1, ncol(X))), lambda = 0)
+glm3 <- glmnet::glmnet(plmm3$X, plmm3$y, "gaussian", standardize = FALSE,
+                       intercept = FALSE,
+                       penalty.factor = rep(c(0, 1), c(1, ncol(X))), lambda = 0)
 # coef(glm3)[-1,, drop = FALSE]
 #
 # expect_equivalent(as.matrix(plmm3$beta), as.matrix(coef(glm3)[-1,]), tol = 1e-3)
 
 if (dont_run){
   fit <- glmnet::glmnet(X, y, "gaussian", standardize = FALSE, intercept = TRUE, nlambda = 5)
-  fit1 <- glmnet::glmnet(cbind(1, X), y, "gaussian", standardize = FALSE, intercept = FALSE, penalty.factor = c(0, rep(1, ncol(X))), nlambda = 5)
+  fit1 <- glmnet::glmnet(cbind(1, X), y, "gaussian", standardize = FALSE, intercept = FALSE,
+                         penalty.factor = c(0, rep(1, ncol(X))), lambda = fit$lambda)
+  fit2 <- glmnet::glmnet(plmm3$X, plmm3$y, "gaussian", standardize = FALSE, intercept = FALSE,
+                         penalty.factor = c(0, rep(1, ncol(X))), lambda = plmm3$lambda)
   coef(fit)
   coef(fit1)
 }
