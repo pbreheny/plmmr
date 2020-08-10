@@ -1,9 +1,8 @@
 #' Fit a linear mixed model with non-convex regularization
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
-#' @param X Design matrix of SNP data.
+#' @param X Design matrix. May include clinical covariates and other non-SNP data. If this is the case, X_for_K should be supplied witha  matrix containing only SNP data for computation of GRM.
 #' @param y Continuous outcome vector.
-#' @param X0 Design matrix of non-SNP data.
 #' @param X_for_K X matrix used to compute the similarity matrix, K. For multi-chromosome analysis this may be supplied in order to perform a leave-one-chromosome-out correction. The objective here is to adjust for population stratification and unobserved confounding without rotating out the causal SNP effects.
 #' @param init
 #' @param penalty
@@ -33,8 +32,7 @@
 
 plmm <- function(X,
                  y,
-                 X0,
-                 X_for_K,
+                 X_for_K = X,
                  init,
                  penalty = c("MCP", "SCAD", "lasso"),
                  penalty.factor,
@@ -58,21 +56,17 @@ plmm <- function(X,
   # Coersion
   S <- U <- eta <- NULL
   penalty <- match.arg(penalty)
-  if (missing(X0)){
-    p0 <- 1 # intercept
-  } else {
-    p0 <- 1 + ncol(X0) # intercept + covars
-  }
   if (missing(penalty.factor)){ # set up penalty factor so only SNPs are penalized
-    penalty.factor <- rep(c(0, 1), times = c(p0, ncol(X)))
+    penalty.factor <- rep(c(0, 1), times = c(1, ncol(X)))
   } else {
-    if (length(penalty.factor) != p0 + ncol(X)){
-      penalty.factor <- rep(c(0, 1), times = c(p0, ncol(X)))
+    if (length(penalty.factor) != ncol(X)){
+      penalty.factor <- rep(c(0, 1), times = c(1, ncol(X)))
       warning(paste("penalty.factor must have length equal to supplied covariates + 1 (for intercept). Setting `penalty.factor <- rep(c(0, 1), times = c(", p0, ", ncol(X)))`."))
+    } else {
+      penalty.factor <- c(0, penalty.factor) # make sure intercept isn't penalized
     }
   }
-  if (missing(X_for_K)) X_for_K <- X # define SNP matrix used to construct RRM
-  if (!missing(X0)) X <- cbind(X0, X) # set up full X matrix - SNPs + other covars
+  # if (missing(X_for_K)) X_for_K <- X # define SNP matrix used to construct RRM
   if (missing(init)) init <- rep(0, 1 + ncol(X))
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
   if (!inherits(X, "matrix")) {
@@ -146,7 +140,7 @@ plmm <- function(X,
   ## Set up lambda
   if (missing(lambda)) {
     # Don't include intercept in calculating lambda (?)
-    lambda <- ncvreg::setupLambda(SUX[,-1], SUy, "gaussian", alpha, lambda.min, nlambda, penalty.factor[-1])
+    lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor[-1])
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -184,18 +178,6 @@ plmm <- function(X,
   beta[ns[-1],] <- bb[-1,]
   a <- bb[1,]
   beta[1,] <- a - crossprod(attr(XXX, "center")[ns[-1]], bb[-1,])
-  # if (intercept){ # manual intercept
-  #   beta <- matrix(0, nrow=(ncol(XX)), ncol=length(lambda))
-  #   bb <- b/attr(XX, "scale")[ns]
-  #   beta[ns[-1],] <- bb[-1,]
-  #   a <- bb[1,]
-  #   beta[1,] <- a - crossprod(attr(XX, "center")[ns[-1]], bb[-1,])
-  # } else { # no manual standardization, no manual intercept
-  #   beta <- matrix(0, nrow=(ncol(XX) + 1), ncol=length(lambda))
-  #   bb <- b/attr(XX, "scale")[ns]
-  #   beta[ns+1,] <- bb
-  #   beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
-  # }
 
   ## Names
   lamNames <- function(l) {
