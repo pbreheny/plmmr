@@ -33,17 +33,17 @@
 plmm <- function(X,
                  y,
                  X_for_K = X,
-                 init,
                  penalty = c("MCP", "SCAD", "lasso"),
-                 penalty.factor,
+                 penalty.factor = rep(1, ncol(X)),
                  gamma,
                  alpha = 1,
                  lambda.min = ifelse(n>p, 0.001, 0.05),
                  nlambda = 100,
                  lambda,
+                 init = rep(0, ncol(X)),
                  eps = 1e-04,
                  max.iter = 1000,
-                 convex = FALSE,
+                 convex = TRUE,
                  dfmax = p + 1,
                  warn = TRUE,
                  standardize = TRUE,
@@ -56,18 +56,6 @@ plmm <- function(X,
   # Coersion
   S <- U <- eta <- NULL
   penalty <- match.arg(penalty)
-  if (missing(penalty.factor)){ # set up penalty factor so only SNPs are penalized
-    penalty.factor <- rep(c(0, 1), times = c(1, ncol(X)))
-  } else {
-    if (length(penalty.factor) != ncol(X)){
-      penalty.factor <- rep(c(0, 1), times = c(1, ncol(X)))
-      warning(paste("penalty.factor must have length equal to supplied covariates + 1 (for intercept). Setting `penalty.factor <- rep(c(0, 1), times = c(", p0, ", ncol(X)))`."))
-    } else {
-      penalty.factor <- c(0, penalty.factor) # make sure intercept isn't penalized
-    }
-  }
-  # if (missing(X_for_K)) X_for_K <- X # define SNP matrix used to construct RRM
-  if (missing(init)) init <- rep(0, 1 + ncol(X))
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
   if (!inherits(X, "matrix")) {
     tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
@@ -90,7 +78,8 @@ plmm <- function(X,
   if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
-  # if (length(penalty.factor)!=ncol(X)) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
+  if (length(penalty.factor)!=ncol(X)) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
+  if (length(init)!=ncol(X)) stop("Dimensions of init and X do not match", call.=FALSE)
   if (length(y) != nrow(X)) stop("X and y do not have the same number of observations", call.=FALSE)
   if (any(is.na(y)) | any(is.na(X))) stop("Missing data (NA's) detected.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to ncvreg", call.=FALSE)
 
@@ -108,8 +97,8 @@ plmm <- function(X,
     attributes(XX)$scale <- rep(1, ncol(XX))
     attributes(XX)$nonsingular <- 1:ncol(XX)
   }
-  # ns <- attr(XX, "nonsingular")
-  # penalty.factor <- penalty.factor[ns]
+  ns <- attr(XX, "nonsingular")
+  penalty.factor <- penalty.factor[ns]
   yy <- y
   p <- ncol(XX)
   n <- length(yy)
@@ -126,21 +115,21 @@ plmm <- function(X,
   }
 
   ## Intercept
-  XXX <- cbind(1, XX)
-  attributes(XXX)$center <- c(0, attr(XX, "center"))
-  attributes(XXX)$scale <- c(1, attr(XX, "scale"))
-  attributes(XXX)$nonsingular <- c(1, attr(XX, "nonsingular") + 1)
-  ns <- attr(XXX, "nonsingular")
-  penalty.factor <- penalty.factor[ns]
+  # XXX <- cbind(1, XX)
+  # attributes(XXX)$center <- c(0, attr(XX, "center"))
+  # attributes(XXX)$scale <- c(1, attr(XX, "scale"))
+  # attributes(XXX)$nonsingular <- c(1, attr(XX, "nonsingular") + 1)
+  # ns <- attr(XXX, "nonsingular")
+  # penalty.factor <- penalty.factor[ns]
 
   ## Rotate data
-  SUX <- W %*% crossprod(U, XXX)
+  SUX <- W %*% crossprod(U, cbind(1, XX))
   SUy <- drop(W %*% crossprod(U, yy))
 
   ## Set up lambda
   if (missing(lambda)) {
-    # Don't include intercept in calculating lambda (?)
-    lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor[-1])
+    # Don't include intercept in calculating lambda
+    lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor)
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -148,12 +137,13 @@ plmm <- function(X,
   }
 
   ## Placeholders for results
+  init <- c(mean(SUy), init) # add initial value for intercept
   b <- matrix(NA, ncol(SUX), nlambda)
   iter <- integer(nlambda)
   loss <- numeric(nlambda)
   for (ll in 1:nlambda){
     lam <- lambda[ll]
-    res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     loss[ll] <- res$loss
@@ -163,32 +153,22 @@ plmm <- function(X,
 
   ## Eliminate saturated lambda values, if any
   ind <- !is.na(iter)
-  b <- b[, ind, drop=FALSE]
+  a <- b[1, ind]
+  b <- b[-1, ind, drop=FALSE]
   iter <- iter[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
 
-  ## Local convexity? - later?
-  # convex.min <- if (convex) convexMin(b, XX, penalty, gamma, lambda*(1-alpha), family, penalty.factor, a=a) else NULL
+  ## Local convexity?
+  convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
 
   ## Unstandardize
   beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
-  bb <- b/attr(XXX, "scale")[ns]
-  beta[ns[-1],] <- bb[-1,]
-  a <- bb[1,]
-  beta[1,] <- a - crossprod(attr(XXX, "center")[ns[-1]], bb[-1,])
+  bb <- b/attr(XX, "scale")[ns]
+  beta[ns + 1,] <- bb
+  beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
 
-  ## Names
-  lamNames <- function(l) {
-    if (length(l) > 1) {
-      d <- ceiling(-log10(-max(diff(l))))
-      d <- min(max(d,4), 10)
-    } else {
-      d <- 4
-    }
-    formatC(l, format="f", digits=d)
-  }
   varnames <- if (is.null(colnames(X))) paste("V", 1:ncol(X), sep="") else colnames(X)
   varnames <- c("(Intercept)", varnames)
   dimnames(beta) <- list(varnames, lamNames(lambda))
@@ -200,7 +180,7 @@ plmm <- function(X,
                         penalty = penalty,
                         gamma = gamma,
                         alpha = alpha,
-                        # convex.min = convex.min,
+                        convex.min = convex.min,
                         loss = loss,
                         penalty.factor = penalty.factor,
                         n = n),
