@@ -1,3 +1,8 @@
+#' Generate nicely formatted lambda vec
+#'
+#' @param l Vector of lambda values.
+#' @export
+
 ## from ncvreg
 lamNames <- function(l) {
   if (length(l) > 1) {

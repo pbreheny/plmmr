@@ -10,9 +10,7 @@
 
 
 lasso_pca10 <- function(X, y, p1, standardize = FALSE){
-  # pca <- stats::prcomp(X, center=standardize, scale=standardize) # x already standardized
-  # pc <- pca$x[, 1:10]
-  # XX <- cbind(pc, X)
+  S <- U <- NULL
   K <- tcrossprod(ncvreg::std(X))/ncol(X)
   c(S, U) %<-% methods::as(eigen(K), "list")
   pc <- U[, 1:10]
