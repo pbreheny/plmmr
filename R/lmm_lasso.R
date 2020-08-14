@@ -1,4 +1,4 @@
-#' Fit a linear mixed model with lasso regularization
+#' Fit a penalizedLMM with lasso regularization
 #'
 #' This function allows you to fit a linear mixed model via lasso-penalized maximum likelihood.
 #' @param X Design matrix.
@@ -14,9 +14,9 @@
 lmm_lasso <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   S <- U <- eta <- NULL
   if (is.null(X_for_K)){
-    c(S, U, eta) %<-% lmm_lasso_null(X, y)
+    c(S, U, eta) %<-% plmm_null(X, y)
   } else {
-    c(S, U, eta) %<-% lmm_lasso_null(X_for_K, y)
+    c(S, U, eta) %<-% plmm_null(X_for_K, y)
   }
   W <- diag((eta * S + (1 - eta))^(-1/2))
   SUX <- W %*% crossprod(U, cbind(1, X))

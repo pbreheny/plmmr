@@ -7,19 +7,18 @@
 plmm(
   X,
   y,
-  X0,
-  X_for_K,
-  init,
+  X_for_K = X,
   penalty = c("MCP", "SCAD", "lasso"),
-  penalty.factor,
+  penalty.factor = rep(1, ncol(X)),
   gamma,
   alpha = 1,
   lambda.min = ifelse(n > p, 0.001, 0.05),
   nlambda = 100,
   lambda,
+  init = rep(0, ncol(X)),
   eps = 1e-04,
   max.iter = 1000,
-  convex = FALSE,
+  convex = TRUE,
   dfmax = p + 1,
   warn = TRUE,
   standardize = TRUE,
@@ -29,11 +28,9 @@ plmm(
 )
 }
 \arguments{
-\item{X}{Design matrix of SNP data.}
+\item{X}{Design matrix. May include clinical covariates and other non-SNP data. If this is the case, X_for_K should be supplied witha  matrix containing only SNP data for computation of GRM.}
 
 \item{y}{Continuous outcome vector.}
-
-\item{X0}{Design matrix of non-SNP data.}
 
 \item{X_for_K}{X matrix used to compute the similarity matrix, K. For multi-chromosome analysis this may be supplied in order to perform a leave-one-chromosome-out correction. The objective here is to adjust for population stratification and unobserved confounding without rotating out the causal SNP effects.}
 
