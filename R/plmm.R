@@ -4,25 +4,23 @@
 #' @param X Design matrix. May include clinical covariates and other non-SNP data. If this is the case, X_for_K should be supplied witha  matrix containing only SNP data for computation of GRM.
 #' @param y Continuous outcome vector.
 #' @param X_for_K X matrix used to compute the similarity matrix, K. For multi-chromosome analysis this may be supplied in order to perform a leave-one-chromosome-out correction. The objective here is to adjust for population stratification and unobserved confounding without rotating out the causal SNP effects.
-#' @param init
-#' @param penalty
-#' @param penalty.factor
-#' @param gamma
-#' @param alpha
-#' @param lambda.min
-#' @param nlambda
-#' @param lambda
-#' @param eps
-#' @param max.iter
-#' @param convex
-#' @param dfmax
-#' @param warn
-#' @param standardize
-#' @param rotation Logical to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE).
-#' This is primarily for testing purposes and defaults to TRUE.
-#' If \code{FALSE} results should correspond to those from \code{ncvreg} or \code{glmnet}.
-#' @param returnX
-#' @param
+#' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param nlambda The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
+#' @param eps Convergence threshhold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
+#' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
+#' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param init Initial values for coefficients.
+#' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
+#' @param standardize Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.
+#' @param rotation Logical flag to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE). This is primarily for testing purposes and defaults to TRUE.
+#' @param ... Not used.
 #' @importFrom zeallot %<-%
 #' @export
 
@@ -34,21 +32,21 @@ plmm <- function(X,
                  y,
                  X_for_K = X,
                  penalty = c("MCP", "SCAD", "lasso"),
-                 penalty.factor = rep(1, ncol(X)),
                  gamma,
                  alpha = 1,
                  lambda.min = ifelse(n>p, 0.001, 0.05),
                  nlambda = 100,
                  lambda,
-                 init = rep(0, ncol(X)),
                  eps = 1e-04,
-                 max.iter = 1000,
+                 max.iter = 10000,
                  convex = TRUE,
                  dfmax = p + 1,
                  warn = TRUE,
-                 standardize = TRUE,
-                 rotation = FALSE, # just for testing - get rid of this argument
+                 penalty.factor = rep(1, ncol(X)),
+                 init = rep(0, ncol(X)),
                  returnX = TRUE,
+                 standardize = TRUE,
+                 rotation = TRUE,
                  ...) {
 
 
@@ -107,28 +105,20 @@ plmm <- function(X,
 
   ## Calculate eta
   if (rotation){
-    c(S, U, eta) %<-% lmm_lasso_null(X_for_K, yy) # change name so it doesn't contain lasso
+    c(S, U, eta) %<-% plmm_null(X_for_K, yy) # change name so it doesn't contain lasso
     W <- diag((eta * S + (1 - eta))^(-1/2))
   } else {
     U <- diag(n)
     W <- diag(n)
   }
 
-  ## Intercept
-  # XXX <- cbind(1, XX)
-  # attributes(XXX)$center <- c(0, attr(XX, "center"))
-  # attributes(XXX)$scale <- c(1, attr(XX, "scale"))
-  # attributes(XXX)$nonsingular <- c(1, attr(XX, "nonsingular") + 1)
-  # ns <- attr(XXX, "nonsingular")
-  # penalty.factor <- penalty.factor[ns]
-
   ## Rotate data
-  SUX <- W %*% crossprod(U, cbind(1, XX))
+  SUX <- W %*% crossprod(U, cbind(1, XX)) # manual intercept
   SUy <- drop(W %*% crossprod(U, yy))
 
   ## Set up lambda
   if (missing(lambda)) {
-    # Don't include intercept in calculating lambda
+    # Don't include the intercept in calculating lambda
     lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor)
     user.lambda <- FALSE
   } else {
@@ -137,16 +127,19 @@ plmm <- function(X,
   }
 
   ## Placeholders for results
-  init <- c(mean(SUy), init) # add initial value for intercept
+  init <- c(mean(yy), init) # add initial value for intercept
   b <- matrix(NA, ncol(SUX), nlambda)
   iter <- integer(nlambda)
+  converged <- logical(nlambda)
   loss <- numeric(nlambda)
   for (ll in 1:nlambda){
     lam <- lambda[ll]
     res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
+    converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
     loss[ll] <- res$loss
+    # add break for saturation?
   }
 
   ### from ncvreg ##############################################################
@@ -156,6 +149,7 @@ plmm <- function(X,
   a <- b[1, ind]
   b <- b[-1, ind, drop=FALSE]
   iter <- iter[ind]
+  converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
@@ -175,7 +169,7 @@ plmm <- function(X,
 
   ## Output
   val <- structure(list(beta = beta,
-                        iter = iter,
+                        eta = eta,
                         lambda = lambda,
                         penalty = penalty,
                         gamma = gamma,
@@ -183,7 +177,9 @@ plmm <- function(X,
                         convex.min = convex.min,
                         loss = loss,
                         penalty.factor = penalty.factor,
-                        n = n),
+                        n = n,
+                        iter = iter,
+                        converged = converged),
                         class = "plmm")
   if (missing(returnX)) {
     if (utils::object.size(SUX) > 1e8) {

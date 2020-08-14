@@ -1,5 +1,17 @@
-# from ncvreg
+#' Calculate index for which objective function ceases to be locally convex
+#'
+#' @param b Matrix of coefficient values.
+#' @param X Design matrix.
+#' @param penalty The penalty applied to the model. Either "MCP", "SCAD", or "lasso".
+#' @param gamma The tuning parameter of the MCP/SCAD penalty. Default is 3 for MCP and 3.7 for SCAD.
+#' @param l2 L2.
+#' @param family Only "gaussian" currently supported.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param a Vector of intercept values.
+#' @param Delta NULL.
+#' @export
 
+# from ncvreg
 convexMin <- function(b, X, penalty, gamma, l2, family = "gaussian", penalty.factor, a, Delta=NULL) {
   n <- nrow(X)
   p <- ncol(X)
