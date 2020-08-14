@@ -1,5 +1,4 @@
 # from ncvreg
-
 coef.plmm <- function (object, lambda, which = 1:length(object$lambda), drop = TRUE,  ...){
   if (!missing(lambda)) {
     if (max(lambda) > max(object$lambda) | min(lambda) <

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lmm_lasso.R
 \name{lmm_lasso}
 \alias{lmm_lasso}
-\title{Fit a linear mixed model with lasso regularization}
+\title{Fit a penalizedLMM with lasso regularization}
 \usage{
 lmm_lasso(X, y, p1, standardize = FALSE, X_for_K = NULL)
 }
