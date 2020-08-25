@@ -132,6 +132,7 @@ plmm <- function(X,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
+  # think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]
     res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
@@ -195,6 +196,4 @@ plmm <- function(X,
   }
   return(val)
 }
-
-### Need to add some checks for non-penalized covars!
 
