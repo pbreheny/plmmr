@@ -15,6 +15,18 @@ y <- X %*% B + X0 %*% c(1) + rnorm(nn)
 
 dont_run <- FALSE
 
+### test code
+# X = ncvreg::std(X)
+# y = y
+# penalty = "lasso"
+# alpha = 1
+# nlambda = 5
+# standardize = FALSE
+# rotation = FALSE
+# returnX = FALSE
+# n = nn
+# p = pp
+
 ### no rotation checks ------------------------------------------------------###
 
 # std(X)
