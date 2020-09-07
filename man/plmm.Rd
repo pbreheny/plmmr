@@ -22,6 +22,7 @@ plmm(
   penalty.factor = rep(1, ncol(X)),
   init = rep(0, ncol(X)),
   returnX = TRUE,
+  intercept = TRUE,
   standardize = TRUE,
   rotation = TRUE,
   ...
@@ -61,6 +62,8 @@ plmm(
 \item{init}{Initial values for coefficients.}
 
 \item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
+
+\item{intercept}{Logical flag for whether an intercept should be included.}
 
 \item{standardize}{Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.}
 
