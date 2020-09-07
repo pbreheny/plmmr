@@ -18,15 +18,13 @@
 #' @param init Initial values for coefficients.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
+#' @param intercept Logical flag for whether an intercept should be included.
 #' @param standardize Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.
 #' @param rotation Logical flag to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE). This is primarily for testing purposes and defaults to TRUE.
 #' @param ... Not used.
 #' @importFrom zeallot %<-%
 #' @export
 
-### need to create a non-testing version of this function
-
-### should i check for things to be missing or null?
 
 plmm <- function(X,
                  y,
@@ -45,11 +43,10 @@ plmm <- function(X,
                  penalty.factor = rep(1, ncol(X)),
                  init = rep(0, ncol(X)),
                  returnX = TRUE,
+                 intercept = TRUE,
                  standardize = TRUE,
                  rotation = TRUE,
                  ...) {
-
-
 
   # Coersion
   S <- U <- eta <- NULL
@@ -113,13 +110,22 @@ plmm <- function(X,
   }
 
   ## Rotate data
-  SUX <- W %*% crossprod(U, cbind(1, XX)) # manual intercept
+  if (intercept){
+    SUX <- W %*% crossprod(U, cbind(1, XX)) # manual intercept
+  } else {
+    SUX <- W %*% crossprod(U, XX)
+  }
+
   SUy <- drop(W %*% crossprod(U, yy))
 
   ## Set up lambda
   if (missing(lambda)) {
-    # Don't include the intercept in calculating lambda
-    lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor)
+    if (intercept){
+      # Don't include the intercept in calculating lambda
+      lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor)
+    } else {
+      lambda <- ncvreg::setupLambda(SUX, SUy, "gaussian", alpha, lambda.min, nlambda, penalty.factor)
+    }
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -135,7 +141,11 @@ plmm <- function(X,
   # think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]
-    res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
+    if (intercept){
+      res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
+    } else {
+      res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    }
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
@@ -147,25 +157,34 @@ plmm <- function(X,
 
   ## Eliminate saturated lambda values, if any
   ind <- !is.na(iter)
-  a <- b[1, ind]
-  b <- b[-1, ind, drop=FALSE]
   iter <- iter[ind]
   converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
 
-  ## Local convexity?
-  convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
-
-  ## Unstandardize
-  beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
-  bb <- b/attr(XX, "scale")[ns]
-  beta[ns + 1,] <- bb
-  beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
+  if (intercept){
+    a <- b[1, ind]
+    b <- b[-1, ind, drop=FALSE]
+    ## Local convexity?
+    convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
+    ## Unstandardize
+    beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
+    bb <- b/attr(XX, "scale")[ns]
+    beta[ns + 1,] <- bb
+    beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
+  } else {
+    b <- b[, ind, drop=FALSE]
+    ## Local convexity?
+    convex.min <- if (convex) convexMin(b, SUX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
+    ## Unstandardize
+    beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
+    bb <- b/attr(XX, "scale")[ns]
+    beta[ns,] <- bb
+  }
 
   varnames <- if (is.null(colnames(X))) paste("V", 1:ncol(X), sep="") else colnames(X)
-  varnames <- c("(Intercept)", varnames)
+  if (intercept) varnames <- c("(Intercept)", varnames)
   dimnames(beta) <- list(varnames, lamNames(lambda))
 
   ## Output

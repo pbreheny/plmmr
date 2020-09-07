@@ -11,13 +11,15 @@
 ## from ncvreg
 predict.plmm <- function(object, X, type=c("response", "coefficients", "vars", "nvars"),
                            lambda, which=1:length(object$lambda), ...) {
+  # need better way to deal with intercept...
   type <- match.arg(type)
-  beta <- coef.plmm(object, lambda=lambda, which=which, drop=FALSE)
+  beta <- coef.plmm(object, lambda=lambda, which=which, drop=FALSE) # includes intercept
   if (type=="coefficients") return(beta)
-  alpha <- beta[1,]
-  beta <- beta[-1, , drop=FALSE]
-  if (type=="nvars") return(apply(beta!=0, 2, sum))
-  if (type=="vars") return(drop(apply(beta!=0, 2, FUN=which)))
-  eta <- sweep(X %*% beta, 2, alpha, "+")
-  if (type=="link" || object$family=="gaussian") return(drop(eta))
+  # alpha <- beta[1, , drop = FALSE]
+  # beta <- beta[-1, , drop=FALSE]
+  if (type=="nvars") return(apply(beta[-1, , drop=FALSE] !=0, 2, sum)) # don't count intercept
+  if (type=="vars") return(drop(apply(beta[-1, , drop=FALSE]!=0, 2, FUN=which))) # don't count intercept
+  # eta <- sweep(X %*% beta, 2, alpha, "+")
+  eta <- X %*% beta
+  if (type=="response") return(drop(eta))
 }
