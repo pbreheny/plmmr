@@ -6,13 +6,14 @@
 #' @param dataDir Directory where plink files (and .sexcheck files are located if \code{sexcheck = TRUE}) are located
 #' @param sexcheck Logical flag for whether or not PLINK sexcheck files should be incorporated. Defaults to FALSE. If TRUE, sexcheck files must be of the form "prefix.sexcheck"
 #' @param na.strings For \code{snpStats}. Strings in .bam and .fam files to be recoded as NA. Defaults to "-9"
+#' @param impute Logical flag for whether imputation should be performed. Defaults to TRUE since plmm cannot handle missing values.
 #' @return A three element list object:
 #' * `genotypes` The filtered and imputed genotypes in a snpMatrix object with subjects in rows and SNPs in columns.
 #' * `map` A matrix of SNP data.
 #' * `fam` A matrix of subject data.
 #' @export
 
-preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
+preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9", impute = TRUE){
 
   cat("\nPreprocessing", prefix, "data:\n")
 
@@ -36,70 +37,74 @@ preprocess <- function(prefix, dataDir, sexcheck = FALSE, na.strings = "-9"){
 
   }
 
-  # Now how many SNPs have missing data?
-  missing <- table(snpStats::col.summary(genotypes)$Call.rate == 1)
-  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data that we will attempt to impute.\n")
+  if (impute) {
 
-  # Impute missing values
-  rules <- snpStats::snp.imputation(genotypes, minA=0)
-  out <- snpStats::impute.snps(rules, genotypes, as.numeric=FALSE)
+    # Now how many SNPs have missing data?
+    missing <- table(snpStats::col.summary(genotypes)$Call.rate == 1)
+    cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data that we will attempt to impute.\n")
 
-  # How many SNPs have missing data after imputation?
-  missing <- table(snpStats::col.summary(out)$Call.rate == 1)
-  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data after imputation.\n")
+    # Impute missing values
+    rules <- snpStats::snp.imputation(genotypes, minA=0)
+    out <- snpStats::impute.snps(rules, genotypes, as.numeric=FALSE)
 
-  # How many SNPs cannot be imputed and still have >= 50% missing values?
-  missing <- table(snpStats::col.summary(out)$Call.rate <= 0.5)
-  cat("\nOf these SNPs,", ifelse(length(missing) == 2, missing[2], 0), "have call rates <= 50% and will be removed.\n")
+    # How many SNPs have missing data after imputation?
+    missing <- table(snpStats::col.summary(out)$Call.rate == 1)
+    cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs with missing data after imputation.\n")
 
-  # Throw out SNPs that have >= 50% missingness, even after imputation
-  out2 <- out[, snpStats::col.summary(out)$Call.rate > 0.5]
+    # How many SNPs cannot be imputed and still have >= 50% missing values?
+    missing <- table(snpStats::col.summary(out)$Call.rate <= 0.5)
+    cat("\nOf these SNPs,", ifelse(length(missing) == 2, missing[2], 0), "have call rates <= 50% and will be removed.\n")
 
-  # How many SNPs will be imputed with mean values?
-  missing <- table(snpStats::col.summary(out2)$Call.rate == 1)
-  cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs that still have missing data which will be imputed with the HWE expected value.\n")
+    # Throw out SNPs that have >= 50% missingness, even after imputation
+    out2 <- out[, snpStats::col.summary(out)$Call.rate > 0.5]
 
-  # keep snp order for later
-  order_snps <- colnames(out2)
+    # How many SNPs will be imputed with mean values?
+    missing <- table(snpStats::col.summary(out2)$Call.rate == 1)
+    cat("\nThere are", ifelse(length(missing) == 2, missing[1], 0), "SNPs that still have missing data which will be imputed with the HWE expected value.\n")
 
-  # which SNPs have missingness
-  to_impute <- which(snpStats::col.summary(out2)$Call.rate < 1)
-  miss <- out2[, to_impute]
+    # keep snp order for later
+    order_snps <- colnames(out2)
 
-  imputed_mean <- apply(methods::as(miss, "numeric"), 2, function(s){
-    these <- which(is.na(s))
-    s[these] <- mean(s, na.rm = TRUE)
-    s <- snpStats::mean2g(s)
-    return(s)
-  })
+    # which SNPs have missingness
+    to_impute <- which(snpStats::col.summary(out2)$Call.rate < 1)
+    miss <- out2[, to_impute]
 
-  out3 <- out2
-  out3@.Data[, to_impute] <- imputed_mean
+    imputed_mean <- apply(methods::as(miss, "numeric"), 2, function(s){
+      these <- which(is.na(s))
+      s[these] <- mean(s, na.rm = TRUE)
+      s <- snpStats::mean2g(s)
+      return(s)
+    })
 
-  # make sure there are no missing values remaining
+    out3 <- out2
+    out3@.Data[, to_impute] <- imputed_mean
+    genotypes <- out3
+  }
+
+  # make sure there are no missing values remaining / count missing values
   missing <- 0
-  chunks <- ceiling(nrow(out3) / 100)
+  chunks <- ceiling(nrow(genotypes) / 100)
   start <- 1
   for (i in 1:chunks){
-    stop <- min(i*100, nrow(out3))
-    missing <- missing + sum(is.na(out3[start:stop]))
+    stop <- min(i*100, nrow(genotypes))
+    missing <- missing + sum(is.na(genotypes[start:stop]))
     start <- stop + 1
   }
 
   # keep corresponding map data
-  map <- obj$map[colnames(out3),]
+  map <- obj$map[colnames(genotypes),]
 
   # keep corresponding fam data
-  fam <- obj$fam[rownames(out3),]
+  fam <- obj$fam[rownames(genotypes),]
   fam$prefix <- prefix
 
   # done...
   cat("\nPreprocessing", prefix, "data DONE!\n",
-      "\nSubjects:", nrow(out3),
-      "\nSNPs:", ncol(out3),
+      "\nSubjects:", nrow(genotypes),
+      "\nSNPs:", ncol(genotypes),
       "\nMissing values:", missing, "\n")
 
-  return(list(genotypes = out3,
+  return(list(genotypes = genotypes,
               map = map,
               fam = fam))
 }

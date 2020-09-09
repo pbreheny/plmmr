@@ -4,7 +4,7 @@
 \alias{preprocess}
 \title{Preprocess PLINK files}
 \usage{
-preprocess(prefix, dataDir, sexcheck = FALSE, na.strings = "-9")
+preprocess(prefix, dataDir, sexcheck = FALSE, na.strings = "-9", impute = TRUE)
 }
 \arguments{
 \item{prefix}{Character argument that is the prefix of your bed/bim/fam files.}
@@ -14,6 +14,8 @@ preprocess(prefix, dataDir, sexcheck = FALSE, na.strings = "-9")
 \item{sexcheck}{Logical flag for whether or not PLINK sexcheck files should be incorporated. Defaults to FALSE. If TRUE, sexcheck files must be of the form "prefix.sexcheck"}
 
 \item{na.strings}{For \code{snpStats}. Strings in .bam and .fam files to be recoded as NA. Defaults to "-9"}
+
+\item{impute}{Logical flag for whether imputation should be performed. Defaults to TRUE since plmm cannot handle missing values.}
 }
 \value{
 A three element list object:
