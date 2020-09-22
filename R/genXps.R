@@ -72,6 +72,8 @@ genXps <- function(n, nJ, p,
       bias_coeff <- 0.5
     } else if (length(nJ) == 50){
       bias_coeff <- 0.1
+    } else {
+      bias_coeff <- 0.5
     }
     tmp <- bnpsd::admix_prop_1d_linear(n_ind = n,
                                 k_subpops = length(nJ),
@@ -107,6 +109,8 @@ genXps <- function(n, nJ, p,
       bias_coeff <- 0.5
     } else if (length(nJ) == 50){
       bias_coeff <- 0.1
+    } else {
+      bias_coeff <- 0.5
     }
 
     tmp <- bnpsd::admix_prop_1d_circular(n_ind = n,
