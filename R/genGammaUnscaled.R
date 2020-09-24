@@ -12,7 +12,7 @@ genGammaUnscaled <- function(structureGamma, J){
 
 #' @export
 genGammaUnscaled.default <- function(structureGamma, J){
-  warning("No valid structure specified - defaulting to 'linear_increasing_homogeneous'")
+  warning("No valid structure specified - defaulting to 'linear_homogeneous'")
   gamma_unscaled <- 1:J
   return(gamma_unscaled)
 }
@@ -23,25 +23,50 @@ genGammaUnscaled.character <- function(structureGamma, J){
 
   dat <- strsplit(structureGamma, "_")[[1]]
 
-  if (dat[1] == "linear"){
-    g <- 1:J
-  } else if (dat[1] == "exponential"){
-    g <- rep(2, J)^(1:J)
-  } else if (dat[1] == "halfandhalf"){
-    first <- floor(J/2)
-    second <- J - first
-    # g <- rep(c(0.5, 1), times = c(first, second))
-    g <- rep(c(1, 1), times = c(first, second))
+  # if (dat[1] == "linear"){
+  #   g <- 1:J
+  # } else if (dat[1] == "exponential"){
+  #   g <- rep(2, J)^(1:J)
+  # } else if (dat[1] == "halfandhalf"){
+  #   first <- floor(J/2)
+  #   second <- J - first
+  #   g <- rep(c(0.5, 1), times = c(first, second))
+  # }
+  #
+  # g <- rev(g)
+  #
+  # if (dat[2] == "heterogeneous"){
+  #   j <- 1:J
+  #   s <- c(-1, 1)[j%%2 + 1]
+  #   g <- g * s
+  # }
+  if (dat[1] == 'halfandhalf'){
+
+    if (dat[2] == 'heterogeneous'){
+      g <- rep(1, J)
+      j <- 1:J
+      s <- c(-1, 1)[j%%2 + 1]
+      g <- g * s
+    } else {
+      first <- floor(J/2)
+      second <- J - first
+      g <- rep(c(1, -1), times = c(first, second))
+    }
+  } else {
+    if (dat[1] == "linear"){
+      g <- 1:J
+    } else if (dat[1] == "exponential"){
+      g <- rep(2, J)^(1:J)
+    }
+
+    g <- rev(g)
+
+    if (dat[2] == "heterogeneous"){
+      j <- 1:J
+      s <- c(-1, 1)[j%%2 + 1]
+      g <- g * s
+    }
   }
-
-  g <- rev(g)
-
-  if (dat[2] == "heterogeneous"){
-    j <- 1:J
-    s <- c(-1, 1)[j%%2 + 1]
-    g <- g * s
-  }
-
   return(g)
 }
 
