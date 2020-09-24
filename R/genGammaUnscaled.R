@@ -30,7 +30,8 @@ genGammaUnscaled.character <- function(structureGamma, J){
   } else if (dat[1] == "halfandhalf"){
     first <- floor(J/2)
     second <- J - first
-    g <- rep(c(0.5, 1), times = c(first, second))
+    # g <- rep(c(0.5, 1), times = c(first, second))
+    g <- rep(c(1, 1), times = c(first, second))
   }
 
   g <- rev(g)
