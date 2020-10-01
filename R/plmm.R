@@ -122,9 +122,9 @@ plmm <- function(X,
   if (missing(lambda)) {
     if (intercept){
       # Don't include the intercept in calculating lambda
-      lambda <- ncvreg::setupLambda(SUX[,-1], SUy - mean(SUy), "gaussian", alpha, lambda.min, nlambda, penalty.factor)
+      lambda <- setup_lambda(SUX[,-1], SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
     } else {
-      lambda <- ncvreg::setupLambda(SUX, SUy, "gaussian", alpha, lambda.min, nlambda, penalty.factor)
+      lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
     }
     user.lambda <- FALSE
   } else {
@@ -133,7 +133,7 @@ plmm <- function(X,
   }
 
   ## Placeholders for results
-  init <- c(mean(yy), init) # add initial value for intercept
+  if (intercept) init <- c(mean(SUy), init) # add initial value for intercept
   b <- matrix(NA, ncol(SUX), nlambda)
   iter <- integer(nlambda)
   converged <- logical(nlambda)

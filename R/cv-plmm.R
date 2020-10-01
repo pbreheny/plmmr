@@ -33,7 +33,7 @@ cv.plmm <- function(X, y, X_for_K = X, ..., cluster, nfolds=10, seed, fold,
   fit <- do.call('plmm', fit.args)
   # fit <- plmm(X=X, y=y, X_for_K=X_for_K, fit.args)
 
-  # Extract rotated X and y and do CV on the rotated objects
+  # Extract rotated X and y and do CV on the rotated objects - this is not what ggmix does (?)
   XX <- fit$X
   yy <- fit$y
 
