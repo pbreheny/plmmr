@@ -131,7 +131,7 @@ genXps <- function(n, nJ, p,
   }
 
   # randomize column order so causal SNPs will change
-  X <- X[, sample(1:ncol(X), ncol(X), replace = FALSE)]
+  X <- X[, sample(1:ncol(X), ncol(X), replace = FALSE), drop = FALSE]
   # make numeric, not integer
   X <- apply(X, 2, as.numeric)
   # standardize
