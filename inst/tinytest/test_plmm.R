@@ -44,6 +44,7 @@ glm1 <- glmnet::glmnet(ncvreg::std(X), y, "gaussian", standardize = TRUE, lambda
 
 expect_equivalent(coef(plmm1), coef(ncv1), tol = 1e-3)
 expect_equivalent(coef(plmm1), as.matrix(coef(glm1)), tol = 1e-3)
+expect_equivalent(coef(plmm1)[-1, 1], rep(0, ncol(X))) # make sure setup lambda is working correctly
 
 # X
 plmm2 <- plmm(X,
@@ -60,8 +61,12 @@ glm2 <- glmnet::glmnet(X, y, "gaussian", standardize = TRUE, lambda = plmm2$lamb
 
 expect_equivalent(coef(plmm2), coef(ncv2), tol = 1e-3)
 expect_equivalent(coef(plmm2), as.matrix(coef(glm2)), tol = 1e-3)
+expect_equivalent(coef(plmm2)[-1, 1], rep(0, ncol(X)))
+
 
 ### no rotation + unpenalized covar checks-----------------------------------###
+### first var (after int) should be included because unpenalized
+
 
 ### these are not passing test...pass at 1e-1 (?)
 ### I think this has to do with the issue in glmnet not treating the intercept/unpenalized vars equivalently
@@ -85,6 +90,7 @@ glm3 <- glmnet::glmnet(ncvreg::std(cbind(X0, X)), y, "gaussian",
 
 # expect_equivalent(coef(plmm3), as.matrix(coef(glm3)), tol = 1e-3)
 expect_equivalent(coef(plmm3), as.matrix(coef(glm3)), tol = 1e-1)
+expect_equivalent(coef(plmm3)[-c(1:(1 + ncol(X0))), 1], rep(0, ncol(X)))
 
 
 # X
@@ -105,6 +111,7 @@ glm4 <- glmnet::glmnet(cbind(X0, X), y, "gaussian",
 
 # expect_equivalent(coef(plmm4), as.matrix(coef(glm4)), tol = 1e-3)
 expect_equivalent(coef(plmm4), as.matrix(coef(glm4)), tol = 1e-1)
+expect_equivalent(coef(plmm4)[-c(1:(1 + ncol(X0))), 1], rep(0, ncol(X)))
 
 
 ### rotation checks ---------------------------------------------------------###
