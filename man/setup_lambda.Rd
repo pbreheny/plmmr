@@ -11,12 +11,13 @@ setup_lambda(
   lambda.min,
   nlambda,
   penalty.factor,
+  intercept,
   standardize,
   rotation
 )
 }
 \arguments{
-\item{X}{Design matrix. May include clinical covariates and other non-SNP data.}
+\item{X}{Design matrix which \emph{includes} the intercept, if intercept = TRUE. May include clinical covariates and other non-SNP data.}
 
 \item{y}{Continuous outcome vector.}
 
@@ -27,6 +28,8 @@ setup_lambda(
 \item{nlambda}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+
+\item{intercept}{Logical flag for whether an intercept should be included.}
 
 \item{standardize}{Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.}
 

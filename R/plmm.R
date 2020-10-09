@@ -112,6 +112,7 @@ plmm <- function(X,
   ## Rotate data
   if (intercept){
     SUX <- W %*% crossprod(U, cbind(1, XX)) # manual intercept
+    penalty.factor <- c(0, penalty.factor)
   } else {
     SUX <- W %*% crossprod(U, XX)
   }
@@ -120,12 +121,13 @@ plmm <- function(X,
 
   ## Set up lambda
   if (missing(lambda)) {
-    if (intercept){
-      # Don't include the intercept in calculating lambda
-      lambda <- setup_lambda(SUX[,-1], SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
-    } else {
-      lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
-    }
+    lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, intercept, standardize, rotation)
+    # if (intercept){
+    #   # Don't include the intercept in calculating lambda
+    #   lambda <- setup_lambda(SUX[,-1], SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
+    # } else {
+    #   lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
+    # }
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -141,11 +143,12 @@ plmm <- function(X,
   # think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]
-    if (intercept){
-      res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
-    } else {
-      res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
-    }
+    res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    # if (intercept){
+    #   res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
+    # } else {
+    #   res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    # }
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
@@ -167,7 +170,7 @@ plmm <- function(X,
     a <- b[1, ind]
     b <- b[-1, ind, drop=FALSE]
     ## Local convexity?
-    convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
+    convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor[-1], a=a) else NULL
     ## Unstandardize
     beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
     bb <- b/attr(XX, "scale")[ns]

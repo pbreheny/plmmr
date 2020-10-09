@@ -11,6 +11,9 @@
 ## from ncvreg
 predict.plmm <- function(object, X, type=c("response", "coefficients", "vars", "nvars"),
                            lambda, which=1:length(object$lambda), ...) {
+  ### I think this might be wrong/need to be more involved than simply X %*% beta-hat bc of ranef
+  ### Need to use BLUPs blerrrrg
+
   # need better way to deal with intercept...
   type <- match.arg(type)
   beta <- coef.plmm(object, lambda=lambda, which=which, drop=FALSE) # includes intercept
