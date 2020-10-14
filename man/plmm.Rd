@@ -47,7 +47,7 @@ plmm(
 
 \item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
 
-\item{eps}{Convergence threshhold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 

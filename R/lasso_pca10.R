@@ -19,9 +19,12 @@ lasso_pca10 <- function(X, y, p1, standardize = FALSE){
   sel <- sapply(stats::predict(fit, type='nonzero'), length) - 10 # remove unpenalized effects
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-c(1:11)] # remove intercept and unpenalized effects
   names(coef) <- colnames(X)
+  coef_pred <- coef(fit, min(fit$lambda[sel <= p1]))
+  names(coef_pred) <- c('(Intercept)', paste0('PC', 1:10), colnames(X))
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
+              coef_pred = coef_pred,
               delta = NA,
               eta = NA))
 }

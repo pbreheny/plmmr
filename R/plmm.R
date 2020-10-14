@@ -10,7 +10,7 @@
 #' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps Convergence threshhold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
+#' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
@@ -119,15 +119,11 @@ plmm <- function(X,
 
   SUy <- drop(W %*% crossprod(U, yy))
 
+  ### Re(?)-standardize here...
+
   ## Set up lambda
   if (missing(lambda)) {
     lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, intercept, standardize, rotation)
-    # if (intercept){
-    #   # Don't include the intercept in calculating lambda
-    #   lambda <- setup_lambda(SUX[,-1], SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
-    # } else {
-    #   lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, standardize, rotation)
-    # }
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -144,11 +140,6 @@ plmm <- function(X,
   for (ll in 1:nlambda){
     lam <- lambda[ll]
     res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
-    # if (intercept){
-    #   res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, c(0, penalty.factor), warn)
-    # } else {
-    #   res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
-    # }
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)

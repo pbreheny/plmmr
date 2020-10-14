@@ -25,9 +25,11 @@ lmm_lasso <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   sel <- sapply(stats::predict(fit, type='nonzero'), length)
   coef <- coef(fit, min(fit$lambda[sel <= (p1 + 1)]))[-c(1:2)] # this is to remove the empty intercept, and the first coefficient, which corresponds to the rotated manual intercept
   names(coef) <- colnames(X)
+  coef_pred <- coef(fit, min(fit$lambda[sel <= (p1 + 1)]))[-1] # this is to remove the empty intercept - return rotated int
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
+              coef_pred = coef_pred,
               delta = (1/eta) - 1,
               eta = eta))
 }
