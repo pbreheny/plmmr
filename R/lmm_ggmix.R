@@ -17,10 +17,12 @@ lmm_ggmix <- function(X, y, p1, standardize = FALSE, X_for_K = NULL){
   }
   sel <- sapply(stats::predict(fit, type='nonzero'), length) - 3 # minus 3 for int, and 2 var comp.
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]
+  coef_pred <- coef(fit, min(fit$lambda[sel <= p1]))
   eta_hat <- fit$eta[which.min(fit$lambda[sel <= p1])]
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
+              coef_pred = coef_pred,
               delta = (1/eta_hat) - 1,
               eta = eta_hat))
 }

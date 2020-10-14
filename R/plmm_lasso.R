@@ -19,10 +19,12 @@ plmm_lasso <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   }
   sel <- predict.plmm(fit, type = "nvar")
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]
+  coef_pred <- coef(fit, min(fit$lambda[sel <= p1]))
   names(coef) <- colnames(X)
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
+              coef_pred = coef_pred,
               delta = (1/fit$eta) - 1,
               eta = fit$eta))
 }
