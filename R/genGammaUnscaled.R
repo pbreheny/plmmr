@@ -12,37 +12,17 @@ genGammaUnscaled <- function(structureGamma, J){
 
 #' @export
 genGammaUnscaled.default <- function(structureGamma, J){
-  warning("No valid structure specified - defaulting to 'linear_homogeneous'")
+  warning("No valid structure specified - defaulting to 'linear_concordant'")
   gamma_unscaled <- 1:J
   return(gamma_unscaled)
 }
 
-
 #' @export
 genGammaUnscaled.character <- function(structureGamma, J){
-
   dat <- strsplit(structureGamma, "_")[[1]]
+  if (dat[1] == 'dichotomous'){
 
-  # if (dat[1] == "linear"){
-  #   g <- 1:J
-  # } else if (dat[1] == "exponential"){
-  #   g <- rep(2, J)^(1:J)
-  # } else if (dat[1] == "halfandhalf"){
-  #   first <- floor(J/2)
-  #   second <- J - first
-  #   g <- rep(c(0.5, 1), times = c(first, second))
-  # }
-  #
-  # g <- rev(g)
-  #
-  # if (dat[2] == "heterogeneous"){
-  #   j <- 1:J
-  #   s <- c(-1, 1)[j%%2 + 1]
-  #   g <- g * s
-  # }
-  if (dat[1] == 'halfandhalf'){
-
-    if (dat[2] == 'heterogeneous'){
+    if (dat[2] == 'discordant'){
       g <- rep(1, J)
       j <- 1:J
       s <- c(-1, 1)[j%%2 + 1]
@@ -57,11 +37,13 @@ genGammaUnscaled.character <- function(structureGamma, J){
       g <- 1:J
     } else if (dat[1] == "exponential"){
       g <- rep(2, J)^(1:J)
+    } else if (dat[1] == 'halfandhalf'){
+      first <- floor(J/2)
+      second <- J - first
+      g <- rep(c(0.5, 1), times = c(first, second))
     }
-
     g <- rev(g)
-
-    if (dat[2] == "heterogeneous"){
+    if (dat[2] == "discordant"){
       j <- 1:J
       s <- c(-1, 1)[j%%2 + 1]
       g <- g * s
