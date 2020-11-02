@@ -16,7 +16,7 @@ lasso <- function(X, y, p1, standardize = FALSE) {
   return(list(fit = fit,
               nonzero = length(which(coef != 0)),
               coef = coef,
-              coef = coef_pred,
+              coef_pred = coef_pred,
               delta = NA,
               eta = NA))
 }
