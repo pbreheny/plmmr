@@ -22,7 +22,7 @@ genXps <- function(n, nJ, p,
   if (structureX == "other" & is.null(structureX_other)) stop("A matrix or SnpMatrix object must be supplied to the argument `structureX_other` if structureX == `other`")
 
   if (structureX == "other"){
-    if (class(structureX_other) == 'SnpMatrix') X <- methods::as(structureX_other, "numeric")
+    if (class(structureX_other)[1] == 'SnpMatrix') X <- methods::as(structureX_other, "numeric")
   } else if (structureX == "admixture"){
     dat <- utils::read.delim("https://s3.amazonaws.com/pbreheny-data-sets/admixture.txt")
     XX <- as.matrix(dat[,-1])
