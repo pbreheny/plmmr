@@ -14,7 +14,6 @@ genGammaUnscaled <- function(structureGamma, J){
 genGammaUnscaled.default <- function(structureGamma, J){
   warning("No valid structure specified - defaulting to 'linear_concordant'")
   gamma_unscaled <- 1:J
-  gamma_unscaled <- drop(ncvreg::std(as.matrix(gamma_unscaled)))
   return(gamma_unscaled)
 }
 
@@ -50,7 +49,6 @@ genGammaUnscaled.character <- function(structureGamma, J){
       g <- g * s
     }
   }
-  g <- drop(ncvreg::std(as.matrix(g)))
   return(g)
 }
 
