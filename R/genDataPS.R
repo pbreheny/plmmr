@@ -63,12 +63,6 @@ genDataPS <- function(n = 200, p = 1000, p1 = floor(p/2), nJ = rep(50, 4),
   covX <- stats::var(X) * (n - 1)/n
   beta <- b * scaleXbeta / sqrt(drop(crossprod(b, covX) %*% b)) # this scales Xbeta
   Xbeta <- X%*%beta
-  # Xbeta <- X%*%beta - mean(X%*%beta) # this centers Xbeta to mean 0
-  # older way...
-  # Xbeta <- X%*%b
-  # Xbeta_sd <- sqrt(varp(Xbeta))
-  # Xbeta <- Xbeta / Xbeta_sd * scaleXbeta
-  # beta <- b / Xbeta_sd * scaleXbeta
 
   # Gen Z
   mlist <- vector("list", J)
