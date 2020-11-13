@@ -73,11 +73,12 @@ genDataPS <- function(n = 200, p = 1000, p1 = floor(p/2), nJ = rep(50, 4),
 
   # Gen (scaled) gamma and standardized Zgamma (scale by eta and xi)
   gamma_unscaled <- genGammaUnscaled(structureGamma, J)
-  env <- Z %*% gamma_unscaled
-  env <- env - mean(env)
+  env0 <- Z %*% gamma_unscaled
+  env <- env0 - mean(env0)
   env_sd <- sqrt(varp(env))
   env <- env/env_sd * scaleZgamma
-  gamma <- (gamma_unscaled - mean(gamma_unscaled))/env_sd * scaleZgamma
+  ww <- nJ/sum(nJ)
+  gamma <- (gamma_unscaled - stats::weighted.mean(gamma_unscaled, ww))/env_sd * scaleZgamma
   # Gen Y
   y <- Xbeta + env + scaleEps * drop(ncvreg::std(as.matrix(stats::rnorm(n))))
 
