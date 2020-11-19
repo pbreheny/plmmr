@@ -4,12 +4,12 @@
 \alias{cvf}
 \title{Cross-validation internal function for cv.plmm}
 \usage{
-cvf(i, X, y, fold, cv.args)
+cvf(i, XX, y, fold, cv.args)
 }
 \arguments{
 \item{i}{Fold number to be excluded from fit.}
 
-\item{X}{Design matrix. May include clinical covariates and other non-SNP data. If this is the case, X_for_K should be supplied witha  matrix containing only SNP data for computation of GRM.}
+\item{XX}{Design matrix. May include clinical covariates and other non-SNP data. If this is the case, X_for_K should be supplied witha  matrix containing only SNP data for computation of GRM.}
 
 \item{y}{Continuous outcome vector.}
 

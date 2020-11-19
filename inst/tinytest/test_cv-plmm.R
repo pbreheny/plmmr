@@ -1,3 +1,7 @@
+#
+# library(tinytest)
+# library(parallel)
+# devtools::load_all(".")
 
 
 nn <- 50
@@ -9,7 +13,20 @@ X0 <- matrix(c(rnorm(nn * 1)), nrow = nn, ncol = 1)
 B <- rep(c(1, 0), times = c(p1, pp - p1))
 y <- X %*% B + X0 %*% c(1) + rnorm(nn)
 
+
+# penalty = "lasso"
+# alpha = 1
+# nlambda = 5
+# standardize = TRUE
+# rotation = TRUE
+# returnX = TRUE
+
 ### 1-fold cv.plmm should match plmm ----------------------------------------###
+### so should n folds...
+
+# cl <- makeCluster(4)
+# stopCluster(cl)
+# cvfit <- cv.ncvreg(X, y, cluster=cl, nfolds=length(y))
 
 plmm0 <- plmm(X,
               y,
@@ -28,7 +45,21 @@ cv_plmm0 <- cv.plmm(X,
                    standardize = TRUE,
                    rotation = TRUE,
                    returnX = TRUE,
-                   nfolds = 2)
+                   nfolds = 4)
+
+# cl <- makeCluster(4)
+# cv_plmm1 <- cv.plmm(X,
+#                     y,
+#                     penalty = "lasso",
+#                     alpha = 1,
+#                     nlambda = 5,
+#                     standardize = TRUE,
+#                     rotation = TRUE,
+#                     returnX = TRUE,
+#                     nfolds = 4,
+#                     cluster = cl)
+# stopCluster(cl)
+
 
 cv_plmm1 <- cv.plmm(X,
                     y,
@@ -57,6 +88,7 @@ cv_plmm2 <- cv.plmm(X,
 plot(cv_plmm2)
 plot(cv_plmm2, type = 'all')
 
+### write coef-cv-plmm and predict-cv-plmm methods
 ### need to get cv_plmm working with (1) lambda 1se and (2) parallel package for bigger data sets
 # (3) havea a testing option for it to return the fold-specific coefficient values
 

@@ -11,13 +11,14 @@
 #' @param standardizeX Should the generated X matrix be standardized? Defaults to TRUE.
 #' @param plot Should a plot of the kinship matrix be generated? Defaults to FALSE.
 #' @param structureX_other If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.
+#' @param sampleCols A logical flag for whether the columns of the resultant X matrix should be scrambled. This may be desirable if the causal SNPs should change from one simulation to the next. Defaults to TRUE.
 #' @export
 
 genXps <- function(n, nJ, p,
                    structureX = c("admixture", "indep_subpops", "1d_linear", "1d_circular", "independent", "other"),
                    Fst = NULL,
                    inbr = c("homogeneous", "heterogeneous"),
-                   standardizeX = TRUE, plot = FALSE, structureX_other = NULL){
+                   standardizeX = TRUE, plot = FALSE, structureX_other = NULL, sampleCols = TRUE){
   structureX <- match.arg(structureX)
   if (structureX == "other" & is.null(structureX_other)) stop("A matrix or SnpMatrix object must be supplied to the argument `structureX_other` if structureX == `other`")
 
@@ -135,7 +136,7 @@ genXps <- function(n, nJ, p,
   }
 
   # randomize column order so causal SNPs will change
-  X <- X[, sample(1:ncol(X), ncol(X), replace = FALSE), drop = FALSE]
+  if (sampleCols) X <- X[, sample(1:ncol(X), ncol(X), replace = FALSE), drop = FALSE]
   # make numeric, not integer
   X <- apply(X, 2, as.numeric)
   # standardize

@@ -59,9 +59,9 @@ cv.plmm <- function(X, y, X_for_K = X, ..., cluster, nfolds=10, seed, fold,
   cv.args$standardize <- FALSE # is this right? Do I need to do something special with standardization?
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("fold","fit","X", "y", "cv.args"), envir=environment())
+    parallel::clusterExport(cluster, c("XX", "y", "fold", "cv.args"), envir=environment())
     parallel::clusterCall(cluster, function() library(penalizedLMM))
-    fold.results <- parallel::parLapply(cl=cluster, X=1:nfolds, fun=cvf, X=XX, y=yy, fold=fold, cv.args=cv.args)
+    fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf, XX=XX, y=yy, fold=fold, cv.args=cv.args)
   }
 
   for (i in 1:nfolds) {
