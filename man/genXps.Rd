@@ -14,7 +14,8 @@ genXps(
   inbr = c("homogeneous", "heterogeneous"),
   standardizeX = TRUE,
   plot = FALSE,
-  structureX_other = NULL
+  structureX_other = NULL,
+  sampleCols = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ genXps(
 \item{plot}{Should a plot of the kinship matrix be generated? Defaults to FALSE.}
 
 \item{structureX_other}{If \code{structureX == "other"}, an matrix or SnpMatrix object with subjects in rows and SNPs in columns to be used to generate pseudophenotypes must be supplied here.}
+
+\item{sampleCols}{A logical flag for whether the columns of the resultant X matrix should be scrambled. This may be desirable if the causal SNPs should change from one simulation to the next. Defaults to TRUE.}
 }
 \description{
 This function allows you to simulate structured genetic data (SNP).

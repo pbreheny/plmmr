@@ -21,7 +21,6 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
 
   if (log.l) {
     l <- log(l)
-    xlab <- expression(log(lambda))
   } else xlab <- expression(lambda)
   plot.args <- list(x=l, y=1:length(l), ylim=range(Y), xlab=xlab, ylab="", type="n", xlim=rev(range(l)), las=1)
   new.args <- list(...)
