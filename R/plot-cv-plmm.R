@@ -1,6 +1,6 @@
 #' Plot method for "cv.plmm" class
 #'
-#' @param x An object of class "plmm"
+#' @param x An object of class "cv.plmm"
 #' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.
 #' @param type Type of plot to return. Defaults to "cve."
 #' @param selected Logical to indicate which variables should be plotted. Defaults to TRUE.
@@ -62,7 +62,10 @@ plot.cv.plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "al
   new.args = list(...)
   if (length(new.args)) plot.args[names(new.args)] = new.args
   do.call("plot", plot.args)
-  if (vertical.line) graphics::abline(v=l[x$min], lty=2, lwd=.5)
+  if (vertical.line){
+    graphics::abline(v=l[x$min], lty=1, lwd=.5)
+    graphics::abline(v=l[x$min1se], lty=2, lwd=.5)
+  }
   suppressWarnings(graphics::arrows(x0=l[aind], x1=l[aind], y0=L[aind], y1=U[aind], code=3, angle=90, col="gray80", length=.05))
   graphics::points(l[ind], y[ind], col=col, pch=19, cex=.5)
   if (selected) {

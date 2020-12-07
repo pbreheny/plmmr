@@ -119,7 +119,9 @@ plmm <- function(X,
 
   SUy <- drop(W %*% crossprod(U, yy))
 
-  ### Re(?)-standardize here...
+  ################################
+  ### Re(?)-standardize here...###
+  ################################
 
   ## Set up lambda
   if (missing(lambda)) {

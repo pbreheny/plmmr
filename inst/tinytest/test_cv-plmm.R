@@ -47,19 +47,6 @@ cv_plmm0 <- cv.plmm(X,
                    returnX = TRUE,
                    nfolds = 4)
 
-# cl <- makeCluster(4)
-# cv_plmm1 <- cv.plmm(X,
-#                     y,
-#                     penalty = "lasso",
-#                     alpha = 1,
-#                     nlambda = 5,
-#                     standardize = TRUE,
-#                     rotation = TRUE,
-#                     returnX = TRUE,
-#                     nfolds = 4,
-#                     cluster = cl)
-# stopCluster(cl)
-
 
 cv_plmm1 <- cv.plmm(X,
                     y,
@@ -69,24 +56,36 @@ cv_plmm1 <- cv.plmm(X,
                     standardize = TRUE,
                     rotation = TRUE,
                     returnX = TRUE,
-                    nfolds = 2)
+                    nfolds = 4,
+                    seed = 7)
 
 expect_equivalent(coef(plmm0), coef(cv_plmm0$fit), tol = 1e-5) # same overall fit?
 expect_equivalent(plmm0$lambda, cv_plmm1$lambda, tol = 1e-5) # are they both computing lambda sequences the same way
 
 
-
+cl <- makeCluster(4)
 cv_plmm2 <- cv.plmm(X,
                     y,
                     penalty = "lasso",
                     alpha = 1,
-                    nlambda = 100,
+                    nlambda = 5,
                     standardize = TRUE,
                     rotation = TRUE,
                     returnX = TRUE,
-                    nfolds = 10)
-plot(cv_plmm2)
-plot(cv_plmm2, type = 'all')
+                    nfolds = 4,
+                    cluster = cl,
+                    seed = 7)
+stopCluster(cl)
+
+### make sure parallel method is equivalent to regular plmm
+expect_equivalent(coef(plmm0), coef(cv_plmm2$fit), tol = 1e-5) # same overall fit?
+expect_equivalent(plmm0$lambda, cv_plmm2$lambda, tol = 1e-5) # are they both computing lambda sequences the same way
+
+### make sure parallel method is equivalent to cv-plmm
+expect_equivalent(coef(cv_plmm1$fit), coef(cv_plmm2$fit), tol = 1e-5) # same overall fit?
+expect_equivalent(cv_plmm1$lambda, cv_plmm2$lambda, tol = 1e-5) # are they both computing lambda sequences the same way
+expect_equivalent(cv_plmm1$cve, cv_plmm2$cve)
+
 
 ### write coef-cv-plmm and predict-cv-plmm methods
 ### need to get cv_plmm working with (1) lambda 1se and (2) parallel package for bigger data sets

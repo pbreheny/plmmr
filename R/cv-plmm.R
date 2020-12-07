@@ -81,16 +81,24 @@ cv.plmm <- function(X, y, X_for_K = X, ..., cluster, nfolds=10, seed, fold,
   Y <- Y[, ind]
   lambda <- fit$lambda[ind]
 
-  ## Return
+  ## Return min lambda idx
   cve <- apply(E, 2, mean)
   cvse <- apply(E, 2, stats::sd) / sqrt(n)
   min <- which.min(cve)
+
+  ## Return lambda 1se idx
+  l.se <- cve[min] - cvse[min]
+  u.se <- cve[min] + cvse[min]
+  cve.se <- cve[cve >= l.se & cve <= u.se]
+  min1se <- which.max(cve.se)
 
   # Bias correction
   e <- sapply(1:nfolds, function(i) apply(E[fold==i, , drop=FALSE], 2, mean))
   Bias <- mean(e[min,] - apply(e, 2, min))
 
-  val <- list(cve=cve, cvse=cvse, fold=fold, lambda=lambda, fit=fit, min=min, lambda.min=lambda[min],
+  val <- list(cve=cve, cvse=cvse, fold=fold, lambda=lambda, fit=fit,
+              min=min, lambda.min=lambda[min],
+              min1se = min1se, lambda.1se = lambda[which(cve == max(cve.se))],
               null.dev=mean(loss.plmm(y, rep(mean(y), n))), Bias=Bias)
   if (returnY) val$Y <- Y
   structure(val, class="cv.plmm")
