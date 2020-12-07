@@ -9,10 +9,6 @@
 #' @export
 
 cvf <- function(i, XX, y, fold, cv.args) {
-  cat('i = ', i)
-  cat('dim(XX) =', dim(XX))
-  cat('length(y) = ', length(y))
-
   cv.args$X <- XX[fold!=i, , drop=FALSE]
   cv.args$y <- y[fold!=i]
   fit.i <- do.call("plmm", cv.args)
