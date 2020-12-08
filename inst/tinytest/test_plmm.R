@@ -21,7 +21,7 @@ dont_run <- FALSE
 # penalty = "lasso"
 # alpha = 1
 # nlambda = 5
-# standardize = FALSE
+# standardizeX = FALSE
 # rotation = FALSE
 # returnX = FALSE
 # n = nn
@@ -35,7 +35,7 @@ plmm1 <- plmm(ncvreg::std(X),
               penalty = "lasso",
               alpha = 1,
               nlambda = 5,
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -52,7 +52,7 @@ plmm2 <- plmm(X,
               penalty = "lasso",
               alpha = 1,
               nlambda = 5,
-              standardize = TRUE,
+              standardizeX = TRUE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -80,7 +80,7 @@ plmm3 <- plmm(ncvreg::std(cbind(X0, X)),
               penalty.factor = rep(c(0, 1), times = c(ncol(X0), ncol(X))),
               alpha = 1,
               nlambda = 5,
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -101,7 +101,7 @@ plmm4 <- plmm(cbind(X0, X),
               penalty.factor = rep(c(0, 1), times = c(ncol(X0), ncol(X))),
               alpha = 1,
               nlambda = 5,
-              standardize = TRUE,
+              standardizeX = TRUE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -123,7 +123,7 @@ plmm5 <- plmm(ncvreg::std(X),
               penalty = "lasso",
               alpha = 1,
               lambda = 0, # compare to ols solutions
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -138,7 +138,7 @@ plmm6 <- plmm(X,
               penalty = "lasso",
               alpha = 1,
               lambda = 0, # compare to ols solutions
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -155,7 +155,7 @@ plmm7 <- plmm(ncvreg::std(cbind(X0, X)),
               penalty = "lasso",
               alpha = 1,
               lambda = 0, # compare to ols solutions
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -170,7 +170,7 @@ plmm8 <- plmm(cbind(X0, X),
               penalty = "lasso",
               alpha = 1,
               lambda = 0, # compare to ols solutions
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -187,7 +187,7 @@ plmm9 <- plmm(ncvreg::std(X),
               penalty = "MCP",
               alpha = 1,
               nlambda = 5,
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -200,7 +200,7 @@ plmm10 <- plmm(ncvreg::std(X),
               penalty = "MCP",
               alpha = 0.5,
               nlambda = 5,
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -215,7 +215,7 @@ plmm11 <- plmm(ncvreg::std(X),
               penalty = "SCAD",
               alpha = 1,
               nlambda = 5,
-              standardize = FALSE,
+              standardizeX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -228,7 +228,7 @@ plmm12 <- plmm(ncvreg::std(X),
                penalty = "SCAD",
                alpha = 0.5,
                nlambda = 5,
-               standardize = FALSE,
+               standardizeX = FALSE,
                rotation = FALSE,
                returnX = FALSE)
 
