@@ -19,7 +19,8 @@
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
 #' @param intercept Logical flag for whether an intercept should be included.
-#' @param standardize Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.
+#' @param standardizeX Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.
+#' @param standardizeRtX Logical flag for transformed X variable standardization. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize, but this is generally recommended.
 #' @param rotation Logical flag to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE). This is primarily for testing purposes and defaults to TRUE.
 #' @param ... Not used.
 #' @importFrom zeallot %<-%
@@ -44,7 +45,8 @@ plmm <- function(X,
                  init = rep(0, ncol(X)),
                  returnX = TRUE,
                  intercept = TRUE,
-                 standardize = TRUE,
+                 standardizeX = TRUE,
+                 standardizeRtX = FALSE,
                  rotation = TRUE,
                  ...) {
 
@@ -82,8 +84,8 @@ plmm <- function(X,
   dots <- list(...)
   if ("n.lambda" %in% names(dots)) nlambda <- dots$n.lambda
 
-  ## Set up XX, yy, lambda
-  if (standardize){
+  ## Standardize X
+  if (standardizeX){
     XX <- ncvreg::std(X)
     X_for_K <- ncvreg::std(X_for_K)
   } else {
@@ -94,38 +96,55 @@ plmm <- function(X,
   }
   ns <- attr(XX, "nonsingular")
   penalty.factor <- penalty.factor[ns]
+  # yy <- y - mean(y)
   yy <- y
   p <- ncol(XX)
   n <- length(yy)
-  ##############################################################################
-  ### get things working w/o rotation first
 
   ## Calculate eta
   if (rotation){
-    c(S, U, eta) %<-% plmm_null(X_for_K, yy) # change name so it doesn't contain lasso
+    c(S, U, eta) %<-% plmm_null(X_for_K, yy) # use centered yy?
     W <- diag((eta * S + (1 - eta))^(-1/2))
   } else {
+    # no rotation option for testing
     U <- diag(n)
     W <- diag(n)
   }
 
   ## Rotate data
   if (intercept){
-    SUX <- W %*% crossprod(U, cbind(1, XX)) # manual intercept
+    # manual intercept - use mean of y here instead?
+    # SUX <- W %*% crossprod(U, cbind(mean(y), XX))
+    SUX <- W %*% crossprod(U, cbind(1, XX))
     penalty.factor <- c(0, penalty.factor)
   } else {
     SUX <- W %*% crossprod(U, XX)
   }
-
   SUy <- drop(W %*% crossprod(U, yy))
 
-  ################################
-  ### Re(?)-standardize here...###
-  ################################
+  ## Re-standardize rotated SUX
+  if (standardizeRtX){
+    if (intercept){
+      SUXX <- SUX
+      SUXX_noInt <- ncvreg::std(SUX[,-1])
+      SUXX_Int <- SUX[, 1]
+      SUXX <- cbind(SUXX_Int, SUXX_noInt)
+      attr(SUXX, 'center') <- attr(SUXX_noInt, 'center')
+      attr(SUXX, 'scale') <- attr(SUXX_noInt, 'scale')
+      attr(SUXX, 'nonsingular') <- ns
+    } else {
+      SUXX <- ncvreg::std(SUX)
+    }
+  } else {
+    SUXX <- SUX
+    attributes(SUXX)$center <- rep(0, ncol(XX))
+    attributes(SUXX)$scale <- rep(1, ncol(XX))
+    attributes(SUXX)$nonsingular <- ns
+  }
 
   ## Set up lambda
   if (missing(lambda)) {
-    lambda <- setup_lambda(SUX, SUy, alpha, lambda.min, nlambda, penalty.factor, intercept, standardize, rotation)
+    lambda <- setup_lambda(SUXX, SUy, alpha, lambda.min, nlambda, penalty.factor)
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -134,22 +153,20 @@ plmm <- function(X,
 
   ## Placeholders for results
   if (intercept) init <- c(mean(SUy), init) # add initial value for intercept
-  b <- matrix(NA, ncol(SUX), nlambda)
+  b <- matrix(NA, ncol(SUXX), nlambda)
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
   # think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]
-    res <- ncvreg::ncvfit(SUX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    res <- ncvreg::ncvfit(SUXX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
     loss[ll] <- res$loss
     # add break for saturation?
   }
-
-  ### from ncvreg ##############################################################
 
   ## Eliminate saturated lambda values, if any
   ind <- !is.na(iter)
@@ -158,26 +175,18 @@ plmm <- function(X,
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
+  # if (intercept){
+  #   convex.min <- if (convex) convexMin(b, SUXX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor[-1]) else NULL
+  # } else {
+  #   convex.min <- if (convex) convexMin(b, SUXX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor) else NULL
+  # }
+  convex.min <- if (convex) convexMin(b, SUXX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor) else NULL
 
-  if (intercept){
-    a <- b[1, ind]
-    b <- b[-1, ind, drop=FALSE]
-    ## Local convexity?
-    convex.min <- if (convex) convexMin(b, SUX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor[-1], a=a) else NULL
-    ## Unstandardize
-    beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
-    bb <- b/attr(XX, "scale")[ns]
-    beta[ns + 1,] <- bb
-    beta[1,] <- a - crossprod(attr(XX, "center")[ns], bb)
-  } else {
-    b <- b[, ind, drop=FALSE]
-    ## Local convexity?
-    convex.min <- if (convex) convexMin(b, SUX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor, a=a) else NULL
-    ## Unstandardize
-    beta <- matrix(0, nrow=(ncol(SUX)), ncol=length(lambda))
-    bb <- b/attr(XX, "scale")[ns]
-    beta[ns,] <- bb
-  }
+  # unstandardize rotation
+  bb <- unstandardize(b[, ind, drop = FALSE], SUXX, intercept)
+
+  # unstandardize original scale
+  beta <- unstandardize(bb, XX, intercept)
 
   varnames <- if (is.null(colnames(X))) paste("V", 1:ncol(X), sep="") else colnames(X)
   if (intercept) varnames <- c("(Intercept)", varnames)
@@ -206,7 +215,7 @@ plmm <- function(X,
     }
   }
   if (returnX) {
-    val$X <- SUX
+    val$X <- SUXX
     val$y <- SUy
   }
   return(val)

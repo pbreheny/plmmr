@@ -23,7 +23,8 @@ plmm(
   init = rep(0, ncol(X)),
   returnX = TRUE,
   intercept = TRUE,
-  standardize = TRUE,
+  standardizeX = TRUE,
+  standardizeRtX = FALSE,
   rotation = TRUE,
   ...
 )
@@ -65,7 +66,9 @@ plmm(
 
 \item{intercept}{Logical flag for whether an intercept should be included.}
 
-\item{standardize}{Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.}
+\item{standardizeX}{Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.}
+
+\item{standardizeRtX}{Logical flag for transformed X variable standardization. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize, but this is generally recommended.}
 
 \item{rotation}{Logical flag to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE). This is primarily for testing purposes and defaults to TRUE.}
 

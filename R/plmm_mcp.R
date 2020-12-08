@@ -13,9 +13,9 @@
 
 plmm_mcp <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   if (is.null(X_for_K)){
-    fit <- plmm(X, y, X, penalty = 'MCP', standardize = standardize)
+    fit <- plmm(X, y, X, penalty = 'MCP', standardizeX = standardize)
   } else {
-    fit <- plmm(X, y, X_for_K, penalty = 'MCP', standardize = standardize)
+    fit <- plmm(X, y, X_for_K, penalty = 'MCP', standardizeX = standardize)
   }
   sel <- predict.plmm(fit, type = "nvar")
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]

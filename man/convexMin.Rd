@@ -4,17 +4,7 @@
 \alias{convexMin}
 \title{Calculate index for which objective function ceases to be locally convex}
 \usage{
-convexMin(
-  b,
-  X,
-  penalty,
-  gamma,
-  l2,
-  family = "gaussian",
-  penalty.factor,
-  a,
-  Delta = NULL
-)
+convexMin(b, X, penalty, gamma, l2, family = "gaussian", penalty.factor)
 }
 \arguments{
 \item{b}{Matrix of coefficient values.}
@@ -30,10 +20,6 @@ convexMin(
 \item{family}{Only "gaussian" currently supported.}
 
 \item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
-
-\item{a}{Vector of intercept values.}
-
-\item{Delta}{NULL.}
 }
 \description{
 Calculate index for which objective function ceases to be locally convex

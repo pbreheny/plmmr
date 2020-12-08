@@ -13,9 +13,9 @@
 
 plmm_lasso <- function(X, y, p1, standardize = FALSE, X_for_K = NULL) {
   if (is.null(X_for_K)){
-    fit <- plmm(X, y, X, penalty = 'lasso', standardize = standardize)
+    fit <- plmm(X, y, X, penalty = 'lasso', standardizeX = standardize)
   } else {
-    fit <- plmm(X, y, X_for_K, penalty = 'lasso', standardize = standardize)
+    fit <- plmm(X, y, X_for_K, penalty = 'lasso', standardizeX = standardize)
   }
   sel <- predict.plmm(fit, type = "nvar")
   coef <- coef(fit, min(fit$lambda[sel <= p1]))[-1]

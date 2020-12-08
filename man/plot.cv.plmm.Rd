@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{An object of class "plmm"}
+\item{x}{An object of class "cv.plmm"}
 
 \item{log.l}{Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.}
 
