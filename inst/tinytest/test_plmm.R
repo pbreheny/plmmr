@@ -1,9 +1,4 @@
 
-# set.seed(7)
-# Data <- hdrm::genData(5, 2, 1) # can change this to check more high-dimensional data
-# X <- Data$X
-# y <- Data$y
-
 nn <- 50
 pp <- 4
 p1 <- 1
@@ -36,6 +31,7 @@ plmm1 <- plmm(ncvreg::std(X),
               alpha = 1,
               nlambda = 5,
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -53,6 +49,7 @@ plmm2 <- plmm(X,
               alpha = 1,
               nlambda = 5,
               standardizeX = TRUE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -81,6 +78,7 @@ plmm3 <- plmm(ncvreg::std(cbind(X0, X)),
               alpha = 1,
               nlambda = 5,
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -102,6 +100,7 @@ plmm4 <- plmm(cbind(X0, X),
               alpha = 1,
               nlambda = 5,
               standardizeX = TRUE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -124,6 +123,7 @@ plmm5 <- plmm(ncvreg::std(X),
               alpha = 1,
               lambda = 0, # compare to ols solutions
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -139,6 +139,7 @@ plmm6 <- plmm(X,
               alpha = 1,
               lambda = 0, # compare to ols solutions
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -156,6 +157,7 @@ plmm7 <- plmm(ncvreg::std(cbind(X0, X)),
               alpha = 1,
               lambda = 0, # compare to ols solutions
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -171,6 +173,7 @@ plmm8 <- plmm(cbind(X0, X),
               alpha = 1,
               lambda = 0, # compare to ols solutions
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -188,6 +191,7 @@ plmm9 <- plmm(ncvreg::std(X),
               alpha = 1,
               nlambda = 5,
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -201,6 +205,7 @@ plmm10 <- plmm(ncvreg::std(X),
               alpha = 0.5,
               nlambda = 5,
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -216,6 +221,7 @@ plmm11 <- plmm(ncvreg::std(X),
               alpha = 1,
               nlambda = 5,
               standardizeX = FALSE,
+              standardizeRtX = FALSE,
               rotation = FALSE,
               returnX = FALSE)
 
@@ -229,6 +235,7 @@ plmm12 <- plmm(ncvreg::std(X),
                alpha = 0.5,
                nlambda = 5,
                standardizeX = FALSE,
+               standardizeRtX = FALSE,
                rotation = FALSE,
                returnX = FALSE)
 
@@ -238,21 +245,9 @@ expect_equivalent(coef(plmm12), coef(ncv12), tol = 1e-12)
 
 
 
-### try comparing to glmnet - to plmm, relax tol
 
-### try  upping thresh for glmnet...
-
-
-
-### I don't think this is going to work in general for glmnet - it's not the same for a manual int with int = F
-# https://stackoverflow.com/questions/49495494/glmnet-is-different-with-intercept-true-compared-to-intercept-false-and-with-pen
-# glm3 <- glmnet::glmnet(plmm3$X, plmm3$y, "gaussian", standardize = FALSE,
-#                        intercept = FALSE,
-#                        penalty.factor = rep(c(0, 1), c(1, ncol(X))), lambda = 0)
-# coef(glm3)[-1,, drop = FALSE]
-#
-# expect_equivalent(as.matrix(plmm3$beta), as.matrix(coef(glm3)[-1,]), tol = 1e-3)
-
+### This doesn't work in general for glmnet - it's not the same for a manual int with int = F
+# https://stackoverflow.com/questions/49495494/glmnet-is-different-with-intercept-true-compared-to-intercept-false-and-with-pen=
 if (dont_run){
   fit <- glmnet::glmnet(ncvreg::std(X), y, "gaussian", standardize = FALSE, intercept = TRUE, nlambda = 5)
   fit1 <- glmnet::glmnet(cbind(1, ncvreg::std(X)), y, "gaussian", standardize = FALSE, intercept = FALSE,
@@ -266,8 +261,6 @@ if (dont_run){
   coef(fit)
   coef(fit1)
 }
-
-
 ### can't do a rotated and standardized version check - standardization occurs
 ### for the unrotated version of X, glmnet would give the standardization for the
 ### rotated version, which will not be the same.

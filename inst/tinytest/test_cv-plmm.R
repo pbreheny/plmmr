@@ -1,4 +1,4 @@
-#
+# #
 # library(tinytest)
 # library(parallel)
 # devtools::load_all(".")
@@ -29,6 +29,7 @@ plmm0 <- plmm(X,
               alpha = 1,
               nlambda = 5,
               standardizeX = TRUE,
+              standardizeRtX = FALSE,
               rotation = TRUE,
               returnX = TRUE)
 
@@ -38,6 +39,7 @@ cv_plmm0 <- cv.plmm(X,
                    alpha = 1,
                    lambda = plmm0$lambda,
                    standardizeX = TRUE,
+                   standardizeRtX = FALSE,
                    rotation = TRUE,
                    returnX = TRUE,
                    nfolds = 4)
@@ -49,6 +51,7 @@ cv_plmm1 <- cv.plmm(X,
                     alpha = 1,
                     nlambda = 5,
                     standardizeX = TRUE,
+                    standardizeRtX = FALSE,
                     rotation = TRUE,
                     returnX = TRUE,
                     nfolds = 4,
@@ -77,6 +80,7 @@ cv_plmm2 <- cv.plmm(X,
                     alpha = 1,
                     nlambda = 5,
                     standardizeX = TRUE,
+                    standardizeRtX = FALSE,
                     rotation = TRUE,
                     returnX = TRUE,
                     fold =cv_plmm1$fold,
