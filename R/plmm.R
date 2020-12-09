@@ -124,21 +124,16 @@ plmm <- function(X,
 
   ## Re-standardize rotated SUX
   if (standardizeRtX){
-    if (intercept){
-      SUXX <- SUX
-      SUXX_noInt <- ncvreg::std(SUX[,-1])
-      SUXX_Int <- SUX[, 1]
-      SUXX <- cbind(SUXX_Int, SUXX_noInt)
-      attr(SUXX, 'center') <- attr(SUXX_noInt, 'center')
-      attr(SUXX, 'scale') <- attr(SUXX_noInt, 'scale')
-      attr(SUXX, 'nonsingular') <- ns
-    } else {
-      SUXX <- ncvreg::std(SUX)
-    }
+    SUXX_noInt <- ncvreg::std(SUX[,-1, drop = FALSE])
+    SUXX <- cbind(SUX[,1, drop = FALSE], SUXX_noInt)
+    attributes(SUXX)$center <- attr(SUXX_noInt, 'center')
+    attributes(SUXX)$scale <- attr(SUXX_noInt, 'scale')
+    attributes(SUXX)$nonsingular <- attr(SUXX_noInt, 'nonsingular')
+    # SUXX <- ncvreg::std(SUX)
   } else {
     SUXX <- SUX
-    attributes(SUXX)$center <- rep(0, ncol(XX))
-    attributes(SUXX)$scale <- rep(1, ncol(XX))
+    attributes(SUXX)$center <- rep(0, ncol(SUX))
+    attributes(SUXX)$scale <- rep(1, ncol(SUX))
     attributes(SUXX)$nonsingular <- ns
   }
 
@@ -152,7 +147,7 @@ plmm <- function(X,
   }
 
   ## Placeholders for results
-  if (intercept) init <- c(mean(SUy), init) # add initial value for intercept
+  if (intercept) init <- c(mean(yy), init) # add initial value for intercept
   b <- matrix(NA, ncol(SUXX), nlambda)
   iter <- integer(nlambda)
   converged <- logical(nlambda)
@@ -175,11 +170,6 @@ plmm <- function(X,
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
-  # if (intercept){
-  #   convex.min <- if (convex) convexMin(b, SUXX[,-1], penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor[-1]) else NULL
-  # } else {
-  #   convex.min <- if (convex) convexMin(b, SUXX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor) else NULL
-  # }
   convex.min <- if (convex) convexMin(b, SUXX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor) else NULL
 
   # unstandardize rotation
@@ -215,7 +205,7 @@ plmm <- function(X,
     }
   }
   if (returnX) {
-    val$X <- SUXX
+    val$X <- SUX
     val$y <- SUy
   }
   return(val)
