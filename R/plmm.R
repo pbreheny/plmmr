@@ -195,7 +195,7 @@ plmm <- function(X,
                         n = n,
                         iter = iter,
                         converged = converged),
-                        class = "plmm")
+                   class = "plmm")
   if (missing(returnX)) {
     if (utils::object.size(SUX) > 1e8) {
       warning("Due to the large size of SUX (>100 Mb), returnX has been turned off.\nTo turn this message off, explicitly specify returnX=TRUE or returnX=FALSE).")
@@ -210,4 +210,3 @@ plmm <- function(X,
   }
   return(val)
 }
-
