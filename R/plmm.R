@@ -113,8 +113,6 @@ plmm <- function(X,
 
   ## Rotate data
   if (intercept){
-    # manual intercept - use mean of y here instead?
-    # SUX <- W %*% crossprod(U, cbind(mean(y), XX))
     SUX <- W %*% crossprod(U, cbind(1, XX))
     penalty.factor <- c(0, penalty.factor)
   } else {
@@ -124,12 +122,16 @@ plmm <- function(X,
 
   ## Re-standardize rotated SUX
   if (standardizeRtX){
-    SUXX_noInt <- ncvreg::std(SUX[,-1, drop = FALSE])
-    SUXX <- cbind(SUX[,1, drop = FALSE], SUXX_noInt)
+    if (intercept){
+      SUXX_noInt <- ncvreg::std(SUX[,-1, drop = FALSE])
+      SUXX <- cbind(SUX[,1, drop = FALSE], SUXX_noInt)
+    } else {
+      SUXX_noInt <- ncvreg::std(SUX)
+      SUXX <- SUXX_noInt
+    }
     attributes(SUXX)$center <- attr(SUXX_noInt, 'center')
     attributes(SUXX)$scale <- attr(SUXX_noInt, 'scale')
     attributes(SUXX)$nonsingular <- attr(SUXX_noInt, 'nonsingular')
-    # SUXX <- ncvreg::std(SUX)
   } else {
     SUXX <- SUX
     attributes(SUXX)$center <- rep(0, ncol(SUX))
@@ -160,7 +162,6 @@ plmm <- function(X,
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
     loss[ll] <- res$loss
-    # add break for saturation?
   }
 
   ## Eliminate saturated lambda values, if any
