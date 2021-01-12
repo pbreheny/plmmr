@@ -19,6 +19,7 @@
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
 #' @param intercept Logical flag for whether an intercept should be included.
+#' @param centerRtY Logical flag for whether the rotated outcome variable, SUy, should be centered and an intercept coefficient estimated based on its mean. Defaults to FALSE.
 #' @param standardizeX Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.
 #' @param standardizeRtX Logical flag for transformed X variable standardization. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize, but this is generally recommended.
 #' @param rotation Logical flag to indicate whether the weighted rotation of the data should be performed (TRUE), or not (FALSE). This is primarily for testing purposes and defaults to TRUE.
@@ -45,6 +46,7 @@ plmm <- function(X,
                  init = rep(0, ncol(X)),
                  returnX = TRUE,
                  intercept = TRUE,
+                 centerRtY = FALSE,
                  standardizeX = TRUE,
                  standardizeRtX = FALSE,
                  rotation = TRUE,
@@ -71,6 +73,7 @@ plmm <- function(X,
   if (!is.double(penalty.factor)) penalty.factor <- as.double(penalty.factor)
 
   # Error checking
+  if (intercept & centerRtY) stop('It looks like you are fitting the intercept twice', call.=FALSE)
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
   if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
@@ -94,16 +97,23 @@ plmm <- function(X,
     attributes(XX)$scale <- rep(1, ncol(XX))
     attributes(XX)$nonsingular <- 1:ncol(XX)
   }
+  yy <- y
   ns <- attr(XX, "nonsingular")
   penalty.factor <- penalty.factor[ns]
-  # yy <- y - mean(y)
-  yy <- y
+
+  ## Center y
+  # if (centerY){
+  #   yy <- y - mean(y)
+  # } else {
+  #   yy <- y
+  # }
+
   p <- ncol(XX)
   n <- length(yy)
 
   ## Calculate eta
   if (rotation){
-    c(S, U, eta) %<-% plmm_null(X_for_K, yy) # use centered yy?
+    c(S, U, eta) %<-% plmm_null(X_for_K, yy)
     W <- diag((eta * S + (1 - eta))^(-1/2))
   } else {
     # no rotation option for testing
@@ -123,7 +133,7 @@ plmm <- function(X,
   ## Re-standardize rotated SUX
   if (standardizeRtX){
     if (intercept){
-      SUXX_noInt <- ncvreg::std(SUX[,-1, drop = FALSE])
+      SUXX_noInt <- ncvreg::std(SUX[,-1, drop = FALSE]) # how sure am I that the rotated intercept should not be standardized?
       SUXX <- cbind(SUX[,1, drop = FALSE], SUXX_noInt)
     } else {
       SUXX_noInt <- ncvreg::std(SUX)
@@ -139,9 +149,16 @@ plmm <- function(X,
     attributes(SUXX)$nonsingular <- ns
   }
 
+  ## Re-center rotated y
+  if (centerRtY){
+    SUyy <- SUy - mean(SUy)
+  } else {
+    SUyy <- SUy
+  }
+
   ## Set up lambda
   if (missing(lambda)) {
-    lambda <- setup_lambda(SUXX, SUy, alpha, lambda.min, nlambda, penalty.factor)
+    lambda <- setup_lambda(SUXX, SUyy, alpha, lambda.min, nlambda, penalty.factor)
     user.lambda <- FALSE
   } else {
     nlambda <- length(lambda)
@@ -157,7 +174,7 @@ plmm <- function(X,
   # think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]
-    res <- ncvreg::ncvfit(SUXX, SUy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
+    res <- ncvreg::ncvfit(SUXX, SUyy, init, penalty, gamma, alpha, lam, eps, max.iter, penalty.factor, warn)
     b[, ll] <- init <- res$beta
     iter[ll] <- res$iter
     converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
@@ -174,13 +191,13 @@ plmm <- function(X,
   convex.min <- if (convex) convexMin(b, SUXX, penalty, gamma, lambda*(1-alpha), family = 'gaussian', penalty.factor) else NULL
 
   # unstandardize rotation
-  bb <- unstandardize(b[, ind, drop = FALSE], SUXX, intercept)
+  bb <- unstandardize(b[, ind, drop = FALSE], SUXX, intercept, centerRtY, mean(SUy))
 
   # unstandardize original scale
   beta <- unstandardize(bb, XX, intercept)
 
   varnames <- if (is.null(colnames(X))) paste("V", 1:ncol(X), sep="") else colnames(X)
-  if (intercept) varnames <- c("(Intercept)", varnames)
+  if (intercept | centerRtY) varnames <- c("(Intercept)", varnames)
   dimnames(beta) <- list(varnames, lamNames(lambda))
 
   ## Output

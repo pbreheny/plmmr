@@ -23,6 +23,7 @@ plmm(
   init = rep(0, ncol(X)),
   returnX = TRUE,
   intercept = TRUE,
+  centerRtY = FALSE,
   standardizeX = TRUE,
   standardizeRtX = FALSE,
   rotation = TRUE,
@@ -65,6 +66,8 @@ plmm(
 \item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
 
 \item{intercept}{Logical flag for whether an intercept should be included.}
+
+\item{centerRtY}{Logical flag for whether the rotated outcome variable, SUy, should be centered and an intercept coefficient estimated based on its mean. Defaults to FALSE.}
 
 \item{standardizeX}{Logical flag for X variable standardization, prior to data transformation. The coefficients are always returned on the original scale. Default is TRUE. If variables are in the same units already, or manually standardized, you might not wish to standardize.}
 
