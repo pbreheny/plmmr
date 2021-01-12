@@ -56,7 +56,10 @@ cv.plmm <- function(X, y, X_for_K = X, ..., cluster, nfolds=10, seed, fold,
   cv.args$convex <- FALSE
   cv.args$rotation <- FALSE
   cv.args$intercept <- FALSE
-  cv.args$standardize <- FALSE # is this right? Do I need to do something special with standardization?
+  cv.args$centerY <- FALSE
+  cv.args$centerRtY <- FALSE
+  cv.args$standardizeX <- FALSE # is this right? Do I need to do something special with standardization?
+  cv.args$standardizeRtX <- FALSE
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
     parallel::clusterExport(cluster, c("XX", "y", "fold", "cv.args"), envir=environment())
