@@ -92,9 +92,6 @@ cv.plmm <- function(X,
                     trace=FALSE,
                     ...) {
 
-  # default type is 'lp'
-  if(missing(type)) {type == 'lp'} 
-
   # determine penalty 
   penalty <- match.arg(penalty)
 
@@ -114,6 +111,8 @@ cv.plmm <- function(X,
   
   # implement full model fit 
   fit.args <- c(list(prep = prep, penalty = penalty), list(...))
+  # debugging 
+  cat("\nFull model fit: ")
   fit <- do.call('plmm_fit', fit.args)
   fit_to_return <- plmm_format(fit = fit, X = X)
   
@@ -172,7 +171,7 @@ cv.plmm <- function(X,
       res <- fold.results[[i]] # refers to lines from above
       if (trace) {setTxtProgressBar(pb, i)}
     } else {
-      # case 2: cluster NOT user specified 
+      # case 2: cluster NOT user specified (this is the typical use case)
       res <- cvf(i = i,
                  fold = fold,
                  type = type,

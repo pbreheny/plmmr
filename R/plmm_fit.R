@@ -91,7 +91,9 @@ plmm_fit <- function(prep,
 
   # rotate data
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
+  cat("\nsummary(w): ", summary(w))
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*") 
+  cat("\nDimension of wUt (the matrix used for rotating): ", dim(wUt))
   rot_X <- wUt %*% cbind(1, prep$std_X)
   rot_y <- wUt %*% prep$y
 

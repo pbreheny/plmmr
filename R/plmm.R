@@ -152,7 +152,7 @@ plmm <- function(X,
                         penalty.factor = penalty.factor,
                         trace = trace)
 
-  if(trace){cat("Beginning model fitting.\n")}
+  if(trace){cat("\nDecomposition complete. Moving to next step\n")}
   the_fit <- plmm_fit(prep = the_prep,
                       penalty = penalty,
                       gamma = gamma,
@@ -166,7 +166,13 @@ plmm <- function(X,
                       init = init,
                       convex = convex,
                       dfmax = dfmax)
-
+  
+  cat("\nSnippet of rot_X:",
+      "\n\tFirst 5 values in 1st column:", the_fit$rot_X[1:5, 1],
+      "\n\tFirst 5 values in 2nd column:", the_fit$rot_X[1:5, 2],
+      "\n\tFirst 5 values in 3rd column:", the_fit$rot_X[1:5, 3],
+      "\n\tFirst 5 values in 4th column:", the_fit$rot_X[1:5, 4])
+  
   if(trace){cat("\nBeta values are estimated -- almost done!")}
   the_final_product <- plmm_format(fit = the_fit, X = X)
   

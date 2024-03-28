@@ -39,6 +39,19 @@
 #' @examples 
 #' \dontrun{
 #' # fit a model 
+#' fit <- plmm(X = admix$X, y = admix$y)
+#' lp_pred <- predict(fit, newX = admix$X, type = 'lp')
+#' blup_pred <- predict(fit, newX = admix$X, X = admix$X, y = admix$y) # BLUP is default type
+#' lp_mspe <- apply(lp_pred, 2, function(c){crossprod(admix$y - c)})
+#' min(lp_mspe)
+#' 
+#' blup_mspe <- apply(blup_pred, 2, function(c){crossprod(admix$y - c)})
+#' min(blup_mspe)
+#' 
+#' cv_fit <- cv.plmm(X = admix$X, y = admix$y)
+#' min(cv_fit$cve)
+#' 
+#' 
 #' set.seed(123)
 #' train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
