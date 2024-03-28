@@ -48,7 +48,6 @@ rotate_filebacked <- function(prep, ...){
                          for(i in 1:nrow(wUt)){
                            r <- wUt[i,,drop=FALSE]
                            v <- bigstatsr::big_cprodVec(X = X, y.row = r)
-                           # browser()
                            res[i, ind] <- t(v)
                          }
                          

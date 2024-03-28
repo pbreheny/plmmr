@@ -111,7 +111,7 @@ process_plink <- function(data_dir,
     bigsnpr::snp_readBed(bedfile = paste0(data_dir, "/", prefix, ".bed"))
     obj <- bigsnpr::snp_attach(path)
   }
-  browser()
+
 # set object names --------------------------------
   obj$colnames <- obj$map$marker.ID
   
@@ -276,7 +276,7 @@ process_plink <- function(data_dir,
     
 
   }
-  browser()
+
 # standardization ------------------------------------------------
   cat("\nColumn-standardizing the design matrix...")
   # add centering & scaling info
