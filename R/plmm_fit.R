@@ -105,7 +105,7 @@ plmm_fit <- function(prep,
     stdrot_X <- cbind(rot_X[,1, drop = FALSE], stdrot_X_noInt) # re-attach intercept
     stdrot_X_scale <- stdrot_X_temp$scale_vals
   } else if ('FBM' %in% class(prep$std_X)){
-    rot_res <- rotate_filebacked(prep)
+    rot_res <- rotate_filebacked(prep) # this is quite involved, so I put this in its own function
     rot_X <- rot_res$rot_X
     rot_y <- rot_res$rot_y
     stdrot_X <- rot_res$stdrot_X 
@@ -187,19 +187,19 @@ plmm_fit <- function(prep,
   if('matrix' %in% class(stdrot_X)){
     for (ll in 1:nlambda){
       lam <- lambda[ll]
-      res <- ncvreg::ncvfit(stdrot_X,
-                            rot_y, 
-                            init,
-                            r,
-                            xtx,
-                            penalty,
-                            gamma,
-                            alpha,
-                            lam,
-                            eps, 
-                            max.iter,
-                            new.penalty.factor,
-                            warn)
+      res <- ncvreg::ncvfit(X = stdrot_X,
+                            y = rot_y, 
+                            init = init,
+                            r = r,
+                            xtx = xtx,
+                            penalty = penalty,
+                            gamma = gamma,
+                            alpha = alpha,
+                            lambda= lam,
+                            eps = eps, 
+                            max.iter = max.iter,
+                            penalty.factor = new.penalty.factor,
+                            warn = warn)
       b[, ll] <- init <- res$beta
       linear.predictors[,ll] <- stdrot_X%*%(res$beta)
       iter[ll] <- res$iter

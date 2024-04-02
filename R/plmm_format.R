@@ -44,9 +44,8 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
   # SNPs (or covariates) on the rows, lambda values on the columns
   
   if (is.null(snp_names)){
-    snp_names <- paste("snp", 1:fit$p, sep="") 
+    snp_names <- paste("Var", 1:fit$p, sep="") 
   } 
-  
   varnames <- c("(Intercept)", snp_names) # add intercept 
   dimnames(untransformed_b2) <- list(varnames, lamNames(fit$lambda))
   colnames(fit$linear.predictors) <- lamNames(fit$lambda)

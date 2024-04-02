@@ -2,6 +2,7 @@
 #'
 #' Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized 
 #'  linear mixed models over a grid of values for the regularization parameter `lambda`.
+#'
 #' @param X Design matrix for model fitting. May include clinical covariates and 
 #' other non-SNP data. 
 #' @param y Continuous outcome vector for model fitting.
@@ -43,6 +44,9 @@
 #' @param trace If set to TRUE, inform the user of progress by announcing the 
 #' beginning of each CV fold. Default is FALSE.
 #' @param ... Additional arguments to \code{plmm_fit}
+#' @param fbm 
+#' @param std_needed 
+#' @param col_names 
 #' 
 #' @returns a list with 11 items: 
 #' 
@@ -69,12 +73,17 @@
 #' cv_s <- summary.cv.plmm(cv_fit, lambda = "1se")
 #' print(cv_s)
 #' plot(cv_fit)
-#' }
+#' 
+#' # filebacked example (file path is specific to current machine)
+#' cv.plmm(X = "~/tmp_files/penncath_lite", fbm = TRUE, trace = TRUE) -> fit
 #' 
 #' 
 #' 
 #' 
 cv.plmm <- function(X,
+                    fbm = NULL,
+                    std_needed = NULL,
+                    col_names = NULL,
                     y,
                     k = NULL,
                     K = NULL,
@@ -92,13 +101,25 @@ cv.plmm <- function(X,
                     trace=FALSE,
                     ...) {
 
-  # default type is 'lp'
-  if(missing(type)) {type == 'lp'} 
+  # run checks ------------------------------
+  checked_data <- plmm_checks(X,
+                              fbm = fbm,
+                              std_needed = std_needed,
+                              col_names = col_names,
+                              y = y,
+                              k = k, 
+                              K = K,
+                              diag_K = diag_K,
+                              eta_star = eta_star,
+                              penalty = penalty, # TODO: think about making lasso default
+                              penalty.factor = penalty.factor,
+                              init = init,
+                              dfmax = dfmax,
+                              gamma = gamma,
+                              alpha = alpha,
+                              trace = trace)  
 
-  # determine penalty 
-  penalty <- match.arg(penalty)
-
-  # implement preparation steps for model fitting 
+  # prep  ------------------------
   prep.args <- c(list(X = X,
                       y = y,
                       k = k,
@@ -112,12 +133,12 @@ cv.plmm <- function(X,
   prep <- do.call('plmm_prep', prep.args)
   
   
-  # implement full model fit 
+  # full model fit ----------------------------------
   fit.args <- c(list(prep = prep, penalty = penalty), list(...))
   fit <- do.call('plmm_fit', fit.args)
   fit_to_return <- plmm_format(fit = fit, X = X)
   
-  # set up arguments for cv 
+  # set up arguments for cv ---------------------------
   cv.args <- fit.args
   cv.args$warn <- FALSE
   cv.args$lambda <- fit$lambda 
@@ -153,7 +174,7 @@ cv.plmm <- function(X,
   }
 
   
-  # set up cluster if user-specified
+  # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
     parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv.args", "estimated_V"), envir=environment())
@@ -163,6 +184,7 @@ cv.plmm <- function(X,
                                         estimated_V = estimated_V)
   }
   
+  # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")  
   # set up progress bar -- this can take a while
   if(trace){pb <- txtProgressBar(min = 0, max = nfolds, style = 3)}
@@ -186,6 +208,7 @@ cv.plmm <- function(X,
     Y[fold==i, 1:res$nl] <- res$yhat
   }
 
+  # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
   E <- E[, ind, drop=FALSE]
