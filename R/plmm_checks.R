@@ -209,7 +209,7 @@ plmm_checks <- function(X,
     }
     
   }
-  
+
   # create a list that captures the centering/scaling for std_X; will need this 
   # later, see `untransform()`
   if(fbm_flag){
@@ -224,7 +224,6 @@ plmm_checks <- function(X,
   # return list for model preparation ---------------------------------
   
   ret <- list(
-    dat  = dat,
     std_X = std_X,
     std_X_details = std_X_details,
     std_X_n = std_X_n,
@@ -239,12 +238,13 @@ plmm_checks <- function(X,
     init = init
   )
   
-  if (is.null(dat)){
-    ret$n <- n
-    ret$p <- p
-  } else {
+  if (exists('dat')){
     ret$n <- dat$n
     ret$p <- dat$p
+    ret$dat <- dat
+  } else {
+    ret$n <- n
+    ret$p <- p
   }
   
   return(ret)

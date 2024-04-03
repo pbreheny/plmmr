@@ -126,6 +126,7 @@ plmm_prep <- function(std_X,
       } else if (std_X_n <= std_X_p){
         if(trace){cat("\nSince p > n, PLMM is calculating the eigendecomposition of K")}
         eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
+        K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U
         # check signs 
@@ -175,10 +176,12 @@ plmm_prep <- function(std_X,
   ret <- structure(list(
     n = n,
     p = p,
+    std_X_n = std_X_n,
     std_X_p = std_X_p,
     y = y,
     std_X = std_X,
     y = y,
+    K = K,
     s = s,
     U = U,
     eta = eta, # carry eta over to fit 

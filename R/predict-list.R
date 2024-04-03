@@ -27,7 +27,7 @@ predict.list <- function(fit,
                          idx=1:length(fit$lambda),
                          V11 = NULL,
                          V21 = NULL, ...) {
-  
+  browser() # TODO: pick up here
   type <- match.arg(type)
   
   # get beta values (for nonsingular features) from fit

@@ -23,8 +23,14 @@ v_hat <- function(fit, K = NULL){
   
   # if K is not supplied:
   if(is.null(K) & is.list(fit)){
-    K <- fit$U %*% tcrossprod(diag(fit$s), fit$U)
-    Vhat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
+    
+    if ("K" %in% names(fit)){
+      Vhat <- fit$eta * fit$K + (1-fit$eta) * diag(fit$std_X_n)
+    } else {
+      stop("\nK is not supplied in either the fit or K arguments.")
+    }
+    
+    
   }
   
   

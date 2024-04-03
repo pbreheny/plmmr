@@ -147,7 +147,7 @@ cv.plmm <- function(X,
                       ...)) # ... additional arguments to plmm_prep()
 
   prep <- do.call('plmm_prep', prep.args)
-  browser()
+
   # full model fit ----------------------------------
   fit.args <- c(list(prep = prep,
                      penalty = checked_data$penalty,
@@ -155,7 +155,6 @@ cv.plmm <- function(X,
                      eta_star = eta_star,
                      penalty.factor = checked_data$penalty.factor,
                      fbm_flag = checked_data$fbm_flag,
-                     penalty = checked_data$penalty,
                      gamma = checked_data$gamma,
                      alpha = alpha,
                      nlambda = nlambda,
@@ -178,7 +177,7 @@ cv.plmm <- function(X,
                                std_X_details = checked_data$std_X_details,
                                snp_names = col_names,
                                fbm_flag = checked_data$fbm_flag)
-  browser() # TODO: pick up here
+  
   # set up arguments for cv ---------------------------
   cv.args <- fit.args
   cv.args$warn <- FALSE
@@ -188,10 +187,10 @@ cv.plmm <- function(X,
   if (type == 'blup') {
     estimated_V <- v_hat(fit, K)
   }
-
+ 
   # initialize objects to hold CV results 
   n <- length(fit$y)
-  E <- Y <- matrix(NA, nrow=nrow(X), ncol=length(fit$lambda))
+  E <- Y <- matrix(NA, nrow=fit$std_X_n, ncol=length(fit$lambda))
 
   
   # set up folds for cross validation 
