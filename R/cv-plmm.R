@@ -43,7 +43,7 @@
 #' (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE. 
 #' @param trace If set to TRUE, inform the user of progress by announcing the 
 #' beginning of each CV fold. Default is FALSE.
-#' @param ... Additional arguments to \code{plmm_fit}
+#' @param ... Additional arguments to \code{plmm}
 #' @param fbm 
 #' @param std_needed 
 #' @param col_names 
@@ -84,14 +84,27 @@ cv.plmm <- function(X,
                     fbm = NULL,
                     std_needed = NULL,
                     col_names = NULL,
-                    y,
+                    y = NULL,
                     k = NULL,
                     K = NULL,
                     diag_K = NULL,
                     eta_star = NULL,
                     penalty = c("MCP", "SCAD", "lasso"),
-                    penalty.factor = rep(1, ncol(X)),
+                    penalty.factor = NULL,
                     type = 'blup',
+                    gamma,
+                    alpha = 1,
+                    lambda.min, # passed to internal function setup_lambda()
+                    nlambda = 100,
+                    lambda,
+                    eps = 1e-04,
+                    max.iter = 10000,
+                    convex = TRUE,
+                    dfmax = NULL,
+                    warn = TRUE,
+                    init = NULL,
+                    
+                    # cv specific arguments
                     cluster,
                     nfolds=10,
                     seed,
@@ -120,24 +133,52 @@ cv.plmm <- function(X,
                               trace = trace)  
 
   # prep  ------------------------
-  prep.args <- c(list(X = X,
-                      y = y,
-                      k = k,
-                      K = K,
-                      diag_K = diag_K,
-                      eta_star = eta_star,
-                      penalty.factor = penalty.factor,
+  prep.args <- c(list(std_X = checked_data$std_X,
+                      std_X_n = checked_data$std_X_n,
+                      std_X_p = checked_data$std_X_p,
+                      n = checked_data$n,
+                      p = checked_data$p,
+                      y = checked_data$y,
+                      K = checked_data$K,
+                      k = checked_data$k,
+                      diag_K = checked_data$diag_K,
+                      fbm_flag = checked_data$fbm_flag,
                       trace = trace,
                       ...)) # ... additional arguments to plmm_prep()
 
   prep <- do.call('plmm_prep', prep.args)
-  
-  
+  browser()
   # full model fit ----------------------------------
-  fit.args <- c(list(prep = prep, penalty = penalty), list(...))
+  fit.args <- c(list(prep = prep,
+                     penalty = checked_data$penalty,
+                     std_X_details = checked_data$std_X_details,
+                     eta_star = eta_star,
+                     penalty.factor = checked_data$penalty.factor,
+                     fbm_flag = checked_data$fbm_flag,
+                     penalty = checked_data$penalty,
+                     gamma = checked_data$gamma,
+                     alpha = alpha,
+                     nlambda = nlambda,
+                     eps = eps,
+                     max.iter = max.iter,
+                     warn = warn,
+                     convex = convex,
+                     # TODO: figure out if/when to include dfmax... (for now, it is not used)
+                     dfmax = checked_data$dfmax,
+                     init = checked_data$init),
+                list(...))
   fit <- do.call('plmm_fit', fit.args)
-  fit_to_return <- plmm_format(fit = fit, X = X)
   
+  if (is.null(col_names)){
+    if (!is.null(checked_data$dat)) {
+      col_names <- checked_data$dat$map$marker.ID
+    }
+  }
+  fit_to_return <- plmm_format(fit = fit,
+                               std_X_details = checked_data$std_X_details,
+                               snp_names = col_names,
+                               fbm_flag = checked_data$fbm_flag)
+  browser() # TODO: pick up here
   # set up arguments for cv ---------------------------
   cv.args <- fit.args
   cv.args$warn <- FALSE
