@@ -87,13 +87,23 @@ plmm_fit <- function(prep,
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
   if (length(init)!=prep$p) stop("Dimensions of init and X do not match", call.=FALSE)
   
-  if(prep$trace){cat("\nBeginning standardization + rotation.")}
+  if (prep$trace){cat("\nBeginning standardization + rotation.")}
 
   # rotate data
+  if (prep$trace){
+    cat("\nlength(s): ", length(prep$s))
+  }
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
-  wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
-  rot_X <- wUt %*% cbind(1, prep$std_X)
+  if (prep$trace){
+    cat("\nsummary(w): ", summary(w))
+  }
+  wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*") 
+  if (prep$trace){
+    cat("\nDimension of wUt (the matrix used for rotating): ", dim(wUt))
+  }
+  rot_X <- wUt %*% cbind(1, prep$std_X) # TODO try taking off the intercept 
   rot_y <- wUt %*% prep$y
+
   # re-standardize rotated rot_X, *without* rescaling the intercept!
   stdrot_X_temp <- scale_varp(rot_X[,-1, drop = FALSE])
   stdrot_X_noInt <- stdrot_X_temp$scaled_X
@@ -102,8 +112,11 @@ plmm_fit <- function(prep,
   attr(stdrot_X,'scale') <- stdrot_X_temp$scale_vals
 
   # calculate population var without mean 0; will need this for call to ncvfit()
+  # this needs to be done for cross validation; once we subset the data, 
+  #   this will not be a vector of 1s (remember: plmm does *not* restandardize
+  #   within each fold)
   xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE)) 
-  
+
   
   if(prep$trace){cat("\nSetup complete. Beginning model fitting.")}
   

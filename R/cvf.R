@@ -17,9 +17,6 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   # subset std_X, and y to match fold indices 
   #   (and in so doing, leave out the ith fold)
   cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
-  # NB: need center & scale values here! Will pass this to untransform() via predict.list
-  # attr(cv.args$prep$std_X, "center") <- attr(full_cv_prep$std_X[fold!=i, ,drop=FALSE], "center")
-  # attr(cv.args$prep$std_X, "scale") <- attr(full_cv_prep$std_X[fold!=i, ,drop=FALSE], "scale")
   cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
   cv.args$prep$y <- full_cv_prep$y[fold!=i] 
   
@@ -27,17 +24,26 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE] 
   test_y <- full_cv_prep$y[fold==i]
   
-  # OLD WAY 
-  # NB: eta used in each fold comes from the overall fit.args. If user-supplied, then 
-  # use that in all fold; if not, estimate eta in each fold 
-  
-  # NEW WAY 
+  # Note on variance estimation:
   # I moved estimate_eta() into prep, so that this is only done once. In doing this,
   # I am assuming that the eta is the same across the training and testing data.
 
-  # fit a plmm within each fold 
+  # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
+  if (cv.args$prep$trace) {
+    cat("\nFitting model in fold ", i, ":")
+  }
+   
   fit.i <- do.call("plmm_fit", cv.args)
+  
+  # for debugging
+  if (cv.args$prep$trace) {
+    cat("\nSnippet of rot_X in fold", i, ":",
+        "\n\tFirst 5 values in 1st column:", fit.i$rot_X[1:5, 1],
+        "\n\tFirst 5 values in 2nd column:", fit.i$rot_X[1:5, 2],
+        "\n\tFirst 5 values in 3rd column:", fit.i$rot_X[1:5, 3],
+        "\n\tFirst 5 values in 4th column:", fit.i$rot_X[1:5, 4])
+  }
   
   if(type == "lp"){
     yhat <- predict.list(fit = fit.i,
@@ -60,7 +66,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
                          V21 = V21, ...)
     
   }
-  
+
   loss <- sapply(1:ncol(yhat), function(ll) loss.plmm(test_y, yhat[,ll]))
   list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
 }

@@ -4,10 +4,12 @@
 \alias{relatedness_mat}
 \title{Calculate a relatedness matrix}
 \usage{
-relatedness_mat(X)
+relatedness_mat(X, std = TRUE)
 }
 \arguments{
 \item{X}{A numeric matrix of genotypes (from \emph{fully-imputed} data)}
+
+\item{std}{Logical: should X be standardized? If you set this to FALSE, you should know exactly why that is appropriate... standardization is a best practice, and this will impact results.}
 }
 \description{
 This function allows you to generate an n by n genetic relatedness matrix. If a numeric matrix is supplied, the RRM (Hayes, 2009) is used

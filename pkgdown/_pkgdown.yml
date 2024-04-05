@@ -1,9 +1,37 @@
 template:
   bootstrap: 5
   bootswatch: pulse
-
+  
 navbar:
   type: dark
+  bslib:
+    pkgdown-nav-height: 100px
+  left:
+  - icon: fa-home
+    href: index.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: Getting started
+      href: articles/getting-started.html
+    - text: Notes on notation
+      href: articles/notation.html
+    - text: How to read in PLINK files
+      href: articles/A-plink-files.html
+    - text: 'In progress: truncated eigendecomposition'
+      href: articles/B-choose_k.html
+    - text: 'In progress: exploring plmm() options'
+      href: articles/C-explore_options.html
+    - text: 'In progress: PLMMs & deconfounding'
+      href: articles/D-deconfounding.html
+    - text: 'In progress: marginal false discovery rates'
+      href: articles/E-mfdr.html
+  - text: News
+    href: news/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/pbreheny/plmmr
 
 reference:
   - title: Fitting penalized linear mixed models (PLMMs - the featured presentation) 

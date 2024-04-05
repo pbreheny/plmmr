@@ -31,11 +31,11 @@ at which predictions are requested.}
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which
 predictions are required. By default, all indices are returned.}
 
-\item{X}{Optional argument. Original design matrix (not including intercept column)
+\item{X}{Original design matrix (not including intercept column)
 from object. Required if \code{type == 'blup'} and object is too large to be
 returned in \code{plmm} object. Again, \strong{columns must be named!}}
 
-\item{y}{Optional argument. Original continuous outcome vector from object.
+\item{y}{Original continuous outcome vector from object.
 Required if \code{type == 'blup'}.}
 
 \item{K}{An optional list or matrix as returned by \code{choose_K()}.}
@@ -60,6 +60,19 @@ the estimated correlation structure of data into our prediction of the outcome.
 \examples{
 \dontrun{
 # fit a model 
+fit <- plmm(X = admix$X, y = admix$y)
+lp_pred <- predict(fit, newX = admix$X, type = 'lp')
+blup_pred <- predict(fit, newX = admix$X, X = admix$X, y = admix$y) # BLUP is default type
+lp_mspe <- apply(lp_pred, 2, function(c){crossprod(admix$y - c)})
+min(lp_mspe)
+
+blup_mspe <- apply(blup_pred, 2, function(c){crossprod(admix$y - c)})
+min(blup_mspe)
+
+cv_fit <- cv.plmm(X = admix$X, y = admix$y)
+min(cv_fit$cve)
+
+
 set.seed(123)
 train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
 train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
@@ -71,12 +84,20 @@ fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
 
  # make predictions for a select number of lambda values
  # use cv to choose a best lambda
- cv <- cv.plmm(X = train$X, y = train$y) 
- pred2 <- predict(object = fit, newX = test$X, type = "blup", idx=cv$min,
+ cvfit <- cv.plmm(X = train$X, y = train$y) 
+ pred2 <- predict(object = fit, newX = test$X, type = "blup", idx=cvfit$min,
   X = train$X, y = train$y)
-  
+ pred3 <- predict(object = fit, newX = test$X, type = "lp", idx=cvfit$min) 
+ 
   # examine prediction error 
-  summary(crossprod(y - pred2)) # almost all 0 -- predictions are good! 
+  summary(crossprod(test$y - pred2))  # for BLUP method 
+  summary(crossprod(test$y - pred3)) # for LP method 
+  
+  # which was best prediction?
+  mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)})
+  which.min(mspe) # not anywhere near the 'best lambda' chosen in cross validation...
+  mspe[which.min(mspe)]
+  min(cvfit$cve)
  }
  
  

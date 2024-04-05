@@ -44,8 +44,8 @@ flip_signs <- function(X, U, d, V, svd_list = NULL){
   # create a list of matrices, each representing UDV' for a single eigenvalue 
   Sum <- 0
   for (k in 1:length(d)){
-  terms_for_sums[[k]] <- d[k]*as.matrix(tcrossprod(U[,k], V[,k]))
-  Sum <- Sum + terms_for_sums[[k]]
+    terms_for_sums[[k]] <- d[k]*as.matrix(tcrossprod(U[,k], V[,k]))
+    Sum <- Sum + terms_for_sums[[k]]
   }
 
   for (k in 1:length(d)){

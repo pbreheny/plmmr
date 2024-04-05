@@ -2,28 +2,44 @@
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
-#' @param X Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`. 
-#' * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param y Continuous outcome vector. Logistic regression modeling is still in development.
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
-#' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
-#'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
-#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for Spenncath.
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
-#' @param nlambda Length of the sequence of lambda. Default is 100. 
-#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
-#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
-#' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
-#' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#'
+#' @param X            Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
+#'                    Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
+#' @param y            Continuous outcome vector. Logistic regression modeling is still in development.
+#' @param k            An integer specifying the number of singular values to be used in 
+#'                    the approximation of the rotated design matrix. This argument is passed to 
+#'                    `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions 
+#'                    of the _standardized_ design matrix.
+#' @param K            Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, 
+#'                    (2) an estimate (Default is the realized relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().
+#' @param diag_K       Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. 
+#'                    Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, 
+#'                    you must set diag_K = TRUE.
+#' @param eta_star     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix 
+#'                    that is full rank, this should be 1.
+#' @param penalty      The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param gamma        The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha        Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, 
+#'                    or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. 
+#'                    However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda.min   The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than 
+#'                    the number of covariates and .05 otherwise.
+#' @param nlambda      Length of the sequence of lambda. Default is 100.
+#' @param lambda       A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced 
+#'                    on the log scale.
+#' @param eps          Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient 
+#'                    is less than eps. Default is 1e-4.
+#' @param max.iter     Maximum number of iterations (total across entire path). Default is 10000.
+#' @param convex       Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param dfmax        Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational 
+#'                    burden may be heavy for models with a large number of nonzero coefficients.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector 
+#'                    of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some 
+#'                    coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which 
+#'                    case the coefficient is always in the model without shrinkage.
+#' @param init         Initial values for coefficients. Default is 0 for all columns of X.
+#' @param warn         Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param trace        If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @return A list which includes: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit. 
@@ -152,7 +168,7 @@ plmm <- function(X,
                         penalty.factor = penalty.factor,
                         trace = trace)
 
-  if(trace){cat("Beginning model fitting.\n")}
+  if(trace){cat("\nDecomposition complete. Moving to next step\n")}
   the_fit <- plmm_fit(prep = the_prep,
                       penalty = penalty,
                       gamma = gamma,
@@ -166,7 +182,15 @@ plmm <- function(X,
                       init = init,
                       convex = convex,
                       dfmax = dfmax)
-
+  if (trace) {
+    cat("\nSnippet of rot_X:",
+        "\n\tFirst 5 values in 1st column:", the_fit$rot_X[1:5, 1],
+        "\n\tFirst 5 values in 2nd column:", the_fit$rot_X[1:5, 2],
+        "\n\tFirst 5 values in 3rd column:", the_fit$rot_X[1:5, 3],
+        "\n\tFirst 5 values in 4th column:", the_fit$rot_X[1:5, 4])
+  }
+ 
+  
   if(trace){cat("\nBeta values are estimated -- almost done!")}
   the_final_product <- plmm_format(fit = the_fit, X = X)
   
