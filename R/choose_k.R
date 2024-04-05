@@ -12,7 +12,7 @@
 #' @param returnK Logical: should the true K (as in relatedness_mat(X)) be returned? Defaults to FALSE.  
 #' 
 #' @return A list with at least 3 items:
-#'  * svd_K: a list with the SVD components (s and U) for the approximated relatedness matrix K that can be passed to `plmm()`
+#'  * eigs_K: a list with the SVD components (s and U) for the approximated relatedness matrix K that can be passed to `plmm()`
 #'  * k, the chosen number of eigenvalues 
 #'  * delt, the distance between the true and approximated K matrices at chosen k
 #'  * k_vals, a vector of all k values evaluated 
@@ -68,9 +68,9 @@ choose_k <- function(X,
   while(k < min(nrow(std_X), ncol(std_X)) | it < max_it){
     k_vals[it] <- k
     # truncated SVD 
-    trunc <- RSpectra::svds(A = K, k = k, nv = 0)
+    trunc <- RSpectra::eigs(A = K, k = k, nv = 0)
     # calculate approximation
-    A_k <- trunc$u %*% tcrossprod(diag(trunc$d), trunc$u)
+    A_k <- trunc$vectors %*% tcrossprod(diag(trunc$values), trunc$vectors)
     
     # calculate difference 
     d <- abs(delta(K, A_k, type = type))
@@ -89,7 +89,7 @@ choose_k <- function(X,
   # return list with approximated K 
   
   ret <- list(
-    svd_K = list(U = trunc$u, s = trunc$d),
+    eigs_K = list(U = trunc$vectors, s = trunc$values),
     k = k,
     delt = d,
     k_vals = k_vals,
@@ -97,7 +97,7 @@ choose_k <- function(X,
   )
   
   # optional items to return:
-  if(returnKapprox){ret$svd_K$K_approx = A_k}
+  if(returnKapprox){ret$eigs_K$K_approx = A_k}
   if(returnK){ret$K = K}
   
   return(ret)

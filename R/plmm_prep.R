@@ -125,21 +125,6 @@ plmm_prep <- function(X,
     # NB: relatedness_mat(X) standardizes X! 
     if(is.null(K) & is.null(s)){
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
-      
-      # approach to decomposition:
-      # n > p: take SVD of X
-      # n <= p: construct K, then take eigen(K)
-      if(n_stdX > p_stdX){
-      if(trace){
-        cat("\nCalculating the SVD of X")}
-      svd_res <- svd_X(X = std_X, k = k, trunc = trunc, trace = trace)
-      s <- (svd_res$d^2)*(1/p)
-      U <- svd_res$U
-      # V <- svd_res$V # only need this piece for sign check
-      # check signs 
-      # sign_check <- flip_signs(X = std_X, U = U, V = V, d = s)
-      # U <- sign_check$U
-      } else if (n_stdX <= p_stdX){
         if(trace){cat("\nCalculating eigendecomposition of K")}
         eigen_res <- eigen_K(std_X, p) 
         s <- eigen_res$s
@@ -147,8 +132,6 @@ plmm_prep <- function(X,
         # check signs 
         # sign_check <- flip_signs(X = eigen_res$K, U = U, V = U, d = s)
         # U <- sign_check$U
-      }
-      
     } else {
       # last case: K is a user-supplied matrix 
       eigen_res <- eigen(K)

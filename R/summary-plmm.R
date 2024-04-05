@@ -56,10 +56,10 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
   nonzero <- rownames(object$beta_vals[nz,lambda_char,drop=F])
   # don't drop, because we need the dimnames here ^ 
   
- 
+
   out <- structure(list(
     penalty=object$penalty,
-    n=object$nrow_X, 
+    n=object$n, 
     p=nrow(object$beta_vals),
     converged=object$converged[idx],
     lambda=lambda, 

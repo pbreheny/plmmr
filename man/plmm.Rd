@@ -29,44 +29,57 @@ plmm(
 }
 \arguments{
 \item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
-\itemize{
-\item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-}}
+Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
 \item{y}{Continuous outcome vector. Logistic regression modeling is still in development.}
 
-\item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
+\item{k}{An integer specifying the number of singular values to be used in
+the approximation of the rotated design matrix. This argument is passed to
+\code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions
+of the \emph{standardized} design matrix.}
 
-\item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().}
+\item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
+(2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().}
 
-\item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
-Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.}
+\item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
+Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
+you must set diag_K = TRUE.}
 
-\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
+\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix
+that is full rank, this should be 1.}
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
-\item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for Spenncath.}
+\item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge,
+or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression.
+However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than
+the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
-\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
+\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced
+on the log scale.}
 
-\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient
+is less than eps. Default is 1e-4.}
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
 \item{convex}{Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
-\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational
+burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector
+of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some
+coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which
+case the coefficient is always in the model without shrinkage.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 

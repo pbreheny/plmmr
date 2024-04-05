@@ -74,12 +74,25 @@ We can also plot the path of the fit to see how model coefficients vary with $\l
 plot(admix_fit)
 ```
 
+Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). Here is how that could look: 
+
+```{r}
+admix_fit2 <- plmm(X = cbind(admix$race, admix$X), y = admix$y,
+                   penalty = "lasso",
+                   # make the penalty factor 0 to keep the corresponding covariate unpenalized
+                   penalty.factor = c(0, rep(1, ncol(admix$X))))
+
+summary(admix_fit2, idx = 95)
+plot(admix_fit2)
+```
+
 ## Cross validation 
 
 To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv.plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
-admix_cv <- cv.plmm(X = admix$X, y = admix$y)
+admix_cv <- cv.plmm(X = cbind(admix$race, admix$X), y = admix$y,
+                    penalty = "lasso", penalty.factor = c(0, rep(1, ncol(admix$X))))
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 ```
@@ -90,20 +103,28 @@ We can also plot the cross-validation error (CVE) versus $\lambda$ (on the log s
 plot(admix_cv)
 ```
 
-
-```{r admix_pred, include=FALSE, eval=FALSE}
 ## Predicted values 
 
-# The `predict()` methods for PLMMs are in development (we are working on a Best Linear Unbiased Predictor); below is an example of where we are for now: 
+Below is an example of the `predict()` methods for PLMMs: 
 
+```{r admix_pred}
 # make predictions for select lambda value(s)
-admix_pred1 <- predict(object = admix_fit,
+y_hat <- predict(object = admix_fit,
                        newX = admix$X,
                        type = "blup",
                        X = admix$X,
                        y = admix$y,
-                       idx = admix_cv$min)
-
-admix_pred1[,admix_cv$min] -> y_hat
+                       lambda = admix_cv$lambda.min)
 ```
 
+We can compare these predictions with the predictions we would get from an intercept-only model using mean squared prediction error (MSPE) -- lower is better:
+
+```{r}
+# intercept-only (or 'null') model
+crossprod(admix$y - mean(admix$y))/length(admix$y)
+
+# our model
+crossprod(admix$y - y_hat)/length(admix$y)
+```
+
+We see our model has better predictions than the null
