@@ -18,28 +18,40 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/A-plink-files.html">Processing PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">Choosing k -- an eigenproblem</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">Exploring different modeling options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">Deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">Inference with marginal false discovery rates</a>
-    <a class="dropdown-item" href="../articles/getting-started.html">Getting started with plmm</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
+    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
+    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
+    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
+    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
+    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+  <a class="nav-link" href="../news/index.html">News</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/pbreheny/plmmr">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -84,13 +96,13 @@ We have not implemented something like mFDR for LMMs yet</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mfdr</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        EF  S mFDR</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.6133 -1 -1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5950  0  0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5773  1  1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5601  1  1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5434  1  1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.5272  1  1    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                EF  S      mFDR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.42789 -1.000000 -1 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.39905  0.000000  0 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.37215  0.000000  0 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.34707  1.000000  1 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.32368  1.910926  3 0.6369755</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.30187  2.378323  3 0.7927742</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

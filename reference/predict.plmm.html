@@ -18,28 +18,40 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/A-plink-files.html">Processing PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">Choosing k -- an eigenproblem</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">Exploring different modeling options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">Deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">Inference with marginal false discovery rates</a>
-    <a class="dropdown-item" href="../articles/getting-started.html">Getting started with plmm</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
+    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
+    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
+    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
+    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
+    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+  <a class="nav-link" href="../news/index.html">News</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/pbreheny/plmmr">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -98,13 +110,13 @@ predictions are required. By default, all indices are returned.</p></dd>
 
 
 <dt>X</dt>
-<dd><p>Optional argument. Original design matrix (not including intercept column)
+<dd><p>Original design matrix (not including intercept column)
 from object. Required if <code>type == 'blup'</code> and object is too large to be
 returned in <code>plmm</code> object. Again, <strong>columns must be named!</strong></p></dd>
 
 
 <dt>y</dt>
-<dd><p>Optional argument. Original continuous outcome vector from object.
+<dd><p>Original continuous outcome vector from object.
 Required if <code>type == 'blup'</code>.</p></dd>
 
 
@@ -131,6 +143,19 @@ the estimated correlation structure of data into our prediction of the outcome.<
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># fit a model </span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lp_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span>, newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">'lp'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">blup_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span>, newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span> <span class="co"># BLUP is default type</span></span></span>
+<span class="r-in"><span><span class="va">lp_mspe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">lp_pred</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">lp_mspe</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">blup_mspe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">blup_pred</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">blup_mspe</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">$</span><span class="va">cve</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">train_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, <span class="fl">100</span><span class="op">)</span> <span class="co"># shuffling is important here! Keeps test and train groups comparable.</span></span></span>
 <span class="r-in"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="va">train_idx</span>,<span class="op">]</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">train_idx</span><span class="op">]</span><span class="op">)</span></span></span>
@@ -142,12 +167,20 @@ the estimated correlation structure of data into our prediction of the outcome.<
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># make predictions for a select number of lambda values</span></span></span>
 <span class="r-in"><span> <span class="co"># use cv to choose a best lambda</span></span></span>
-<span class="r-in"><span> <span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span><span class="op">)</span> </span></span>
-<span class="r-in"><span> <span class="va">pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"blup"</span>, idx<span class="op">=</span><span class="va">cv</span><span class="op">$</span><span class="va">min</span>,</span></span>
+<span class="r-in"><span> <span class="va">cvfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span><span class="op">)</span> </span></span>
+<span class="r-in"><span> <span class="va">pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"blup"</span>, idx<span class="op">=</span><span class="va">cvfit</span><span class="op">$</span><span class="va">min</span>,</span></span>
 <span class="r-in"><span>  X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span> <span class="va">pred3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"lp"</span>, idx<span class="op">=</span><span class="va">cvfit</span><span class="op">$</span><span class="va">min</span><span class="op">)</span> </span></span>
+<span class="r-in"><span> </span></span>
 <span class="r-in"><span>  <span class="co"># examine prediction error </span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">pred2</span><span class="op">)</span><span class="op">)</span> <span class="co"># almost all 0 -- predictions are good! </span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">pred2</span><span class="op">)</span><span class="op">)</span>  <span class="co"># for BLUP method </span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">pred3</span><span class="op">)</span><span class="op">)</span> <span class="co"># for LP method </span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># which was best prediction?</span></span></span>
+<span class="r-in"><span>  <span class="va">mspe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">pred1</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">mspe</span><span class="op">)</span> <span class="co"># not anywhere near the 'best lambda' chosen in cross validation...</span></span></span>
+<span class="r-in"><span>  <span class="va">mspe</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">mspe</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">$</span><span class="va">cve</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="op">}</span></span></span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> </span></span>

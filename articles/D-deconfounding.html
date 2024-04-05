@@ -37,29 +37,42 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
+  <a class="nav-link" href="../index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/A-plink-files.html">Processing PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">Choosing k -- an eigenproblem</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">Exploring different modeling options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">Deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">Inference with marginal false discovery rates</a>
-    <a class="dropdown-item" href="../articles/getting-started.html">Getting started with plmm</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
+    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
+    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
+    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
+    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
+    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+  <a class="nav-link" href="../news/index.html">News</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/pbreheny/plmmr">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -117,7 +130,7 @@ structure?</li>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">y</span>, X<span class="op">=</span><span class="va">X</span>, beta<span class="op">=</span><span class="va">b</span>, Z<span class="op">=</span><span class="va">Z</span>, gamma<span class="op">=</span><span class="va">g</span>, mu<span class="op">=</span><span class="va">mu</span>, id<span class="op">=</span><span class="va">z</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="va">l</span> <span class="op">&lt;-</span> <span class="fu">gb</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">cvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html" class="external-link">cv.glmnet</a></span><span class="op">(</span><span class="va">l</span><span class="op">$</span><span class="va">X</span>, <span class="va">l</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">cvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmnet/man/cv.glmnet.html" class="external-link">cv.glmnet</a></span><span class="op">(</span><span class="va">l</span><span class="op">$</span><span class="va">X</span>, <span class="va">l</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="va">cvp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span><span class="va">l</span><span class="op">$</span><span class="va">X</span>, <span class="va">l</span><span class="op">$</span><span class="va">y</span>, penalty<span class="op">=</span><span class="st">'lasso'</span><span class="op">)</span></span>
 <span><span class="va">cvp_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span><span class="va">l</span><span class="op">$</span><span class="va">X</span>, <span class="va">l</span><span class="op">$</span><span class="va">y</span>, penalty<span class="op">=</span><span class="st">'lasso'</span>,</span>
 <span>                    type <span class="op">=</span> <span class="st">'blup'</span>,</span>

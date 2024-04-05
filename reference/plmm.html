@@ -20,28 +20,40 @@ NB: this function is simply a wrapper for plmm_prep -&amp;gt; plmm_fit -&amp;gt;
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/A-plink-files.html">Processing PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">Choosing k -- an eigenproblem</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">Exploring different modeling options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">Deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">Inference with marginal false discovery rates</a>
-    <a class="dropdown-item" href="../articles/getting-started.html">Getting started with plmm</a>
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
+    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
+    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
+    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
+    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
+    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+  <a class="nav-link" href="../news/index.html">News</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/pbreheny/plmmr">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -87,8 +99,8 @@ NB: this function is simply a wrapper for plmm_prep -&gt; plmm_fit -&gt; plmm_fo
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>X</dt>
-<dd><p>Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to <code><a href="get_data.html">get_data()</a></code>.</p><ul><li><p>Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.</p></li>
-</ul></dd>
+<dd><p>Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to <code><a href="get_data.html">get_data()</a></code>.
+Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.</p></dd>
 
 
 <dt>y</dt>
@@ -96,20 +108,26 @@ NB: this function is simply a wrapper for plmm_prep -&gt; plmm_fit -&gt; plmm_fo
 
 
 <dt>k</dt>
-<dd><p>An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to <code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to <code>min(n, p) - 1</code>, where n and p are the dimensions of the <em>standardized</em> design matrix.</p></dd>
+<dd><p>An integer specifying the number of singular values to be used in
+the approximation of the rotated design matrix. This argument is passed to
+<code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to <code>min(n, p) - 1</code>, where n and p are the dimensions
+of the <em>standardized</em> design matrix.</p></dd>
 
 
 <dt>K</dt>
-<dd><p>Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().</p></dd>
+<dd><p>Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
+(2) an estimate (Default is the realized relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().</p></dd>
 
 
 <dt>diag_K</dt>
-<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
-Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.</p></dd>
+<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
+Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
+you must set diag_K = TRUE.</p></dd>
 
 
 <dt>eta_star</dt>
-<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.</p></dd>
+<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix
+that is full rank, this should be 1.</p></dd>
 
 
 <dt>penalty</dt>
@@ -117,15 +135,18 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>gamma</dt>
-<dd><p>The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for Spenncath.</p></dd>
+<dd><p>The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.</p></dd>
 
 
 <dt>alpha</dt>
-<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
+<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge,
+or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression.
+However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
 
 
 <dt>lambda.min</dt>
-<dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.</p></dd>
+<dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than
+the number of covariates and .05 otherwise.</p></dd>
 
 
 <dt>nlambda</dt>
@@ -133,11 +154,13 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>lambda</dt>
-<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.</p></dd>
+<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced
+on the log scale.</p></dd>
 
 
 <dt>eps</dt>
-<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is <code>1e-4</code>.</p></dd>
+<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient
+is less than eps. Default is 1e-4.</p></dd>
 
 
 <dt>max.iter</dt>
@@ -149,7 +172,8 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>dfmax</dt>
-<dd><p>Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
+<dd><p>Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational
+burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
 
 
 <dt>warn</dt>
@@ -157,7 +181,10 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>penalty.factor</dt>
-<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.</p></dd>
+<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector
+of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some
+coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which
+case the coefficient is always in the model without shrinkage.</p></dd>
 
 
 <dt>init</dt>
@@ -199,11 +226,11 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 <span class="r-in"><span><span class="va">fit_admix1</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix1</span>, idx <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=, p=101 at lambda=0.0316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=197, p=101 at lambda=0.00046</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  82 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  98 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_admix1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plmm-1.png" alt="" width="700" height="433"></span>
@@ -212,7 +239,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 <span class="r-in"><span><span class="va">fit_admix2</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix2</span>, idx <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=, p=101 at lambda=0.0402</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=50, p=101 at lambda=0.0402</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
