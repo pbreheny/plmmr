@@ -35,7 +35,7 @@ Note: X may include clinical covariates and other non-SNP data, but no missing v
 
 \item{k}{An integer specifying the number of singular values to be used in
 the approximation of the rotated design matrix. This argument is passed to
-\code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions
+\code{RSpectra::svds()}. Defaults to full decomposition (i.e., \code{k = min(n, p)}), where n and p are the dimensions
 of the \emph{standardized} design matrix.}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,

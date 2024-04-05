@@ -2,8 +2,7 @@
 % Please edit documentation in R/plmm_fit.R
 \name{plmm_fit}
 \alias{plmm_fit}
-\title{PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
-This is an internal function for \code{cv.plmm}}
+\title{Fit a linear mixed model with non-convex regularization}
 \usage{
 plmm_fit(
   prep,
@@ -23,33 +22,40 @@ plmm_fit(
 )
 }
 \arguments{
-\item{prep}{A list as returned from \code{plmm_prep}}
+\item{prep}{A list as returned from \code{plmm_prep}.}
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge,
+or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression.
+However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than
+the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
-\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
+\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced
+on the log scale.}
 
-\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient
+is less than eps. Default is 1e-4.}
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
+\item{convex}{Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound.
+However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
-\item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
+\item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB,
+but turned off for larger matrices to preserve memory.}
 }
 \value{
 A list with these components:
@@ -96,7 +102,7 @@ lasso penalties was used. Not relevant for lasso models.
 }
 }
 \description{
-PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
-This is an internal function for \code{cv.plmm}
+This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
+NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \keyword{internal}

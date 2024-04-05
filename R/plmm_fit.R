@@ -1,19 +1,29 @@
-#' PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
-#' This is an internal function for \code{cv.plmm}
-#' @param prep A list as returned from \code{plmm_prep}
-#' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
-#' @param nlambda Length of the sequence of lambda. Default is 100. 
-#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
-#' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
-#' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
+#' Fit a linear mixed model with non-convex regularization
+#'
+#' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
+#' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
+#'
+#' @param prep          A list as returned from \code{plmm_prep}.
+#' @param penalty       The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param gamma         The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha         Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, 
+#'                     or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. 
+#'                     However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda.min    The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than 
+#'                     the number of covariates and .05 otherwise.
+#' @param nlambda       Length of the sequence of lambda. Default is 100.
+#' @param lambda        A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced 
+#'                     on the log scale.
+#' @param eps           Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient 
+#'                     is less than eps. Default is 1e-4.
+#' @param max.iter      Maximum number of iterations (total across entire path). Default is 10000.
+#' @param convex        Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param dfmax         (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. 
+#'                     However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
+#' @param init          Initial values for coefficients. Default is 0 for all columns of X.
+#' @param warn          Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param returnX       Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB,
+#'                     but turned off for larger matrices to preserve memory.
 #' @returns  A list with these components: 
 #'   * n: # of rows in X
 #'   * p: # of columns in X (including constant features)
@@ -78,7 +88,7 @@ plmm_fit <- function(prep,
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
   
   # set default init
-  if(is.null(init)) init <- rep(0, prep$p)
+  if (is.null(init)) init <- rep(0, prep$p)
   
   # error checking
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
@@ -118,7 +128,7 @@ plmm_fit <- function(prep,
   xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE)) 
 
   
-  if(prep$trace){cat("\nSetup complete. Beginning model fitting.")}
+  if (prep$trace) {cat("\nSetup complete. Beginning model fitting.")}
   
   # remove initial values for coefficients representing columns with singular values
   init <- init[prep$ns] 
@@ -134,7 +144,7 @@ plmm_fit <- function(prep,
     user.lambda <- FALSE
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
-    if(length(lambda) > 1){
+    if (length(lambda) > 1 ) {
       if (max(diff(lambda)) > 0) stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
     }
     nlambda <- length(lambda)
@@ -155,7 +165,7 @@ plmm_fit <- function(prep,
   
   # main attraction 
   ## set up progress bar -- this can take a while
-  if(prep$trace){pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
+  if (prep$trace) {pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
   ## TODO: think about putting this loop in C
   for (ll in 1:nlambda){
     lam <- lambda[ll]

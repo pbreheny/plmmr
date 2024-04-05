@@ -8,8 +8,8 @@
 #' @param y            Continuous outcome vector. Logistic regression modeling is still in development.
 #' @param k            An integer specifying the number of singular values to be used in 
 #'                    the approximation of the rotated design matrix. This argument is passed to 
-#'                    `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions 
-#'                    of the _standardized_ design matrix.
+#'                    `RSpectra::svds()`. Defaults to full decomposition (i.e., `k = min(n, p)`), where n and p are the dimensions 
+#'                    of the _standardized_ design matrix. 
 #' @param K            Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, 
 #'                    (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K       Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. 
@@ -99,12 +99,12 @@ plmm <- function(X,
                  trace = FALSE) {
 
   ## check types 
-  if("character" %in% class(X)){
+  if ("character" %in% class(X)) {
     dat <- get_data(path = X, returnX = TRUE, trace = trace)
     X <- dat$X
   }
   if ("SnpMatrix" %in% class(X)) X <- methods::as(X, 'numeric')
-  if("FBM.code256" %in% class(X)) stop("plmm does not work with FBM objects at this time. This option is in progress. \nFor now, design matrix X must be a numeric matrix.")
+  if ("FBM.code256" %in% class(X)) stop("plmm does not work with FBM objects at this time. This option is in progress. \nFor now, design matrix X must be a numeric matrix.")
   if (!inherits(X, "matrix")) {
     tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
     if (inherits(tmp, "try-error")) stop("X must be a matrix or able to be coerced to a matrix", call.=FALSE)
@@ -145,7 +145,7 @@ plmm <- function(X,
   
   }
   # warn about computational time for large K 
-  if(is.null(k) & is.null(diag_K) & (nrow(X) > 1000)){
+  if (is.null(k) & is.null(diag_K) & (nrow(X) > 1000)){
     warning("The number of observations is large, and k is not specified.
     \nThis can dramatically increase computational time -- the SVD calculation is expensive.
             \nIf the observations are unrelated, please set diag_K = TRUE. SVD is not needed in this case.
@@ -158,7 +158,9 @@ plmm <- function(X,
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
   
   
-  if(trace){cat("\nPassed all checks. Beginning singular value decomposition.\n")}
+  if (trace){
+    cat("\nPassed all checks. Beginning singular value decomposition.\n")
+  }
   the_prep <- plmm_prep(X = X,
                         y = y,
                         K = K,
@@ -168,7 +170,9 @@ plmm <- function(X,
                         penalty.factor = penalty.factor,
                         trace = trace)
 
-  if(trace){cat("\nDecomposition complete. Moving to next step\n")}
+  if (trace){
+    cat("\nDecomposition complete. Moving to next step\n")
+    }
   the_fit <- plmm_fit(prep = the_prep,
                       penalty = penalty,
                       gamma = gamma,
@@ -191,7 +195,9 @@ plmm <- function(X,
   }
  
   
-  if(trace){cat("\nBeta values are estimated -- almost done!")}
+  if (trace) {
+    cat("\nBeta values are estimated -- almost done!")
+    }
   the_final_product <- plmm_format(fit = the_fit, X = X)
   
   return(the_final_product)

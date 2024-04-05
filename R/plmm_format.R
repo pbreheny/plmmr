@@ -1,7 +1,7 @@
 #' PLMM format: a function to format the output of a model constructed with \code{plmm_fit}
 #' 
-#' @param fit A list of parameters describing the output of a model constructed with \code{plmm_fit}
-#' @param X Design matrix. May include clinical covariates and other non-SNP data. 
+#' @param fit   A list of parameters describing the output of a model constructed with \code{plmm_fit}
+#' @param X     Design matrix. May include clinical covariates and other non-SNP data. 
 #' 
 #' @returns A list with the components: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
@@ -30,7 +30,7 @@
 plmm_format <- function(fit, X){
   
   # reverse the transformations of the beta values 
-  if(fit$trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
+  if (fit$trace) {cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
   
   # get beta values back in original scale; reverse the PRE-ROTATION standardization 
   untransformed_b2 <- untransform(untransformed_b1 = fit$untransformed_b1,

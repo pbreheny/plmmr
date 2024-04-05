@@ -30,7 +30,7 @@
 #' }
 
 flip_signs <- function(X, U, d, V, svd_list = NULL){
-  if(!is.null(svd_list)){
+  if (!is.null(svd_list)){
     U <- svd_list$u
     d <- svd_list$d
     V <- svd_list$v
@@ -43,7 +43,7 @@ flip_signs <- function(X, U, d, V, svd_list = NULL){
   
   # create a list of matrices, each representing UDV' for a single eigenvalue 
   Sum <- 0
-  for (k in 1:length(d)){
+  for (k in 1:length(d)) {
     terms_for_sums[[k]] <- d[k]*as.matrix(tcrossprod(U[,k], V[,k]))
     Sum <- Sum + terms_for_sums[[k]]
   }
@@ -60,7 +60,7 @@ flip_signs <- function(X, U, d, V, svd_list = NULL){
     right_signs[k] <- sum(sign(cp2)*(cp2^2))
     
     # determine corrected signs
-    if (left_signs[k]*right_signs[k] < 0){
+    if (left_signs[k]*right_signs[k] < 0) {
       if (left_signs[k] < right_signs[k]){
         left_signs[k] <- -1*left_signs[k]
       } else {

@@ -1,14 +1,25 @@
 #' PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
 #' This is an internal function for \code{cv.plmm}
 #'
-#' @param X Design matrix. May include clinical covariates and other non-SNP data.
-#' @param y Continuous outcome vector.
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
-#' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`. 
-#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
-#' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#' @param X            Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
+#'                    Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
+#' @param y            Continuous outcome vector. Logistic regression modeling is still in development.
+#' @param k            An integer specifying the number of singular values to be used in 
+#'                    the approximation of the rotated design matrix. This argument is passed to 
+#'                    `RSpectra::svds()`. Defaults to full decomposition (i.e., `k = min(n, p)`), where n and p are the dimensions 
+#'                    of the _standardized_ design matrix. 
+#' @param K            Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, 
+#'                    (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().
+#' @param diag_K       Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. 
+#'                    Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, 
+#'                    you must set diag_K = TRUE.
+#' @param eta_star     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix 
+#'                    that is full rank, this should be 1.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector 
+#'                    of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some 
+#'                    coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which 
+#'                    case the coefficient is always in the model without shrinkage.
+#' @param trace        If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
 #'
 #' @return List with these components: 
@@ -76,12 +87,12 @@ plmm_prep <- function(X,
   )
   
   # set default k and create indicator 'trunc' to pass to svd_X
-  if(is.null(k)){
+  if (is.null(k)){
     k <- min(n_stdX, p_stdX)
     trunc <- FALSE
-  } else if(!is.null(k) & (k < min(n_stdX, p_stdX))){
+  } else if (!is.null(k) & (k < min(n_stdX, p_stdX))){
     trunc <- TRUE
-  } else if(!(k %in% 1:min(n_stdX,p_stdX))){
+  } else if (!(k %in% 1:min(n_stdX,p_stdX))){
     stop("\nk value is out of bounds. 
          \nIf specified, k must be an integer in the range from 1 to min(nrow(X), ncol(X)). 
          \nwhere X does not include singular columns. For help detecting singularity,
@@ -89,27 +100,29 @@ plmm_prep <- function(X,
   }
   
   # set default: if diag_K not specified, set to false
-  if(is.null(diag_K)){diag_K <- FALSE}
+  if (is.null(diag_K)){
+    diag_K <- FALSE
+    }
   
   # handle the cases where no decomposition is needed: 
   # case 1: K is the identity matrix 
   flag1 <- diag_K & is.null(K)
   if(flag1){
-    if(trace){(cat("\nUsing identity matrix for K."))}
+    if (trace) {(cat("\nUsing identity matrix for K."))}
     s <- rep(1, n)
     U <- diag(nrow = n)
   }
   # case 2: K is user-supplied diagonal matrix (like a weighted lm())
   flag2 <- diag_K & !is.null(K) & ('matrix' %in% class(K))
   if(flag2){
-    if(trace){(cat("\nUsing supplied diagonal matrix for K, similar to a lm() with weights."))}
+    if (trace) {(cat("\nUsing supplied diagonal matrix for K, similar to a lm() with weights."))}
     s <- sort(diag(K), decreasing = T)
     U <- diag(nrow = n)[,order(diag(K), decreasing = T)]
   }
   # case 3: K is a user-supplied list, as passed from choose_k()
   flag3 <- !is.null(K) & ('list' %in% class(K))
-  if(flag3){
-    if(trace){cat("\nK is a list; will pass SVD components from list to model fitting.")}
+  if( flag3) {
+    if (trace) {cat("\nK is a list; will pass SVD components from list to model fitting.")}
     s <- K$s # no need to adjust singular values by p; choose_k() does this via relatedness_mat()
     U <- K$U
     # TODO: add a check for list names
@@ -119,11 +132,11 @@ plmm_prep <- function(X,
   }
 
   # otherwise, need to do SVD:
-  if(sum(c(flag1, flag2, flag3)) == 0){
-    if(trace){cat("\nStarting decomposition.")}
+  if (sum(c(flag1, flag2, flag3)) == 0) {
+    if (trace) {cat("\nStarting decomposition.")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     # NB: relatedness_mat(X) standardizes X! 
-    if(is.null(K) & is.null(s)){
+    if (is.null(K) & is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
         if(trace){cat("\nCalculating eigendecomposition of K")}
         eigen_res <- eigen_K(std_X, p) 
@@ -146,7 +159,7 @@ plmm_prep <- function(X,
 
 
   # error check: what if the combination of args. supplied was none of the SVD cases above?
-  if(is.null(s) | is.null(U)){
+  if (is.null(s) | is.null(U)){
     stop("\nSomething is wrong in the SVD/eigendecomposition.
     \nThe combination of supplied arguments does not match any cases handled in 
          \n svd_X(), the internal function called by plmm() via plmm_prep().
