@@ -110,7 +110,7 @@ Note: X may include clinical covariates and other non-SNP data, but no missing v
 <dt>k</dt>
 <dd><p>An integer specifying the number of singular values to be used in
 the approximation of the rotated design matrix. This argument is passed to
-<code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to <code>min(n, p) - 1</code>, where n and p are the dimensions
+<code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to full decomposition (i.e., <code>k = min(n, p)</code>), where n and p are the dimensions
 of the <em>standardized</em> design matrix.</p></dd>
 
 
