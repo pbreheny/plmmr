@@ -9,7 +9,7 @@
 #'                    `RSpectra::svds()`. Defaults to full decomposition (i.e., `k = min(n, p)`), where n and p are the dimensions 
 #'                    of the _standardized_ design matrix. 
 #' @param K            Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, 
-#'                    (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().
+#'                    (2) an estimate (Default is the relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K       Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. 
 #'                    Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, 
 #'                    you must set diag_K = TRUE.

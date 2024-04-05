@@ -29,7 +29,7 @@ the approximation of the rotated design matrix. This argument is passed to
 of the \emph{standardized} design matrix.}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
-(2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().}
+(2) an estimate (Default is the relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().}
 
 \item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
 Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
