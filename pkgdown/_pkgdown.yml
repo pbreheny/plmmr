@@ -1,15 +1,11 @@
-url: ~
-
 template:
   bootstrap: 5
   bootswatch: pulse
-  # theme: nord
+  
+navbar:
+  type: dark
   bslib:
     pkgdown-nav-height: 100px
-    
-navbar:
-  bg: primary
-  type: light
   left:
   - icon: fa-home
     href: index.html
