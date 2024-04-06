@@ -171,7 +171,8 @@ plmm_fit <- function(prep,
                                         scale = rep(1, ncol(stdrot_X)),
                                         ncores = bigstatsr::nb_cores())
     linear.predictors <- matrix(NA, nrow = stdrot_X$nrow, ncol = nlambda)
-    b <- matrix(NA, nrow = stdrot_X$ncol, ncol = nlambda)
+    # for filebacked results, return estimated coefficients as a sparse matrix 
+    b <- Matrix::Matrix(0, nrow = stdrot_X$ncol, ncol = nlambda, sparse = TRUE)
   }
   
   iter <- integer(nlambda)
@@ -225,6 +226,7 @@ plmm_fit <- function(prep,
                              max.iter = max.iter, 
                              penalty.factor = new.penalty.factor,
                              alpha = alpha)
+    
       # TODO: add a way to pass additional args to this function via '...'
       b[,ll] <- init <- res$beta
       linear.predictors[,ll] <- bigstatsr::big_prodVec(X = stdrot_X,

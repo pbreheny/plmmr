@@ -3,50 +3,38 @@
 #' Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized 
 #'  linear mixed models over a grid of values for the regularization parameter `lambda`.
 #'
-#' @param X Design matrix for model fitting. May include clinical covariates and 
-#' other non-SNP data. 
-#' @param y Continuous outcome vector for model fitting.
-#' @param k An integer specifying the number of singular values to be used in 
-#' the approximation of the rotated design matrix. This argument is passed to 
-#' `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions 
-#' of the _standardized_ design matrix.
-#' @param K Similarity matrix, in the form of (1) the relatedness matrix estimated 
-#' from the data (default), (2) a user-supplied matrix, or (3) a user-supplied 
-#' list with components 'd' and 'u' as created by `choose_k()`.
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect 
-#' observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
-#' @param eta_star Optional arg. to \code{plmm_prep}. Defaults to NULL.
-#' @param penalty The penalty to be applied to the model. Either 
-#' "MCP" (the default), "SCAD", or "lasso".
-#' @param penalty.factor Optional arg. to \code{plmm_prep}. Defaults to 1 for 
-#' all predictors (except the intercept). 
-#' @param type A character argument indicating what should be returned from 
-#' `predict.plmm()`. If \code{type == 'lp'} predictions are based on the linear 
-#' predictor, \code{$X beta$}. If \code{type == 'blup'} predictions are based on 
-#' the *sum* of the linear predictor and the estimated random effect (BLUP). 
-#' Defaults to 'blup', as this has shown to be a superior prediction method in 
-#' many applications.
-#' @param cluster `cv.plmm()` can be run in parallel across a cluster using the parallel 
-#' package. The cluster must be set up in advance using `parallel::makeCluster()`.
-#' The cluster must then be passed to `cv.plmm()`.
-#' @param nfolds The number of cross-validation folds. Default is 10.
-#' @param fold Which fold each observation belongs to. By default the observations 
-#' are randomly assigned.
-#' @param seed You may set the seed of the random number generator in order to 
-#' obtain reproducible results.
-#' @param returnY Should `cv.plmm()` return the linear predictors from the 
-#' cross-validation folds? Default is FALSE; if TRUE, this will return a matrix 
-#' in which the element for row `i`, column `j` is the fitted value for observation `i`
-#'  from the fold in which observation `i` was excluded from the fit, at the `j`th 
-#'  value of `lambda`.
-#' @param returnBiasDetails Logical: should the cross-validation bias 
-#' (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE. 
-#' @param trace If set to TRUE, inform the user of progress by announcing the 
-#' beginning of each CV fold. Default is FALSE.
-#' @param ... Additional arguments to \code{plmm}
-#' @param fbm 
-#' @param std_needed 
-#' @param col_names 
+#' @param X              Design matrix for model fitting. May include clinical covariates and other non-SNP data.
+#' @param y              Continuous outcome vector for model fitting.
+#' @param k              An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. 
+#'                      This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of 
+#'                      the standardized design matrix.
+#' @param K              Similarity matrix, in the form of (1) the relatedness matrix estimated from the data (default), 
+#'                      (2) a user-supplied matrix, or (3) a user-supplied list with components 'd' and 'u' as created by `choose_k()`.
+#' @param diag_K         Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be 
+#'                      treated as unrelated. Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want 
+#'                      to use a diagonal K matrix, you must set diag_K = TRUE.
+#' @param eta_star       Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance 
+#'                      matrix that is full rank, this should be 1.
+#' @param penalty        The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param penalty.factor Optional argument to plmm_prep. Defaults to 1 for all predictors (except the intercept).
+#' @param type           A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are 
+#'                      based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor 
+#'                      and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method 
+#'                      in many applications.
+#' @param cluster        cv.plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in 
+#'                      advance using parallel::makeCluster(). The cluster must then be passed to cv.plmm().
+#' @param nfolds         The number of cross-validation folds. Default is 10.
+#' @param fold           Which fold each observation belongs to. By default, the observations are randomly assigned.
+#' @param seed           You may set the seed of the random number generator in order to obtain reproducible results.
+#' @param returnY        Should cv.plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE, 
+#'                      this will return a matrix in which the element for row i, column j is the fitted value for observation i from 
+#'                      the fold in which observation i was excluded from the fit, at the jth value of lambda.
+#' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
+#' @param trace          If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
+#' @param ...            Additional arguments to plmm
+#' @param fbm            Logical: is X a filebacked matrix? 
+#' @param std_needed     Logical: should X be standardized? Default to TRUE!
+#' @param col_names      Optional vector of column names for X. If not user supplied, arbitrary names will be assigned.
 #' 
 #' @returns a list with 11 items: 
 #' 

@@ -11,6 +11,7 @@
 
 
 untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
+  browser()
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- untransformed_b1[1, , drop = FALSE] # this is the intercept 
@@ -18,9 +19,17 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
   
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
-  untransformed_beta <- matrix(0,
-                               nrow = (p + 1), # + 1 is for the intercept
-                               ncol = ncol(untransformed_b1))
+  if (fbm_flag) {
+    untransformed_beta <- Matrix::Matrix(0,
+                                 nrow = (p + 1), # + 1 is for the intercept
+                                 ncol = ncol(untransformed_b1),
+                                 sparse = TRUE)
+  } else {
+    untransformed_beta <- matrix(0,
+                                 nrow = (p + 1), # + 1 is for the intercept
+                                 ncol = ncol(untransformed_b1))
+  }
+  
 
   # next, unscale the beta values for non-singular, non-intercept columns
   # NB: this requires the details of standardization (centering/scaling values
@@ -35,7 +44,7 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
     
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$scale,
+    untransformed_beta[1,] <- a - crossprod(std_X_details$center,
                                             untransformed_b2)
   } else {
     untransformed_b2 <- sweep(x = b,
@@ -45,7 +54,7 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
     
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$scale[std_X_details$ns],
+    untransformed_beta[1,] <- a - crossprod(std_X_details$center[std_X_details$ns],
                                             untransformed_b2)
     
   }
