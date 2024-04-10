@@ -4,7 +4,7 @@
 #' @param std_X The *standardized* design matrix, stored as FBM.  
 #' @param p The number of columns in the *unstandardized* design matrix
 #' @param fbm_flag Logical: is std_X an FBM obejct? Passed from `plmm()`.
-#'
+#' @param k TODO: will eventually add an option to use a truncated decomposition...
 #' @return A list with the eigenvectors and eigenvalues of K
 #' @keywords internal
 #'

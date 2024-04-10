@@ -180,6 +180,7 @@ plmm_fit <- function(prep,
   loss <- numeric(nlambda)
 
   # main attraction -----------------------------------------------------------
+  if(trace){cat("\nBeginning model fitting.\n")}
   # set up progress bar -- this can take a while
   if(prep$trace){pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
   # TODO: think about putting this loop in C

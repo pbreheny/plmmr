@@ -106,33 +106,22 @@ plmm_prep <- function(std_X,
     # U <- sign_check$U
   }
  
-  # otherwise, need to do SVD:
+  # otherwise, need to do eigendecomposition:
   if(sum(c(flag1, flag2, flag3)) == 0){
     if(trace){cat("\nStarting decomposition.")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     if(is.null(K) & is.null(s)){
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
       
-      # approach to decomposition:
-      # n > p: take SVD of X
-      # n <= p: construct K, then take eigen(K)
-      if(std_X_n > std_X_p){
-      if(trace){cat("\nSince n > p, PLMM is calculating the SVD of X.")}
-        svd_res <- svd_X(std_X = std_X, k = k, trunc_flag = trunc_flag,
-                         fbm_flag = fbm_flag, trace = trace)
-        s <- (svd_res$d^2)*(1/p)
-        U <- svd_res$U
-      
-      } else if (std_X_n <= std_X_p){
-        if(trace){cat("\nSince p > n, PLMM is calculating the eigendecomposition of K")}
+        if(trace){cat("\nCalculating the eigendecomposition of K")}
         eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
         K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U
         # check signs 
+        if(trace){cat("\nChecking eigenvector signs")}
         sign_check <- flip_signs(X = eigen_res$K, U = U, V = U, d = s)
         U <- sign_check$U
-      }
       
     } else {
       # last case: K is a user-supplied matrix 
@@ -145,8 +134,6 @@ plmm_prep <- function(std_X,
     }
     
   }
-
-
   # error check: what if the combination of args. supplied was none of the SVD cases above?
   if(is.null(s) | is.null(U)){
     stop("\nSomething is wrong in the SVD/eigendecomposition.

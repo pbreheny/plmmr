@@ -152,8 +152,6 @@ plmm <- function(X,
                           trace = trace)
   
   # rotate & fit -------------------------------------------------------------
-  if(trace){cat("\nBeginning model fitting.\n")}
-  
   the_fit <- plmm_fit(prep = the_prep,
                       std_X_details = checked_data$std_X_details,
                       eta_star = eta_star,
