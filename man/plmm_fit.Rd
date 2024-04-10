@@ -7,6 +7,10 @@ This is an internal function for \code{cv.plmm}}
 \usage{
 plmm_fit(
   prep,
+  std_X_details,
+  eta_star,
+  penalty.factor,
+  fbm_flag,
   penalty = "MCP",
   gamma,
   alpha = 1,
@@ -19,11 +23,20 @@ plmm_fit(
   dfmax = prep$p + 1,
   init = NULL,
   warn = TRUE,
-  returnX = TRUE
+  returnX = TRUE,
+  ...
 )
 }
 \arguments{
 \item{prep}{A list as returned from \code{plmm_prep}}
+
+\item{std_X_details}{A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)}
+
+\item{eta_star}{The ratio of variances (passed from plmm())}
+
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+
+\item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
@@ -50,6 +63,8 @@ plmm_fit(
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
 \item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
+
+\item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
 }
 \value{
 A list with these components:

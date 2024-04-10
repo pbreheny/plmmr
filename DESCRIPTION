@@ -42,6 +42,7 @@ Imports:
     bigstatsr,
     bigsnpr,
     biglasso,
+    bigmemory,
     glmnet,
     Matrix,
     methods,

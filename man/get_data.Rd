@@ -5,21 +5,26 @@
 \title{Read in processed data
 This function is intended to be called after \code{process_plink()} has been called once.}
 \usage{
-get_data(path, returnX, trace = TRUE)
+get_data(path, row_id = "iid", returnX, trace = TRUE)
 }
 \arguments{
 \item{path}{The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path.}
+
+\item{row_id}{Character string indicating which IDs to use for the rownames of the genotype matrix. Can choose "fid" or "iid", corresponding to the first or second columns in the PLINK .fam file. Defaults to "iid".}
 
 \item{returnX}{Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.}
 
 \item{trace}{Logical: Should trace messages be shown? Default is TRUE.}
 }
 \value{
-A list with four components:
+A list with these components:
 \itemize{
-\item \code{X}, the design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
-\item \code{fam}, a data frame containing the pedigree information (like a .fam file in PLINK)
-\item \code{map}, a data frame containing the feature information (like a .bim file in PLINK)
+\item std_X, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
+\item fam, a data frame containing the pedigree information (like a .fam file in PLINK)
+\item map, a data frame containing the feature information (like a .bim file in PLINK)
+\item ns: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0.
+\item center: A vector of values for centering each column in X
+\item scale: A vector of values for scaling each column in X
 }
 }
 \description{
@@ -27,12 +32,14 @@ Read in processed data
 This function is intended to be called after \code{process_plink()} has been called once.
 }
 \details{
+The .rds object should have an 'std_X' element - this is what will be used as the design matrix for analysis. This design matrix should \emph{not} include an intercept column (this will be added later in \code{plmm_fit}()).
+
 In the returned list, the \code{fam} data will be sorted by family and by individual, as in \code{dplyr::arrange(family.ID, sample.ID)}.
 The rows of \code{X} will be sorted to align in the same order as in \code{fam}, where rownames of \code{X} will be sample ID.
 }
 \examples{
 \dontrun{
-pen <- get_data(path = "../temp_files/penncath_lite", trace = TRUE)
+pen <- get_data(path = "../tmp_files/penncath_lite", trace = TRUE)
 }
 
 }

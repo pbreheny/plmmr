@@ -214,12 +214,12 @@ process_plink <- function(data_dir,
     if(!quiet){
       cat("\nWill mark ", length(na_phen), " samples/observations as having missing phenotype data.")
     }
-    obj$fam$affection[na_vals] <- NA_integer_
+    obj$fam$affection[na_phen] <- NA_integer_
   } else {
     if(!quiet){
-      cat("\nImputing phenotype data for ", length(na_vals), " samples/observations.")
+      cat("\nImputing phenotype data for ", length(na_phen), " samples/observations.")
     }
-    obj$fam$affection[na_vals] <- switch(handle_missing_phen,
+    obj$fam$affection[na_phen] <- switch(handle_missing_phen,
                                          median = median(obj$fam$affection[complete_phen]),
                                          mean = mean(obj$fam$affection[complete_phen]))
   }

@@ -9,16 +9,20 @@ process_plink(
   prefix,
   impute = TRUE,
   impute_method = "mode",
+  na_phenotype_vals = c(-9),
+  handle_missing_phen = "prune",
   quiet = FALSE,
   gz = FALSE,
   outfile,
+  std_bk_extension = NULL,
+  overwrite = FALSE,
   ...
 )
 }
 \arguments{
-\item{data_dir}{The path to the bed/bim/fam data files}
+\item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files}
+\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -31,17 +35,29 @@ process_plink(
 \item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
 }}
 
+\item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
+
+\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
+\itemize{
+\item "prune" (default): observations with missing phenotype are removed
+\item "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
+\item "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+\item "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
+}}
+
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
 
 \item{gz}{Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
 \value{
-Nothing is returned by this function; instead, files 'prefix.rds' and
-'prefix.bk' are created in the location specified by data_dir. Note that this
+Nothing is returned by this function; instead, files 'prefix.rds',
+'prefix.bk', and std_prefix.bk are created in the location specified by data_dir. Note that this
 this function need only be run once; in subsequent data analysis/scripts,
 \code{get_data()} will access the '.rds' file.
 }
@@ -50,6 +66,9 @@ Preprocess PLINK files using the \code{bigsnpr} package
 }
 \examples{
 \dontrun{
+
+process_plink(data_dir = "inst/extdata", prefix = "admix")
+
 process_plink(data_dir = "../temp_files",
  prefix = "penncath_lite",
   impute = T,

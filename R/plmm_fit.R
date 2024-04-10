@@ -18,6 +18,7 @@
 #' @param init Initial values for coefficients. Default is 0 for all columns of X. 
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
+#' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
 #' @returns  A list with these components: 
 #'   * n: # of rows in X
 #'   * p: # of columns in X (including constant features)
@@ -80,7 +81,8 @@ plmm_fit <- function(prep,
                      dfmax = prep$p + 1,
                      init = NULL,
                      warn = TRUE,
-                     returnX = TRUE){
+                     returnX = TRUE,
+                     ...){
   
   # error checking ------------------------------------------------------------
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
@@ -180,13 +182,9 @@ plmm_fit <- function(prep,
   loss <- numeric(nlambda)
 
   # main attraction -----------------------------------------------------------
-  if(trace){cat("\nBeginning model fitting.\n")}
-  # set up progress bar -- this can take a while
-  if(prep$trace){pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
-  # TODO: think about putting this loop in C
-  # TODO: change this condition to depend on fbm_flag
-
   if('matrix' %in% class(stdrot_X)){
+    # set up progress bar -- this can take a while
+    if(prep$trace){pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
     for (ll in 1:nlambda){
       lam <- lambda[ll]
       res <- ncvreg::ncvfit(X = stdrot_X,
@@ -213,33 +211,28 @@ plmm_fit <- function(prep,
     }
     
   } else {
-    for (ll in 1:nlambda){
-      lam <- lambda[ll]
-      res <- biglasso::biglasso_fit(X = fbm2bm(stdrot_X),
-                             y = rot_y,
-                             init = init,
-                             r = r,
-                             xtx = xtx,
-                             # penalty = penalty, # TODO: will add this later
-                             # gamma = gamma,
-                             lambda = lam,
-                             eps = eps,
-                             max.iter = max.iter, 
-                             penalty.factor = new.penalty.factor,
-                             alpha = alpha)
-    
-      # TODO: add a way to pass additional args to this function via '...'
-      b[,ll] <- init <- res$beta
-      linear.predictors[,ll] <- bigstatsr::big_prodVec(X = stdrot_X,
-                                                       y.col = res$beta)
-      # TODO: add a check for iteration
-      # iter[ll] <- res$iter
-      # converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
-      loss[ll] <- res$loss
-      r <- res$resid
-      if(prep$trace){setTxtProgressBar(pb, ll)}
-      
-    }
+    bm_stdrot_X <- fbm2bm(stdrot_X)
+    # the biglasso function loops thru the lambda values 
+    res <- biglasso::biglasso_simple_path(X = bm_stdrot_X,
+                                  y = rot_y,
+                                  r = r,
+                                  init = init,
+                                  xtx = xtx,
+                                  penalty = penalty, 
+                                  lambda = lambda,
+                                  alpha = alpha,
+                                  gamma = gamma,
+                                  eps = eps,
+                                  max.iter = max.iter, 
+                                  penalty.factor = new.penalty.factor,
+                                  ...)
+ 
+    b <- res$beta
+    linear.predictors <- bm_stdrot_X%*%b
+    iter <- res$iter
+    converged <- ifelse(iter < max.iter, TRUE, FALSE)
+    loss <- res$loss # TODO: this needs to be fixed! 
+    r <- res$resid
   }
   
   # eliminate saturated lambda values, if any
@@ -250,15 +243,18 @@ plmm_fit <- function(prep,
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("\nMaximum number of iterations reached")
 
-  convex.min <- if (convex) convexMin(b = b,
-                                      X = stdrot_X,
-                                      penalty = penalty,
-                                      gamma = gamma, 
-                                      l2 = lambda*(1-alpha),
-                                      family = 'gaussian',
-                                      penalty.factor = new.penalty.factor) else NULL
-  
-  
+  if (convex) {
+    convex.min <- convexMin(b = b,
+                             X = stdrot_X,
+                             penalty = penalty,
+                             gamma = gamma, 
+                             l2 = lambda*(1-alpha),
+                             family = 'gaussian',
+                             penalty.factor = new.penalty.factor)
+  } else {
+    convex.min <- NULL
+  }
+
 
   # un-standardizing -------
   # reverse the POST-ROTATION standardization on estimated betas  

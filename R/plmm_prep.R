@@ -51,7 +51,7 @@ plmm_prep <- function(std_X,
                       diag_K = NULL,
                       eta_star = NULL,
                       fbm_flag,
-                      penalty.factor = rep(1, ncol(X)),
+                      penalty.factor = rep(1, ncol(std_X)),
                       trace = NULL, 
                       ...){
   
@@ -69,8 +69,8 @@ plmm_prep <- function(std_X,
       trunc_flag <- TRUE
     } else {
       stop("\nk value is out of bounds. 
-         \nIf specified, k must be an integer in the range from 1 to min(nrow(X), ncol(X)). 
-         \nwhere X does not include singular columns. For help detecting singularity,
+         \nIf specified, k must be an integer in the range from 1 to min(nrow(std_X), ncol(std_X)). 
+         \nwhere std_X does not include singular columns. For help detecting singularity,
          \nsee ncvreg::std()")
     }
     
@@ -136,7 +136,7 @@ plmm_prep <- function(std_X,
   }
   # error check: what if the combination of args. supplied was none of the SVD cases above?
   if(is.null(s) | is.null(U)){
-    stop("\nSomething is wrong in the SVD/eigendecomposition.
+    stop("\nSomething is wrong in the eigendecomposition.
     \nThe combination of supplied arguments does not match any cases handled in 
          \n svd_X(), the internal function called by plmm() via plmm_prep().
          \n Re-examine the supplied arguments -- here are some common mistakes:

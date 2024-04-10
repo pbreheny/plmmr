@@ -7,7 +7,7 @@
 log_lik(eta, n, s, U, y, rot_y = NULL)
 }
 \arguments{
-\item{eta}{The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR. Sometimes referred to as the narrow-sense heritability.}
+\item{eta}{The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, signal-to-noise ratio.}
 
 \item{n}{The number of observations}
 

@@ -4,12 +4,21 @@
 \alias{plmm_format}
 \title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
 \usage{
-plmm_format(fit, X)
+plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL)
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
 
-\item{X}{Design matrix. May include clinical covariates and other non-SNP data.}
+\item{std_X_details}{A list with 3 items:
+\itemize{
+\item 'center': the centering values for the columns of \code{X}
+\item 'scale': the scaling values for the non-singular columns of \code{X}
+\item 'ns': indicies of nonsingular columns in \code{std_X}
+}}
+
+\item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
+
+\item{snp_names}{A vector of names for features, passed internally if such names are included with the data \code{X} passed to \code{plmm()}}
 }
 \value{
 A list with the components:

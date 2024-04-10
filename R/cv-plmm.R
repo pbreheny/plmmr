@@ -64,7 +64,7 @@
 #' 
 #' # filebacked example (file path is specific to current machine)
 #' cv.plmm(X = "~/tmp_files/penncath_lite", fbm = TRUE, trace = TRUE) -> fit
-#' 
+#' }
 #' 
 #' 
 #' 
@@ -268,7 +268,7 @@ cv.plmm <- function(X,
               lambda.min=lambda[min],
               min1se = min1se,
               lambda.1se = lambda[min1se],
-              null.dev=mean(loss.plmm(y, rep(mean(y), n))))
+              null.dev=mean(loss.plmm(checked_data$y, rep(mean(checked_data$y), n))))
   if (returnY) val$Y <- Y
   if (returnBiasDetails){
     val$Bias <- Bias

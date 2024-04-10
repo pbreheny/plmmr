@@ -9,6 +9,7 @@
   oldX,
   newX,
   type = c("lp", "blup"),
+  fbm = FALSE,
   idx = 1:length(fit$lambda),
   V11 = NULL,
   V21 = NULL,
@@ -23,6 +24,8 @@
 \item{newX}{A design matrix used for computing predicted values (i.e, the test data).}
 
 \item{type}{A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
+
+\item{fbm}{Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.}
 
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 

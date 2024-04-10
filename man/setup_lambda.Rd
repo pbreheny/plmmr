@@ -15,7 +15,7 @@ setup_lambda(
 )
 }
 \arguments{
-\item{X}{Rotated and standardized design matrix which \emph{includes} the intercept column if present. May include clinical covariates and other non-SNP data.}
+\item{X}{Rotated and standardized design matrix which \emph{includes} the intercept column if present. May include clinical covariates and other non-SNP data. This can be either a 'matrix' or 'FBM' object.}
 
 \item{y}{Continuous outcome vector.}
 

@@ -4,16 +4,16 @@
 \alias{untransform}
 \title{Untransform coefficient values back to the original scale}
 \usage{
-untransform(untransformed_b1, ns, p, std_X_details)
+untransform(untransformed_b1, p, std_X_details, fbm_flag)
 }
 \arguments{
 \item{untransformed_b1}{The estimated coefficients on the standardized scale}
 
-\item{ns}{The indices of the non-singular columns of the ORIGINAL design matrix}
-
 \item{p}{The number of columns in the original design matrix (without the intercept)}
 
-\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'nonsingular'}
+\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'}
+
+\item{fbm_flag}{Logical: is the corresponding design matrix filebacked?}
 }
 \description{
 This function unwinds the initial standardization of the data to obtain

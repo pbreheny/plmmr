@@ -11,7 +11,7 @@
 
 
 untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
-  browser()
+
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- untransformed_b1[1, , drop = FALSE] # this is the intercept 
@@ -44,9 +44,11 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
     
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$center,
-                                            untransformed_b2)
+    # untransformed_beta[1,] <- a - crossprod(std_X_details$center,
+    #                                         untransformed_b2) # TODO: figure this line out! 
+    # ... the bigger question is -- do we even need an intercept? 
   } else {
+    # in-memory case 
     untransformed_b2 <- sweep(x = b,
                               MARGIN = 1,
                               STATS = std_X_details$scale[std_X_details$ns],

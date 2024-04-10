@@ -6,19 +6,32 @@
 This is an internal function for \code{cv.plmm}}
 \usage{
 plmm_prep(
-  X,
+  std_X,
+  std_X_n,
+  std_X_p,
+  n,
+  p,
   y,
   k = NULL,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
+  fbm_flag,
   penalty.factor = rep(1, ncol(X)),
   trace = NULL,
   ...
 )
 }
 \arguments{
-\item{X}{Design matrix. May include clinical covariates and other non-SNP data.}
+\item{std_X}{Column standardized design matrix. May include clinical covariates and other non-SNP data.}
+
+\item{std_X_n}{The number of observations in std_X (integer)}
+
+\item{std_X_p}{The number of features in std_X (integer)}
+
+\item{n}{The number of instances in the \emph{original} design matrix X. This should not be altered by standardization.}
+
+\item{p}{The number of features in the \emph{original} design matrix X, including constant features}
 
 \item{y}{Continuous outcome vector.}
 
@@ -30,7 +43,7 @@ plmm_prep(
 
 \item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{fbm_flag}{Logical: is std_X an FBM type object? This is set internally by \code{plmm()}.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 

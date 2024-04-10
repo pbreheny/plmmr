@@ -55,4 +55,6 @@ convexMin <- function(b, X, penalty, gamma, l2, family = "gaussian", penalty.fac
     }
   }
   val
+  
+
 }

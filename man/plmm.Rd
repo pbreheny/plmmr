@@ -6,7 +6,10 @@
 \usage{
 plmm(
   X,
-  y,
+  fbm = NULL,
+  std_needed = NULL,
+  col_names = NULL,
+  y = NULL,
   k = NULL,
   K = NULL,
   diag_K = NULL,
@@ -20,10 +23,10 @@ plmm(
   eps = 1e-04,
   max.iter = 10000,
   convex = TRUE,
-  dfmax = ncol(X) + 1,
+  dfmax = NULL,
   warn = TRUE,
-  penalty.factor = rep(1, ncol(X)),
-  init = rep(0, ncol(X)),
+  penalty.factor = NULL,
+  init = NULL,
   trace = FALSE
 )
 }
@@ -33,7 +36,14 @@ plmm(
 \item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 }}
 
-\item{y}{Continuous outcome vector. Logistic regression modeling is still in development.}
+\item{fbm}{Logical: should X be treated as filebacked? Relevant only when X is a string to be passed to \code{get_data()}. Defaults to NULL, using the default setttings of \code{get_data()} to determine whether X should be stored in memory.}
+
+\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to FALSE, since \code{process_plink()} standardizes the design matrix by default.
+By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
+
+\item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
+
+\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
 \item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
 
@@ -102,7 +112,7 @@ NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
 # using admix data 
-fit_admix1 <- plmm(X = admix$X, y = admix$y)
+fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
 s1 <- summary(fit_admix1, idx = 99)
 print(s1)
 plot(fit_admix1)
@@ -112,5 +122,35 @@ fit_admix2 <- plmm(X = admix$X[1:50, ], y = admix$y[1:50])
 s2 <- summary(fit_admix2, idx = 99)
 print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
+
+# now use PLINK data files
+\dontrun{
+
+# file-backed example
+plmm(X = "~/tmp_files/penncath_lite", # adjust this line to fit current machine
+ fbm = TRUE, trace = TRUE) -> fb_fit
+
+penncath_mid <- process_plink(prefix = "penncath_mid", dataDir = plink_example(path="penncath_mid.fam", parent=T))
+penncath_clinical <- read.csv(plink_example(path="penncath_clinical.csv"))
+# for the sake of illustration, I use a simple mean imputation for the outcome 
+penncath_clinical$hdl_impute <- ifelse(is.na(penncath_clinical$hdl), mean(penncath_clinical$hdl, na.rm = T), penncath_clinical$hdl)
+
+# fit with no 'k' specified
+fit_plink1 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, trace = TRUE)
+summary(fit_plink1, idx = 5)
+# Runs in ~219 seconds (3.65 mins) on my 2015 MacBook Pro
+
+# fit with 'k = 5' specified (so using RSpectra::svds())
+fit_plink2 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, k = 5, trace = TRUE)
+# Runs in ~44 seconds on my 2015 MacBook Pro
+summary(fit_plink2, idx = 5);summary(fit_plink2, idx = 95)
+
+
+# case where X is an FBM
+lite <- get_data("../temp_files/penncath_lite", fbm = TRUE)
+clinical <- read.csv("../temp_files/penncath_clinical.csv")
+hdl <- ifelse(is.na(clinical$hdl), mean(clinical$hdl, na.rm = TRUE), clinical$hdl)
+fit_fbm <- plmm(X = lite, y = hdl, k = 1200)
+}
 
 }

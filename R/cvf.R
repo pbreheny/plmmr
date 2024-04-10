@@ -39,12 +39,13 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   # fit a plmm within each fold 
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
   fit.i <- do.call("plmm_fit", cv.args)
-  browser()
+  
   if(type == "lp"){
     yhat <- predict.list(fit = fit.i,
                           oldX = cv.args$prep$std_X,
                           newX = test_X,
-                          type = 'lp')
+                          type = 'lp',
+                         fbm = cv.args$fbm_flag)
     # yhat <- matrix(data = drop(Xbeta), nrow = length(y_test)) 
   }
   
@@ -57,11 +58,12 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
                          oldX = cv.args$prep$std_X,
                          newX = test_X,
                          type = 'blup',
+                         fbm = cv.args$fbm_flag,
                          V11 = V11,
                          V21 = V21, ...)
     
   }
-  
+
   loss <- sapply(1:ncol(yhat), function(ll) loss.plmm(test_y, yhat[,ll]))
   list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
 }
