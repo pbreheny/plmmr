@@ -43,10 +43,10 @@ get_data <- function(path, row_id = "iid", returnX, trace = TRUE){
     if (utils::object.size(obj$std_X) > 1e8) {
       warning("\nDue to the large size of X (>100 Mb), X has been returned as a file-backed matrix (FBM).
               \nTo turn this message off, explicitly specify fbm=TRUE or fbm=FALSE).")
-      returnX <- TRUE
+      returnX <- FALSE
     } else {
       # if it fits, it ships 
-      returnX <- FALSE
+      returnX <- TRUE
     }
   }
 

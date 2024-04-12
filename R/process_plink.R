@@ -48,7 +48,6 @@ process_plink <- function(data_dir,
                           quiet = FALSE,
                           gz = FALSE,
                           outfile,
-                          std_bk_extension = NULL,
                           overwrite = FALSE,
                           ...){
   

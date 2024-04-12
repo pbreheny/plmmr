@@ -6,28 +6,28 @@
 \usage{
 plmm(
   X,
-  fbm = NULL,
+  y = NULL,
   std_needed = NULL,
   col_names = NULL,
-  y = NULL,
   k = NULL,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
   penalty = c("MCP", "SCAD", "lasso"),
+  penalty.factor = NULL,
+  init = NULL,
   gamma,
   alpha = 1,
+  dfmax = NULL,
   lambda.min,
   nlambda = 100,
   lambda,
   eps = 1e-04,
   max.iter = 10000,
   convex = TRUE,
-  dfmax = NULL,
   warn = TRUE,
-  penalty.factor = NULL,
-  init = NULL,
-  trace = FALSE
+  trace = FALSE,
+  ...
 )
 }
 \arguments{
@@ -36,14 +36,12 @@ plmm(
 \item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 }}
 
-\item{fbm}{Logical: should X be treated as filebacked? Relevant only when X is a string to be passed to \code{get_data()}. Defaults to NULL, using the default setttings of \code{get_data()} to determine whether X should be stored in memory.}
+\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
 \item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to FALSE, since \code{process_plink()} standardizes the design matrix by default.
 By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
-
-\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
 \item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
 
@@ -56,9 +54,15 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
-\item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for Spenncath.}
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
+
+\item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
+
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+
+\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
@@ -72,15 +76,11 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{convex}{Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
-\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
-
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
-
-\item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
-
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
+
+\item{...}{Additional optional arguments to \code{plmm_checks()}}
 }
 \value{
 A list which includes:
@@ -126,31 +126,8 @@ plot(fit_admix2) # notice: the default penalty is MCP
 # now use PLINK data files
 \dontrun{
 
-# file-backed example
-plmm(X = "~/tmp_files/penncath_lite", # adjust this line to fit current machine
- fbm = TRUE, trace = TRUE) -> fb_fit
-
-penncath_mid <- process_plink(prefix = "penncath_mid", dataDir = plink_example(path="penncath_mid.fam", parent=T))
-penncath_clinical <- read.csv(plink_example(path="penncath_clinical.csv"))
-# for the sake of illustration, I use a simple mean imputation for the outcome 
-penncath_clinical$hdl_impute <- ifelse(is.na(penncath_clinical$hdl), mean(penncath_clinical$hdl, na.rm = T), penncath_clinical$hdl)
-
-# fit with no 'k' specified
-fit_plink1 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, trace = TRUE)
-summary(fit_plink1, idx = 5)
-# Runs in ~219 seconds (3.65 mins) on my 2015 MacBook Pro
-
-# fit with 'k = 5' specified (so using RSpectra::svds())
-fit_plink2 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, k = 5, trace = TRUE)
-# Runs in ~44 seconds on my 2015 MacBook Pro
-summary(fit_plink2, idx = 5);summary(fit_plink2, idx = 95)
-
-
-# case where X is an FBM
-lite <- get_data("../temp_files/penncath_lite", fbm = TRUE)
-clinical <- read.csv("../temp_files/penncath_clinical.csv")
-hdl <- ifelse(is.na(clinical$hdl), mean(clinical$hdl, na.rm = TRUE), clinical$hdl)
-fit_fbm <- plmm(X = lite, y = hdl, k = 1200)
+# file-backed example - adjust filepath to fit current machine
+plmm(X = "~/tmp_files/penncath_lite", trace = TRUE) -> fb_fit
 }
 
 }

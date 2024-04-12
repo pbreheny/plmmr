@@ -4,10 +4,16 @@
 \alias{relatedness_mat}
 \title{Calculate a relatedness matrix}
 \usage{
-relatedness_mat(X)
+relatedness_mat(X, fbm = FALSE, ns = NULL, ...)
 }
 \arguments{
 \item{X}{A numeric matrix of genotypes (from \emph{fully-imputed} data)}
+
+\item{fbm}{Logical: is X stored as an FBM? Defaults to FALSE}
+
+\item{ns}{Optional vector of values indicating the indices of nonsingular features}
+
+\item{...}{Other optional arguments to \code{bigstatsr::bigapply()} (like \code{ncores = ...})}
 }
 \description{
 This function allows you to generate an n by n genetic relatedness matrix. If a numeric matrix is supplied, the RRM (Hayes, 2009) is used

@@ -4,30 +4,30 @@
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 #' @param X Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`. 
 #' * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param fbm Logical: should X be treated as filebacked? Relevant only when X is a string to be passed to `get_data()`. Defaults to NULL, using the default setttings of `get_data()` to determine whether X should be stored in memory.
+#' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
 #' @param std_needed Logical: does the supplied X need to be standardized? Defaults to FALSE, since `process_plink()` standardizes the design matrix by default. 
 #' By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
 #' @param col_names Optional vector of column names for design matrix. Defaults to NULL.
-#' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for Spenncath.
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
+#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda Length of the sequence of lambda. Default is 100. 
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
-#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#' @param ... Additional optional arguments to `plmm_checks()`
 #' @returns A list which includes: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit. 
@@ -67,61 +67,36 @@
 #' # now use PLINK data files
 #' \dontrun{
 #' 
-#' # file-backed example
-#' plmm(X = "~/tmp_files/penncath_lite", # adjust this line to fit current machine
-#'  fbm = TRUE, trace = TRUE) -> fb_fit
-#' 
-#' penncath_mid <- process_plink(prefix = "penncath_mid", dataDir = plink_example(path="penncath_mid.fam", parent=T))
-#' penncath_clinical <- read.csv(plink_example(path="penncath_clinical.csv"))
-#' # for the sake of illustration, I use a simple mean imputation for the outcome 
-#' penncath_clinical$hdl_impute <- ifelse(is.na(penncath_clinical$hdl), mean(penncath_clinical$hdl, na.rm = T), penncath_clinical$hdl)
-#' 
-#' # fit with no 'k' specified
-#' fit_plink1 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, trace = TRUE)
-#' summary(fit_plink1, idx = 5)
-#' # Runs in ~219 seconds (3.65 mins) on my 2015 MacBook Pro
-#' 
-#' # fit with 'k = 5' specified (so using RSpectra::svds())
-#' fit_plink2 <- plmm(X = penncath_mid$X, y = penncath_clinical$hdl_impute, k = 5, trace = TRUE)
-#' # Runs in ~44 seconds on my 2015 MacBook Pro
-#' summary(fit_plink2, idx = 5);summary(fit_plink2, idx = 95)
-#' 
-#' 
-#' # case where X is an FBM
-#' lite <- get_data("../temp_files/penncath_lite", fbm = TRUE)
-#' clinical <- read.csv("../temp_files/penncath_clinical.csv")
-#' hdl <- ifelse(is.na(clinical$hdl), mean(clinical$hdl, na.rm = TRUE), clinical$hdl)
-#' fit_fbm <- plmm(X = lite, y = hdl, k = 1200)
+#' # file-backed example - adjust filepath to fit current machine
+#' plmm(X = "~/tmp_files/penncath_lite", trace = TRUE) -> fb_fit
 #' }
 #' 
-plmm <- function(X,
-                 fbm = NULL,
+plmm <- function(X, 
+                 y = NULL,
                  std_needed = NULL,
                  col_names = NULL,
-                 y = NULL,
                  k = NULL, 
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
                  penalty = c("MCP", "SCAD", "lasso"), # TODO: think about making lasso default
+                 penalty.factor = NULL,
+                 init = NULL,
                  gamma,
                  alpha = 1,
+                 dfmax = NULL,
                  lambda.min, # passed to internal function setup_lambda()
                  nlambda = 100,
                  lambda,
                  eps = 1e-04,
                  max.iter = 10000,
                  convex = TRUE,
-                 dfmax = NULL,
                  warn = TRUE,
-                 penalty.factor = NULL,
-                 init = NULL,
-                 trace = FALSE) {
+                 trace = FALSE, 
+                 ...) {
   
 # run checks ------------------------------
-
   checked_data <- plmm_checks(X,
-                              fbm = fbm,
                               std_needed = std_needed,
                               col_names = col_names,
                               y = y,
@@ -135,7 +110,8 @@ plmm <- function(X,
                               dfmax = dfmax,
                               gamma = gamma,
                               alpha = alpha,
-                              trace = trace)  
+                              trace = trace,
+                              ...)  
   
   # prep (SVD)-------------------------------------------------
   if(trace){cat("\nInput data passed all checks.")}
@@ -175,10 +151,12 @@ plmm <- function(X,
   # format results ---------------------------------------------------
   if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
 
-  if (is.null(col_names)){
+  if (is.null(checked_data$col_names)){
     if (!is.null(checked_data$dat)) {
       col_names <- checked_data$dat$map$marker.ID
     }
+  } else {
+    col_names <- checked_data$col_names
   }
     the_final_product <- plmm_format(fit = the_fit,
                                      std_X_details = checked_data$std_X_details,

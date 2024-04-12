@@ -6,10 +6,9 @@
 \usage{
 plmm_checks(
   X,
-  fbm = NULL,
+  y = NULL,
   std_needed = NULL,
   col_names = NULL,
-  y = NULL,
   k = NULL,
   K = NULL,
   diag_K = NULL,
@@ -20,41 +19,46 @@ plmm_checks(
   gamma,
   alpha = 1,
   dfmax = NULL,
-  trace = FALSE
+  trace = FALSE,
+  ...
 )
 }
 \arguments{
-\item{X}{}
+\item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
+\itemize{
+\item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
+}}
 
-\item{fbm}{}
+\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
-\item{std_needed}{}
+\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to NULL, since by default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, leave \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
-\item{col_names}{}
+\item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 
-\item{y}{}
+\item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
 
-\item{k}{}
+\item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().}
 
-\item{K}{}
+\item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
+Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.}
 
-\item{diag_K}{}
+\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
-\item{eta_star}{}
+\item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
-\item{penalty}{}
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
-\item{penalty.factor}{}
+\item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
-\item{init}{}
+\item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{gamma}{}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{alpha}{}
+\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
-\item{dfmax}{}
+\item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
-\item{trace}{}
+\item{...}{Additional arguments to \code{get_data()}}
 }
 \description{
 plmm_checks

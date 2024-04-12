@@ -14,7 +14,6 @@ process_plink(
   quiet = FALSE,
   gz = FALSE,
   outfile,
-  std_bk_extension = NULL,
   overwrite = FALSE,
   ...
 )

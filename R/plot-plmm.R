@@ -21,6 +21,12 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   penalized <- which(x$penalty.factor!=0)
   nonzero <- which(apply(abs(YY), 1, sum)!=0)
   ind <- intersect(penalized, nonzero)
+  
+  # check for null model 
+  if (length(ind) == 0) {
+    stop("\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here...")
+  }
+  
   Y <- YY[ind, , drop=FALSE]
   p <- nrow(Y)
   l <- x$lambda

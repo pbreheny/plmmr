@@ -19,7 +19,7 @@ relatedness_mat <- function(X, fbm = FALSE, ns = NULL, ...){
                                            #                                         center.col = rep(0, length(ns))),
                                            ind.col = ns,
                                            ...)
-    rrm <- FBM(cprod$nrow, cprod$ncol)
+    rrm <- bigstatsr::FBM(cprod$nrow, cprod$ncol)
     # scale by p, the number of columns in the design matrix (including constant features)
     bigstatsr::big_apply(X = cprod,
                          a.FUN = function(X, ind, p, res){
