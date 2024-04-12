@@ -41,7 +41,7 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
   
   # give the matrix of beta_values readable names ----------------------------
   # SNPs (or covariates) on the rows, lambda values on the columns
-  
+ 
   if (is.null(snp_names)){
     snp_names <- paste("Var", 1:fit$p, sep="") 
   } 

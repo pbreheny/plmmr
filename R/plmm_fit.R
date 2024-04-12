@@ -242,7 +242,7 @@ plmm_fit <- function(prep,
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("\nMaximum number of iterations reached")
-
+browser()
   if (convex) {
     convex.min <- convexMin(b = b,
                              X = stdrot_X,

@@ -174,27 +174,18 @@ tinytest::expect_equivalent(current = mean(hat_eta),
 
 # Test 9: make sure plmm() runs in-memory and filebacked ---------------------
 lambda9 <- c(1, 0.1, 0.01, 0.001) # same as lambda0
-# plmm(X = "inst/extdata/", lambda = lambda9) -> foo
-# plmm(X = admix$X, y = admix$y, penalty = "lasso", lambda = lambda9) -> foo2
 
 if (interactive()) {
   # filebacked 
-  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, trace = T) -> foo
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+       penalty = "lasso", trace = T, returnX = FALSE) -> foo
+  # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this 
+  #   will run in-memory because of the small size of this test data set
   foo_nz <- which(foo$beta_vals[,4] != 0)
   
   # in memory
-  penncath_rds <- readRDS(file = "~/tmp_files/penncath_lite.rds")
-  penncath_outcome <- read.delim("~/tmp_files/penncath_lite.fam",
-                                 sep = " ",
-                                 header = F)
-  # look at participants with non-missing outcome 
-  pen_id <- which(penncath_rds$rownames %in% penncath_rds$std_X_rownames)
-  plmm(X = penncath_rds$genotypes[pen_id,],
-       y = penncath_outcome$V6[pen_id],
-       penalty = "lasso",
-       lambda = lambda9,
-       col_names = penncath_rds$map$marker.ID,
-       trace = T) -> foo2
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+       penalty = "lasso", trace = T) -> foo2
   foo2_nz <- which(foo2$beta_vals[,4] != 0)
   
   # look at head of values (checks SNP names)

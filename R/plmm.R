@@ -126,7 +126,7 @@ plmm <- function(X,
                           diag_K = checked_data$diag_K,
                           fbm_flag = checked_data$fbm_flag,
                           trace = trace)
-  
+
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       std_X_details = checked_data$std_X_details,

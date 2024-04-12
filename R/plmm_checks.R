@@ -41,18 +41,16 @@ plmm_checks <- function(X,
   ## string with a filepath -----------------------------
   if("character" %in% class(X)){
     dat <- get_data(path = X, trace = trace, ...)
-    std_X <- dat$std_X
+    X <- std_X <- dat$std_X
+    std_needed <- FALSE
+    col_names <- dat$map$marker.ID
+
     if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
       fbm_flag <- TRUE
     } else {
       fbm_flag <- FALSE
     }
   }
-  
-  ## FBM object ----------------
-  if("FBM.code256" %in% class(X) | "FBM" %in% class(X)){stop("To analyze data from a file-backed X matrix, meta-data must also be supplied. 
-                                       For the 'X' arg, you need to supply either (1) a character string representing the filepath to the .rds object or (2) a list as returned by get_data(). 
-                                       If you don't have an .rds object yet, see process_plink() for preparing your data.")}
   ## list -----------------------
   if("list" %in% class(X)){
     # check for X element 
@@ -120,8 +118,8 @@ plmm_checks <- function(X,
         cat("\nYou have left std_needed = FALSE; this means you are assuming that 
             all columns in X have mean 0 and variance 1. This also means 
             you are assuming that none of the columns in X are constant features. 
-            \n If this is not what you want to assume, leave std_needed = NULL (default).")  
-        
+            \n If you have supplied X via a filepath to an RDS object created by `process_plink()`,
+            \n ignore this message -- `process_plink()` standardized X for you.")  
       }
       
       std_X_details <- list(center = rep(0, ncol(X)),

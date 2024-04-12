@@ -15,13 +15,13 @@ eigen_K <- function(std_X, p, fbm_flag){
     K <- bigstatsr::big_tcrossprodSelf(std_X) 
     # TODO: this function returns an FBM. Need to think about adding the option 
     # for K to be stored filebacked. For now, make K stay in memory.
-     K <- K[,]
+     K <- K[,]/p
   } else {
-    K <- tcrossprod(std_X)
+    K <- tcrossprod(std_X)/p
   }
   # take eigendecomposition
   decomp <- eigen(K)
-  return(list(s = decomp$values/p,
+  return(list(s = decomp$values,
               U = decomp$vectors,
               K = K))
 }
