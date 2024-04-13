@@ -19,7 +19,10 @@
 \arguments{
 \item{object}{An object of class \code{plmm}.}
 
-\item{newX}{Design matrix used for computing predicted values if requested.
+\item{newX}{Design matrix used for computing predicted values if requested. This
+can be either a FBM object or a matrix object. \strong{If you supply an FBM object here,
+this function assumes that this matrix has been done.} If you need to do standardization,
+see \code{big_std()} and \code{process_plink()}.
 \strong{Columns must be named!}}
 
 \item{type}{A character argument indicating what type of prediction should be
@@ -58,7 +61,6 @@ the estimated correlation structure of data into our prediction of the outcome.
 }
 }
 \examples{
-\dontrun{
 # fit a model 
 fit <- plmm(X = admix$X, y = admix$y)
 lp_pred <- predict(fit, newX = admix$X, type = 'lp')
@@ -89,15 +91,19 @@ fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
   X = train$X, y = train$y)
  pred3 <- predict(object = fit, newX = test$X, type = "lp", idx=cvfit$min) 
  
-  # examine prediction error 
-  summary(crossprod(test$y - pred2))  # for BLUP method 
-  summary(crossprod(test$y - pred3)) # for LP method 
+  summary(crossprod(y - pred2)) # almost all 0 -- predictions are good! 
   
-  # which was best prediction?
-  mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)})
-  which.min(mspe) # not anywhere near the 'best lambda' chosen in cross validation...
-  mspe[which.min(mspe)]
-  min(cvfit$cve)
+ \dontrun{
+  # file-backed example 
+  plmm(X = "~/tmp_files/penncath_lite", penalty = "lasso", trace = T, returnX = FALSE) -> foo
+  pen <- bigsnpr::snp_attach("~/tmp_files/penncath_lite.rds")
+  y_hat <- predict(foo, newX = pen$genotypes)
+  y <- pen$fam$affection
+  # notice: many of the rows in pen$genotypes correspond to samples with a missing phenotype
+  # to assess the quality of the fit 
+  names(y) <- pen$fam$family.ID
+  y_idx <- which(as.character(pen$std_X_rownames) \%in\% names(y))
+  crossprod(y - y_hat[y_idx,50])/length(y) # estimate of MSPE
  }
  
  

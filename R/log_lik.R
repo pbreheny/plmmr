@@ -1,7 +1,7 @@
 #' Evaluate the negative log-likelihood of an intercept-only Gaussian plmm model
 #'
 #' This function allows you to evaluate the negative log-likelihood of a linear mixed model under the assumption of a null model in order to estimate the variance parameter, eta.
-#' @param eta The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, SNR. Sometimes referred to as the narrow-sense heritability.
+#' @param eta The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, signal-to-noise ratio. 
 #' @param n The number of observations 
 #' @param s The singular values of K, the realized relationship matrix
 #' @param U The left-singular vectors of the *standardized* design matrix
@@ -10,7 +10,7 @@
 #' @keywords internal
 #' 
 log_lik <- function(eta, n, s, U, y, rot_y = NULL){
-
+  
   # first, the constant (comes from 1st term in derivation)
   constant <- n*log(2*pi)
   

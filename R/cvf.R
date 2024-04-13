@@ -10,23 +10,32 @@
 #' @importFrom zeallot %<-%
 #' @keywords internal
 cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
-
+  
   # save the 'prep' object from the plmm_prep() in cv.plmm
   full_cv_prep <- cv.args$prep
   
-  # subset std_X, and y to match fold indices 
+  # subset std_X, U, and y to match fold indices 
   #   (and in so doing, leave out the ith fold)
-  cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
-  cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
+  if (cv.args$fbm_flag){
+    cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
+    cv.args$prep$U <- bigstatsr::big_copy(full_cv_prep$U,
+                                          ind.row =  which(fold!=i)) # TODO: should we also be subsetting by column?
+  } else {
+    cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
+  }
+  
   cv.args$prep$y <- full_cv_prep$y[fold!=i] 
   
   # extract test set (comes from cv prep on full data)
-  test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE] 
+  if (cv.args$fbm_flag){
+    test_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold==i))
+  } else {
+    test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE] 
+  }
   test_y <- full_cv_prep$y[fold==i]
-  
-  # Note on variance estimation:
-  # I moved estimate_eta() into prep, so that this is only done once. In doing this,
-  # I am assuming that the eta is the same across the training and testing data.
+
+  # NB: we are assuming that the eta is the same across the training and testing data.
 
   # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
@@ -49,7 +58,8 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     yhat <- predict.list(fit = fit.i,
                           oldX = cv.args$prep$std_X,
                           newX = test_X,
-                          type = 'lp')
+                          type = 'lp',
+                         fbm = cv.args$fbm_flag)
     # yhat <- matrix(data = drop(Xbeta), nrow = length(y_test)) 
   }
   
@@ -62,6 +72,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
                          oldX = cv.args$prep$std_X,
                          newX = test_X,
                          type = 'blup',
+                         fbm = cv.args$fbm_flag,
                          V11 = V11,
                          V21 = V21, ...)
     
