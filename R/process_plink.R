@@ -203,6 +203,7 @@ process_plink <- function(data_dir,
   # bigstatsr::big_cop() does not handle negative indices)
   complete_phen <- which(!(obj$fam$affection %in% na_phenotype_vals))
   na_phen <- which(obj$fam$affection %in% na_phenotype_vals)
+  names(na_phen) <- obj$fam$sample.ID[na_phen]
   
   if (handle_missing_phen == 'prune'){
     if(!quiet){

@@ -174,7 +174,8 @@ tinytest::expect_equivalent(current = mean(hat_eta),
 
 # Test 9: make sure plmm() runs in-memory and filebacked ---------------------
 lambda9 <- c(1, 0.1, 0.01, 0.001) # same as lambda0
-
+# FIXME: the model fitting is not aligned yet (biglasso doesn't always match 
+#     with ncvfit functions)
 if (interactive()) {
   # filebacked 
   plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 

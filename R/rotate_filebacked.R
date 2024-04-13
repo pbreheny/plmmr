@@ -22,11 +22,10 @@ rotate_filebacked <- function(prep, ...){
                               w = w)
   
   # add column of 1s for intercept
-  std_X_with_intcpt <- matrix(data = 0,
+  std_X_with_intcpt <- bigstatsr::FBM(init = 1,
                               nrow = prep$std_X$nrow,
                               ncol = prep$std_X$ncol + 1) 
-  std_X_with_intcpt[,1] <- rep(1, prep$std_X$nrow)
-  std_X_with_intcpt <- std_X_with_intcpt |> bigstatsr::as_FBM()
+  # TODO check the lines below 
   # fill in other columns with values of std_X
   bigstatsr::big_apply(prep$std_X,
                        a.FUN = function(X, ind, res){

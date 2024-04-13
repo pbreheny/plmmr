@@ -44,8 +44,8 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
     
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    # untransformed_beta[1,] <- a - crossprod(std_X_details$center,
-    #                                         untransformed_b2) # TODO: figure this line out! 
+    cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center, c)})
+    untransformed_beta[1,] <- a - cp
     # ... the bigger question is -- do we even need an intercept? 
   } else {
     # in-memory case 
