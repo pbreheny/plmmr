@@ -70,7 +70,7 @@
 #' plot(cv_fit)
 #' 
 #' # filebacked example (file path is specific to current machine)
-#' cv.plmm(X = "~/tmp_files/penncath_lite", trace = TRUE) -> fit
+#' cv.plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fit
 #' }
 #' 
 #' 
@@ -224,8 +224,13 @@ cv.plmm <- function(X,
       if (trace) {setTxtProgressBar(pb, i)}
 
     }
+    
     # update E and Y
     E[fold==i, 1:res$nl] <- res$loss
+
+    if (grepl('dgeMatrix', class(res$yhat))) {
+      res$yhat <- as.matrix(res$yhat)
+    }
     Y[fold==i, 1:res$nl] <- res$yhat
   }
 

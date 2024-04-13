@@ -92,9 +92,12 @@ predict.plmm <- function(object,
     }
   }
   
-  ifelse(grepl("FBM", class(newX)),
-         fbm_flag <- TRUE,
-         fbm_flag <- FALSE)
+  if (!missing(newX)){
+    ifelse(grepl("FBM", class(newX)),
+           fbm_flag <- TRUE,
+           fbm_flag <- FALSE)
+    
+  }
   
   ifelse(grepl("Matrix", class(object$beta_vals)),
          sparse_flag <- TRUE,

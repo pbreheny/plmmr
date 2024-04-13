@@ -68,7 +68,7 @@
 #' \dontrun{
 #' 
 #' # file-backed example - adjust filepath to fit current machine
-#' plmm(X = "~/tmp_files/penncath_lite", trace = TRUE) -> fb_fit
+#' plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fb_fit
 #' }
 #' 
 plmm <- function(X, 

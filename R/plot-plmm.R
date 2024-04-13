@@ -53,9 +53,14 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   } else {
     col <- col[ind]
   }
+
   line.args <- list(col=col, lwd=1+2*exp(-p/20), lty=1)
   if (length(new.args)) line.args[names(new.args)] <- new.args
   line.args$x <- l
+  # check types: Y may be filebacked, but in most cases it isn't that big...
+  if (grepl("Matrix", class(Y))) {
+    Y <- as.matrix(Y)
+  }
   line.args$y <- t(Y)
   do.call("matlines", line.args)
 

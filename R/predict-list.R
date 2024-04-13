@@ -31,7 +31,7 @@ predict.list <- function(fit,
                          V21 = NULL, ...) {
  
   type <- match.arg(type)
-  
+
   # get beta values (for nonsingular features) from fit
   beta_vals <- fit$untransformed_b1[,idx,drop = FALSE]
   
@@ -49,12 +49,8 @@ predict.list <- function(fit,
   b <- beta_vals[-1,,drop=FALSE]
   
   if (fbm) {
-    # TODO: the following would be enhanced if 'FBM' type objects could be multiplied with "dgCMatrix" type objects
-    Xb <- matrix(nrow = nrow(newX), ncol = ncol(b))
-    for (l in 1:ncol(b)){
-      Xb[,l] <- bigstatsr::big_prodVec(newX, b[,l]) + a[l]
-      
-    }
+    bm_newX <- fbm2bm(newX)
+    Xb <- sweep(bm_newX %*% b, 2, a, "+")
   } else {
     Xb <- sweep(newX %*% b, 2, a, "+")
   }
@@ -69,10 +65,8 @@ predict.list <- function(fit,
     # test1 <- V21 %*% chol2inv(chol(V11)) # true 
     # TODO: to find the inverse of V11 using svd results of K, i.e., the inverse of a submatrix, might need to use Woodbury's formula 
     if (fbm) {
-      Xb_train <- matrix(nrow = nrow(oldX), ncol = ncol(b))
-      for (l in 1:ncol(b)){
-        Xb_train[,l] <- bigstatsr::big_prodVec(oldX, b[,l]) + a[l]
-      }
+      bm_oldX <- fbm2bm(oldX)
+      Xb_train <- sweep(bm_oldX %*% b, 2, a, "+")
     } else {
       Xb_train <- sweep(oldX %*% b, 2, a, "+")
     }
