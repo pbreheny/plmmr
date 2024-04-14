@@ -40,38 +40,23 @@
 #' @export
 #'
 #' @examples 
-#' # fit a model 
-#' fit <- plmm(X = admix$X, y = admix$y)
-#' lp_pred <- predict(fit, newX = admix$X, type = 'lp')
-#' blup_pred <- predict(fit, newX = admix$X, X = admix$X, y = admix$y) # BLUP is default type
-#' lp_mspe <- apply(lp_pred, 2, function(c){crossprod(admix$y - c)})
-#' min(lp_mspe)
-#' 
-#' blup_mspe <- apply(blup_pred, 2, function(c){crossprod(admix$y - c)})
-#' min(blup_mspe)
-#' 
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y)
-#' min(cv_fit$cve)
-#' 
-#' 
 #' set.seed(123)
 #' train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 #' test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
 #' fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
 #' 
-#'  # make predictions for all lambda values 
+#' # make predictions for all lambda values 
 #'  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
 #'
-#'  # make predictions for a select number of lambda values
-#'  # use cv to choose a best lambda
-#'  cvfit <- cv.plmm(X = train$X, y = train$y) 
-#'  pred2 <- predict(object = fit, newX = test$X, type = "blup", idx=cvfit$min,
-#'   X = train$X, y = train$y)
-#'  pred3 <- predict(object = fit, newX = test$X, type = "lp", idx=cvfit$min) 
-#'  
-#'   summary(crossprod(y - pred2)) # almost all 0 -- predictions are good! 
-#'   
+#' # look at mean squared prediction error
+#' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
+#' min(mspe)
+#' 
+#' # compare the MSPE of our model to a null model, for reference
+#' # null model = intercept only -> y_hat is always mean(y)
+#' crossprod(mean(test$y) - test$y)/length(test$y)
+#' 
 #'  \dontrun{
 #'   # file-backed example 
 #'   plmm(X = "~/tmp_files/penncath_lite", penalty = "lasso", trace = T, returnX = FALSE) -> foo
@@ -98,7 +83,7 @@ predict.plmm <- function(object,
   
   # object type checks
   if (!missing(X)){
-    if (class(X) != class(newX)) {
+    if (!identical(class(X), class(newX))) {
       stop("\nFor now, the classes of X and newX must match (we plan to extend/enhance this 
            further in the future). See plmmr::process_plink() and bigstatsr::as_FBM()
            if you need to convert the type of one of your matrices.")
@@ -156,14 +141,14 @@ predict.plmm <- function(object,
   if (type=="lp") return(drop(Xb))
   
   if (type == "blup"){ # assuming eta of X and newX are the same 
-    if (fbm_flag) stop("\nBLUP prediction is not yet implemented for filebacked data. This will be available soon.")
+    if (fbm_flag) stop("\nBLUP prediction outside of cross-validation is not yet implemented for filebacked data. This will be available soon.")
     if (missing(X)) stop("The design matrix is required for BLUP calculation. Please supply the no-intercept design matrix to the X argument.") 
     if (missing(y) & is.null(object$y)) stop("The vector of outcomes is required for BLUP calculation. Please either supply it to the y argument, or set returnX=TRUE in the plmm function.")
     
     if (!is.null(object$y)) y <- object$y
-    ns <- ifelse(object$ns_idx, )
+   #  ns <- ifelse(object$ns_idx)
     if (is.null(K)){
-      # TODO: consider whether using the rotated scale for predidtion would be better....
+      # TODO: consider whether using the standardized scale for prediction would be better....
     # standardize (this won't affect predicted y)
     # std_X <- ncvreg::std(X)
     # std_newX <- ncvreg::std(newX)

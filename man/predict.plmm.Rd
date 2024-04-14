@@ -61,38 +61,23 @@ the estimated correlation structure of data into our prediction of the outcome.
 }
 }
 \examples{
-# fit a model 
-fit <- plmm(X = admix$X, y = admix$y)
-lp_pred <- predict(fit, newX = admix$X, type = 'lp')
-blup_pred <- predict(fit, newX = admix$X, X = admix$X, y = admix$y) # BLUP is default type
-lp_mspe <- apply(lp_pred, 2, function(c){crossprod(admix$y - c)})
-min(lp_mspe)
-
-blup_mspe <- apply(blup_pred, 2, function(c){crossprod(admix$y - c)})
-min(blup_mspe)
-
-cv_fit <- cv.plmm(X = admix$X, y = admix$y)
-min(cv_fit$cve)
-
-
 set.seed(123)
 train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
 train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
 fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
 
- # make predictions for all lambda values 
+# make predictions for all lambda values 
  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
 
- # make predictions for a select number of lambda values
- # use cv to choose a best lambda
- cvfit <- cv.plmm(X = train$X, y = train$y) 
- pred2 <- predict(object = fit, newX = test$X, type = "blup", idx=cvfit$min,
-  X = train$X, y = train$y)
- pred3 <- predict(object = fit, newX = test$X, type = "lp", idx=cvfit$min) 
- 
-  summary(crossprod(y - pred2)) # almost all 0 -- predictions are good! 
-  
+# look at mean squared prediction error
+mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
+min(mspe)
+
+# compare the MSPE of our model to a null model, for reference
+# null model = intercept only -> y_hat is always mean(y)
+crossprod(mean(test$y) - test$y)/length(test$y)
+
  \dontrun{
   # file-backed example 
   plmm(X = "~/tmp_files/penncath_lite", penalty = "lasso", trace = T, returnX = FALSE) -> foo

@@ -48,7 +48,7 @@ The `admix` data is already formatted to have elements $X$ and $y$, so I can jum
 
 ```{r admix_fit}
 admix_fit <- plmm(X = admix$X, y = admix$y)
-summary(admix_fit, lambda = admix_fit$lambda[95])
+summary(admix_fit, lambda = admix_fit$lambda[50])
 ```
 
 The returned `beta_vals` item is a matrix whose rows are $\hat\beta$ coefficients and whose columns represent values of the penalization parameter $\lambda$. By default, `plmm` fits 100 values of $\lambda$ (see the `setup_lambda` function for details). 

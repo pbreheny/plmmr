@@ -103,6 +103,11 @@ plmm_checks <- function(X,
       std_X_details <- list(center = attr(std_X, 'center'),
                             scale = attr(std_X, 'scale'),
                             ns = attr(std_X, 'nonsingular'))
+      if (!is.null(penalty.factor)) {
+        # if user supplied penalty factor, make sure to adjust for columns that 
+        # may have been constant features 
+        penalty.factor <- penalty.factor[std_X_details$ns]
+      }
     } else if(std_needed){
       std_X <- ncvreg::std(X)
       std_X_details <- list(center = attr(std_X, 'center'),
@@ -159,14 +164,6 @@ plmm_checks <- function(X,
   
   # coercion for penalty
   penalty <- match.arg(penalty)
-  # for now, filebacked data are limited to lasso only (until biglasso gets another upgrade)
-  # if (fbm_flag & penalty != "lasso") {
-  #   if (trace) cat("\nFor now, filebacked data must be analyzed with penalty=lasso 
-  #                  \n (we are working to expand this). Changing the penalty to 
-  #                  lasso.")
-  #   
-  #   penalty <- 'lasso'
-  # }
   
   # set default gamma
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)

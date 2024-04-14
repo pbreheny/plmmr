@@ -231,7 +231,7 @@ cv.plmm <- function(X,
     # update E and Y
     E[fold==i, 1:res$nl] <- res$loss
 
-    if (grepl('dgeMatrix', class(res$yhat))) {
+    if (!is.matrix(res$yhat)) {
       res$yhat <- as.matrix(res$yhat)
     }
     Y[fold==i, 1:res$nl] <- res$yhat
