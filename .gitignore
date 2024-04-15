@@ -1,5 +1,5 @@
 .Rproj.user
-*\.rds$
+*.rds
 *.bk
 *.bed
 *.bim
