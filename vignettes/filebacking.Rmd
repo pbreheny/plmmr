@@ -1,0 +1,64 @@
+---
+title: "Analyze large data with filebacking"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyze large data with filebacking}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(plmmr)
+# MUST have biglasso version >= 1.5.2.1 - run line below if needed
+# remotes::install_github(repo = "YaohuiZeng/biglasso") 
+library(biglasso)
+library(bigsnpr)
+```
+
+In many applications of high dimensional data analysis, the dataset is too large to read into R -- the session will crash for lack of memory. To analyze such large datasets, `plmmr` is equipped to analyze data using *filebacking* - a strategy that lets R 'point' to a file on disk, rather than reading the file into the R session. 
+
+Many other packages use this technique - [bigstatsr](https://privefl.github.io/bigstatsr/) and [biglasso](https://github.com/pbreheny/biglasso) are two examples of packages that use filebacking. The novelties of `plmmr` are: 
+
+  (1) `plmmr` combines the functionality of several packages in order to do quality control, model fitting/analysis, and data visualization all in one package. `plmmr` will take you from PLINK files all the way to a list of SNPs for downstream analysis. 
+  
+  (2) `plmmr` uses a transformation that addresses correlation among samples and uses this correlation to improve predictions (via the best linear unbiased predictor, or BLUP). This means that in `plmm()`, there's no need to filter data down to a 'maximum subset of unrelated individuals.' 
+  
+  The tutorial that follows will walk you through each step of the process. We will use the `penncath_lite` data that ships with our `plmmr` package -- if you've installed this package, you have this dataset as a set of PLINK files. This dataset is small enough that we could read it into memory, but I will analyze it using filebacked methods here for the sake of example. More information about the `penncath_lite` data is given in the `PLINK files` article. 
+  
+  
+## Analyzing filebacked data from start to finish
+
+### Step 1: preprocess the data
+
+```{r}
+process_plink(data_dir = plink_example(parent = T),
+              prefix = "penncath_lite",
+              gz = TRUE,
+              outfile = "process_penncath",
+              overwrite = TRUE,
+              impute_method = "mode")
+```
+
+You'll see a lot of messages printed to the console here -- let's examine each one: 
+
+```{r}
+pen <- snp_attach(paste0(plink_example(parent = T), "/penncath_lite.rds"))
+str(pen) # note: genotypes and std_X are *not* in memory
+```
+
+
+```{r}
+my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+fb_fit <- plmm(X = my_fb_data,
+      returnX = FALSE,
+      trace = TRUE)
+```
+
+  
