@@ -108,11 +108,10 @@
 <p>The branches of this repo are organized in the following way:</p>
 <ul>
 <li><p><code>master</code> is the main branch with all the latest updates</p></li>
-<li><p><code>prep_for_cran</code> is the development branch where we are doing some bug fixes/polishing things up in preparation for our first CRAN submission (coming up soon!)</p></li>
-<li><p><code>estimate_eta</code> is a development branch where we worked through our alternative approach for estimating <span class="math inline"><em>η</em></span>. We’re keeping this around for reference as we are writing.</p></li>
-<li><p><code>fbm</code> is a development branch where I am working to extend our current methods to analyze data from a design matrix stored as a file-backed object (a Filebacked Big Matrix, or FBM). See package <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> for more info on these objects.</p></li>
-<li><p><code>sign_flip</code> is a development branch where I am toying with how to handle the issues caused by +/- signs being flipped as part of truncated SVD.</p></li>
-<li><p><code>refine_workflow</code> is an <strong>archived</strong> branch in which I explored changing the workflow to make cross validation more efficient. This change involved moving the rotation step into <code><a href="reference/plmm_prep.html">plmm_prep()</a></code>, instead of having that step as part of model fitting in <code><a href="reference/plmm_fit.html">plmm_fit()</a></code>. I found that this change was not compatible with cross validation, for reasons that I am currently writing up as part of a paper. Once that paper is done, I will delete this branch.</p></li>
+<li><p><code>integrate_fbm</code> is the development branch where we are working to extend our current methods to analyze data from a design matrix stored as a file-backed object (a Filebacked Big Matrix, or FBM). See package <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> for more info on these objects. When we merge this into <code>master</code>, we will have <code>plmmr</code> version 3.0</p></li>
+<li><p><code>gh_pages</code> is where we are keeping all the documentation for <code>plmmr</code></p></li>
+<li><p><code>estimate_eta</code> is an <strong>archived</strong> branch where we worked through an alternative approach for estimating <span class="math inline"><em>η</em></span>. We’re keeping this around for reference as we are writing.</p></li>
+<li><p><code>sign_flip</code> is an <strong>archived</strong> branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.</p></li>
 </ul>
 </div>
 
