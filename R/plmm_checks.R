@@ -5,6 +5,9 @@
 #' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
 #' @param std_needed Logical: does the supplied X need to be standardized? Defaults to NULL, since by default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, leave `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
 #' @param col_names Optional vector of column names for design matrix. Defaults to NULL.
+#' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
+#' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
+#' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
@@ -25,6 +28,7 @@ plmm_checks <- function(X,
                         y = NULL,
                         std_needed = NULL,
                         col_names = NULL,
+                        non_genomic = NULL,
                         k = NULL, 
                         K = NULL,
                         diag_K = NULL,
@@ -43,8 +47,12 @@ plmm_checks <- function(X,
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
     std_needed <- FALSE
-    col_names <- dat$map$marker.ID
-
+    std_indices <- index_std_X(std_X = std_X, non_genomic = dat$non_gen)
+    genomic <- std_indices$genomic
+    std_X_n <- std_indices$std_X_n
+    std_X_p <- std_indices$std_X_p
+    col_names <- dat$X_colnames
+      
     if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
       fbm_flag <- TRUE
     } else {
@@ -58,18 +66,20 @@ plmm_checks <- function(X,
     if("FBM.code256" %in% class(X$std_X) | "FBM" %in% class(X$std_X)){
       dat <- X
       std_X <- dat$std_X
-      # designate the dimensions of the standardized design matrix, with only ns columns
-      std_X_n <- std_X$nrow
-      std_X_p <- std_X$ncol
-      fbm_flag <- TRUE
+     fbm_flag <- TRUE
     } else {
       std_X <- X$std_X
-      std_X_n <- nrow(std_X)
-      std_X_p <- ncol(std_X)
+      
+      # designate dimensions of the standardized data 
+      std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
+      genomic <- std_indices$genomic
+      std_X_n <- std_indices$std_X_n
+      std_X_p <- std_indices$std_X_p
+      
       # TODO: add case to handle X passed as list where X is not an FBM
       fbm_flag <- FALSE
     }
-    
+   
   }
   
   ### set fbm flag ---------------------------
@@ -132,16 +142,19 @@ plmm_checks <- function(X,
                             ns = 1:ncol(X))
     }
     
+    # designate dimensions of the standardized data 
+    std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
+    genomic <- std_indices$genomic
+    std_X_n <- std_indices$std_X_n
+    std_X_p <- std_indices$std_X_p
   }
-  # designate dimensions of the 
-  std_X_n <- nrow(std_X)
-  std_X_p <- ncol(std_X)
-  
+ 
+
   #  check y types -------------------------------
   # if y is null, use .fam file 
   if(is.null(y)){
-    # default: uses bigSNP naming convention as would be returned in get_data()
-    y <- dat$fam$affection 
+    # default: use data from 6th column of .fam file
+    y <- dat$phen
   }
   
   if (!is.double(y)) {
@@ -209,7 +222,11 @@ plmm_checks <- function(X,
     std_X_details <- list(
       center = dat$std_X_center,
       scale = dat$std_X_scale,
-      ns = dat$ns
+      ns = dat$ns,
+      X_colnames = dat$colnames,
+      X_rownames = dat$rownames,
+      std_X_rownames = dat$std_X_rownames,
+      std_X_colnames = dat$std_X_colnames
     )
   } 
   
@@ -219,6 +236,9 @@ plmm_checks <- function(X,
   ret <- list(
     std_X = std_X,
     std_X_details = std_X_details,
+    std_X_n = std_X_n,
+    std_X_p = std_X_p,
+    genomic = genomic,
     std_X_n = std_X_n,
     std_X_p = std_X_p,
     col_names = col_names,
@@ -235,6 +255,7 @@ plmm_checks <- function(X,
   if (exists('dat')){
     ret$n <- dat$n
     ret$p <- dat$p
+    ret$non_gen <- dat$non_gen
     ret$dat <- dat
   } else {
     ret$n <- n

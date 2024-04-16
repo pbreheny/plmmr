@@ -4,6 +4,7 @@
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
 #' @param std_X_n The number of observations in std_X (integer)
 #' @param std_X_p The number of features in std_X (integer)
+#' @param genomic A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param y Continuous outcome vector.
@@ -43,6 +44,7 @@
 plmm_prep <- function(std_X,
                       std_X_n,
                       std_X_p,
+                      genomic = 1:std_X_p,
                       n,
                       p,
                       y,
@@ -113,7 +115,7 @@ plmm_prep <- function(std_X,
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
       
         if(trace){cat("\nCalculating the eigendecomposition of K")}
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
+        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic) 
         K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U

@@ -45,15 +45,6 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
    
   fit.i <- do.call("plmm_fit", cv.args)
   
-  # for debugging
-  if (cv.args$prep$trace) {
-    cat("\nSnippet of rot_X in fold", i, ":",
-        "\n\tFirst 5 values in 1st column:", fit.i$rot_X[1:5, 1],
-        "\n\tFirst 5 values in 2nd column:", fit.i$rot_X[1:5, 2],
-        "\n\tFirst 5 values in 3rd column:", fit.i$rot_X[1:5, 3],
-        "\n\tFirst 5 values in 4th column:", fit.i$rot_X[1:5, 4])
-  }
-  
   if(type == "lp"){
     yhat <- predict.list(fit = fit.i,
                           oldX = cv.args$prep$std_X,

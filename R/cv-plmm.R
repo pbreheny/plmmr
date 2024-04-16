@@ -133,7 +133,7 @@ cv.plmm <- function(X,
 
   # full model fit ----------------------------------
   fit.args <- c(list(prep = prep,
-                     penalty = checked_data$penalty,
+                     penalty = penalty,
                      std_X_details = checked_data$std_X_details,
                      eta_star = eta_star,
                      penalty.factor = checked_data$penalty.factor,

@@ -2,7 +2,6 @@
 #' This function is intended to be called after `process_plink()` has been called once. 
 #' 
 #' @param path The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path. 
-#' @param row_id Character string indicating which IDs to use for the rownames of the genotype matrix. Can choose "fid" or "iid", corresponding to the first or second columns in the PLINK .fam file. Defaults to "iid". 
 #' @param returnX Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.
 #' @param trace Logical: Should trace messages be shown? Default is TRUE. 
 #' @returns A list with these components: 
@@ -27,7 +26,7 @@
 #' The rows of `X` will be sorted to align in the same order as in `fam`, where rownames of `X` will be sample ID. 
 #' 
 #' 
-get_data <- function(path, row_id = "iid", returnX, trace = TRUE){
+get_data <- function(path, returnX, trace = TRUE){
   
   rds <- paste0(path, ".rds")
   bk <- paste0(path, ".bk") # .bk will be present if RDS was created with bigsnpr methods 
@@ -55,33 +54,27 @@ get_data <- function(path, row_id = "iid", returnX, trace = TRUE){
     std_X <- obj$std_X[,]
     
     # set row names 
-    if(row_id == "iid"){row_names <- obj$fam$sample.ID}
-    if(row_id == "fid"){row_names <- obj$fam$family.ID}
-
-    # TODO: think about ordering the rows of X to match fam file. 
-    # Is this ordering something that is wise to do? 
+    if(obj$id_var == "IID"){row_names <- as.character(obj$fam$sample.ID[obj$complete_phen])}
+    if(obj$id_var == "FID"){row_names <- as.character(obj$fam$family.ID[obj$complete_phen])}
     
-    dimnames(std_X) <- list(row_names,
-                            obj$map$marker.ID[obj$ns])
-    # TODO fix this error: Error in dimnames(X) <- list(row_names, o
- 
-    if(!(all.equal(obj$fam$sample.ID, as.numeric(rownames(std_X))))){
-      stop("\nThere is an issue with the alignment between the rownames of the genotype data and the sample IDs.
-           \nWere there individuals represented in the .bed file who are not in the .fam file, or vice versa?
-           \nPlease ensure that your PLINK files represent all the same individuals before analyzing data with PLMM.")
-    }
-    
+    dimnames(std_X) <- list(obj$std_X_rownames,
+                            obj$std_X_colnames)
     
     cat("\nReminder: the X that is returned here is column-standardized, with constant features removed.
         \nA copy of the original data is available via the 'genotypes' matrix in the .rds object")
     return(list(n = obj$n,
                 p = obj$p,
+                X_colnames = obj$colnames,
+                X_rownames = obj$rownames,
                 std_X = std_X,
                 std_X_center = obj$std_X_center,
                 std_X_scale = obj$std_X_scale,
                 fam = obj$fam,
                 map = obj$map,
-                ns = obj$ns))
+                ns = obj$ns,
+                complete_phen = obj$complete_phen,
+                id_var = obj$id_var,
+                non_gen = obj$non_gen))
   } else {
     cat("Note: The design matrix is being returned as a file-backed matrix (FBM) -- see bigstatsr::FBM() for details.")
     
@@ -90,12 +83,20 @@ get_data <- function(path, row_id = "iid", returnX, trace = TRUE){
 
     return(list(n = obj$n,
                 p = obj$p,
+                X_colnames = obj$colnames,
+                X_rownames = obj$rownames,
                 std_X = obj$std_X,
                 std_X_center = obj$std_X_center,
                 std_X_scale = obj$std_X_scale,
+                std_X_rownames = obj$std_X_rownames,
+                std_X_colnames = obj$std_X_colnames,
                 fam = obj$fam,
                 map = obj$map,
-                ns = obj$ns))
+                ns = obj$ns,
+                phen = obj$fam$affection[obj$complete_phen],
+                complete_phen = obj$complete_phen,
+                id_var = obj$id_var,
+                non_gen = obj$non_gen))
   }
   
 }

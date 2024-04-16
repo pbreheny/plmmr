@@ -10,6 +10,7 @@
 #'  * mean2: Imputes the mean rounded to 2 decimal places.
 #'  * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set. 
 #' @param na_phenotype_vals A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
+#' @param id_var String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
 #' @param handle_missing_phen A string indicating how missing phenotypes should be handled: 
 #'  * "prune" (default): observations with missing phenotype are removed
 #'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
@@ -20,7 +21,14 @@
 #' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param overwrite Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc. 
 #' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
+#' @param add_predictor_fam Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
+#' @param add_predictor_ext Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file). 
+#' This argument takes one of two kinds of arguments: 
+#'  (a) a **named** numeric vector, where the names align with the sample IDs in the PLINK files. 
+#' The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' 
+#'  (b) a numeric matrix whose row names align with the sample IDs in the PLINK files. 
+#'  The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @returns Nothing is returned by this function; instead, files 'prefix.rds',
 #'  'prefix.bk', and std_prefix.bk are created in the location specified by data_dir. Note that this 
 #'  this function need only be run once; in subsequent data analysis/scripts, 
@@ -44,19 +52,22 @@ process_plink <- function(data_dir,
                           impute = TRUE,
                           impute_method = 'mode',
                           na_phenotype_vals = c(-9),
+                          id_var = "IID",
                           handle_missing_phen = "prune",
                           quiet = FALSE,
                           gz = FALSE,
                           outfile,
                           overwrite = FALSE,
+                          add_predictor_fam = NULL,
+                          add_predictor_ext = NULL,
                           ...){
   
   # start log ------------------------------------------
   if(missing(outfile)){
-    outfile = "process_plink.log"
-    } else {
-      outfile = paste0(outfile, ".log")
-    }
+    outfile = paste0(data_dir, "/process_plink.log")
+  } else {
+    outfile = paste0(outfile, ".log")
+  }
   log_con <- file(outfile)
   cat("### Processing PLINK files for PLMM ###", file = log_con)
   cat("\nLogging to ", outfile, file = outfile, append = TRUE)
@@ -95,7 +106,7 @@ process_plink <- function(data_dir,
   }
   
   
-  # Create the RDS file first ------------------------
+  # create the RDS file first ------------------------
   cat("\nCreating ", prefix, ".rds\n", file = outfile, append = TRUE)
   if(!quiet){
     cat("\nCreating ", prefix, ".rds\n")
@@ -110,27 +121,27 @@ process_plink <- function(data_dir,
     bigsnpr::snp_readBed(bedfile = paste0(data_dir, "/", prefix, ".bed"))
     obj <- bigsnpr::snp_attach(path)
   }
-
-# set object names --------------------------------
+  
+  # set object names --------------------------------
   obj$colnames <- obj$map$marker.ID
   
-  if (length(unique(obj$fam$family.ID)) == nrow(obj$fam)){
-    obj$rownames <- obj$fam$family.ID
-  } else if (length(unique(obj$fam$family.ID)) == nrow(obj$fam)) {
-    obj$rownames <- obj$fam$sample.ID
+  if (id_var == "FID"){
+    obj$rownames <- og_plink_ids <- as.character(obj$fam$family.ID)
+  } else if (id_var == "IID") {
+    obj$rownames <- og_plink_ids <- as.character(obj$fam$sample.ID)
   } else {
-    obj$rownames <- paste0("row_", 1:nrow(obj$fam))
+    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID'.")
   }
-  
-  
-# chromosome check ---------------------------------
-# only consider SNPs on chromosomes 1-22
 
+  # chromosome check ---------------------------------
+  # only consider SNPs on chromosomes 1-22
+  
   chr_range <- range(obj$map$chromosome)
   if(chr_range[1] < 1 | chr_range[2] > 22){
-    stop("\nplmmr only analyzes autosomes -- please remove variants on chromosomes outside 1-22")
+    stop("\nplmmr only analyzes autosomes -- please remove variants on chromosomes outside 1-22.
+         This can be done in PLINK 1.9; see the documentation in https://www.cog-genomics.org/plink/1.9/filter#chr")
   }
-    
+  
   #   # TODO: below is an idea for future development: 
   #   cat("\nplmmr only analyzes autosomes -- removing chromosomes outside 1-22")
   #   cat("\nplmmr only analyzes autosomes -- removing chromosomes outside 1-22",
@@ -152,39 +163,40 @@ process_plink <- function(data_dir,
   
   # TODO: figure out how to add a 'sexcheck' with bigsnpr functions
   # e.g., if sexcheck = TRUE, remove subjects with sex discrepancies
-   
+  
   chr <- obj$map$chromosome
-  X   <- obj$genotypes
+  X <- obj$genotypes
   pos <- obj$map$physical.pos
   
   # save these counts 
   counts <- bigstatsr::big_counts(X) # NB: this is a matrix 
   
-
-# identify monomorphic SNPs --------------------------------
+  # identify monomorphic SNPs --------------------------------
   # first, save the dimensions of the *original* (pre-standardized) design matrix,
   # as this count will count the constant (monomorphic) SNPs as part of the 
   # number of columns
-  obj$n <- obj$genotypes$nrow
-  obj$p <- obj$genotypes$ncol
+  obj$n <- X$nrow
+  obj$p <- X$ncol
   
   constants_idx <- apply(X = counts[1:3,],
-                                          MARGIN = 2,
-                                          # see which ~called~ features have all same value
-                                          FUN = function(c){sum(c == sum(c)) > 0})
-  if(!quiet){
-  cat("\nThere are ", obj$genotypes$nrow, " observations and ",
-      obj$genotypes$ncol, " features in the specified PLINK files.")
-
-  ns <- which(!constants_idx) # need this for analysis downstream
-  cat("\nOf these, there are ", sum(constants_idx), " constant features in the data",
-      file = outfile, append = TRUE)
+                         MARGIN = 2,
+                         # see which ~called~ features have all same value
+                         FUN = function(c){sum(c == sum(c)) > 0})
   
+  ns <- which(!constants_idx) # need this for analysis downstream
+  
+  if(!quiet){
+    cat("\nThere are ", obj$n, " observations and ",
+        obj$p, " genomic features in the specified data files.")
+    
+    cat("\nOf these, there are ", sum(constants_idx), " constant features in the data",
+        file = outfile, append = TRUE)
+    
     cat("\nThere are ", sum(constants_idx), " constant features in the data")
   }
   
-
-# notify about missing (genotype) values ----------------------------
+  
+  # notify about missing (genotype) values ----------------------------
   na_idx <- counts[4,] > 0
   prop_na <- counts[4,]/nrow(X)
   
@@ -197,7 +209,7 @@ process_plink <- function(data_dir,
     cat("\nThere are a total of ", sum(na_idx), "SNPs with missing values")
     cat("\nOf these, ", sum(prop_na > 0.5), " are missing in at least 50% of the samples")
   }
-
+  
   # handle missing phenotypes ---------------------------------------
   # make missing phenotypes explicit (need both of the following because 
   # bigstatsr::big_cop() does not handle negative indices)
@@ -208,8 +220,9 @@ process_plink <- function(data_dir,
   if (handle_missing_phen == 'prune'){
     if(!quiet){
       cat("\nWill prune out ", length(na_phen), " samples/observations with missing phenotype data.")
+      # Note: the actual pruning happens in the 'subset' step 
     }
-    obj$fam <- obj$fam[complete_phen,]
+    
   } else if (handle_missing_phen == 'asis'){
     if(!quiet){
       cat("\nWill mark ", length(na_phen), " samples/observations as having missing phenotype data.")
@@ -239,14 +252,14 @@ process_plink <- function(data_dir,
         file = outfile, append = TRUE)
     
     if(impute_method %in% c('mode', 'random', 'mean0', 'mean2')){ 
-       # NB: this will overwrite obj$genotypes
-    obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
-                                                   ncores = bigstatsr::nb_cores(),
-                                                   method = impute_method) # dots can pass other args
-
-      } else if (impute_method == "xgboost"){
-
-      imp <- bigsnpr::snp_fastImpute(Gna = X,
+      
+      obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
+                                                 ncores = bigstatsr::nb_cores(),
+                                                 method = impute_method) # dots can pass other args
+      
+    } else if (impute_method == "xgboost"){
+      
+      obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
                                      ncores = bigstatsr::nb_cores(),
                                      infos.chr = chr,
                                      seed = as.numeric(Sys.Date()),
@@ -263,35 +276,184 @@ process_plink <- function(data_dir,
           \n make a note in a future release. If using xgboost, proceed with 
           \n caution and file an issue if you notice any problems downstream.
           \n ********************************************************")
-
+      
       # save imputed values (NB: will overwrite obj$genotypes)
       obj$genotypes$code256 <- bigsnpr::CODE_IMPUTE_PRED
     }
+    
     # now, save the new object -- this will have imputed values and constants_idx
     obj$constants_idx <- constants_idx
     obj <- bigsnpr::snp_save(obj)
     
     cat("\nDone with imputation.",
         file = outfile, append = TRUE)
-    
-
   }
 
-# standardization ------------------------------------------------
+  # add additional covariates -----------------------
+  # first, set up some indices; even if no additional args are used, these NULL
+  #   values are important for checks downstream
+  non_gen <- NULL 
+  ## covariates from .fam file ---------------------------
+  if (!is.null(add_predictor_fam)) {
+    if (!quiet) {
+      cat("\nAdding predictors from .fam file.")
+    }
+    if (add_predictor_fam == "sex"){
+      # add space for extra column
+      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+                                                 nrow = nrow(obj$fam), 
+                                                 ncol = obj$genotypes$ncol + 1) 
+      # fill in new matrix 
+      bigstatsr::big_apply(obj$genotypes,
+                           a.FUN = function(X, ind, res){
+                             res[,1] <- obj$fam[add_predictor_fam]
+                             res[,ind+1] <- X[,ind]
+                           },
+                           a.combine = cbind,
+                           res = obj$geno_plus_predictors)
+      
+      # save non_gen: an index marking the first column as non-genomic predictor
+      non_gen <- 1
+      
+    } # TODO: may add option to supply 6th column of .fam file here...
+  }
+  
+  ## covariates from external file   ----------------------------------
+  if (!is.null(add_predictor_ext)) {
+    if (!quiet) {
+      cat("\nAdding predictors from external data.")
+    }
+    if (is.vector(add_predictor_ext)) {
+      ### vector case -------------------------------
+      # make sure types match
+      if (!is.numeric(add_predictor_ext)) {
+        stop("\nThe vector supplied to the 'add_predictor_ext' argument must be numeric.")
+      }
+      names(add_predictor_ext) <- as.numeric(names(add_predictor_ext))
+      
+      if (var(add_predictor_ext) == 0) {
+        stop("\nThe supplied argument to add_predictor_ext is constant (no variation).
+             This would not be a meaningful predictor.")
+      }
+      
+      # check for alignment 
+      if (is.null(names(add_predictor_ext)) | 
+          length(intersect(og_plink_ids, names(add_predictor_ext))) == 0) {
+        stop("\nYou supplied an argument to 'add_predictor_ext', but the names of this
+         vector either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
+         \nPlease create or align the names of this vector - alignment is essential for accurate analysis.")
+      }
+      
+      add_predictor_ext <- align_famfile_ids(id_var = id_var,
+                                             quiet = quiet,
+                                             add_predictor = add_predictor_ext,
+                                             og_plink_ids = og_plink_ids,
+                                             complete_phen = complete_phen)
+      
+      # save non_gen: an index marking the first column as non-genomic predictor
+      non_gen <- 1
+      
+      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+                                                 nrow = nrow(obj$fam),
+                                                 ncol = obj$genotypes$ncol + length(non_gen)) 
+      # fill in new matrix 
+      bigstatsr::big_apply(obj$genotypes,
+                           a.FUN = function(X, ind, res){
+                             res[,1:length(non_gen)] <- add_predictor_ext
+                             res[,ind+length(non_gen)] <- X[,ind]
+                           },
+                           a.combine = cbind,
+                           res = obj$geno_plus_predictors)
+      
+      # adjust colnames
+      obj$colnames <- c(deparse(substitute(add_predictor_ext)), obj$colnames)
+      
+    } else if (is.matrix(add_predictor_ext) | is.data.frame(add_predictor_ext)) {
+      ### matrix case --------------------------------
+      if (is.data.frame(add_predictor_ext)) {
+        add_predictor_ext <- as.matrix(add_predictor_ext)
+      }
+      # make sure types match
+      if (!is.numeric(add_predictor_ext[,1])) {
+        stop("\nThe matrix supplied to the 'add_predictor_ext' argument must have numeric values only.")
+      }
+      
+      if (any(apply(add_predictor_ext, 2, var) == 0)) {
+        stop("\nThe matrix supplied to the 'add_predictor_ext' argument has at least one
+             constant column (a column that does not vary over the given samples).")
+      }
+      
+      # check for alignment 
+      if (is.null(rownames(add_predictor_ext)) | 
+          length(intersect(og_plink_ids, rownames(add_predictor_ext))) == 0) {
+        stop("\nYou supplied an argument to 'add_predictor_ext', but the row names of this
+         matrix either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
+         \nPlease create or align the names of this matrix - alignment is essential for accurate analysis.")
+      }
+      
+      add_predictor_ext <- align_famfile_ids(id_var = id_var,
+                                             quiet = quiet,
+                                             add_predictor = add_predictor_ext,
+                                             og_plink_ids = og_plink_ids)
+
+      # save non_gen: an index marking added columns as non-genomic predictors
+      non_gen <- 1:ncol(add_predictor_ext)
+      
+      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+                                                 nrow = nrow(obj$fam),
+                                                 ncol = obj$genotypes$ncol + length(non_gen)) 
+      # fill in new matrix 
+      bigstatsr::big_apply(obj$genotypes,
+                           a.FUN = function(X, ind, res){
+                             res[,1:length(non_gen)] <- add_predictor_ext
+                             res[,ind+length(non_gen)] <- X[,ind]
+                           },
+                           a.combine = cbind,
+                           res = obj$geno_plus_predictors)
+      
+      # adjust colnames if applicable 
+      if (!is.null(colnames(add_predictor_ext))){
+        obj$colnames <- c(colnames(add_predictor_ext), obj$colnames)
+      }
+      
+    }
+  
+  }
+  # standardization ------------------------------------------------
   cat("\nColumn-standardizing the design matrix...")
   # add centering & scaling info
-  scale_info <- bigstatsr::big_scale()(obj$genotypes)
-  # now, save the new object -- this will have imputed values and constants_idx
-  obj$ns <- ns
+  if ("geno_plus_predictors" %in% names(obj)) {
+    scale_info <- bigstatsr::big_scale()(obj$geno_plus_predictors)
+  } else {
+    scale_info <- bigstatsr::big_scale()(obj$genotypes)
+  }
+
+  # now, save the indices of non-singular values in the *new* X; if additional 
+  #   predictors have been added, these index values need to be updated! 
+  if (is.null(non_gen)) {
+    obj$ns <- ns
+  } else {
+    obj$ns <- c(non_gen, ns + length(non_gen))
+  }
+  
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
-  obj$std_X_center <- scale_info$center[obj$ns] # TODO: should this be subset to ns columns only? Think about this...
+  obj$std_X_center <- scale_info$center[obj$ns] # TODO: is this right? should this be subset to ns columns only? Think about this...
   obj$std_X_scale <- scale_info$scale[obj$ns]
-  tmp <- big_std(X = obj$genotypes,
-                           center = scale_info$center,
-                           scale = scale_info$scale,
-                           ns = obj$ns)
+  
+  # subsetting -----------------------------------------
+  if (is.null(non_gen)) {
+    tmp <- big_std(X = obj$genotypes,
+                   center = scale_info$center,
+                   scale = scale_info$scale,
+                   ns = obj$ns)
+  } else {
+    tmp <- big_std(X = obj$geno_plus_predictors,
+                   center = scale_info$center,
+                   scale = scale_info$scale,
+                   ns = obj$ns)
+  }
   std_bk_extension <- paste0("std_", prefix) 
   
   # subset the features so that constant features (monomorphic SNPs) are not 
@@ -300,16 +462,19 @@ process_plink <- function(data_dir,
   if (handle_missing_phen == "prune"){
     obj$std_X <- bigstatsr::big_copy(tmp,
                                      ind.row = complete_phen, # filters out rows with missing phenotypes
-                                     ind.col = ns,
+                                     ind.col = obj$ns,
                                      backingfile = paste0(data_dir,"/", std_bk_extension))
   } else {
     obj$std_X <- bigstatsr::big_copy(tmp,
-                                     ind.col = ns,
+                                     ind.col = obj$ns,
                                      backingfile = paste0(data_dir,"/", std_bk_extension))
   }
   
-  obj$std_X_colnames <- obj$colnames[ns]
+  obj$std_X_colnames <- obj$colnames[obj$ns]
   obj$std_X_rownames <- obj$rownames[complete_phen]
+  obj$non_gen <- non_gen # save indices for non-genomic covariates
+  obj$complete_phen <- complete_phen # save indices for which samples had complete phenotypes
+  obj$id_var <- id_var # save ID variable - will need this downstream for analysis
   obj <- bigsnpr::snp_save(obj)
   
   cat("\nDone with standardization. File formatting in progress.",

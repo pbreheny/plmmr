@@ -35,7 +35,6 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
   # get beta values back in original scale; reverse the PRE-ROTATION standardization 
   untransformed_b2 <- untransform(untransformed_b1 = fit$untransformed_b1,
                                   std_X_details = std_X_details,
-                                  p = fit$p,
                                   fbm_flag = fbm_flag)
   
   # give the matrix of beta_values readable names 
@@ -47,7 +46,7 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
   varnames <- c("(Intercept)", snp_names) # add intercept 
   dimnames(untransformed_b2) <- list(varnames, lamNames(fit$lambda))
   colnames(fit$linear.predictors) <- lamNames(fit$lambda)
-  
+
   # output 
   val <- structure(list(beta_vals = untransformed_b2,
                         rotated_scale_beta_vals = fit$untransformed_b1,
