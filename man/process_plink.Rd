@@ -10,11 +10,14 @@ process_plink(
   impute = TRUE,
   impute_method = "mode",
   na_phenotype_vals = c(-9),
+  id_var = "IID",
   handle_missing_phen = "prune",
   quiet = FALSE,
   gz = FALSE,
   outfile,
   overwrite = FALSE,
+  add_predictor_fam = NULL,
+  add_predictor_ext = NULL,
   ...
 )
 }
@@ -36,6 +39,8 @@ process_plink(
 
 \item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
 
+\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
+
 \item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
 \itemize{
 \item "prune" (default): observations with missing phenotype are removed
@@ -51,6 +56,16 @@ process_plink(
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+
+\item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
+
+\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+This argument takes one of two kinds of arguments:
+(a) a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.
+
+(b) a numeric matrix whose row names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }

@@ -115,7 +115,13 @@ plmm_prep <- function(std_X,
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
       
         if(trace){cat("\nCalculating the eigendecomposition of K")}
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic) 
+
+        if (identical(genomic,1:std_X_p)) {
+          # if all columns are genomic, no need to filter
+          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
+        } else {
+          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic) 
+        }
         K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U

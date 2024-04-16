@@ -82,7 +82,7 @@ plmm_fit <- function(prep,
                      warn = TRUE,
                      returnX = TRUE,
                      ...){
-  
+
   # error checking ------------------------------------------------------------
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
   if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)

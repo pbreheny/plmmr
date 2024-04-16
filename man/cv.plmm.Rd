@@ -13,7 +13,7 @@ cv.plmm(
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-  penalty = c("MCP", "SCAD", "lasso"),
+  penalty = "MCP",
   penalty.factor = NULL,
   type = "blup",
   gamma,

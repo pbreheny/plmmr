@@ -4,7 +4,7 @@ index_std_X <- function(std_X, non_genomic){
   std_X_p <- ncol(std_X)
   
   # keep track of non-genomic features for non-FBM case
-  col_idx <- 1:std_X_n
+  col_idx <- 1:std_X_p
   if (is.null(non_genomic)) {
     genomic <- col_idx
   } else {

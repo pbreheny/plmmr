@@ -85,7 +85,7 @@ plmm <- function(X,
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
-                 penalty = c("MCP", "SCAD", "lasso"), # TODO: think about making lasso default
+                 penalty = "MCP", # TODO: think about making lasso default
                  penalty.factor = NULL,
                  init = NULL,
                  gamma,
@@ -100,7 +100,7 @@ plmm <- function(X,
                  warn = TRUE,
                  trace = FALSE, 
                  ...) {
-  
+
 # run checks ------------------------------
   checked_data <- plmm_checks(X,
                               std_needed = std_needed,

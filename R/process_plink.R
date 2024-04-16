@@ -347,8 +347,7 @@ process_plink <- function(data_dir,
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
-                                             og_plink_ids = og_plink_ids,
-                                             complete_phen = complete_phen)
+                                             og_plink_ids = og_plink_ids)
       
       # save non_gen: an index marking the first column as non-genomic predictor
       non_gen <- 1

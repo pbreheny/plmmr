@@ -23,7 +23,7 @@ eigen_K <- function(std_X, p, fbm_flag, ...){
   } else {
     # make std_X an FBM so that bigstatsr::big_tcrossprodSelf can be used... 
     # need this for subsetting columns & passing additional arguments
-    std_X <- as_FBM(std_X) 
+    std_X <- bigstatsr::as_FBM(std_X) 
     K <- bigstatsr::big_tcrossprodSelf(std_X, ...) 
     K <- K[,]/p
   }
