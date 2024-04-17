@@ -1,5 +1,5 @@
 ---
-title: "Analyze large data with filebacking"
+title: "Analyze high-dimensional PLINK data with filebacking"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Analyze large data with filebacking}
@@ -25,20 +25,22 @@ library(biglasso)
 library(bigsnpr)
 ```
 
-In many applications of high dimensional data analysis, the dataset is too large to read into R -- the session will crash for lack of memory. To analyze such large datasets, `plmmr` is equipped to analyze data using *filebacking* - a strategy that lets R 'point' to a file on disk, rather than reading the file into the R session. 
+In many applications of high dimensional data analysis, the dataset is too large to read into R -- the session will crash for lack of memory. This is almost always an issue with analyzing genetic data from [PLINK](https://www.cog-genomics.org/plink/) files. To analyze such large datasets, `plmmr` is equipped to analyze data using *filebacking* - a strategy that lets R 'point' to a file on disk, rather than reading the file into the R session. Many other packages use this technique - [bigstatsr](https://privefl.github.io/bigstatsr/) and [biglasso](https://github.com/pbreheny/biglasso) are two examples of packages that use filebacking. The novelties of `plmmr` are: 
 
-Many other packages use this technique - [bigstatsr](https://privefl.github.io/bigstatsr/) and [biglasso](https://github.com/pbreheny/biglasso) are two examples of packages that use filebacking. The novelties of `plmmr` are: 
-
-  (1) `plmmr` combines the functionality of several packages in order to do quality control, model fitting/analysis, and data visualization all in one package. `plmmr` will take you from PLINK files all the way to a list of SNPs for downstream analysis. 
+  (1) **Integration**: `plmmr` combines the functionality of several packages in order to do quality control, model fitting/analysis, and data visualization all in one package. `plmmr` will take you from PLINK files all the way to a list of SNPs for downstream analysis. 
   
-  (2) `plmmr` uses a transformation that addresses correlation among samples and uses this correlation to improve predictions (via the best linear unbiased predictor, or BLUP). This means that in `plmm()`, there's no need to filter data down to a 'maximum subset of unrelated individuals.' 
+  (2) **Accessibility**: `plmmr` can be run from an `R` session on a typical desktop/laptop machine. The user does not need access to a supercomputer or experience with the command line in order to fit models `plmmr`. If you don't know what the 'command line' means, don't worry - `plmmr` was designed with you in mind :) 
   
-  The tutorial that follows will walk you through each step of the process. We will use the `penncath_lite` data that ships with our `plmmr` package -- if you've installed this package, you have this dataset as a set of PLINK files. This dataset is small enough that we could read it into memory, but I will analyze it using filebacked methods here for the sake of example. More information about the `penncath_lite` data is given in the `PLINK files` article. 
+  (3) **Handling correlation**: `plmmr` uses a transformation that addresses correlation among samples and uses this correlation to improve predictions (via the best linear unbiased predictor, or BLUP). This means that in `plmm()`, there's no need to filter data down to a 'maximum subset of unrelated individuals.' 
+  
+  The tutorial that follows will walk you through each step of the process. We will use the `penncath_lite` data that ships with our `plmmr` package -- if you've installed this package, you have this dataset as a set of PLINK files. These PLINK files represent about 1400 participants and 4,000+ SNPs. This dataset is small enough that we could read it into memory (4,000 is a small number of SNPs to study), but I will analyze it using filebacked methods here for the sake of example. The steps shown here would be the same for GWAS-sized datasets (100,000 - 800,000 SNPs). More information about the `penncath_lite` data is given in the `PLINK files` article. 
   
   
 # Analyzing filebacked data from start to finish
 
 ## Step 1: preprocess the data
+
+The most important step is where you begin -- we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files). 
 
 ```{r}
 process_plink(data_dir = plink_example(parent = T),
@@ -49,9 +51,9 @@ process_plink(data_dir = plink_example(parent = T),
               impute_method = "mode")
 ```
 
-You'll see a lot of messages printed to the console here ...
+You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files (these will show up in the folder where the PLINK data is): `penncath_lite.rds`, `penncath_lite.bk`, and `std_penncath_lite.bk.` 
 
-We can examine the RDS object created by `process_plink()` 
+We can examine what's in `penncath_lite.rds` using the `snp_attach()` function from the `bigsnpr` package:
 
 ```{r}
 pen <- snp_attach(paste0(plink_example(parent = T), "/penncath_lite.rds"))
@@ -103,7 +105,7 @@ To summarize and visualize the model at the chosen $\lambda$ parameter value, we
 ```{r}
 summary(cv_fb_fit)
 
-plot(cv_fb_fit$fit, lambda = cv_fb_fit$lambda.min)
+plot(cv_fb_fit$fit)
 ```
 
 ## Comparing candidate models 
@@ -134,9 +136,9 @@ summary(cv_fb_lasso)
 plot(cv_fb_lasso$fit)
 ```
 
-## To add an unpenalized covariate
+## To add predictors that are not genomic
 
-In many biological applications, we want to include some features/covariates/predictors that are always in the model (i.e., they are not penalized). Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `process_plink()`: 
+In many biological applications, we want to include some features/covariates/predictors in addition to the genomic information, like clinical or demographic information. Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `process_plink()`: 
 
 ```{r}
 pen_clinic <- read.csv(paste0(plink_example(parent = T), "/penncath_clinical.csv"))
@@ -147,7 +149,7 @@ process_plink(data_dir = plink_example(parent = T),
               prefix = "penncath_lite",
               id_var = "FID", # this is KEY!
               outfile = "process_penncath",
-              overwrite = TRUE,
+              overwrite = TRUE, # must have this to overwrite the earlier example
               impute_method = "mode",
               add_predictor_ext = extdata)
 
@@ -155,13 +157,30 @@ process_plink(data_dir = plink_example(parent = T),
 pen2 <- snp_attach(paste0(plink_example(parent = T), "/penncath_lite.rds"))
 pen2$genotypes |> dim() # original dimensions of the data, prior to any subsetting
 pen2$std_X |> dim() # dimensions of the standardized and subset X 
-pen2$std_X_colnames |> head() # std_X includes non-genomic covariates 
+pen2$std_X_colnames |> head() # std_X includes our non-genomic covariates 
 ```
+
+
+We usually want these kinds of variables to always be in the model (i.e., they are not penalized). To make sure 'sex' and 'age' are always included in the chosen model, let's set `penalty.factor` to have 0 values corresponding to these predictors. 
 
 ```{r}
 dat_plus_newvars <- paste0(plink_example(parent = T), "/penncath_lite")
-fb_fit <- plmm(X = dat_plus_newvars,
-      returnX = FALSE,
-      trace = TRUE)
+fit_plus_newvars <- plmm(X = dat_plus_newvars,
+               penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+               returnX = FALSE,
+               trace = TRUE)
+```
+
+We can check out how these additional covariates impact model fit: 
+
+```{r}
+plot(fit_plus_newvars)
+
+summary(fb_fit, idx = 1) 
+summary(fit_plus_newvars, idx = 1) # at highest penalty value, sex and age are still in the model
+
+# look at the estimated coefficients 
+fb_fit$beta_vals[1:10, 1:5]
+fit_plus_newvars$beta_vals[1:10, 1:5]
 ```
 
