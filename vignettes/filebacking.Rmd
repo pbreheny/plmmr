@@ -126,6 +126,9 @@ summary(fb_lasso, idx = 50)
 cv_fb_lasso <- cv.plmm(X = my_fb_data,
                        penalty = "lasso",
                      type = 'blup',
+                     nfolds = 3, # for sake of testing, I made this small. 
+                     # In practice, 3 folds is usually not enough for robust 
+                     # cross validation - hence, the default is nfolds = 10
                      returnX = FALSE,
                      trace = TRUE)
 
