@@ -71,7 +71,7 @@
 #' 
 #' # filebacked example (file path is specific to current machine)
 #' # since this dataset is < 100Mb, have to specify returnX = FALSE for 
-#' # get_data() to return an FBM
+#' # `get_data()` to return an FBM
 #' cv.plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fit
 #' plot(fit)
 #' summary(fit)
@@ -169,7 +169,7 @@ cv.plmm <- function(X,
   
   estimated_V <- NULL 
   if (type == 'blup') {
-    estimated_V <- v_hat(fit, K) # TODO: make this more efficient by passing the K calculated in the prep step (in high dim case)
+    estimated_V <- construct_variance(fit, K) # TODO: make this more efficient by passing the K calculated in the prep step (in high dim case)
   }
  
   # initialize objects to hold CV results 

@@ -139,7 +139,7 @@ plot(cv_fit)
 
 # filebacked example (file path is specific to current machine)
 # since this dataset is < 100Mb, have to specify returnX = FALSE for 
-# get_data() to return an FBM
+# `get_data()` to return an FBM
 cv.plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fit
 plot(fit)
 summary(fit)

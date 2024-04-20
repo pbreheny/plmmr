@@ -4,12 +4,17 @@
 #' @param X An file-backed design matrix 
 #' @param center A vector of centering values
 #' @param scale A vctor of scaling values 
-#' @param ns A vector with the indicies marking the Non-Singular columns of X
+#' @param ns A vector with the indicies marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).
 #' @param ... Other arguments to `bigstatsr::big_apply()`
 #'
 #' @return A standardized matrix of class FBM
 #' @keywords internal
-big_std <- function(X, center = NULL, scale, ns){
+big_std <- function(X, center = NULL, scale, ns = NULL){
+  
+  if (is.null(ns)) {
+    ns <- bigstatsr::cols_along(X)
+  }
+  
   if(is.null(center)){
     centered_X <- X
   } else {

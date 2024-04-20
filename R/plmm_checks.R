@@ -180,7 +180,7 @@ plmm_checks <- function(X,
   
   # set default gamma
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
-  
+
   # error checking ------------------------------------------------------------
   if(!fbm_flag){
     # error check for matrix X
@@ -189,6 +189,7 @@ plmm_checks <- function(X,
                                             \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
   } else {
+    
     #  error checking for FBM X 
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
     if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)

@@ -1,21 +1,23 @@
 #' a function to create the estimated variance matrix from a PLMM fit 
 #' @param fit An object returned by `plmm()`
 #' @param K An optional matrix or list as returned by `choose_K()`
-#' @return Vhat, a matrix representing the estimated variance 
+
+#' @return Sigma_hat, a matrix representing the estimated variance 
 #' 
 #' @export
 #' 
-v_hat <- function(fit, K = NULL){
+construct_variance <- function(fit, K = NULL, eta = NULL){
+ 
  
   # if K is supplied:
-  if (!is.null(K)) {
+  if (!is.null(K) & !is.null(eta)) {
     # case 1: K is from K_svd list 
     if(is.list(K)){
       K <- K$U %*% tcrossprod(diag(K$s), K$U)
-      Vhat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
+      Sigma_hat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
     } else if (is.matrix(K)){
     # case 2: K is a matrix 
-    Vhat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
+    Sigma_hat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
     }
   }
   
@@ -23,7 +25,7 @@ v_hat <- function(fit, K = NULL){
   if(is.null(K) & is.list(fit)){
     
     if ("K" %in% names(fit)){
-      Vhat <- fit$eta * fit$K + (1-fit$eta) * diag(fit$std_X_n)
+      Sigma_hat <- fit$eta * fit$K + (1-fit$eta) * diag(fit$std_X_n)
     } else {
       stop("\nK is not supplied in either the fit or K arguments.")
     }
@@ -32,6 +34,6 @@ v_hat <- function(fit, K = NULL){
   }
   
   
-    return(Vhat)
+    return(Sigma_hat)
 }
  

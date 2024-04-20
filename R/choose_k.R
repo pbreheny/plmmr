@@ -1,8 +1,9 @@
-#' a function to choose k, the number of eigenvalues to use in truncated SVD
+#' a function to choose k, the number of eigenvalues to use in truncated eigendecomposition
 #' 
 #' @param X can be either:
 #'  *  the fully-imputed design matrix, or 
 #'  *  a string specifying the path to an .rds object created by process_plink
+#' @param eta A value between 0 and 1 representing the proportion of variation attributable to population structure. See \code{estimate_eta()}.
 #' @param start The starting number of eigenvalues. Defaults to floor(nrow(X)/10)
 #' @param step The size (with respect to the number of observations) of the increments of increase in choosing k. Defaults to floor(nrow(X)/10).
 #' @param eps A percentage indicating the largest permissible approximation error between the true and approximate relatedness matrices. Defaults to 0.1 (10% error).
@@ -12,7 +13,7 @@
 #' @param returnK Logical: should the true K (as in relatedness_mat(X)) be returned? Defaults to FALSE.  
 #' 
 #' @return A list with at least 3 items:
-#'  * eigs_K: a list with the SVD components (s and U) for the approximated relatedness matrix K that can be passed to `plmm()`
+#'  * eigs_K: a list with the eigenvalues `s` and eigenvectors `U` for the approximated variance matrix `Sigma` that can be passed to `plmm()`
 #'  * k, the chosen number of eigenvalues 
 #'  * delt, the distance between the true and approximated K matrices at chosen k
 #'  * k_vals, a vector of all k values evaluated 
@@ -29,6 +30,7 @@
 #' }
 #'  
 choose_k <- function(X,
+                     eta,
                      start = NULL,
                      step = NULL,
                      eps = 0.1,
@@ -45,9 +47,9 @@ choose_k <- function(X,
   
   # calculate true K 
   if(trace){cat('\nCalcuating the relatedness matrix')}
-  std_X <- ncvreg::std(X) # need this for its dimensions ...
-  K <- plmmr::relatedness_mat(X) # ... but this function internally standardizes X
-  # note: relatedness_mat() standardizes X and scales the singular values of K by 1/p
+  std_X <- ncvreg::std(X)
+  K <- plmmr::relatedness_mat(std_X, std = FALSE) 
+  # note: relatedness_mat() scales the singular values of K by 1/p
 
   # set up loop 
   k <- start
@@ -67,7 +69,9 @@ choose_k <- function(X,
 
   while(k < min(nrow(std_X), ncol(std_X)) | it < max_it){
     k_vals[it] <- k
-    # truncated SVD 
+    # construct variance 
+    Sigma <- contruct_variance()
+    # truncated eigendecomposition 
     trunc <- RSpectra::eigs(A = K, k = k, nv = 0)
     # calculate approximation
     A_k <- trunc$vectors %*% tcrossprod(diag(trunc$values), trunc$vectors)

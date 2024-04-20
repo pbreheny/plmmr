@@ -134,7 +134,10 @@ plot(fit_admix2) # notice: the default penalty is MCP
 # filebacked example (file path is specific to current machine)
 # since this dataset is < 100Mb, have to specify returnX = FALSE for 
 # get_data() to return an FBM
-plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fb_fit
+my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+fb_fit <- plmm(X = my_fb_data,
+               returnX = FALSE,
+               trace = TRUE)
 }
 
 }

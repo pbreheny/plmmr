@@ -73,7 +73,10 @@
 #' # filebacked example (file path is specific to current machine)
 #' # since this dataset is < 100Mb, have to specify returnX = FALSE for 
 #' # get_data() to return an FBM
-#' plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fb_fit
+#' my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+#' fb_fit <- plmm(X = my_fb_data,
+#'                returnX = FALSE,
+#'                trace = TRUE)
 #' }
 #' 
 plmm <- function(X, 
@@ -154,14 +157,6 @@ plmm <- function(X,
                       warn = warn,
                       convex = convex,
                       dfmax = dfmax)
-  # if (trace) {
-  #   cat("\nSnippet of rot_X:",
-  #       "\n\tFirst 5 values in 1st column:", the_fit$rot_X[1:5, 1],
-  #       "\n\tFirst 5 values in 2nd column:", the_fit$rot_X[1:5, 2],
-  #       "\n\tFirst 5 values in 3rd column:", the_fit$rot_X[1:5, 3],
-  #       "\n\tFirst 5 values in 4th column:", the_fit$rot_X[1:5, 4])
-  # }
- 
   if (trace) {
     cat("\nBeta values are estimated -- almost done!")
     }

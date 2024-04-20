@@ -5,7 +5,7 @@
 \title{big_std
 A function to standardize a matrix stored as an FBM object}
 \usage{
-big_std(X, center = NULL, scale, ns)
+big_std(X, center = NULL, scale, ns = NULL)
 }
 \arguments{
 \item{X}{An file-backed design matrix}
@@ -14,7 +14,7 @@ big_std(X, center = NULL, scale, ns)
 
 \item{scale}{A vctor of scaling values}
 
-\item{ns}{A vector with the indicies marking the Non-Singular columns of X}
+\item{ns}{A vector with the indicies marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).}
 
 \item{...}{Other arguments to \code{bigstatsr::big_apply()}}
 }

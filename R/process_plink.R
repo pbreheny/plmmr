@@ -39,14 +39,14 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' 
-#' process_plink(data_dir = "inst/extdata", prefix = "admix")
-#' 
-#' process_plink(data_dir = "../temp_files",
-#'  prefix = "penncath_lite",
-#'   impute = T,
-#'    quiet = F)
+#' process_plink(data_dir = plink_example(parent = T),
+#' prefix = "penncath_lite",
+#' gz = TRUE,
+#' outfile = "process_penncath",
+#' overwrite = TRUE,
+#' impute_method = "mode")
 #' }
+#' 
 process_plink <- function(data_dir,
                           prefix,
                           impute = TRUE,
@@ -82,6 +82,7 @@ process_plink <- function(data_dir,
   path <- paste0(data_dir, "/", prefix, ".rds")
   bk_path <- paste0(data_dir, "/", prefix, ".bk")
   std_bk_path <- paste0(data_dir, "/std_", prefix, ".bk")
+  sub_bk_path <- paste0(data_dir, "/subset_", prefix, ".bk")
   
   # check for overwrite: 
   if (file.exists(bk_path)){
@@ -97,6 +98,7 @@ process_plink <- function(data_dir,
       # overwrite existing files 
       system(paste0("rm ", bk_path))
       system(paste0("rm ", std_bk_path))
+      system(paste0("rm ", sub_bk_path))
       system(paste0("rm ", path))
     } else {
       stop("\nThere are existing prefix.rds and prefix.bk files in the specified directory.  
@@ -133,10 +135,26 @@ process_plink <- function(data_dir,
     stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID'.")
   }
 
+  chr <- obj$map$chromosome
+  chr_range <- range(obj$map$chromosome)
+  X <- obj$genotypes
+  pos <- obj$map$physical.pos
+  # save the dimensions of the *original* (pre-standardized) design matrix
+  obj$n <- X$nrow
+  obj$p <- X$ncol
+  
+  if(!quiet){
+    cat("\nThere are ", obj$n, " observations and ",
+        obj$p, " genomic features in the specified data files, representing chromosomes ",
+        chr_range[1], " - ", chr_range[2])
+  }
+  
+  # save these counts 
+  counts <- bigstatsr::big_counts(X) # NB: this is a matrix 
+  
   # chromosome check ---------------------------------
   # only consider SNPs on chromosomes 1-22
-  
-  chr_range <- range(obj$map$chromosome)
+
   if(chr_range[1] < 1 | chr_range[2] > 22){
     stop("\nplmmr only analyzes autosomes -- please remove variants on chromosomes outside 1-22.
          This can be done in PLINK 1.9; see the documentation in https://www.cog-genomics.org/plink/1.9/filter#chr")
@@ -163,38 +181,6 @@ process_plink <- function(data_dir,
   
   # TODO: figure out how to add a 'sexcheck' with bigsnpr functions
   # e.g., if sexcheck = TRUE, remove subjects with sex discrepancies
-  
-  chr <- obj$map$chromosome
-  X <- obj$genotypes
-  pos <- obj$map$physical.pos
-  
-  # save these counts 
-  counts <- bigstatsr::big_counts(X) # NB: this is a matrix 
-  
-  # identify monomorphic SNPs --------------------------------
-  # first, save the dimensions of the *original* (pre-standardized) design matrix,
-  # as this count will count the constant (monomorphic) SNPs as part of the 
-  # number of columns
-  obj$n <- X$nrow
-  obj$p <- X$ncol
-  
-  constants_idx <- apply(X = counts[1:3,],
-                         MARGIN = 2,
-                         # see which ~called~ features have all same value
-                         FUN = function(c){sum(c == sum(c)) > 0})
-  
-  ns <- which(!constants_idx) # need this for analysis downstream
-  
-  if(!quiet){
-    cat("\nThere are ", obj$n, " observations and ",
-        obj$p, " genomic features in the specified data files.")
-    
-    cat("\nOf these, there are ", sum(constants_idx), " constant features in the data",
-        file = outfile, append = TRUE)
-    
-    cat("\nThere are ", sum(constants_idx), " constant features in the data")
-  }
-  
   
   # notify about missing (genotype) values ----------------------------
   na_idx <- counts[4,] > 0
@@ -281,8 +267,7 @@ process_plink <- function(data_dir,
       obj$genotypes$code256 <- bigsnpr::CODE_IMPUTE_PRED
     }
     
-    # now, save the new object -- this will have imputed values and constants_idx
-    obj$constants_idx <- constants_idx
+    # save the imputed object 
     obj <- bigsnpr::snp_save(obj)
     
     cat("\nDone with imputation.",
@@ -418,15 +403,69 @@ process_plink <- function(data_dir,
     }
   
   }
-  # standardization ------------------------------------------------
-  cat("\nColumn-standardizing the design matrix...")
-  # add centering & scaling info
-  if ("geno_plus_predictors" %in% names(obj)) {
-    scale_info <- bigstatsr::big_scale()(obj$geno_plus_predictors)
-  } else {
-    scale_info <- bigstatsr::big_scale()(obj$genotypes)
-  }
+  
+  # identify monomorphic SNPs --------------------------------
+  
+  
+  # subsetting -----------------------------------------
+  # goal here is to subset the features so that constant features (monomorphic SNPs) are not 
+  # included in analysis
+  # NB: this is also where we remove observations with missing phenotypes, if that was requested
 
+  if (!quiet){
+    cat("\nSubsetting data to exclude constrant features (e.g., monomorphic SNPs)",
+        file = outfile, append = TRUE)
+  }
+  
+  sub_bk_extension <- paste0("subset_", prefix) 
+  
+  if (handle_missing_phen == "prune"){
+    if ("geno_plus_predictors" %in% names(obj)) {
+      new_counts <- bigstatsr::big_counts(obj$geno_plus_predictors,
+                                          ind.row = complete_phen)
+      ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
+                                          ind.row = complete_phen, # filters out rows with missing phenotypes
+                                          ind.col = ns,
+                                          backingfile = paste0(data_dir,"/", sub_bk_extension))
+    } else {
+      new_counts <- bigstatsr::big_counts(obj$genotypes,
+                                          ind.row = complete_phen)
+      ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
+                                          ind.row = complete_phen, # filters out rows with missing phenotypes
+                                          ind.col = ns,
+                                          backingfile = paste0(data_dir,"/", sub_bk_extension))
+    }
+   
+  } else {
+    if ("geno_plus_predictors" %in% names(obj)) {
+      new_counts <- bigstatsr::big_counts(obj$geno_plus_predictors)
+      ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
+                                          ind.col = ns,
+                                          backingfile = paste0(data_dir,"/", sub_bk_extension))
+    } else {
+      new_counts <- bigstatsr::big_counts(obj$genotypes)
+      ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
+                                          ind.col = ns,
+                                          backingfile = paste0(data_dir,"/", sub_bk_extension))
+    }
+  }
+  
+  # standardization ------------------------------------------------
+  if (!quiet) {cat("\nColumn-standardizing the design matrix...")}
+  
+  # centering & scaling 
+  scale_info <- bigstatsr::big_scale()(obj$subset_X)
+
+  obj$std_X <- big_std(X = obj$subset_X,
+                 center = scale_info$center,
+                 scale = scale_info$scale) # leave ns = NULL; X is already subset
+  
+  std_bk_extension <- paste0("std_", prefix) 
+  
   # now, save the indices of non-singular values in the *new* X; if additional 
   #   predictors have been added, these index values need to be updated! 
   if (is.null(non_gen)) {
@@ -435,40 +474,13 @@ process_plink <- function(data_dir,
     obj$ns <- c(non_gen, ns + length(non_gen))
   }
   
+  
+  # label return object ------------------------------------------------
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
   obj$std_X_center <- scale_info$center[obj$ns] # TODO: is this right? should this be subset to ns columns only? Think about this...
   obj$std_X_scale <- scale_info$scale[obj$ns]
-  
-  # subsetting -----------------------------------------
-  if (is.null(non_gen)) {
-    tmp <- big_std(X = obj$genotypes,
-                   center = scale_info$center,
-                   scale = scale_info$scale,
-                   ns = obj$ns)
-  } else {
-    tmp <- big_std(X = obj$geno_plus_predictors,
-                   center = scale_info$center,
-                   scale = scale_info$scale,
-                   ns = obj$ns)
-  }
-  std_bk_extension <- paste0("std_", prefix) 
-  
-  # subset the features so that constant features (monomorphic SNPs) are not 
-  # included in analysis
-  # this is also where we remove observations with missing phenotypes, if that was requested
-  if (handle_missing_phen == "prune"){
-    obj$std_X <- bigstatsr::big_copy(tmp,
-                                     ind.row = complete_phen, # filters out rows with missing phenotypes
-                                     ind.col = obj$ns,
-                                     backingfile = paste0(data_dir,"/", std_bk_extension))
-  } else {
-    obj$std_X <- bigstatsr::big_copy(tmp,
-                                     ind.col = obj$ns,
-                                     backingfile = paste0(data_dir,"/", std_bk_extension))
-  }
-  
   obj$std_X_colnames <- obj$colnames[obj$ns]
   obj$std_X_rownames <- obj$rownames[complete_phen]
   obj$non_gen <- non_gen # save indices for non-genomic covariates
@@ -476,9 +488,11 @@ process_plink <- function(data_dir,
   obj$id_var <- id_var # save ID variable - will need this downstream for analysis
   obj <- bigsnpr::snp_save(obj)
   
-  cat("\nDone with standardization. File formatting in progress.",
-      file = outfile, append = TRUE)
   
+  if (!quiet){  
+    cat("\nDone with standardization. File formatting in progress.",
+        file = outfile, append = TRUE)
+  }
   
   if(!quiet & impute){cat("\nDone with standardization. Processed files now saved as .rds object.")}
   close(log_con)

@@ -127,4 +127,4 @@ summary(cv_admix1);summary(cv_admix1_blup)
 
 # Options for looking at bias and variance
 
-It may be of interest to examine the bias and variance that result from cross-validated model fitting. `cv.plmm()` has the option `returnBiasDetails`; if set to `TRUE`, this will make the returned object include bias (a vector) and loss (a matrix). Moreover, for a `plmm` model fit, the function `v_hat` will construct the approximated matrix $\mathbf{\hat V} \equiv \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n$.
+It may be of interest to examine the bias and variance that result from cross-validated model fitting. `cv.plmm()` has the option `returnBiasDetails`; if set to `TRUE`, this will make the returned object include bias (a vector) and loss (a matrix). Moreover, for a `plmm` model fit, the function `construct_variance` will construct the approximated matrix $\mathbf{\hat V} \equiv \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n$.

@@ -2,10 +2,11 @@
 % Please edit documentation in R/choose_k.R
 \name{choose_k}
 \alias{choose_k}
-\title{a function to choose k, the number of eigenvalues to use in truncated SVD}
+\title{a function to choose k, the number of eigenvalues to use in truncated eigendecomposition}
 \usage{
 choose_k(
   X,
+  eta,
   start = NULL,
   step = NULL,
   eps = 0.1,
@@ -21,6 +22,8 @@ choose_k(
 \item the fully-imputed design matrix, or
 \item a string specifying the path to an .rds object created by process_plink
 }}
+
+\item{eta}{A value between 0 and 1 representing the proportion of variation attributable to population structure. See \code{estimate_eta()}.}
 
 \item{start}{The starting number of eigenvalues. Defaults to floor(nrow(X)/10)}
 
@@ -39,7 +42,7 @@ choose_k(
 \value{
 A list with at least 3 items:
 \itemize{
-\item eigs_K: a list with the SVD components (s and U) for the approximated relatedness matrix K that can be passed to \code{plmm()}
+\item eigs_K: a list with the eigenvalues \code{s} and eigenvectors \code{U} for the approximated variance matrix \code{Sigma} that can be passed to \code{plmm()}
 \item k, the chosen number of eigenvalues
 \item delt, the distance between the true and approximated K matrices at chosen k
 \item k_vals, a vector of all k values evaluated
@@ -49,7 +52,7 @@ A list with at least 3 items:
 }
 }
 \description{
-a function to choose k, the number of eigenvalues to use in truncated SVD
+a function to choose k, the number of eigenvalues to use in truncated eigendecomposition
 }
 \examples{
 \dontrun{
