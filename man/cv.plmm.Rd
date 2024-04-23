@@ -140,9 +140,13 @@ plot(cv_fit)
 # filebacked example (file path is specific to current machine)
 # since this dataset is < 100Mb, have to specify returnX = FALSE for 
 # `get_data()` to return an FBM
-cv.plmm(X = "~/tmp_files/penncath_lite", trace = TRUE, returnX = FALSE) -> fit
-plot(fit)
-summary(fit)
+my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+
+cv_fb_fit <- cv.plmm(X = my_fb_data, type = 'blup', returnX = FALSE,
+ trace = TRUE, nfolds = 3)
+
+plot(cv_fb_fit)
+summary(cv_fb_fit)
 }
 
 

@@ -413,7 +413,7 @@ process_plink <- function(data_dir,
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
 
   if (!quiet){
-    cat("\nSubsetting data to exclude constrant features (e.g., monomorphic SNPs)",
+    cat("\nSubsetting data to exclude constant features (e.g., monomorphic SNPs)",
         file = outfile, append = TRUE)
   }
   
@@ -456,7 +456,7 @@ process_plink <- function(data_dir,
   
   # standardization ------------------------------------------------
   if (!quiet) {cat("\nColumn-standardizing the design matrix...")}
-  
+
   # centering & scaling 
   scale_info <- bigstatsr::big_scale()(obj$subset_X)
 
@@ -479,8 +479,8 @@ process_plink <- function(data_dir,
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
-  obj$std_X_center <- scale_info$center[obj$ns] # TODO: is this right? should this be subset to ns columns only? Think about this...
-  obj$std_X_scale <- scale_info$scale[obj$ns]
+  obj$std_X_center <- scale_info$center
+  obj$std_X_scale <- scale_info$scale
   obj$std_X_colnames <- obj$colnames[obj$ns]
   obj$std_X_rownames <- obj$rownames[complete_phen]
   obj$non_gen <- non_gen # save indices for non-genomic covariates

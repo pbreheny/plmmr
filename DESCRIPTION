@@ -1,53 +1,55 @@
 Package: plmmr
-Title: Fit nonconvex-penalized linear mixed models to account for the presence of unobserved confounding effects
-Version: 2.2.1
-Date: 2024-03-20
+Title: Fit nonconvex-penalized linear mixed models to account for the
+    presence of unobserved confounding effects
+Version: 3.0.0
+Date: 2024-04-29
 Authors@R: c(
-    person("Anna C.","Reisetter", role = c("aut"),
-        email = "anna-reisetter@uiowa.edu",
-        comment = c(ORCID = "0000-0001-8332-4585")), 
-    person("Patrick J.", "Breheny", role = "aut", 
-        comment = c(ORCID = "0000-0002-0650-1119")),
-    person("Tabitha K.", "Peter", role = c("aut", "cre"),
-        email = "tabitha-peter@uiowa.edu",
-        comment = c(ORCID = "0009-0005-2524-4751")),
-    person("Yujing", "Lu", role = "aut"))
-VignetteBuilder: knitr 
-Description: Fits penalized linear mixed models that correct for unobserved 
-    confounding factors. 'plmmr' infers and corrects for the presence of unobserved 
-    confounding effects such as population stratification and environmental 
-    heterogeneity. It then fits a linear model via penalized maximum 
-    likelihood. Originally designed for the multivariate analysis of SNP data, 
-    'plmmr' eliminates the need for subpopulation-specific analyses and 
-    post-analysis p-value adjustments. Functions for the appropriate processing 
-    of 'PLINK' files are also supplied. For examples, see the package homepage
-    <https://pbreheny.github.io/plmmr/>. 
-Depends: R (>= 3.5.0)
+    person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
+           comment = c(ORCID = "0000-0001-8332-4585")),
+    person("Patrick J.", "Breheny", role = "aut",
+           comment = c(ORCID = "0000-0002-0650-1119")),
+    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0005-2524-4751")),
+    person("Yujing", "Lu", role = "aut")
+  )
+Description: Fits penalized linear mixed models that correct for
+    unobserved confounding factors. 'plmmr' infers and corrects for the
+    presence of unobserved confounding effects such as population
+    stratification and environmental heterogeneity. It then fits a linear
+    model via penalized maximum likelihood. Originally designed for the
+    multivariate analysis of SNP data, 'plmmr' eliminates the need for
+    subpopulation-specific analyses and post-analysis p-value adjustments.
+    Functions for the appropriate processing of 'PLINK' files are also
+    supplied. For examples, see the package homepage
+    <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
-Suggests: 
-    graphics, 
-    grDevices, 
-    parallel,
-    MASS, 
-    knitr, 
-    rmarkdown,
-    tinytest,
-    mvtnorm,
-    ggmix
+Depends: 
+    biglasso (>= 1.6.0),
+    R (>= 3.5.0)
 Imports: 
-    bigstatsr,
-    bigsnpr,
-    biglasso,
     bigmemory,
+    bigsnpr,
+    bigstatsr,
     glmnet,
     Matrix,
     methods,
-    ncvreg,
     RSpectra,
     stats,
     utils,
     zeallot
+Suggests: 
+    ggmix,
+    graphics,
+    grDevices,
+    knitr,
+    MASS,
+    mvtnorm,
+    parallel,
+    rmarkdown,
+    tinytest
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

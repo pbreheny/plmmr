@@ -58,7 +58,7 @@
 #' @examples 
 #' # using admix data 
 #' fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
-#' s1 <- summary(fit_admix1, idx = 99)
+#' s1 <- summary(fit_admix1, idx = 50)
 #' print(s1)
 #' plot(fit_admix1)
 #' 
@@ -77,6 +77,8 @@
 #' fb_fit <- plmm(X = my_fb_data,
 #'                returnX = FALSE,
 #'                trace = TRUE)
+#'                
+#' summary(fb_fit, idx = 50)
 #' }
 #' 
 plmm <- function(X, 

@@ -119,7 +119,7 @@ NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 \examples{
 # using admix data 
 fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
-s1 <- summary(fit_admix1, idx = 99)
+s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
 
@@ -138,6 +138,8 @@ my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
 fb_fit <- plmm(X = my_fb_data,
                returnX = FALSE,
                trace = TRUE)
+               
+summary(fb_fit, idx = 50)
 }
 
 }

@@ -52,7 +52,7 @@ plmm_checks <- function(X,
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
     col_names <- dat$X_colnames
-      
+
     if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
       fbm_flag <- TRUE
     } else {
@@ -67,6 +67,7 @@ plmm_checks <- function(X,
       dat <- X
       std_X <- dat$std_X
      fbm_flag <- TRUE
+     
     } else {
       std_X <- X$std_X
       

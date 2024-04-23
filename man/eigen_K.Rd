@@ -10,7 +10,7 @@ eigen_K(std_X, p, fbm_flag, ...)
 \arguments{
 \item{std_X}{The \emph{standardized} design matrix, stored as FBM.}
 
-\item{p}{The number of columns in the \emph{unstandardized} design matrix}
+\item{p}{The number of columns in the \emph{unstandardized} design matrix.}
 
 \item{fbm_flag}{Logical: is std_X an FBM obejct? Passed from \code{plmm()}.}
 

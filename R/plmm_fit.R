@@ -131,7 +131,7 @@ plmm_fit <- function(prep,
 
   }
   if(prep$trace){cat("\nRotation complete. Beginning model fitting.")}
-  
+
   # set up lambda -------------------------------------------------------
   
   if (missing(lambda)) {
@@ -172,9 +172,6 @@ plmm_fit <- function(prep,
                                         center = rep(0, ncol(stdrot_X)),
                                         scale = rep(1, ncol(stdrot_X)),
                                         ncores = bigstatsr::nb_cores())
-    linear.predictors <- matrix(NA, nrow = stdrot_X$nrow, ncol = nlambda)
-    # for filebacked results, return estimated coefficients as a sparse matrix 
-    b <- Matrix::Matrix(0, nrow = stdrot_X$ncol, ncol = nlambda, sparse = TRUE)
   }
   
   iter <- integer(nlambda)
@@ -213,13 +210,13 @@ plmm_fit <- function(prep,
   } else {
     bm_stdrot_X <- fbm2bm(stdrot_X)
     # the biglasso function loops thru the lambda values 
-    res <- biglasso::biglasso_simple_path(X = bm_stdrot_X,
+    res <- biglasso::biglasso_path(X = bm_stdrot_X,
                                   y = rot_y,
                                   r = r,
                                   init = init,
                                   xtx = xtx,
                                   penalty = penalty, 
-                                  lambda = lambda,
+                                  lambda = lambda, # biglasso_path loops thru lambda values 
                                   alpha = alpha,
                                   gamma = gamma,
                                   eps = eps,
