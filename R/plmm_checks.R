@@ -42,7 +42,21 @@ plmm_checks <- function(X,
                         trace = FALSE,
                         ...){
   # check X types -------------------------------------------------
-  ## string with a filepath -----------------------------
+  ## filebacked matrix *not* from process_plink() -----------
+  if (grepl("FBM", class(X))){
+    # TODO: make this accommodate the case where "big.matrix" %in% class(X)
+    fbm_flag <- TRUE
+    if (std_needed) {
+      # centering & scaling 
+      scale_info <- bigstatsr::big_scale()(X)
+      if (any(scale_info$scale < 1e-6))
+        std_X <- big_std(X)
+    } else {
+      std_X <- X
+    }
+  }
+  
+  ## string with a filepath (from process_plink()-----------------------------
   if("character" %in% class(X)){
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
@@ -53,6 +67,18 @@ plmm_checks <- function(X,
     std_X_p <- std_indices$std_X_p
     col_names <- dat$X_colnames
 
+    # create a list that captures the centering/scaling for std_X; will need this 
+    # later, see `untransform()`
+      std_X_details <- list(
+        center = dat$std_X_center,
+        scale = dat$std_X_scale,
+        ns = dat$ns,
+        X_colnames = dat$colnames,
+        X_rownames = dat$rownames,
+        std_X_rownames = dat$std_X_rownames,
+        std_X_colnames = dat$std_X_colnames
+      )
+
     if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
       fbm_flag <- TRUE
     } else {
@@ -60,28 +86,30 @@ plmm_checks <- function(X,
     }
   }
   ## list -----------------------
-  if("list" %in% class(X)){
-    # check for X element 
-    if(!("std_X" %in% names(X))){stop("The list supplied for the X argument does not have a design matrix element named 'std_X'. Rename as needed and try again.")}
-    if("FBM.code256" %in% class(X$std_X) | "FBM" %in% class(X$std_X)){
-      dat <- X
-      std_X <- dat$std_X
-     fbm_flag <- TRUE
-     
-    } else {
-      std_X <- X$std_X
-      
-      # designate dimensions of the standardized data 
-      std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
-      genomic <- std_indices$genomic
-      std_X_n <- std_indices$std_X_n
-      std_X_p <- std_indices$std_X_p
-      
-      # TODO: add case to handle X passed as list where X is not an FBM
-      fbm_flag <- FALSE
-    }
-   
-  }
+  # The list option is under construction... will get this up and running for a future version
+  # if("list" %in% class(X)){
+  #   # check for X element 
+  #   if(!("std_X" %in% names(X))){stop("The list supplied for the X argument does not have a design matrix element named 'std_X'. Rename as needed and try again.")}
+  #   if("FBM.code256" %in% class(X$std_X) | "FBM" %in% class(X$std_X)){
+  #     dat <- X
+  #     std_X <- dat$std_X
+  #    fbm_flag <- TRUE
+  #    
+  #   } else {
+  #     std_X <- X$std_X
+  #     
+  #     # designate dimensions of the standardized data 
+  #     # TODO: work through the following lines 
+  #     std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
+  #     genomic <- std_indices$genomic
+  #     std_X_n <- std_indices$std_X_n
+  #     std_X_p <- std_indices$std_X_p
+  #     
+  #     # TODO: add case to handle X passed as list where X is not an FBM
+  #     fbm_flag <- FALSE
+  #   }
+  #  
+  # }
   
   ### set fbm flag ---------------------------
   # if FBM flag is not 'on' by now, set it 'off' & turn on standardization
@@ -218,20 +246,20 @@ plmm_checks <- function(X,
     
   }
 
-  # create a list that captures the centering/scaling for std_X; will need this 
-  # later, see `untransform()`
-  if(fbm_flag){
-    std_X_details <- list(
-      center = dat$std_X_center,
-      scale = dat$std_X_scale,
-      ns = dat$ns,
-      X_colnames = dat$colnames,
-      X_rownames = dat$rownames,
-      std_X_rownames = dat$std_X_rownames,
-      std_X_colnames = dat$std_X_colnames
-    )
-  } 
-  
+  # # create a list that captures the centering/scaling for std_X; will need this 
+  # # later, see `untransform()`
+  # if(fbm_flag){
+  #   std_X_details <- list(
+  #     center = dat$std_X_center,
+  #     scale = dat$std_X_scale,
+  #     ns = dat$ns,
+  #     X_colnames = dat$colnames,
+  #     X_rownames = dat$rownames,
+  #     std_X_rownames = dat$std_X_rownames,
+  #     std_X_colnames = dat$std_X_colnames
+  #   )
+  # } 
+  # 
   
   # return list for model preparation ---------------------------------
   

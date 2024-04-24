@@ -40,7 +40,7 @@ untransform <- function(untransformed_b1, std_X_details, fbm_flag){
                               MARGIN = 1,
                               STATS = std_X_details$scale,
                               FUN = "/")
-   
+
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
     cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center, c)})

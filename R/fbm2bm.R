@@ -23,3 +23,17 @@ fbm2bm <- function(fbm, desc = FALSE){
   }
 
 }
+
+
+# bm2fbm <- function(bm, type = "integer"){
+#   warning("\nThis function is under construction")
+#   # Credit to Florian Prive for this function - see https://privefl.github.io/bigstatsr/articles/bigstatsr-and-bigmemory.html
+#   fbm <- bigstatsr::FBM(nrow = nrow(bm),
+#                         ncol = ncol(bm), 
+#                         type = type,
+#                         backingfile = file.path(dir.name(bm),
+#                                                 bigstatsr::sub_bk(file.name(bm))),
+#                         create_bk = F)
+#   
+#   return(fbm)
+# }

@@ -67,7 +67,17 @@ apply(std_X, 2, var) |> summary() # ... & variance 1
 
 ### But what if my data aren't in PLINK format? 
 
-The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't 
+The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon` data that ships with the `biglasso` package: 
+
+```{r, include=FALSE, eval=FALSE}
+library(biglasso)
+data("colon")
+
+# make X an FBM 
+X <- bigstatsr::as_FBM(x = colon$X) 
+colon_model <- plmm(X, y = colon$X, std_needed = T, trace = T)
+```
+
 
 ## Step 2: fit a model 
 
@@ -112,12 +122,10 @@ To summarize and plot a CV fit, we can look at a plot of cross validation error:
 plot(cv_fb_fit)
 ```
 
-To summarize and visualize the model at the chosen $\lambda$ parameter value, we can do things like this:
+To summarize and visualize the model at the chosen $\lambda$ parameter value, we can do this:
 
 ```{r}
 summary(cv_fb_fit)
-
-plot(cv_fb_fit$fit)
 ```
 
 ## Comparing candidate models 
@@ -145,8 +153,6 @@ cv_fb_lasso <- cv.plmm(X = my_fb_data,
 plot(cv_fb_lasso)
 
 summary(cv_fb_lasso)
-
-plot(cv_fb_lasso$fit)
 ```
 
 ## To add predictors that are not genomic

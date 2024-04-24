@@ -47,7 +47,7 @@
 #' impute_method = "mode")
 #' }
 #' 
-process_plink <- function(data_dir,
+old_process_plink <- function(data_dir,
                           prefix,
                           impute = TRUE,
                           impute_method = 'mode',
@@ -403,10 +403,6 @@ process_plink <- function(data_dir,
     }
   
   }
-  
-  # identify monomorphic SNPs --------------------------------
-  
-  
   # subsetting -----------------------------------------
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not 
   # included in analysis
