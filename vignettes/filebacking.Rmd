@@ -65,11 +65,13 @@ colMeans(std_X) |> summary() # columns have mean zero...
 apply(std_X, 2, var) |> summary() # ... & variance 1
 ```
 
-### But what if my data aren't in PLINK format? 
 
-The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon` data that ships with the `biglasso` package: 
 
 ```{r, include=FALSE, eval=FALSE}
+
+### But what if my data aren't in PLINK format? 
+
+# The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon` data that ships with the `biglasso` package: 
 library(biglasso)
 data("colon")
 

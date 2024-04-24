@@ -173,7 +173,7 @@ cv.plmm <- function(X,
   
   estimated_V <- NULL 
   if (type == 'blup') {
-    estimated_V <- construct_variance(fit, K) # TODO: make this more efficient by passing the K calculated in the prep step (in high dim case)
+   estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
   }
  
   # initialize objects to hold CV results 
