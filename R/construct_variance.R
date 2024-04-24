@@ -7,13 +7,13 @@
 #' @export
 #' 
 construct_variance <- function(fit, K = NULL, eta = NULL){
-  
+  # TODO: check the inputs for this function...
   # if 'fit' is given 
   if (!missing(fit)){
     # case 1: K is a list
     if(is.list(K)){
-      K <- K$U %*% tcrossprod(diag(K$s), K$U) # TODO: make this computation more efficient
-      Sigma_hat <- fit$eta * K + (1-fit$eta) * diag(fit$n)
+      K_mat <- K$U %*% tcrossprod(diag(K$s), K$U) # TODO: make this computation more efficient
+      Sigma_hat <- fit$eta * K_mat + (1-fit$eta) * diag(fit$n)
     } else {
       # case 2: K is a matrix 
       Sigma_hat <- (fit$eta * fit$K) + ((1-fit$eta) * diag(nrow(fit$K)))
@@ -21,8 +21,8 @@ construct_variance <- function(fit, K = NULL, eta = NULL){
   } else if (!is.null(K) & !is.null(eta)) {
     # case 1: K is a list
     if(is.list(K)){
-      K <- K$U %*% tcrossprod(diag(K$s), K$U)
-      Sigma_hat <- eta * K + (1-eta) * diag(n)
+      K_mat <- K$U %*% tcrossprod(diag(K$s), K$U)
+      Sigma_hat <- eta * K_mat + (1-eta) * diag(nrow(K$U))
     } else {
       # case 2: K is a matrix 
       Sigma_hat <- (eta * K) + ((1-eta) * diag(nrow(K)))

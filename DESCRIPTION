@@ -23,13 +23,13 @@ Description: Fits penalized linear mixed models that correct for
     supplied. For examples, see the package homepage
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
-Depends: 
-    biglasso (>= 1.6.0),
-    R (>= 3.5.0)
+Depends: R (>= 3.5.0)
 Imports: 
     bigmemory,
     bigsnpr,
     bigstatsr,
+    biglasso (>= 1.6.0),
+    ncvreg,
     glmnet,
     Matrix,
     methods,

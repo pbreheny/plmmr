@@ -40,7 +40,7 @@ impute_snp_data <- function(obj, X, impute, impute_method, outfile, quiet,...){
       
       obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
                                                ncores = bigstatsr::nb_cores(),
-                                               infos.chr = chr,
+                                               infos.chr = obj$chr,
                                                seed = as.numeric(Sys.Date()),
                                                ...) # dots can pass other args
       

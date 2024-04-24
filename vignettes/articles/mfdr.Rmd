@@ -19,7 +19,7 @@ library(ggplot2)
 library(knitr)
 ```
 
-**Note**: once again, this is a work in progress. I do not recommend blindly follow this like a tutorial! 
+**Note**: once again, this is a work in progress. I do not recommend blindly follow this like a tutorial...
 
 ## Background and motivation
 

@@ -1,14 +1,16 @@
 #' A helper function to standardize an FBM
 #'
-#' @param obj 
-#' @param prefix 
-#' @param non_gen 
-#' @param complete_phen 
+#' @param obj           A `bigSNP` object 
+#' @param prefix        The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
+#' @param non_gen       an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2. 
+#' Note: this is typically passed from the result of `add_predictors()`
+#' @param complete_phen Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file 
 #' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
 #' @param outfile       Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet 
+#' @param quiet         Logical: should messages be printed to the console? Defaults to TRUE
 #'
-#' @return
+#' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.
+#' List also includes several other indicies/meta-data on the standardized matrix 
 #' @keywords internal
 #'
 standardize_fbm <- function(obj, prefix, non_gen, complete_phen, id_var,

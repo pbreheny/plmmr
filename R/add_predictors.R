@@ -1,13 +1,15 @@
 #' A helper function to add predictors to a filebacked matrix of data
 #'
-#' @param obj 
-#' @param add_predictor_fam 
-#' @param add_predictor_ext 
-#' @param id_var 
-#' @param og_plink_ids 
-#' @param quiet 
+#' @param obj               A `bigSNP` object 
+#' @param add_predictor_fam Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
+#' @param add_predictor_ext Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file). 
+#' @param id_var            String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
+#' @param og_plink_ids      Character vector passed from `name_and_count_bigsnp()` 
+#' @param quiet             Logical: should messages be printed to the console? Defaults to TRUE
 #'
-#' @return
+#' @return A list of 2 components: 
+#' * 'obj' - a `bigSNP` object with an added element representing the matrix that includes the additional predictors as the first few columns
+#' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
 #' @keywords internal
 #'
 add_predictors <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og_plink_ids, quiet){

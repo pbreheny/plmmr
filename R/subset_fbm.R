@@ -1,16 +1,25 @@
 #' A helper function to subset `FBM` objects 
 #'
-#' @param obj 
-#' @param counts 
-#' @param handle_missing_phen 
-#' @param complete_phen
-#' @param non_gen 
+#' @param obj                   A `bigSNP` object 
+#' @param counts                A dataframe as returned by `bigstatsr::big_counts()`
+#' @param handle_missing_phen   A string indicating how missing phenotypes should be handled: 
+#'  * "prune" (default): observations with missing phenotype are removed
+#'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
+#'  * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+#'  * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases). 
+#' @param complete_phen         Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file 
+#' @param non_gen               an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2. 
+#' Note: this is typically passed from the result of `add_predictors()`
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
-#' @param prefix 
+#' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
 #' @param outfile               Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet 
+#' @param quiet                 Logical: should messages be printed to the console? Defaults to TRUE
 #'
-#' @return
+#' @return A `bigSNP` object that includes a new component, 'subset_X', representing a design matrix wherein:
+#' *  rows are subset according to user's specification in `handle_missing_phen`
+#' *  columns are subset so that no constant features remain -- this is important for standardization downstream
+#' The new 'obj' also includes the integer vector 'ns' which marks which columns of the original matrix were 'non-singular' (i.e. *not* constant features).
+#' The 'ns' index plays an important role in `plmm_format()` and `untransform()` (both helper functions in model fitting)
 #' @keywords internal
 #'
 subset_fbm <- function(obj, counts, handle_missing_phen, complete_phen, non_gen,

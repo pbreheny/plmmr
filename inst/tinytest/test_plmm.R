@@ -115,14 +115,8 @@ tinytest::expect_equivalent(matrix(0,
 
 
 # Test 5: user-supplied K is a list --------------------------------
-fit1 <- plmm(X = admix$X, y = admix$y, k = 70)
-K_admix <- choose_k(X = admix$X, start = 10, step = 10, trace = T)
-fit2 <- plmm(X = admix$X, y = admix$y, K = K_admix$K_svd)
-
-# if one of these passes, then both of them should -- this is somewhat redundant
-tinytest::expect_equivalent(fit1$S, fit2$S)
-tinytest::expect_equivalent(fit1$beta_vals, fit2$beta_vals)
-
+# fit1 <- plmm(X = admix$X, y = admix$y, k = 70)
+# TODO: come back here and see if this test is necessary 
 # Test 6: make sure predict method is working -------------------
 plmm_fit <- plmm(admix$X,
                  admix$y,

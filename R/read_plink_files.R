@@ -9,7 +9,6 @@
 #' @return '.rds' and '.bk' files are created in `data_dir`, and `obj` (a `bigSNP` object) is returned. See `bigsnpr` documentation for more info on the `bigSNP` class.
 #' @keywords internal
 #'
-#' @examples
 read_plink_files <- function(data_dir, prefix, gz, outfile, overwrite, quiet){
   path <- paste0(data_dir, "/", prefix, ".rds")
   bk_path <- paste0(data_dir, "/", prefix, ".bk")

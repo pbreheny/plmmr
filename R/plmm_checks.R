@@ -43,7 +43,7 @@ plmm_checks <- function(X,
                         ...){
   # check X types -------------------------------------------------
   ## filebacked matrix *not* from process_plink() -----------
-  if (grepl("FBM", class(X))){
+  if (any(grepl("FBM", class(X)))){
     # TODO: make this accommodate the case where "big.matrix" %in% class(X)
     fbm_flag <- TRUE
     if (std_needed) {

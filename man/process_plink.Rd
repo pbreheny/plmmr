@@ -81,11 +81,11 @@ Preprocess PLINK files using the \code{bigsnpr} package
 \examples{
 \dontrun{
 process_plink(data_dir = plink_example(parent = T),
-prefix = "penncath_lite",
-gz = TRUE,
-outfile = "process_penncath",
-overwrite = TRUE,
-impute_method = "mode")
+  prefix = "penncath_lite",
+  gz = TRUE,
+  outfile = "process_penncath",
+  overwrite = TRUE,
+  impute_method = "mode")
 }
 
 }
