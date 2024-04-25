@@ -7,6 +7,7 @@
 process_plink(
   data_dir,
   prefix,
+  rds_dir = data_dir,
   impute = TRUE,
   impute_method = "mode",
   na_phenotype_vals = c(-9),
@@ -18,6 +19,7 @@ process_plink(
   overwrite = FALSE,
   add_predictor_fam = NULL,
   add_predictor_ext = NULL,
+  keep_bigSNP = FALSE,
   ...
 )
 }
@@ -25,6 +27,8 @@ process_plink(
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+
+\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -59,24 +63,59 @@ process_plink(
 
 \item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
 
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).}
+
+\item{keep_bigSNP}{Logical: should the intermediate steps of data processing be saved as a \code{bigSNP} object? Defaults to FALSE.}
+
+\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")
 This argument takes one of two kinds of arguments:
-(a) a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
+\itemize{
+\item a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
 The names will be used to subset and align this external covariate with the supplied PLINK data.
-
-(b) a numeric matrix whose row names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.}
-
-\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
+\item a numeric matrix whose row names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.
+}}
 }
 \value{
-Nothing is returned by this function; instead, files 'prefix.rds',
-'prefix.bk', and std_prefix.bk are created in the location specified by data_dir. Note that this
-this function need only be run once; in subsequent data analysis/scripts,
-\code{get_data()} will access the '.rds' file.
+Nothing is returned by this function, but (at least) two files are created in
+the location specified by \code{rds_dir}:
+\itemize{
+\item 'std_prefix.rds': This is the \code{bigsnpr::bigSNP} object
+that holds the PLINK data along with meta-data. See details for explanation of what
+is included in this meta-data
+\item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
+backingfile that stores the numeric data of the standardized design matrix \code{std_X}
+}
+
+Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
+if \code{keep_bigSNP = TRUE}, these are not deleted at the end of the \code{process_plink()}
+procedure. Note that these files could potentially be quite large - that's the
+main reason that keeping these files is not the default setting.
+
+Note that \code{process_plink()} need only be run once for a given set of PLINK
+files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
 }
 \description{
 Preprocess PLINK files using the \code{bigsnpr} package
+}
+\details{
+The '.rds' object created by this function has the following elements:
+\itemize{
+\item std_X:
+\item fam:
+\item map:
+\item colnames:
+\item rownames:
+\item n:
+\item p:
+\item ns:
+\item std_X_center:
+\item std_X_scale:
+\item std_X_colnames:
+\item std_X_rownames:
+\item complete_phen:
+\item id_var:
+}
 }
 \examples{
 \dontrun{

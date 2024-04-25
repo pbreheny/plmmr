@@ -114,8 +114,35 @@ tinytest::expect_equivalent(matrix(0,
 # TODO come back here
 
 
-# Test 5: user-supplied K is a list --------------------------------
-# fit1 <- plmm(X = admix$X, y = admix$y, k = 70)
+# Test 5: make sure in-memory and filebacked computations match ---------------
+if (interactive()) {
+  # filebacked fit 
+  process_plink(data_dir = plink_example(parent = T),
+                prefix = "penncath_lite",
+                gz = TRUE,
+                outfile = "process_penncath",
+                overwrite = TRUE,
+                impute_method = "mode",
+                keep_bigSNP = TRUE)
+  
+  my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+  fb_fit <- plmm(X = my_fb_data,
+                 returnX = FALSE,
+                 trace = TRUE)
+  
+  # in memory fit 
+  pen <- bigsnpr::snp_attach(paste0(plink_example(parent = T), "/penncath_lite.rds"))
+  inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
+                    y = pen$fam$affection[pen$complete_phen],
+                    trace = T)
+  
+  tinytest::expect_equivalent(inmem_fit$beta_vals, as.matrix(fb_fit$beta_vals),
+                              tolerance = 0.01)
+}
+
+
+
+
 # TODO: come back here and see if this test is necessary 
 # Test 6: make sure predict method is working -------------------
 plmm_fit <- plmm(admix$X,

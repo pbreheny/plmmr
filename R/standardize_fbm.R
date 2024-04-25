@@ -2,7 +2,8 @@
 #'
 #' @param obj           A `bigSNP` object 
 #' @param prefix        The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
-#' @param non_gen       an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2. 
+#' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
+#' @param non_gen       An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2. 
 #' Note: this is typically passed from the result of `add_predictors()`
 #' @param complete_phen Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file 
 #' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
@@ -10,10 +11,10 @@
 #' @param quiet         Logical: should messages be printed to the console? Defaults to TRUE
 #'
 #' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.
-#' List also includes several other indicies/meta-data on the standardized matrix 
+#' List also includes several other indices/meta-data on the standardized matrix 
 #' @keywords internal
 #'
-standardize_fbm <- function(obj, prefix, non_gen, complete_phen, id_var,
+standardize_fbm <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
                             outfile, quiet){
   # standardization ------------------------------------------------
   if (!quiet) {cat("\nColumn-standardizing the design matrix...")}
@@ -22,10 +23,9 @@ standardize_fbm <- function(obj, prefix, non_gen, complete_phen, id_var,
   scale_info <- bigstatsr::big_scale()(obj$subset_X)
   
   obj$std_X <- big_std(X = obj$subset_X,
+                       std_bk_extension = paste0(rds_dir, "/std_", prefix),
                        center = scale_info$center,
                        scale = scale_info$scale) # leave ns = NULL; X is already subset
-  
-  std_bk_extension <- paste0("std_", prefix) 
   
   # label return object ------------------------------------------------
   # naming these center and scale values so that I know they relate to the first

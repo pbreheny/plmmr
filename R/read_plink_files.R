@@ -2,6 +2,7 @@
 #'
 #' @param data_dir  The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
 #' @param prefix    The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
+#' @param rds_dir   The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param gz        Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.
 #' @param outfile   Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param overwrite Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc. 
@@ -9,11 +10,11 @@
 #' @return '.rds' and '.bk' files are created in `data_dir`, and `obj` (a `bigSNP` object) is returned. See `bigsnpr` documentation for more info on the `bigSNP` class.
 #' @keywords internal
 #'
-read_plink_files <- function(data_dir, prefix, gz, outfile, overwrite, quiet){
-  path <- paste0(data_dir, "/", prefix, ".rds")
-  bk_path <- paste0(data_dir, "/", prefix, ".bk")
-  std_bk_path <- paste0(data_dir, "/std_", prefix, ".bk")
-  sub_bk_path <- paste0(data_dir, "/subset_", prefix, ".bk")
+read_plink_files <- function(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet){
+  path <- paste0(rds_dir, "/", prefix, ".rds")
+  bk_path <- paste0(rds_dir, "/", prefix, ".bk")
+  std_bk_path <- paste0(rds_dir, "/std_", prefix, ".bk")
+  sub_bk_path <- paste0(rds_dir, "/subset_", prefix, ".bk")
   
   # check for overwrite: 
   if (file.exists(bk_path)){
@@ -44,14 +45,23 @@ read_plink_files <- function(data_dir, prefix, gz, outfile, overwrite, quiet){
     cat("\nCreating ", prefix, ".rds\n")
     
     # check for compressed files 
+    if (file.exists(file.path(data_dir, paste0(prefix, ".bed")))) {
+      if (!quiet) {
+        cat("\nThe file ", file.path(data_dir, paste0(prefix, ".bed")), 
+            " already exists. Setting gz = FALSE")
+      }
+      gz <- FALSE
+    }
     if (gz){
       cat("\nUnzipping .gz files - this could take a second", file = outfile, append = TRUE)
       if (!quiet){cat("\nUnzipping .gz files - this could take a second")}
       system(paste0("gunzip -k ", file.path(data_dir, paste0(prefix, "*"))))
     }
     
-    bigsnpr::snp_readBed(bedfile = paste0(data_dir, "/", prefix, ".bed"))
-    obj <- bigsnpr::snp_attach(path)
+    bigsnpr::snp_readBed(bedfile = paste0(data_dir, "/", prefix, ".bed"),
+                         backingfile = paste0(rds_dir, "/", prefix))
+    
+    obj <- bigsnpr::snp_attach(paste0(rds_dir, "/", prefix, ".rds"))
   }
   
   return(obj)

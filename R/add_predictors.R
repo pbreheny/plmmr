@@ -39,7 +39,7 @@ add_predictors <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og
       # save non_gen: an index marking the first column as non-genomic predictor
       non_gen <- 1
       
-    } # TODO: may add option to supply 6th column of .fam file here...
+    } 
   }
   
   ## covariates from external file   ----------------------------------
@@ -140,6 +140,7 @@ add_predictors <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og
       }
       
     }
+
   }
 
   return(list(obj = obj, non_gen = non_gen))

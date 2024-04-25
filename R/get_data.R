@@ -31,11 +31,14 @@ get_data <- function(path, returnX, trace = TRUE){
   rds <- paste0(path, ".rds")
   bk <- paste0(path, ".bk") # .bk will be present if RDS was created with bigsnpr methods 
   
-  if(file.exists(bk)){
-    obj <- bigsnpr::snp_attach(rdsfile = rds)
-  } else {
-    obj <- readRDS(rds)
-  }
+  # if(file.exists(bk)){
+  #   obj <- bigsnpr::snp_attach(rdsfile = rds)
+  # } else {
+  #   obj <- readRDS(rds)
+  # }
+  # 
+  
+  obj <- readRDS(rds)
   
   # return data in a tractable format 
   if (missing(returnX)) {

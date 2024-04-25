@@ -85,31 +85,6 @@ plmm_checks <- function(X,
       fbm_flag <- FALSE
     }
   }
-  ## list -----------------------
-  # The list option is under construction... will get this up and running for a future version
-  # if("list" %in% class(X)){
-  #   # check for X element 
-  #   if(!("std_X" %in% names(X))){stop("The list supplied for the X argument does not have a design matrix element named 'std_X'. Rename as needed and try again.")}
-  #   if("FBM.code256" %in% class(X$std_X) | "FBM" %in% class(X$std_X)){
-  #     dat <- X
-  #     std_X <- dat$std_X
-  #    fbm_flag <- TRUE
-  #    
-  #   } else {
-  #     std_X <- X$std_X
-  #     
-  #     # designate dimensions of the standardized data 
-  #     # TODO: work through the following lines 
-  #     std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
-  #     genomic <- std_indices$genomic
-  #     std_X_n <- std_indices$std_X_n
-  #     std_X_p <- std_indices$std_X_p
-  #     
-  #     # TODO: add case to handle X passed as list where X is not an FBM
-  #     fbm_flag <- FALSE
-  #   }
-  #  
-  # }
   
   ### set fbm flag ---------------------------
   # if FBM flag is not 'on' by now, set it 'off' & turn on standardization

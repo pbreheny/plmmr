@@ -5,16 +5,18 @@
 \title{big_std
 A function to standardize a matrix stored as an FBM object}
 \usage{
-big_std(X, center = NULL, scale, ns = NULL)
+big_std(X, center = NULL, scale, ns = NULL, std_bk_extension = NULL)
 }
 \arguments{
 \item{X}{An file-backed design matrix}
 
 \item{center}{A vector of centering values}
 
-\item{scale}{A vctor of scaling values}
+\item{scale}{A vector of scaling values}
 
-\item{ns}{A vector with the indicies marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).}
+\item{ns}{A vector with the indices marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).}
+
+\item{std_bk_extension}{The string specifying the backingfile for the standardized copy of X. Default uses a temporary directory.}
 
 \item{...}{Other arguments to \code{bigstatsr::big_apply()}}
 }

@@ -4,14 +4,25 @@
 \alias{standardize_fbm}
 \title{A helper function to standardize an FBM}
 \usage{
-standardize_fbm(obj, prefix, non_gen, complete_phen, id_var, outfile, quiet)
+standardize_fbm(
+  obj,
+  prefix,
+  rds_dir,
+  non_gen,
+  complete_phen,
+  id_var,
+  outfile,
+  quiet
+)
 }
 \arguments{
 \item{obj}{A \code{bigSNP} object}
 
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
-\item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
+\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+
+\item{non_gen}{An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 Note: this is typically passed from the result of \code{add_predictors()}}
 
 \item{complete_phen}{Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
@@ -24,7 +35,7 @@ Note: this is typically passed from the result of \code{add_predictors()}}
 }
 \value{
 A list with a new component of \code{obj} called 'std_X' - this is an FBM with column-standardized data.
-List also includes several other indicies/meta-data on the standardized matrix
+List also includes several other indices/meta-data on the standardized matrix
 }
 \description{
 A helper function to standardize an FBM
