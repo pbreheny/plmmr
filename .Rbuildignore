@@ -14,3 +14,4 @@
 ^scratch.R$
 ^vignettes/articles$
 ^.*\.log$
+^codecov\.yml$

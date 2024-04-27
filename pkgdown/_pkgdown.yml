@@ -39,7 +39,7 @@ reference:
     - log_lik
     - residuals.plmm
     
-  - title: Coefficient methods for LMMs and PLMMs
+  - title: Coefficient methods for PLMMs
     contents:
     - coef.cv.plmm
     - coef.plmm
@@ -55,6 +55,7 @@ reference:
     - get_data
     - get_example_data 
     - process_plink
+    - process_X
     - relatedness_mat
 
     
@@ -78,18 +79,38 @@ reference:
     
   - title: internal
     contents: 
+    - add_predictors_to_bigsnp
+    - align_ids
+    - align_famfile_ids
+    - big_std
+    - count_constant_features
     - cvf
     - delta
     - eigen_K
     - estimate_eta
+    - fbm2bm
+    - handle_missingness
+    - impute_snp_data
+    - index_std_X
     - lamNames
-    - lmm_ggmix
+    - lasso
+    - MCP
+    - name_and_count_bigsnp
+    - plmm_checks
+    - plmm_fit
     - plmm_format
     - plmm_prep
     - predict.list
+    - read_data_files
+    - read_plink_files
+    - rotate_filebacked
+    - SCAD
     - scale_varp
     - setup_lambda
-    - svd_X
+    - standardize_bigsnp
+    - standardize_fbm
+    - standardize_matrix
+    - subset_bigsnp
     - untransform
     - varp
     

@@ -35,7 +35,6 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids){
 #' @keywords internal
 #' 
 align_ids <- function(rownames_X, id_var, quiet, add_predictor){
-  browser()
   ordered_ids <- order(id_var, rownames_X)
   if (is.vector(add_predictor)) {
     add_predictor <- add_predictor[ordered_ids]

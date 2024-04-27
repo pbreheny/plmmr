@@ -1,9 +1,11 @@
 <!-- badges: start -->
 [![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=2.2.1&color=blue&logo=github)](https://github.com/pbreheny/plmm)
 [![R-CMD-check](https://github.com/pbreheny/plmm/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmm/actions)
+[![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
 <!-- badges: end -->
 
 ## Welcome 
+## plmmr <img src="inst/fig/plmmr_hex_sticker.png" align="right" alt="" width="120" />
 
 The `plmmr` package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects. Documentation for this package is in progress. 
 
