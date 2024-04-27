@@ -5,16 +5,20 @@
 \title{A function to implement singular value decomposition for a PLMM or LMM
 This is an internal function to \code{plmm_prep()}}
 \usage{
-svd_X(X, k, trunc, trace)
+svd_X(std_X, k, trunc_flag, fbm_flag, trace, ...)
 }
 \arguments{
-\item{X}{The standardized design matrix}
+\item{std_X}{The standardized design matrix, which could be stored as an FBM object or in memory.}
 
 \item{k}{Optional integer argument indicating the number of singular values to use in a truncated SVD. See details.}
 
+\item{trace}{Logical: should messages be printed to console?}
+
+\item{...}{Additional arguments to bigstatsr::big_randomSVD()}
+
 \item{trunc}{Logical: should truncated SVD be used?}
 
-\item{trace}{Logical: should messages be printed to console?}
+\item{fbm_flag:}{Logical: is std_X and FBM? Passed from \code{plmm()}.}
 }
 \description{
 A function to implement singular value decomposition for a PLMM or LMM

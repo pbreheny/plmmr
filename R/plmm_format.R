@@ -1,7 +1,12 @@
 #' PLMM format: a function to format the output of a model constructed with \code{plmm_fit}
-#' 
-#' @param fit   A list of parameters describing the output of a model constructed with \code{plmm_fit}
-#' @param X     Design matrix. May include clinical covariates and other non-SNP data. 
+#'
+#' @param fit A list of parameters describing the output of a model constructed with \code{plmm_fit}
+#' @param std_X_details A list with 3 items: 
+#'  * 'center': the centering values for the columns of `X` 
+#'  * 'scale': the scaling values for the non-singular columns of `X` 
+#'  * 'ns': indicies of nonsingular columns in `std_X`
+#' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`. 
+#' @param snp_names A vector of names for features, passed internally if such names are included with the data `X` passed to `plmm()`
 #' 
 #' @returns A list with the components: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
@@ -23,35 +28,34 @@
 #'  * `n`: the number of observations (instances)
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
-#' 
 #' @keywords internal
 #'
+plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
 
-plmm_format <- function(fit, X){
-  
-  # reverse the transformations of the beta values 
-  if (fit$trace) {cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
-  
   # get beta values back in original scale; reverse the PRE-ROTATION standardization 
   untransformed_b2 <- untransform(untransformed_b1 = fit$untransformed_b1,
-                                  ns = fit$ns,
-                                  std_X_details = fit$std_X_details,
-                                  p = fit$p)
+                                  p = fit$p,
+                                  std_X_details = std_X_details,
+                                  fbm_flag = fbm_flag)
   
   # give the matrix of beta_values readable names 
   # SNPs (or covariates) on the rows, lambda values on the columns
-  varnames <- c("(Intercept)", fit$snp_names)
+ 
+  if (is.null(snp_names)){
+    snp_names <- paste("Var", 1:fit$p, sep="") 
+  } 
+  varnames <- c("(Intercept)", snp_names) # add intercept 
   dimnames(untransformed_b2) <- list(varnames, lamNames(fit$lambda))
-  
   colnames(fit$linear.predictors) <- lamNames(fit$lambda)
 
-  ## output
+  # output 
   val <- structure(list(beta_vals = untransformed_b2,
                         rotated_scale_beta_vals = fit$untransformed_b1,
                         lambda = fit$lambda,
                         eta = fit$eta,
                         s = fit$s,
                         U = fit$U,
+                        K = fit$K,
                         rot_y = fit$rot_y,
                         # rot_X = fit$rot_X, # TODO: think of whether this is important to keep, e.g., for GIC
                         linear.predictors = fit$linear.predictors,
@@ -73,5 +77,5 @@ plmm_format <- function(fit, X){
   
   
 }
-    
-  
+
+

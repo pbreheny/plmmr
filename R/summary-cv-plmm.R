@@ -23,7 +23,7 @@
 #' summary(cv_fit)
 
 summary.cv.plmm <- function(object, lambda = "min", ...){
-  
+
   # determine the number of nonzero coefficients at specified lambda value
   
   if(lambda == "min"){

@@ -1,28 +1,22 @@
 #' PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
 #' This is an internal function for \code{cv.plmm}
 #'
-#' @param X            Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
-#'                    Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param y            Continuous outcome vector. Logistic regression modeling is still in development.
-#' @param k            An integer specifying the number of singular values to be used in 
-#'                    the approximation of the rotated design matrix. This argument is passed to 
-#'                    `RSpectra::svds()`. Defaults to full decomposition (i.e., `k = min(n, p)`), where n and p are the dimensions 
-#'                    of the _standardized_ design matrix. 
-#' @param K            Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, 
-#'                    (2) an estimate (Default is the relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().
-#' @param diag_K       Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. 
-#'                    Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, 
-#'                    you must set diag_K = TRUE.
-#' @param eta_star     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix 
-#'                    that is full rank, this should be 1.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector 
-#'                    of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some 
-#'                    coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which 
-#'                    case the coefficient is always in the model without shrinkage.
-#' @param trace        If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
+#' @param std_X_n The number of observations in std_X (integer)
+#' @param std_X_p The number of features in std_X (integer)
+#' @param genomic A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
+#' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
+#' @param p The number of features in the *original* design matrix X, including constant features
+#' @param y Continuous outcome vector.
+#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
+#' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
+#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`. 
+#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+#' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`. 
+#' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
 #'
-#' @return List with these components: 
+#' @returns List with these components: 
 #' * n: the number of rows in the original design matrix
 #' * p: the number of columns in the original design matrix 
 #' * y: The vector of outcomes
@@ -47,13 +41,19 @@
 #' prep2 <- plmm_prep(X = admix$X, y = admix$y, diag_K = TRUE, trace = TRUE)
 #' }
 #' 
-plmm_prep <- function(X,
+plmm_prep <- function(std_X,
+                      std_X_n,
+                      std_X_p,
+                      genomic = 1:std_X_p,
+                      n,
+                      p,
                       y,
                       k = NULL,
                       K = NULL,
                       diag_K = NULL,
                       eta_star = NULL,
-                      penalty.factor = rep(1, ncol(X)),
+                      fbm_flag,
+                      penalty.factor = rep(1, ncol(std_X)),
                       trace = NULL, 
                       ...){
   
@@ -61,49 +61,26 @@ plmm_prep <- function(X,
   ## coersion
   U <- s <- eta <- NULL
   
-  # designate the dimensions of the original design matrix 
-  n <- nrow(X)
-  p <- ncol(X) 
+  if(is.null(k)){
+    trunc_flag <- FALSE
+  }
   
-  # standardize X
-  # NB: the following line will eliminate singular columns (eg monomorphic SNPs)
-  #  from the design matrix. 
-  std_X <- ncvreg::std(X)
-  
-  # identify nonsingular values in the standardized X matrix  
-  ns <- attr(std_X, "nonsingular")
-  
-  # keep only those penalty factors which penalize non-singular values 
-  penalty.factor <- penalty.factor[ns]
-  
-  # designate the dimensions of the standardized design matrix, with only ns columns
-  n_stdX <- nrow(std_X)
-  p_stdX <- ncol(std_X)
-  
-  # name scaling and centering values (will need these later; see 'untransform()')
-  std_X_details <- list(
-    center = attr(std_X, 'center'), # singular columns have center = 0
-    scale = attr(std_X, 'scale') # singular columns have scale = 0
-  )
-  
-  # set default k and create indicator 'trunc' to pass to svd_X
-  if (is.null(k)){
-    k <- min(n_stdX, p_stdX)
-    trunc <- FALSE
-  } else if (!is.null(k) & (k < min(n_stdX, p_stdX))){
-    trunc <- TRUE
-  } else if (!(k %in% 1:min(n_stdX,p_stdX))){
-    stop("\nk value is out of bounds. 
-         \nIf specified, k must be an integer in the range from 1 to min(nrow(X), ncol(X)). 
-         \nwhere X does not include singular columns. For help detecting singularity,
+  if(!is.null(k)){
+    
+    if(k < min(std_X_n, std_X_p)){
+      trunc_flag <- TRUE
+    } else {
+      stop("\nk value is out of bounds. 
+         \nIf specified, k must be an integer in the range from 1 to min(nrow(std_X), ncol(std_X)). 
+         \nwhere std_X does not include singular columns. For help detecting singularity,
          \nsee ncvreg::std()")
+    }
+    
   }
   
   # set default: if diag_K not specified, set to false
-  if (is.null(diag_K)){
-    diag_K <- FALSE
-    }
-  
+  if(is.null(diag_K)){diag_K <- FALSE}
+ 
   # handle the cases where no decomposition is needed: 
   # case 1: K is the identity matrix 
   flag1 <- diag_K & is.null(K)
@@ -130,25 +107,33 @@ plmm_prep <- function(X,
     # sign_check <- flip_signs(X = K$K_approx, U = U, V = U, d = s)
     # U <- sign_check$U
   }
-
-  # otherwise, need to do SVD:
-  if (sum(c(flag1, flag2, flag3)) == 0) {
-    if (trace) {cat("\nStarting decomposition.")}
+  # otherwise, need to do eigendecomposition:
+  if(sum(c(flag1, flag2, flag3)) == 0){
+    if(trace){cat("\nStarting decomposition.")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
-    # NB: relatedness_mat(X) standardizes X! 
-    if (is.null(K) & is.null(s)) {
+    if(is.null(K) & is.null(s)){
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
-        if(trace){cat("\nCalculating eigendecomposition of K")}
-        eigen_res <- eigen_K(std_X, p) 
+      
+        if(trace){cat("\nCalculating the eigendecomposition of K")}
+
+        if (identical(genomic,1:std_X_p)) {
+          # if all columns are genomic, no need to filter
+          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
+        } else {
+          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic) 
+        }
+        K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U
-        # check signs 
+        # TODO: add check signs 
+        # if(trace){cat("\nChecking eigenvector signs")}
         # sign_check <- flip_signs(X = eigen_res$K, U = U, V = U, d = s)
         # U <- sign_check$U
+      
     } else {
       # last case: K is a user-supplied matrix 
       eigen_res <- eigen(K)
-      s <- eigen_res$values
+      s <- eigen_res$values*(1/p) # note: our definition of the RRM averages over the number of features
       U <- eigen_res$vectors
       # check signs
       # sign_check <- flip_signs(X = K, U = U, V = U, d = s)
@@ -156,8 +141,7 @@ plmm_prep <- function(X,
     }
     
   }
-
-
+  
   # error check: what if the combination of args. supplied was none of the SVD cases above?
   if (is.null(s) | is.null(U)){
     stop("\nSomething is wrong in the SVD/eigendecomposition.
@@ -169,31 +153,36 @@ plmm_prep <- function(X,
          \n \tDid you intend to set diag_K = TRUE?
          \n \tDid you set diag_K = TRUE and specifiy a k value at the same time? This combination of arguments is incompatible.")
   }
-  
+ 
   # estimate eta if needed
   if (is.null(eta_star)) {
-    eta <- estimate_eta(n = n, s = s, U = U, y = y) 
+    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = y) 
   } else {
     # otherwise, use the user-supplied value (this option is mainly for simulation)
     eta <- eta_star
   }
 
+# if FBM, keep U filebacked
+  if(fbm_flag){
+    U <- bigstatsr::as_FBM(U)
+  }
 
   # return values to be passed into plmm_fit(): 
   ret <- structure(list(
     n = n,
     p = p,
+    std_X_n = std_X_n,
+    std_X_p = std_X_p,
     y = y,
     std_X = std_X,
-    std_X_details = std_X_details,
+    y = y,
+    K = K,
     s = s,
     U = U,
-    ns = ns,
     eta = eta, # carry eta over to fit 
-    penalty.factor = penalty.factor,
-    trace = trace,
-    snp_names = if (is.null(colnames(X))) paste("K", 1:ncol(X), sep="") else colnames(X)))
+    trace = trace))
   
+ 
   return(ret)
   
   

@@ -7,52 +7,122 @@
 process_plink(
   data_dir,
   prefix,
+  rds_dir = data_dir,
   impute = TRUE,
   impute_method = "mode",
+  na_phenotype_vals = c(-9),
+  id_var = "IID",
+  handle_missing_phen = "prune",
   quiet = FALSE,
   gz = FALSE,
   outfile,
+  overwrite = FALSE,
+  add_predictor_fam = NULL,
+  add_predictor_ext = NULL,
+  keep_bigSNP = FALSE,
   ...
 )
 }
 \arguments{
-\item{data_dir}{The path to the bed/bim/fam data files}
+\item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files}
+\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+
+\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
 \item{impute_method}{If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
-\itemize{
-\item mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
-\item random: Imputes sampling according to allele frequencies.
-\item mean0: Imputes the rounded mean.
-\item mean2: Imputes the mean rounded to 2 decimal places.
-\item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
-}}
+* mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
+* random: Imputes sampling according to allele frequencies.
+* mean0: Imputes the rounded mean.
+* mean2: Imputes the mean rounded to 2 decimal places.
+* xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
 
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
+
+\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
+
+\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
+* "prune" (default): observations with missing phenotype are removed
+* "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
+* "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).}
+
+\item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 
 \item{gz}{Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+
+\item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
+
+\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+This argument takes one of two kinds of arguments:
+- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files. 
+                      The names will be used to subset and align this external covariate with the supplied PLINK data.
+}\if{html}{\out{</div>}}}
+
+\item{keep_bigSNP}{Logical: should the intermediate steps of data processing be saved as a \code{bigSNP} object? Defaults to FALSE.}
+
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
 \value{
-Nothing is returned by this function; instead, files 'prefix.rds' and
-'prefix.bk' are created in the location specified by data_dir. Note that this
-this function need only be run once; in subsequent data analysis/scripts,
-\code{get_data()} will access the '.rds' file.
+Nothing is returned by this function, but (at least) two files are created in
+the location specified by \code{rds_dir}:
+\itemize{
+\item 'std_prefix.rds': This is the \code{bigsnpr::bigSNP} object
+that holds the PLINK data along with meta-data. See details for explanation of what
+is included in this meta-data
+\item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
+backingfile that stores the numeric data of the standardized design matrix \code{std_X}
+}
+
+Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
+if \code{keep_bigSNP = TRUE}, these are not deleted at the end of the \code{process_plink()}
+procedure. Note that these files could potentially be quite large - that's the
+main reason that keeping these files is not the default setting.
+
+Note that \code{process_plink()} need only be run once for a given set of PLINK
+files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
 }
 \description{
 Preprocess PLINK files using the \code{bigsnpr} package
 }
+\details{
+The '.rds' object created by this function has the following elements:
+\itemize{
+\item std_X: The file-backed design matrix, as an \code{FBM} object (see \code{bigstatsr} package for more info)
+\item fam: Data frame equivalent of PLINK '.bim' file
+\item map: Data frame equivalent of PLINK '.fam' file
+\item colnames: Character vector of column names for the original data (includes constant features, i.e. monomorphic SNPs)
+\item rownames: Character vector of row names for the original data.
+\item n: Number of rows (samples) in the original data
+\item p: Number of columns (features, SNPs, markers, ...) in the original data
+\item ns: Numeric vector of indices marking the non-singular columns of the original data
+\item std_X_center: Numeric vector of values used to center the non-singular columns of the data
+\item std_X_scale: Numeric vector of values used to scale the non-singular columns of the data
+\item std_X_colnames: Character vector of column names for the standardized data
+\item std_X_rownames: Character vector of row names for the standardized data.
+\item complete_phen: Numeric vector of indices marking the samples with a non-missing phenotype. Ony applicable if \code{handle_missing_phen = 'prune'}
+\item id_var: String specifying which ID column in the '.fam' file had the unique sample ID: 'FID' (1st column) or 'IID' (2nd column)
+}
+}
 \examples{
 \dontrun{
-process_plink(data_dir = "../temp_files",
- prefix = "penncath_lite",
-  impute = T,
-   quiet = F)
+my_dir <- tempdir()
+process_plink(data_dir = get_example_data(parent = T),
+  rds_dir = my_dir,
+  prefix = "penncath_lite",
+  gz = TRUE,
+  outfile = "process_penncath",
+  overwrite = TRUE,
+  impute_method = "mode")
 }
+
 }

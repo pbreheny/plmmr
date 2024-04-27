@@ -2,10 +2,14 @@
 % Please edit documentation in R/plmm_fit.R
 \name{plmm_fit}
 \alias{plmm_fit}
-\title{Fit a linear mixed model with non-convex regularization}
+\title{PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()}
 \usage{
 plmm_fit(
   prep,
+  std_X_details,
+  eta_star,
+  penalty.factor,
+  fbm_flag,
   penalty = "MCP",
   gamma,
   alpha = 1,
@@ -18,44 +22,48 @@ plmm_fit(
   dfmax = prep$p + 1,
   init = NULL,
   warn = TRUE,
-  returnX = TRUE
+  returnX = TRUE,
+  ...
 )
 }
 \arguments{
-\item{prep}{A list as returned from \code{plmm_prep}.}
+\item{prep}{A list as returned from \code{plmm_prep}}
+
+\item{std_X_details}{A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)}
+
+\item{eta_star}{The ratio of variances (passed from plmm())}
+
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+
+\item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge,
-or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression.
-However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than
-the number of covariates and .05 otherwise.}
+\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
-\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced
-on the log scale.}
+\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
 
-\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient
-is less than eps. Default is 1e-4.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
+\item{convex}{convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound.
-However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
-\item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB,
-but turned off for larger matrices to preserve memory.}
+\item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
+
+\item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
 }
 \value{
 A list with these components:
@@ -102,7 +110,6 @@ lasso penalties was used. Not relevant for lasso models.
 }
 }
 \description{
-This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
-NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
+PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
 }
 \keyword{internal}

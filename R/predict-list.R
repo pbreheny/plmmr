@@ -4,6 +4,7 @@
 #' @param oldX The standardized design matrix of training data, *pre-rotation*. 
 #' @param newX A design matrix used for computing predicted values (i.e, the test data).
 #' @param type A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details. 
+#' @param fbm Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way. 
 #' @param idx Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.
 #' @param V11 Variance-covariance matrix of the training data. Extracted from `estimated_V` that is generated using all observations. Required if \code{type == 'blup'}. 
 #' @param V21 Covariance matrix between the training and the testing data. Extracted from `estimated_V` that is generated using all observations. Required if \code{type == 'blup'}. 
@@ -24,11 +25,13 @@ predict.list <- function(fit,
                          oldX,
                          newX,
                          type=c("lp", "blup"),
+                         fbm = FALSE,
                          idx=1:length(fit$lambda),
                          V11 = NULL,
                          V21 = NULL, ...) {
-  
+ 
   type <- match.arg(type)
+
   # get beta values (for nonsingular features) from fit
   beta_vals <- fit$untransformed_b1[,idx,drop = FALSE]
   
@@ -40,11 +43,17 @@ predict.list <- function(fit,
     # case 2: beta_vals is a matrix
     colnames(beta_vals) <- lamNames(fit$lambda)
   }
+
   # calculate the estimated mean values for test data 
-  a <- beta_vals[1,]
+  a <- beta_vals[1,] 
   b <- beta_vals[-1,,drop=FALSE]
- 
-  Xb <- sweep(newX %*% b, 2, a, "+")
+
+  if (fbm) {
+    bm_newX <- fbm2bm(newX)
+    Xb <- sweep(bm_newX %*% b, 2, a, "+")
+  } else {
+    Xb <- sweep(newX %*% b, 2, a, "+")
+  }
   
   # for linear predictor, return mean values 
   if (type=="lp") return(drop(Xb))
@@ -52,16 +61,23 @@ predict.list <- function(fit,
   # for blup, will incorporate the estimated variance 
   if (type == "blup"){
     # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
+    
     # test1 <- V21 %*% chol2inv(chol(V11)) # true 
     # TODO: to find the inverse of V11 using svd results of K, i.e., the inverse of a submatrix, might need to use Woodbury's formula 
-    Xb_train <- sweep(oldX %*% b, 2, a, "+")
+    if (fbm) {
+      bm_oldX <- fbm2bm(oldX)
+      Xb_train <- sweep(bm_oldX %*% b, 2, a, "+")
+    } else {
+      Xb_train <- sweep(oldX %*% b, 2, a, "+")
+    }
+    
     resid_train <- (fit$y - Xb_train)
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
     blup <- Xb + ranef
     
     return(blup)
   }
-  
+
 }
 
 

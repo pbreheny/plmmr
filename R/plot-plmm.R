@@ -21,6 +21,12 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   penalized <- which(x$penalty.factor!=0)
   nonzero <- which(apply(abs(YY), 1, sum)!=0)
   ind <- intersect(penalized, nonzero)
+
+  # check for null model 
+  if (length(ind) == 0) {
+    stop("\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here...")
+  }
+  
   Y <- YY[ind, , drop=FALSE]
   p <- nrow(Y)
   l <- x$lambda
@@ -47,9 +53,14 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   } else {
     col <- col[ind]
   }
+
   line.args <- list(col=col, lwd=1+2*exp(-p/20), lty=1)
   if (length(new.args)) line.args[names(new.args)] <- new.args
   line.args$x <- l
+  # check types: Y may be filebacked, but in most cases it isn't that big...
+  if (!is.matrix(Y)) {
+    Y <- as.matrix(Y)
+  }
   line.args$y <- t(Y)
   do.call("matlines", line.args)
 

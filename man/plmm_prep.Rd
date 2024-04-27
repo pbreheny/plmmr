@@ -6,42 +6,47 @@
 This is an internal function for \code{cv.plmm}}
 \usage{
 plmm_prep(
-  X,
+  std_X,
+  std_X_n,
+  std_X_p,
+  genomic = 1:std_X_p,
+  n,
+  p,
   y,
   k = NULL,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-  penalty.factor = rep(1, ncol(X)),
+  fbm_flag,
+  penalty.factor = rep(1, ncol(std_X)),
   trace = NULL,
   ...
 )
 }
 \arguments{
-\item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
-Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
+\item{std_X}{Column standardized design matrix. May include clinical covariates and other non-SNP data.}
 
-\item{y}{Continuous outcome vector. Logistic regression modeling is still in development.}
+\item{std_X_n}{The number of observations in std_X (integer)}
 
-\item{k}{An integer specifying the number of singular values to be used in
-the approximation of the rotated design matrix. This argument is passed to
-\code{RSpectra::svds()}. Defaults to full decomposition (i.e., \code{k = min(n, p)}), where n and p are the dimensions
-of the \emph{standardized} design matrix.}
+\item{std_X_p}{The number of features in std_X (integer)}
 
-\item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
-(2) an estimate (Default is the relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().}
+\item{genomic}{A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.}
 
-\item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
-Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
-you must set diag_K = TRUE.}
+\item{n}{The number of instances in the \emph{original} design matrix X. This should not be altered by standardization.}
 
-\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix
-that is full rank, this should be 1.}
+\item{p}{The number of features in the \emph{original} design matrix X, including constant features}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector
-of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some
-coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which
-case the coefficient is always in the model without shrinkage.}
+\item{y}{Continuous outcome vector.}
+
+\item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
+
+\item{K}{Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)}
+
+\item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from \code{plmm()}.}
+
+\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
+
+\item{fbm_flag}{Logical: is std_X an FBM type object? This is set internally by \code{plmm()}.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 

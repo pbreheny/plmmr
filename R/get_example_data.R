@@ -9,7 +9,7 @@
 #' @export
 #'
 
-plink_example <- function(path, parent=FALSE) {
+get_example_data <- function(path, parent=FALSE) {
   if(parent){
     # if parent option selected, will return path to folder 
     system.file("extdata", package = "plmmr", mustWork = TRUE)

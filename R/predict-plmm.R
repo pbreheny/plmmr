@@ -1,7 +1,10 @@
 #' Predict method for plmm class
 #'
 #' @param object An object of class \code{plmm}.
-#' @param newX Design matrix used for computing predicted values if requested. 
+#' @param newX Design matrix used for computing predicted values if requested. This 
+#' can be either a FBM object or a matrix object. **If you supply an FBM object here, 
+#' this function assumes that this matrix has been done.** If you need to do standardization,
+#' see `big_std()` and `process_plink()`.
 #'  **Columns must be named!**
 #' @param type A character argument indicating what type of prediction should be 
 #' returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details. 
@@ -37,46 +40,34 @@
 #' @export
 #'
 #' @examples 
-#' \dontrun{
-#' # fit a model 
-#' fit <- plmm(X = admix$X, y = admix$y)
-#' lp_pred <- predict(fit, newX = admix$X, type = 'lp')
-#' blup_pred <- predict(fit, newX = admix$X, X = admix$X, y = admix$y) # BLUP is default type
-#' lp_mspe <- apply(lp_pred, 2, function(c){crossprod(admix$y - c)})
-#' min(lp_mspe)
-#' 
-#' blup_mspe <- apply(blup_pred, 2, function(c){crossprod(admix$y - c)})
-#' min(blup_mspe)
-#' 
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y)
-#' min(cv_fit$cve)
-#' 
-#' 
 #' set.seed(123)
 #' train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 #' test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
 #' fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
 #' 
-#'  # make predictions for all lambda values 
+#' # make predictions for all lambda values 
 #'  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
 #'
-#'  # make predictions for a select number of lambda values
-#'  # use cv to choose a best lambda
-#'  cvfit <- cv.plmm(X = train$X, y = train$y) 
-#'  pred2 <- predict(object = fit, newX = test$X, type = "blup", idx=cvfit$min,
-#'   X = train$X, y = train$y)
-#'  pred3 <- predict(object = fit, newX = test$X, type = "lp", idx=cvfit$min) 
-#'  
-#'   # examine prediction error 
-#'   summary(crossprod(test$y - pred2))  # for BLUP method 
-#'   summary(crossprod(test$y - pred3)) # for LP method 
-#'   
-#'   # which was best prediction?
-#'   mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)})
-#'   which.min(mspe) # not anywhere near the 'best lambda' chosen in cross validation...
-#'   mspe[which.min(mspe)]
-#'   min(cvfit$cve)
+#' # look at mean squared prediction error
+#' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
+#' min(mspe)
+#' 
+#' # compare the MSPE of our model to a null model, for reference
+#' # null model = intercept only -> y_hat is always mean(y)
+#' crossprod(mean(test$y) - test$y)/length(test$y)
+#' 
+#'  \dontrun{
+#'   # file-backed example 
+#'   plmm(X = "~/tmp_files/penncath_lite", penalty = "lasso", trace = T, returnX = FALSE) -> foo
+#'   pen <- bigsnpr::snp_attach("~/tmp_files/penncath_lite.rds")
+#'   y_hat <- predict(foo, newX = pen$genotypes)
+#'   y <- pen$fam$affection
+#'   # notice: many of the rows in pen$genotypes correspond to samples with a missing phenotype
+#'   # to assess the quality of the fit 
+#'   names(y) <- pen$fam$family.ID
+#'   y_idx <- which(as.character(pen$std_X_rownames) %in% names(y))
+#'   crossprod(y - y_hat[y_idx,50])/length(y) # estimate of MSPE
 #'  }
 #'  
 #'  
@@ -90,6 +81,28 @@ predict.plmm <- function(object,
                          K = NULL,
                          ...) {
   
+  # object type checks
+  if (!missing(X)){
+    if (!identical(class(X), class(newX))) {
+      stop("\nFor now, the classes of X and newX must match (we plan to extend/enhance this 
+           further in the future). See plmmr::process_plink() and bigstatsr::as_FBM()
+           if you need to convert the type of one of your matrices.")
+    }
+  }
+  
+  if (!missing(newX)){
+    ifelse(grepl("FBM", class(newX)),
+           fbm_flag <- TRUE,
+           fbm_flag <- FALSE)
+    
+  }
+  
+  ifelse(grepl("Matrix", class(object$beta_vals)),
+         sparse_flag <- TRUE,
+         sparse_flag <- FALSE)
+  
+  
+  # prepare other arguments 
   type <- match.arg(type)
   beta_vals <- coef.plmm(object, lambda, which=idx, drop=FALSE) # includes intercept 
   p <- object$p 
@@ -103,33 +116,49 @@ predict.plmm <- function(object,
   
   if (type=="vars") return(drop(apply(beta_vals[-1, , drop=FALSE]!=0, 2, FUN=which))) # don't count intercept
   
-  a <- beta_vals[1,]
-  b <- beta_vals[-1,,drop=FALSE]
-
-  Xb <- sweep(newX %*% b, 2, a, "+")
-  # Xb <- cbind(1, newX) %*% beta_vals # old way 
+  if (fbm_flag){
+    # add column of 1s for intercept 
+    newX_with_intcpt <- bigstatsr::FBM(init = 1,
+                                nrow = newX$nrow,
+                                ncol = newX$ncol + 1) 
+    # fill in other columns with values of newX
+    bigstatsr::big_apply(newX,
+                         a.FUN = function(X, ind, res){
+                           res[,ind+1] <- X[,ind]
+                         },
+                         a.combine = cbind,
+                         res = newX_with_intcpt)
+    # convert to big.matrix (FBM cannot multiply with dgCMatrix type of beta_vals)
+    bm_newX <- fbm2bm(newX_with_intcpt)
+    # calculate linear predictor 
+    Xb <- bm_newX %*% beta_vals
+  } else {
+    a <- beta_vals[1,]
+    b <- beta_vals[-1,,drop=FALSE]
+    Xb <- sweep(newX %*% b, 2, a, "+")
+  }
   
   if (type=="lp") return(drop(Xb))
   
   if (type == "blup"){ # assuming eta of X and newX are the same 
-    
+    if (fbm_flag) stop("\nBLUP prediction outside of cross-validation is not yet implemented for filebacked data. This will be available soon.")
     if (missing(X)) stop("The design matrix is required for BLUP calculation. Please supply the no-intercept design matrix to the X argument.") 
     if (missing(y) & is.null(object$y)) stop("The vector of outcomes is required for BLUP calculation. Please either supply it to the y argument, or set returnX=TRUE in the plmm function.")
     
     if (!is.null(object$y)) y <- object$y
-    
+   #  ns <- ifelse(object$ns_idx)
     if (is.null(K)){
-      V11 <- object$eta*relatedness_mat(X, std = FALSE) + (1 - object$eta)*diag(object$n)
-    } else {
-      V11 <- object$eta*K + (1 - object$eta)*diag(object$n)
-    }
-
+      # TODO: consider whether using the standardized scale for prediction would be better....
     # standardize (this won't affect predicted y)
     # std_X <- ncvreg::std(X)
     # std_newX <- ncvreg::std(newX)
     # std_X_details <- list(ns = attr(std_X, 'nonsingular'),
     #                       scale = attr(std_X, 'scale'),
     #                       center = attr(std_X, 'center'))
+      V11 <- object$eta*relatedness_mat(X, fbm = fbm_flag, std = FALSE) + (1 - object$eta)*diag(object$n)
+    } else {
+      V11 <- object$eta*K + (1 - object$eta)*diag(object$n)
+    }
     
     # check dimensions -- must have same number of features
     # even from the same dataset, this can be an issue with features 'becoming' constant...
@@ -150,30 +179,6 @@ predict.plmm <- function(object,
     
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_old)
     blup <- drop(Xb + ranef)
-
-
-    # #################################
-    # # used to check BLUP calculation #
-    # #################################
-    # aggregate X and newX to compute V
-    # X_all <- rbind(std_X, std_newX)
-    # c(S_all, U_all) %<-% svd(X_all, nv = 0) # D, U
-    # S_all <- S_all^2 / p
-
-    # assuming newX has the same eta as X
-    # eta_all <- object$eta
-    # Vhat_all <- eta_all * tcrossprod(U_all %*% diag(S_all), U_all) + (1-eta_all)*diag(nrow(U_all))
-    # V21_check <- Vhat_all[-c(1:n), 1:n, drop = FALSE]
-    # V11_check <- Vhat_all[1:n, 1:n, drop = FALSE]
-
-    # ranef_check <- V21_check %*% chol2inv(chol(V11_check)) %*% (drop(y) - cbind(1, std_X) %*% beta_vals)
-    # print(eta)
-
-    # blup_check <- Xb + ranef_check
-    
-    # frob_distance <- (Matrix::norm(blup_check) - Matrix::norm(blup))/Matrix::norm(blup_check)
-    # if (abs(frob_distance) > 0.01) stop("\nThe two calculations of the BLUP do not match")
-    
 
     return(blup)
   }

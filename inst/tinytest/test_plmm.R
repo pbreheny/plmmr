@@ -114,15 +114,36 @@ tinytest::expect_equivalent(matrix(0,
 # TODO come back here
 
 
-# Test 5: user-supplied K is a list --------------------------------
-fit1 <- plmm(X = admix$X, y = admix$y, k = 70)
-K_admix <- choose_k(X = admix$X, start = 10, step = 10, trace = T)
-fit2 <- plmm(X = admix$X, y = admix$y, K = K_admix$K_svd)
+# Test 5: make sure in-memory and filebacked computations match ---------------
+if (interactive()) {
+  # filebacked fit 
+  process_plink(data_dir = get_example_data(parent = T),
+                prefix = "penncath_lite",
+                gz = TRUE,
+                outfile = "process_penncath",
+                overwrite = TRUE,
+                impute_method = "mode",
+                keep_bigSNP = TRUE)
+  
+  my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
+  fb_fit <- plmm(X = my_fb_data,
+                 returnX = FALSE,
+                 trace = TRUE)
+  
+  # in memory fit 
+  pen <- bigsnpr::snp_attach(paste0(get_example_data(parent = T), "/penncath_lite.rds"))
+  inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
+                    y = pen$fam$affection[pen$complete_phen],
+                    trace = T)
+  
+  tinytest::expect_equivalent(inmem_fit$beta_vals, as.matrix(fb_fit$beta_vals),
+                              tolerance = 0.01)
+}
 
-# if one of these passes, then both of them should -- this is somewhat redundant
-tinytest::expect_equivalent(fit1$S, fit2$S)
-tinytest::expect_equivalent(fit1$beta_vals, fit2$beta_vals)
 
+
+
+# TODO: come back here and see if this test is necessary 
 # Test 6: make sure predict method is working -------------------
 plmm_fit <- plmm(admix$X,
                  admix$y,
@@ -170,3 +191,33 @@ for(i in 1:100){
 tinytest::expect_equivalent(current = mean(hat_eta), 
                             target = 2/3,
                             tolerance = 0.05)
+
+
+# Test 9: make sure plmm() runs in-memory and filebacked ---------------------
+lambda9 <- c(1, 0.1, 0.01, 0.001) # same as lambda0
+
+if (interactive()) {
+  # filebacked 
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+       penalty = "lasso", trace = T, returnX = FALSE) -> foo
+  # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this 
+  #   will run in-memory because of the small size of this test data set
+  foo_nz <- which(foo$beta_vals[,4] != 0)
+  
+  # in memory
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+       penalty = "lasso", trace = T) -> foo2
+  foo2_nz <- which(foo2$beta_vals[,4] != 0)
+  
+  # look at head of values (checks SNP names)
+  foo$beta_vals[,4] |> head()
+  foo2$beta_vals[,4] |> head()
+  
+  # look at just nonzero values 
+  foo$beta_vals[foo_nz,4] |> head()
+  foo2$beta_vals[foo2_nz,4] |> head()
+  
+  tinytest::expect_equivalent(foo$beta_vals[,3], foo2$beta_vals[,3])
+  tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4])
+  
+}
