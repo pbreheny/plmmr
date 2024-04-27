@@ -24,3 +24,4 @@ scratch.R
 vignettes/*.html
 xxx/
 xxx*\.R$
+ideas/
