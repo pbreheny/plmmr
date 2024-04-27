@@ -76,12 +76,6 @@ reference:
     - admix
     - pedigree
     
-  - title: External data 
-    contents:
-    - colon2.txt
-    - penncath_lite.bed/bim/fam
-    - penncath_clinical.csv
-    
   - title: internal
     contents: 
     - cvf
