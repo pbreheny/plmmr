@@ -97,6 +97,12 @@
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/biglasso/index.html" class="external-link">biglasso</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://privefl.github.io/bigsnpr/" class="external-link">bigsnpr</a></span><span class="op">)</span></span></code></pre></div>
+<p><strong>Preliminary note</strong>: rendering this vignette is proving
+to be tricky, given that these examples read in external data files.
+Right now, this renders on my local machine – I am still working out the
+kinks of getting this to render for our website. For now, I’ve left
+<code>eval=FALSE</code> just so you all can at least see the code. Let
+me know if you have any questions. –Tabitha</p>
 <p>In many applications of high dimensional data analysis, the dataset
 is too large to read into R – the session will crash for lack of memory.
 This is almost always an issue with analyzing genetic data from <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> files. To analyze
@@ -175,17 +181,12 @@ package:</p>
 <div class="section level4">
 <h4 id="what-if-my-data-arent-in-plink-format">What if my data aren’t in PLINK format?<a class="anchor" aria-label="anchor" href="#what-if-my-data-arent-in-plink-format"></a>
 </h4>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="the-methodology-in-plmmr-was-motivated-by-applications-in-gwas-but-it-certainly-isnt-limited-to-that-context--suppose-you-have-a-high-dimemsional-data-set-such-as-the-colon2-data-this-is-like-the-colon-data-that-ships-with-the-biglasso-package-only-here-ive-inserted-some-na-values-just-for-didactic-purposes-">The methodology in <code>plmmr</code> was motivated by applications
+<p>The methodology in <code>plmmr</code> was motivated by applications
 in GWAS, but it certainly isn’t limited to that context. Suppose you
 have a high dimemsional data set, such as the <code>colon2</code> data –
 this is like the <code>colon</code> data that ships with the
 <code>biglasso</code> package, only here I’ve inserted some NA values
-just for didactic purposes.<a class="anchor" aria-label="anchor" href="#the-methodology-in-plmmr-was-motivated-by-applications-in-gwas-but-it-certainly-isnt-limited-to-that-context--suppose-you-have-a-high-dimemsional-data-set-such-as-the-colon2-data-this-is-like-the-colon-data-that-ships-with-the-biglasso-package-only-here-ive-inserted-some-na-values-just-for-didactic-purposes-"></a>
-</h2>
+just for didactic purposes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/process_X.html">process_X</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span>
 <span>          data_dir <span class="op">=</span> <span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
@@ -194,6 +195,8 @@ just for didactic purposes.<a class="anchor" aria-label="anchor" href="#the-meth
 <span></span>
 <span><span class="va">colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_colon2.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">colon2</span><span class="op">)</span> <span class="co"># notice that the columns with NA values were dropped </span></span></code></pre></div>
+</div>
+</div>
 <div class="section level3">
 <h3 id="step-2-fit-a-model">Step 2: fit a model<a class="anchor" aria-label="anchor" href="#step-2-fit-a-model"></a>
 </h3>
