@@ -3,7 +3,7 @@
 #' @param std_X The standardized matrix of data (which may be filebacked)
 #' @param non_genomic Integer vector of columns in `std_X` representing non-genomic data. 
 #'
-#' @return list with indicies
+#' @return list with indices
 #' @keywords internal
 #'
 index_std_X <- function(std_X, non_genomic){
