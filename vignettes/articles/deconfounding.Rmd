@@ -5,8 +5,7 @@ title: "Deconfounding"
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
 ```
 
@@ -67,7 +66,7 @@ min(cvp_blup$cve)
 
 ### MSE
 
-For mean squared error, we see that $\hat \beta$ is better in `plmm`, and better still in `plmm` + BLUP. 
+For mean squared error, we see that $\hat \beta$ is better in `plmm`
 
 ```{r}
 crossprod(l$beta - coef(cvg)[-1]) |> drop()
@@ -78,7 +77,7 @@ crossprod(l$beta - coef(cvp_blup)[-1]) |> drop()
 
 
 ```{r, include=FALSE, eval=FALSE}
-Recall from the article on mfdr our results for analyzing the admix data: 
+# Recall from the article on mfdr our results for analyzing the admix data: 
 # using lasso penalty 
 fit <- cv.plmm(X = admix$X, y = admix$y, penalty = "lasso") 
 summary(fit); plot(fit)

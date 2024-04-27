@@ -21,8 +21,6 @@ navbar:
       href: articles/filebacking.html
     - text: 'In progress: PLMMs & deconfounding'
       href: articles/deconfounding.html
-    - text: 'In progress: marginal false discovery rates'
-      href: articles/mfdr.html
   - text: News
     href: news/index.html
   right:
@@ -32,17 +30,11 @@ navbar:
 reference:
   - title: Fitting penalized linear mixed models (PLMMs - the featured presentation) 
     contents:
-    - choose_k
     - plmm
-    
-  - title: Inference for PLMMs
-    contents: 
-    - mfdr
     
   - title: Loss, information, and cross-validation for PLMMs
     contents:
     - cv.plmm
-    - gic
     - loss.plmm
     - log_lik
     - residuals.plmm
@@ -51,10 +43,6 @@ reference:
     contents:
     - coef.cv.plmm
     - coef.plmm
-    
-  - title: Inference for PLMMs
-    contents:
-      - mfdr
     
   - title: Other model fitting methods (and some helper functions)
     contents: 
@@ -78,7 +66,6 @@ reference:
     - print.summary.cv.plmm
     - plot.cv.plmm
     - plot.plmm
-    - mfdr_plot
     
   - title: Prediction
     contents: 
@@ -88,6 +75,12 @@ reference:
     contents:
     - admix
     - pedigree
+    
+  - title: External data 
+    contents:
+    - colon2.txt
+    - penncath_lite.bed/bim/fam
+    - penncath_clinical.csv
     
   - title: internal
     contents: 

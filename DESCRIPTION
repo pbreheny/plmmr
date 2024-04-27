@@ -20,7 +20,7 @@ Description: Fits penalized linear mixed models that correct for
     multivariate analysis of SNP data, 'plmmr' eliminates the need for
     subpopulation-specific analyses and post-analysis p-value adjustments.
     Functions for the appropriate processing of 'PLINK' files are also
-    supplied. For examples, see the package homepage
+    supplied. For examples, see the package homepage. 
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
 Depends: R (>= 3.5.0)
@@ -33,12 +33,9 @@ Imports:
     glmnet,
     Matrix,
     methods,
-    RSpectra,
     stats,
-    utils,
-    zeallot
+    utils
 Suggests: 
-    ggmix,
     graphics,
     grDevices,
     knitr,

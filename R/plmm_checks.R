@@ -126,7 +126,7 @@ plmm_checks <- function(X,
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
-    } # this bracket closes case 2 (the matrix case )
+  } # this bracket closes case 2 (the matrix case )
 
   #  check y types & read y -------------------------------
   # if y is null, use .fam file 

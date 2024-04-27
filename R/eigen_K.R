@@ -4,7 +4,6 @@
 #' @param std_X The *standardized* design matrix, stored as FBM.  
 #' @param p The number of columns in the *unstandardized* design matrix. 
 #' @param fbm_flag Logical: is std_X an FBM obejct? Passed from `plmm()`.
-#' @param k TODO: will eventually add an option to use a truncated decomposition...
 #' @param ... Optional additional arguments to `bigstatsr::big_tcrossprodSelf()`,
 #' Of note, one additional argument is `ind.col`, which is used to *exclude* the 
 #' unpenalized additional, non-genomic covariates (like sex, age, etc.) from being

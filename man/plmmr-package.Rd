@@ -7,7 +7,7 @@
 \alias{plmm-package}
 \title{plmmr: Fit nonconvex-penalized linear mixed models to account for the presence of unobserved confounding effects}
 \description{
-Fits penalized linear mixed models that correct for unobserved confounding factors. 'plmmr' infers and corrects for the presence of unobserved confounding effects such as population stratification and environmental heterogeneity. It then fits a linear model via penalized maximum likelihood. Originally designed for the multivariate analysis of SNP data, 'plmmr' eliminates the need for subpopulation-specific analyses and post-analysis p-value adjustments. Functions for the appropriate processing of 'PLINK' files are also supplied. For examples, see the package homepage \url{https://pbreheny.github.io/plmmr/}.
+Fits penalized linear mixed models that correct for unobserved confounding factors. 'plmmr' infers and corrects for the presence of unobserved confounding effects such as population stratification and environmental heterogeneity. It then fits a linear model via penalized maximum likelihood. Originally designed for the multivariate analysis of SNP data, 'plmmr' eliminates the need for subpopulation-specific analyses and post-analysis p-value adjustments. Functions for the appropriate processing of 'PLINK' files are also supplied. For examples, see the package homepage. \url{https://pbreheny.github.io/plmmr/}.
 }
 \author{
 \strong{Maintainer}: Tabitha K. Peter \email{tabitha-peter@uiowa.edu} (\href{https://orcid.org/0009-0005-2524-4751}{ORCID})

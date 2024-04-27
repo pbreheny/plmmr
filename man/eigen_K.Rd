@@ -18,8 +18,6 @@ eigen_K(std_X, p, fbm_flag, ...)
 Of note, one additional argument is \code{ind.col}, which is used to \emph{exclude} the
 unpenalized additional, non-genomic covariates (like sex, age, etc.) from being
 included in the calculation of kinship.}
-
-\item{k}{TODO: will eventually add an option to use a truncated decomposition...}
 }
 \value{
 A list with the eigenvectors and eigenvalues of K

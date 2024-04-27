@@ -79,7 +79,7 @@ Suppose we also know the ancestry groups with which for each person in the `admi
 ```{r}
 admix_fit2 <- plmm(X = cbind(admix$race, admix$X), y = admix$y,
                    penalty = "lasso",
-                   non_genomic = 1,
+                   non_genomic = 1, # mark ancestry variable as non-genomic 
                    # make the penalty factor 0 to keep the corresponding covariate unpenalized
                    penalty.factor = c(0, rep(1, ncol(admix$X))))
 
