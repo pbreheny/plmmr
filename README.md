@@ -4,10 +4,9 @@
 [![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
 <!-- badges: end -->
 
-## Welcome 
-## plmmr <img src="inst/fig/plmmr_hex_sticker.png" align="right" alt="" width="120" />
+## plmmr <img src="man/figures/plmmr_hex_sticker.png" align="right" alt="" width="150" />
 
-The `plmmr` package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects. Documentation for this package is in progress. 
+The `plmmr` (**p**enalized **l**inear **m**ixed **m**odels in **R**) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects. Documentation for this package is in progress. 
 
 
 ## Installation 

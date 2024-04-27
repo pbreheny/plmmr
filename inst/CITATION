@@ -1,0 +1,11 @@
+bibentry(
+  bibtype="Article",
+  author = c(person(given="Anna C.", family="Reisetter"),
+             person(given="Patrick", family="Breheny")),
+  title = "Penalized linear mixed models for structured genetic data",
+  journal = "Genetic epidemiology",
+  year = "2021",
+  volume = "45",
+  pages = "427--444",
+  number = "5",
+  url = "https://doi.org/10.1002/gepi.22384")
