@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -75,6 +72,7 @@
 <span>  <span class="va">oldX</span>,</span>
 <span>  <span class="va">newX</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lp"</span>, <span class="st">"blup"</span><span class="op">)</span>,</span>
+<span>  fbm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  idx <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>,</span>
 <span>  V11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  V21 <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -98,6 +96,10 @@
 
 <dt>type</dt>
 <dd><p>A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p></dd>
+
+
+<dt>fbm</dt>
+<dd><p>Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.</p></dd>
 
 
 <dt>idx</dt>

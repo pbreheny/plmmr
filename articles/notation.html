@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,11 +50,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -183,11 +180,12 @@ etc.)</li>
 <h3 id="decomposition-and-rotation-prep-and-first-part-of-fit">Decomposition and rotation (prep and first part of fit)<a class="anchor" aria-label="anchor" href="#decomposition-and-rotation-prep-and-first-part-of-fit"></a>
 </h3>
 <ul>
-<li><p>Beginning with a singular value decomposition, we have <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{d}\)</span> are the right singular vectors
-and singular values of <span class="math inline">\(\dot{\mathbf{X}}\)</span>, as one would obtain
-from the singular value decomposition (SVD), i.e. <span class="math inline">\(\text{svd}(\mathbf{X)} \equiv
-\mathbf{U}\mathbf{D}\mathbf{V}^\top\)</span>. The elements of <span class="math inline">\(\mathbf{d}\)</span> are the diagonal values of
-<span class="math inline">\(\mathbf{D}\)</span>. Note, random effect
+<li><p>Beginning with an eigendecomposition, we have <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{d}\)</span> are the eigenvectors and
+eigenvalues of <span class="math inline">\(\mathbf{K}\)</span>, as one
+would obtain from <span class="math inline">\(\text{eigen}(\mathbf{K)}
+\equiv \mathbf{U}\mathbf{D}\mathbf{U}^\top\)</span>. The elements of
+<span class="math inline">\(\mathbf{d}\)</span> are the diagonal values
+of <span class="math inline">\(\mathbf{D}\)</span>. Note, random effect
 <span class="math inline">\(\mathbf{u}\)</span> is distinct from the
 columns of matrix <span class="math inline">\(\mathbf{U}\)</span>.</p></li>
 <li><p><span class="math inline">\(k\)</span> represents the number of
@@ -196,12 +194,9 @@ nonzero eigenvalues represented in <span class="math inline">\(\mathbf{U}\)</spa
 \frac{1}{p}\mathbf{D}^2\)</span> is the <span class="math inline">\(k
 \times k\)</span> diagonal matrix whose diagonal values are <span class="math inline">\(\frac{d_k^2}{p}\)</span>.</p></li>
 <li><p>Again, <span class="math inline">\(\mathbf{K} \equiv
-\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}\)</span>is often
+\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}\)</span> is often
 referred to in the literature as the realized relatedness matrix (RRM)
-or genomic relatedness matrix (GRM). <span class="math inline">\(\mathbf{K}\)</span> has dimension <span class="math inline">\(n \times n\)</span>. Note that <span class="math inline">\(\mathbf{K}\)</span> can be obtained from the SVD
-of <span class="math inline">\(\dot{\mathbf{X}}\)</span>, i.e., <span class="math inline">\(\mathbf{U}\mathbf{S}\mathbf{U}^{\top}\)</span>,
-where <span class="math inline">\(\mathbf{S}\)</span> is the diagonal
-matrix whose diagonal values are <span class="math inline">\(\frac{d_k^2}{p}\)</span>.</p></li>
+or genomic relatedness matrix (GRM). <span class="math inline">\(\mathbf{K}\)</span> has dimension <span class="math inline">\(n \times n\)</span>.</p></li>
 <li><p><span class="math inline">\(\eta\)</span> is the ratio <span class="math inline">\(\frac{\sigma^2_s}{\sigma^2_e +
 \sigma^2_s}\)</span>. We estimate <span class="math inline">\(\hat{\eta}\)</span> from a null model (more
 details to come).</p></li>
@@ -213,7 +208,7 @@ weights defined as <span class="math inline">\((\eta\mathbf{\mathbf{s}}
 + (1-\eta))^{-1/2}\)</span>. The values in <span class="math inline">\(\mathbf{w}\)</span> are the nonzero values of the
 diagonal matrix <span class="math inline">\(\mathbf{W} \equiv
 (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}\)</span>.</p></li>
-<li><p>The matrix to be used in rotating ( or <em>preconditioning</em>)
+<li><p>The matrix to be used in rotating (or <em>preconditioning</em>)
 the data is <span class="math inline">\(\mathbf{\Sigma}^{-1/2} \equiv
 \mathbf{W}\mathbf{U}^\top\)</span>.</p></li>
 <li><p><span class="math inline">\(\tilde{\dot{\mathbf{X}}} \equiv

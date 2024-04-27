@@ -12,7 +12,7 @@ NB: this function is simply a wrapper for plmm_prep -&amp;gt; plmm_fit -&amp;gt;
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,11 +34,8 @@ NB: this function is simply a wrapper for plmm_prep -&amp;gt; plmm_fit -&amp;gt;
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -74,64 +71,80 @@ NB: this function is simply a wrapper for plmm_prep -&gt; plmm_fit -&gt; plmm_fo
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm</span><span class="op">(</span></span>
 <span>  <span class="va">X</span>,</span>
-<span>  <span class="va">y</span>,</span>
-<span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  std_needed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  col_names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  non_genomic <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MCP"</span>, <span class="st">"SCAD"</span>, <span class="st">"lasso"</span><span class="op">)</span>,</span>
+<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
+<span>  penalty.factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">gamma</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">lambda.min</span>,</span>
 <span>  nlambda <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  <span class="va">lambda</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  max.iter <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  convex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  dfmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  trace <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>X</dt>
-<dd><p>Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to <code><a href="get_data.html">get_data()</a></code>.
-Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.</p></dd>
+<dd><p>Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to <code><a href="get_data.html">get_data()</a></code>.</p><ul><li><p>Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.</p></li>
+</ul></dd>
 
 
 <dt>y</dt>
-<dd><p>Continuous outcome vector. Logistic regression modeling is still in development.</p></dd>
+<dd><p>Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.</p></dd>
 
 
-<dt>k</dt>
-<dd><p>An integer specifying the number of singular values to be used in
-the approximation of the rotated design matrix. This argument is passed to
-<code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to full decomposition (i.e., <code>k = min(n, p)</code>), where n and p are the dimensions
-of the <em>standardized</em> design matrix.</p></dd>
+<dt>std_needed</dt>
+<dd><p>Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in <code><a href="process_plink.html">process_plink()</a></code>. For data supplied as a matrix, standardization happens here in <code>plmm()</code>. If you know your data are already standardized, set <code>std_needed = FALSE</code> -- this would be an atypical case. <strong>Note</strong>: failing to standardize data will lead to incorrect analyses.</p></dd>
+
+
+<dt>col_names</dt>
+<dd><p>Optional vector of column names for design matrix. Defaults to NULL.
+For cases where X is a filepath to an object created by <code><a href="process_plink.html">process_plink()</a></code>, this is handled automatically via the arguments to <code><a href="process_plink.html">process_plink()</a></code>.</p></dd>
+
+
+<dt>non_genomic</dt>
+<dd><p>Optional vector specifying which columns of the design matrix represent features that are <em>not</em> genomic, as these features are excluded from the empirical estimation of genomic relatedness.
+For cases where X is a filepath to an object created by <code><a href="process_plink.html">process_plink()</a></code>, this is handled automatically via the arguments to <code><a href="process_plink.html">process_plink()</a></code>.
+For all other cases, 'non_genomic' defaults to NULL (meaning <code>plmm()</code> will assume that all columns of <code>X</code> represent genomic features).</p></dd>
 
 
 <dt>K</dt>
-<dd><p>Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
-(2) an estimate (Default is the realized relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().</p></dd>
+<dd><p>Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or (3) a list with components 'd' and 'u', as returned by choose_k().</p></dd>
 
 
 <dt>diag_K</dt>
-<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
-Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
-you must set diag_K = TRUE.</p></dd>
+<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
+Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.</p></dd>
 
 
 <dt>eta_star</dt>
-<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix
-that is full rank, this should be 1.</p></dd>
+<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.</p></dd>
 
 
 <dt>penalty</dt>
 <dd><p>The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".</p></dd>
+
+
+<dt>penalty.factor</dt>
+<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.</p></dd>
+
+
+<dt>init</dt>
+<dd><p>Initial values for coefficients. Default is 0 for all columns of X.</p></dd>
 
 
 <dt>gamma</dt>
@@ -139,14 +152,15 @@ that is full rank, this should be 1.</p></dd>
 
 
 <dt>alpha</dt>
-<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/Spenncath penalty and the ridge,
-or L2 penalty. alpha=1 is equivalent to MCP/Spenncath penalty, while alpha=0 would be equivalent to ridge regression.
-However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
+<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
+
+
+<dt>dfmax</dt>
+<dd><p>Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
 
 
 <dt>lambda.min</dt>
-<dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than
-the number of covariates and .05 otherwise.</p></dd>
+<dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.</p></dd>
 
 
 <dt>nlambda</dt>
@@ -154,13 +168,11 @@ the number of covariates and .05 otherwise.</p></dd>
 
 
 <dt>lambda</dt>
-<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced
-on the log scale.</p></dd>
+<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.</p></dd>
 
 
 <dt>eps</dt>
-<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient
-is less than eps. Default is 1e-4.</p></dd>
+<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is <code>1e-4</code>.</p></dd>
 
 
 <dt>max.iter</dt>
@@ -171,28 +183,16 @@ is less than eps. Default is 1e-4.</p></dd>
 <dd><p>Calculate index for which objective function ceases to be locally convex? Default is TRUE.</p></dd>
 
 
-<dt>dfmax</dt>
-<dd><p>Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational
-burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
-
-
 <dt>warn</dt>
 <dd><p>Return warning messages for failures to converge and model saturation? Default is TRUE.</p></dd>
 
 
-<dt>penalty.factor</dt>
-<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector
-of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some
-coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which
-case the coefficient is always in the model without shrinkage.</p></dd>
-
-
-<dt>init</dt>
-<dd><p>Initial values for coefficients. Default is 0 for all columns of X.</p></dd>
-
-
 <dt>trace</dt>
 <dd><p>If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Additional optional arguments to <code><a href="plmm_checks.html">plmm_checks()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -223,14 +223,14 @@ case the coefficient is always in the model without shrinkage.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># using admix data </span></span></span>
-<span class="r-in"><span><span class="va">fit_admix1</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix1</span>, idx <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit_admix1</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, std_needed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix1</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=197, p=101 at lambda=0.00046</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=197, p=101 at lambda=0.01401</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  98 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  88 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_admix1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plmm-1.png" alt="" width="700" height="433"></span>
@@ -247,6 +247,19 @@ case the coefficient is always in the model without shrinkage.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_admix2</span><span class="op">)</span> <span class="co"># notice: the default penalty is MCP</span></span></span>
 <span class="r-plt img"><img src="plmm-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># now use PLINK data files</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># filebacked example (file path is specific to current machine)</span></span></span>
+<span class="r-in"><span><span class="co"># since this dataset is &lt; 100Mb, have to specify returnX = FALSE for </span></span></span>
+<span class="r-in"><span><span class="co"># get_data() to return an FBM</span></span></span>
+<span class="r-in"><span><span class="va">my_fb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, <span class="st">"/penncath_lite"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fb_fit</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span></span>
+<span class="r-in"><span>               returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>               trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>               </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fb_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

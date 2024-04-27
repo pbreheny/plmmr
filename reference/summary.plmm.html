@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -124,11 +121,11 @@ whose values are constant in the whole sample (e.g., monomorphic SNPs in a genet
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, lambda <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">lambda.min</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized model with n=197 and p=100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.4279):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.3019):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 1.97</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.403</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 2.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.413</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

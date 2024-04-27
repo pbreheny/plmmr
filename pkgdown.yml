@@ -2,12 +2,9 @@ pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  A-plink-files: A-plink-files.html
-  B-choose_k: B-choose_k.html
-  C-explore_options: C-explore_options.html
-  D-deconfounding: D-deconfounding.html
-  E-mfdr: E-mfdr.html
+  deconfounding: deconfounding.html
+  filebacking: filebacking.html
   getting-started: getting-started.html
   notation: notation.html
-last_built: 2024-04-27T16:38Z
+last_built: 2024-04-27T20:13Z
 

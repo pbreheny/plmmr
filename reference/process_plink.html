@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,11 +69,19 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">process_plink</span><span class="op">(</span></span>
 <span>  <span class="va">data_dir</span>,</span>
 <span>  <span class="va">prefix</span>,</span>
+<span>  rds_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
 <span>  impute <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  impute_method <span class="op">=</span> <span class="st">"mode"</span>,</span>
+<span>  na_phenotype_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">9</span><span class="op">)</span>,</span>
+<span>  id_var <span class="op">=</span> <span class="st">"IID"</span>,</span>
+<span>  handle_missing_phen <span class="op">=</span> <span class="st">"prune"</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  gz <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  add_predictor_fam <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_predictor_ext <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  keep_bigSNP <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -84,11 +89,15 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data_dir</dt>
-<dd><p>The path to the bed/bim/fam data files</p></dd>
+<dd><p>The path to the bed/bim/fam data files, <em>without</em> a trailing "/" (e.g., use <code>data_dir = '~/my_dir'</code>, <strong>not</strong> <code>data_dir = '~/my_dir/'</code>)</p></dd>
 
 
 <dt>prefix</dt>
-<dd><p>The prefix (as a character string) of the bed/fam data files</p></dd>
+<dd><p>The prefix (as a character string) of the bed/fam data files (e.g., <code>prefix = 'mydata'</code>)</p></dd>
+
+
+<dt>rds_dir</dt>
+<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
 
 
 <dt>impute</dt>
@@ -96,16 +105,32 @@
 
 
 <dt>impute_method</dt>
-<dd><p>If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:</p><ul><li><p>mode (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.</p></li>
-<li><p>random: Imputes sampling according to allele frequencies.</p></li>
-<li><p>mean0: Imputes the rounded mean.</p></li>
-<li><p>mean2: Imputes the mean rounded to 2 decimal places.</p></li>
-<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
-</ul></dd>
+<dd><p>If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
+* mode (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.
+* random: Imputes sampling according to allele frequencies.
+* mean0: Imputes the rounded mean.
+* mean2: Imputes the mean rounded to 2 decimal places.
+* xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></dd>
+
+
+<dt>na_phenotype_vals</dt>
+<dd><p>A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a <code>bigSNP</code> object, or the last column of a <code>.fam</code> file). Defaults to -9 (matching PLINK conventions).</p></dd>
+
+
+<dt>id_var</dt>
+<dd><p>String specifying which column of the PLINK <code>.fam</code> file has the unique sample identifiers. Options are "IID" (default) and "FID".</p></dd>
+
+
+<dt>handle_missing_phen</dt>
+<dd><p>A string indicating how missing phenotypes should be handled:
+* "prune" (default): observations with missing phenotype are removed
+* "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
+* "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).</p></dd>
 
 
 <dt>quiet</dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
+<dd><p>Logical: should messages to be printed to the console be silenced? Defaults to FALSE</p></dd>
 
 
 <dt>gz</dt>
@@ -116,6 +141,27 @@
 <dd><p>Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
 
 
+<dt>overwrite</dt>
+<dd><p>Logical: if existing <code>.bk</code>/<code>.rds</code> files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.</p></dd>
+
+
+<dt>add_predictor_fam</dt>
+<dd><p>Optional: if you want to include "sex" (the 5th column of <code>.fam</code> file) in the analysis, specify 'sex' here.</p></dd>
+
+
+<dt>add_predictor_ext</dt>
+<dd><p>Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+This argument takes one of two kinds of arguments:
+- a <strong>named</strong> numeric vector, where the names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>                         <span class="sc">-</span> a numeric matrix whose row names align with the sample IDs <span class="cf">in</span> the PLINK files. </span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                      The names will be used to subset and align this external covariate with the supplied PLINK data.</span></code></pre><p></p></div></dd>
+
+
+<dt>keep_bigSNP</dt>
+<dd><p>Logical: should the intermediate steps of data processing be saved as a <code>bigSNP</code> object? Defaults to FALSE.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Optional: additional arguments to <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> (relevant only if impute_method = "xgboost")</p></dd>
 
@@ -124,20 +170,54 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Nothing is returned by this function; instead, files 'prefix.rds' and
-'prefix.bk' are created in the location specified by data_dir. Note that this
-this function need only be run once; in subsequent data analysis/scripts,
-<code><a href="get_data.html">get_data()</a></code> will access the '.rds' file.</p>
+<p>Nothing is returned by this function, but (at least) two files are created in
+the location specified by <code>rds_dir</code>:</p><ul><li><p>'std_prefix.rds': This is the <code><a href="https://privefl.github.io/bigsnpr/reference/bigSNP-class.html" class="external-link">bigsnpr::bigSNP</a></code> object
+that holds the PLINK data along with meta-data. See details for explanation of what
+is included in this meta-data</p></li>
+<li><p>'std_prefix.bk': Created by the call to <code><a href="standardize_fbm.html">standardize_fbm()</a></code>, this is the
+backingfile that stores the numeric data of the standardized design matrix <code>std_X</code></p></li>
+</ul><p>Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
+if <code>keep_bigSNP = TRUE</code>, these are not deleted at the end of the <code>process_plink()</code></p>
+
+
+<p>procedure. Note that these files could potentially be quite large - that's the
+main reason that keeping these files is not the default setting.</p>
+
+
+<p>Note that <code>process_plink()</code> need only be run once for a given set of PLINK
+files; in subsequent data analysis/scripts, <code><a href="get_data.html">get_data()</a></code> will access the '.rds' file.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The '.rds' object created by this function has the following elements:</p><ul><li><p>std_X: The file-backed design matrix, as an <code>FBM</code> object (see <code>bigstatsr</code> package for more info)</p></li>
+<li><p>fam: Data frame equivalent of PLINK '.bim' file</p></li>
+<li><p>map: Data frame equivalent of PLINK '.fam' file</p></li>
+<li><p>colnames: Character vector of column names for the original data (includes constant features, i.e. monomorphic SNPs)</p></li>
+<li><p>rownames: Character vector of row names for the original data.</p></li>
+<li><p>n: Number of rows (samples) in the original data</p></li>
+<li><p>p: Number of columns (features, SNPs, markers, ...) in the original data</p></li>
+<li><p>ns: Numeric vector of indices marking the non-singular columns of the original data</p></li>
+<li><p>std_X_center: Numeric vector of values used to center the non-singular columns of the data</p></li>
+<li><p>std_X_scale: Numeric vector of values used to scale the non-singular columns of the data</p></li>
+<li><p>std_X_colnames: Character vector of column names for the standardized data</p></li>
+<li><p>std_X_rownames: Character vector of row names for the standardized data.</p></li>
+<li><p>complete_phen: Numeric vector of indices marking the samples with a non-missing phenotype. Ony applicable if <code>handle_missing_phen = 'prune'</code></p></li>
+<li><p>id_var: String specifying which ID column in the '.fam' file had the unique sample ID: 'FID' (1st column) or 'IID' (2nd column)</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu">process_plink</span><span class="op">(</span>data_dir <span class="op">=</span> <span class="st">"../temp_files"</span>,</span></span>
-<span class="r-in"><span> prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span></span>
-<span class="r-in"><span>  impute <span class="op">=</span> <span class="cn">T</span>,</span></span>
-<span class="r-in"><span>   quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">process_plink</span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  rds_dir <span class="op">=</span> <span class="va">my_dir</span>,</span></span>
+<span class="r-in"><span>  prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span></span>
+<span class="r-in"><span>  gz <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span></span>
+<span class="r-in"><span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

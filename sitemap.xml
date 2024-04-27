@@ -4,19 +4,10 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/A-plink-files.html</loc>
+    <loc>/articles/deconfounding.html</loc>
   </url>
   <url>
-    <loc>/articles/B-choose_k.html</loc>
-  </url>
-  <url>
-    <loc>/articles/C-explore_options.html</loc>
-  </url>
-  <url>
-    <loc>/articles/D-deconfounding.html</loc>
-  </url>
-  <url>
-    <loc>/articles/E-mfdr.html</loc>
+    <loc>/articles/filebacking.html</loc>
   </url>
   <url>
     <loc>/articles/getting-started.html</loc>
@@ -37,10 +28,25 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/MCP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SCAD.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_predictors_to_bigsnp.html</loc>
+  </url>
+  <url>
     <loc>/reference/admix.html</loc>
   </url>
   <url>
-    <loc>/reference/choose_k.html</loc>
+    <loc>/reference/align_famfile_ids.html</loc>
+  </url>
+  <url>
+    <loc>/reference/align_ids.html</loc>
+  </url>
+  <url>
+    <loc>/reference/big_std.html</loc>
   </url>
   <url>
     <loc>/reference/coef.cv.plmm.html</loc>
@@ -49,7 +55,13 @@
     <loc>/reference/coef.plmm.html</loc>
   </url>
   <url>
+    <loc>/reference/construct_variance.html</loc>
+  </url>
+  <url>
     <loc>/reference/convexMin.html</loc>
+  </url>
+  <url>
+    <loc>/reference/count_constant_features.html</loc>
   </url>
   <url>
     <loc>/reference/cv.plmm.html</loc>
@@ -67,25 +79,34 @@
     <loc>/reference/estimate_eta.html</loc>
   </url>
   <url>
-    <loc>/reference/flip_signs.html</loc>
+    <loc>/reference/fbm2bm.html</loc>
   </url>
   <url>
-    <loc>/reference/generate_K.html</loc>
+    <loc>/reference/get_bm_from_plink.html</loc>
   </url>
   <url>
     <loc>/reference/get_data.html</loc>
   </url>
   <url>
-    <loc>/reference/gic.html</loc>
+    <loc>/reference/get_example_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/handle_missingness.html</loc>
+  </url>
+  <url>
+    <loc>/reference/impute_snp_data.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/index_std_X.html</loc>
+  </url>
+  <url>
     <loc>/reference/lamNames.html</loc>
   </url>
   <url>
-    <loc>/reference/lmm_ggmix.html</loc>
+    <loc>/reference/lasso.html</loc>
   </url>
   <url>
     <loc>/reference/log_lik.html</loc>
@@ -94,19 +115,16 @@
     <loc>/reference/loss.plmm.html</loc>
   </url>
   <url>
-    <loc>/reference/mfdr.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mfdr_plot.html</loc>
+    <loc>/reference/name_and_count_bigsnp.html</loc>
   </url>
   <url>
     <loc>/reference/pedigree.html</loc>
   </url>
   <url>
-    <loc>/reference/plink_example.html</loc>
+    <loc>/reference/plmm.html</loc>
   </url>
   <url>
-    <loc>/reference/plmm.html</loc>
+    <loc>/reference/plmm_checks.html</loc>
   </url>
   <url>
     <loc>/reference/plmm_fit.html</loc>
@@ -139,7 +157,16 @@
     <loc>/reference/print.summary.plmm.html</loc>
   </url>
   <url>
+    <loc>/reference/process_X.html</loc>
+  </url>
+  <url>
     <loc>/reference/process_plink.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_data_files.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_plink_files.html</loc>
   </url>
   <url>
     <loc>/reference/relatedness_mat.html</loc>
@@ -148,7 +175,7 @@
     <loc>/reference/residuals.plmm.html</loc>
   </url>
   <url>
-    <loc>/reference/rotate.html</loc>
+    <loc>/reference/rotate_filebacked.html</loc>
   </url>
   <url>
     <loc>/reference/scale_varp.html</loc>
@@ -157,25 +184,28 @@
     <loc>/reference/setup_lambda.html</loc>
   </url>
   <url>
+    <loc>/reference/standardize_bigsnp.html</loc>
+  </url>
+  <url>
+    <loc>/reference/standardize_fbm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/standardize_matrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/subset_bigsnp.html</loc>
+  </url>
+  <url>
     <loc>/reference/summary.cv.plmm.html</loc>
   </url>
   <url>
     <loc>/reference/summary.plmm.html</loc>
   </url>
   <url>
-    <loc>/reference/svd_X.html</loc>
-  </url>
-  <url>
     <loc>/reference/test_eta_estimation.html</loc>
   </url>
   <url>
-    <loc>/reference/toy_corr_dat.html</loc>
-  </url>
-  <url>
     <loc>/reference/untransform.html</loc>
-  </url>
-  <url>
-    <loc>/reference/v_hat.html</loc>
   </url>
   <url>
     <loc>/reference/varp.html</loc>

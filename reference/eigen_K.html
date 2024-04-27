@@ -12,7 +12,7 @@ Note: This is faster than taking SVD of X when p &amp;gt;&amp;gt; n"><!-- mathja
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,11 +34,8 @@ Note: This is faster than taking SVD of X when p &amp;gt;&amp;gt; n"><!-- mathja
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -72,17 +69,28 @@ Note: This is faster than taking SVD of X when p &gt;&gt; n</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eigen_K</span><span class="op">(</span><span class="va">std_X</span>, <span class="va">p</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eigen_K</span><span class="op">(</span><span class="va">std_X</span>, <span class="va">p</span>, <span class="va">fbm_flag</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>std_X</dt>
-<dd><p>The <em>standardized</em> design matrix</p></dd>
+<dd><p>The <em>standardized</em> design matrix, stored as FBM.</p></dd>
 
 
 <dt>p</dt>
-<dd><p>The number of columns in the <em>unstandardized</em> design matrix</p></dd>
+<dd><p>The number of columns in the <em>unstandardized</em> design matrix.</p></dd>
+
+
+<dt>fbm_flag</dt>
+<dd><p>Logical: is std_X an FBM obejct? Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Optional additional arguments to <code><a href="https://privefl.github.io/bigstatsr/reference/big_tcrossprodSelf.html" class="external-link">bigstatsr::big_tcrossprodSelf()</a></code>,
+Of note, one additional argument is <code>ind.col</code>, which is used to <em>exclude</em> the
+unpenalized additional, non-genomic covariates (like sex, age, etc.) from being
+included in the calculation of kinship.</p></dd>
 
 </dl></div>
     <div class="section level2">

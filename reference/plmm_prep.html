@@ -12,7 +12,7 @@ This is an internal function for cv.plmm"><!-- mathjax --><script src="https://c
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,11 +34,8 @@ This is an internal function for cv.plmm"><!-- mathjax --><script src="https://c
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -73,13 +70,19 @@ This is an internal function for <code>cv.plmm</code></p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_prep</span><span class="op">(</span></span>
-<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">std_X</span>,</span>
+<span>  <span class="va">std_X_n</span>,</span>
+<span>  <span class="va">std_X_p</span>,</span>
+<span>  genomic <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">std_X_p</span>,</span>
+<span>  <span class="va">n</span>,</span>
+<span>  <span class="va">p</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">fbm_flag</span>,</span>
+<span>  penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">std_X</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -87,43 +90,52 @@ This is an internal function for <code>cv.plmm</code></p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>X</dt>
-<dd><p>Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to <code><a href="get_data.html">get_data()</a></code>.
-Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.</p></dd>
+    <dl><dt>std_X</dt>
+<dd><p>Column standardized design matrix. May include clinical covariates and other non-SNP data.</p></dd>
+
+
+<dt>std_X_n</dt>
+<dd><p>The number of observations in std_X (integer)</p></dd>
+
+
+<dt>std_X_p</dt>
+<dd><p>The number of features in std_X (integer)</p></dd>
+
+
+<dt>genomic</dt>
+<dd><p>A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.</p></dd>
+
+
+<dt>n</dt>
+<dd><p>The number of instances in the <em>original</em> design matrix X. This should not be altered by standardization.</p></dd>
+
+
+<dt>p</dt>
+<dd><p>The number of features in the <em>original</em> design matrix X, including constant features</p></dd>
 
 
 <dt>y</dt>
-<dd><p>Continuous outcome vector. Logistic regression modeling is still in development.</p></dd>
+<dd><p>Continuous outcome vector.</p></dd>
 
 
 <dt>k</dt>
-<dd><p>An integer specifying the number of singular values to be used in
-the approximation of the rotated design matrix. This argument is passed to
-<code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to full decomposition (i.e., <code>k = min(n, p)</code>), where n and p are the dimensions
-of the <em>standardized</em> design matrix.</p></dd>
+<dd><p>An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to <code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to <code>min(n, p) - 1</code>, where n and p are the dimensions of the <em>standardized</em> design matrix.</p></dd>
 
 
 <dt>K</dt>
-<dd><p>Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y,
-(2) an estimate (Default is the relatedness matrix), or (3) a list with components 'd' and 'u', as returned by choose_k().</p></dd>
+<dd><p>Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \(\frac{1}{p}(XX^T)\), where X is standardized). This can also be a list, with components d and u (as returned by choose_k)</p></dd>
 
 
 <dt>diag_K</dt>
-<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated.
-Defaults to FALSE. Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix,
-you must set diag_K = TRUE.</p></dd>
+<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
 
 
 <dt>eta_star</dt>
-<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix
-that is full rank, this should be 1.</p></dd>
+<dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.</p></dd>
 
 
-<dt>penalty.factor</dt>
-<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector
-of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some
-coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which
-case the coefficient is always in the model without shrinkage.</p></dd>
+<dt>fbm_flag</dt>
+<dd><p>Logical: is std_X an FBM type object? This is set internally by <code><a href="plmm.html">plmm()</a></code>.</p></dd>
 
 
 <dt>trace</dt>

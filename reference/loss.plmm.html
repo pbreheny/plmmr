@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -89,12 +86,12 @@
 <span class="r-in"><span><span class="va">yhat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">'lp'</span>, lambda <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">loss.plmm</span><span class="op">(</span>yhat <span class="op">=</span> <span class="va">yhat</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.82070051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.05881704</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.43397314</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.56155460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.02208056</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.43364283</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.13179494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03014894</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.62415094</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.08134270</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1.13024154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.11534014</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

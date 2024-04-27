@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,7 +66,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span><span class="va">fit</span>, <span class="va">X</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span><span class="va">fit</span>, <span class="va">std_X_details</span>, <span class="va">fbm_flag</span>, snp_names <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,8 +75,19 @@
 <dd><p>A list of parameters describing the output of a model constructed with <code>plmm_fit</code></p></dd>
 
 
-<dt>X</dt>
-<dd><p>Design matrix. May include clinical covariates and other non-SNP data.</p></dd>
+<dt>std_X_details</dt>
+<dd><p>A list with 3 items:</p><ul><li><p>'center': the centering values for the columns of <code>X</code></p></li>
+<li><p>'scale': the scaling values for the non-singular columns of <code>X</code></p></li>
+<li><p>'ns': indicies of nonsingular columns in <code>std_X</code></p></li>
+</ul></dd>
+
+
+<dt>fbm_flag</dt>
+<dd><p>Logical: is the corresponding design matrix filebacked? Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
+
+
+<dt>snp_names</dt>
+<dd><p>A vector of names for features, passed internally if such names are included with the data <code>X</code> passed to <code><a href="plmm.html">plmm()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">

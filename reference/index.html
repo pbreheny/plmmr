@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
     <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/A-plink-files.html">How to read in PLINK files</a>
-    <a class="dropdown-item" href="../articles/B-choose_k.html">In progress: truncated eigendecomposition</a>
-    <a class="dropdown-item" href="../articles/C-explore_options.html">In progress: exploring plmm() options</a>
-    <a class="dropdown-item" href="../articles/D-deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-    <a class="dropdown-item" href="../articles/E-mfdr.html">In progress: marginal false discovery rates</a>
+    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
+    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
   </div>
 </li>
 <li class="nav-item">
@@ -74,30 +71,9 @@
 
       <dl><dt>
           
-          <code><a href="choose_k.html">choose_k()</a></code> 
-        </dt>
-        <dd>a function to choose k, the number of eigenvalues to use in truncated SVD</dd>
-      </dl><dl><dt>
-          
           <code><a href="plmm.html">plmm()</a></code> 
         </dt>
         <dd>Fit a linear mixed model with non-convex regularization</dd>
-      </dl></div><div class="section level2">
-      <h2 id="inference-for-plmms">Inference for PLMMs<a class="anchor" aria-label="anchor" href="#inference-for-plmms"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="mfdr.html">mfdr()</a></code> 
-        </dt>
-        <dd>mfdr: Marginal false discovery rates for PLMMs</dd>
       </dl></div><div class="section level2">
       <h2 id="loss-information-and-cross-validation-for-plmms">Loss, information, and cross-validation for PLMMs<a class="anchor" aria-label="anchor" href="#loss-information-and-cross-validation-for-plmms"></a></h2>
       
@@ -116,11 +92,6 @@
         <dd>Cross-validation for plmm</dd>
       </dl><dl><dt>
           
-          <code><a href="gic.html">gic()</a></code> 
-        </dt>
-        <dd>General information criterion method of selecting lambda for "plmm" class</dd>
-      </dl><dl><dt>
-          
           <code><a href="loss.plmm.html">loss.plmm()</a></code> 
         </dt>
         <dd>Loss method for "plmm" class</dd>
@@ -135,7 +106,7 @@
         </dt>
         <dd>Extract residuals from a PLMM fit</dd>
       </dl></div><div class="section level2">
-      <h2 id="coefficient-methods-for-lmms-and-plmms">Coefficient methods for LMMs and PLMMs<a class="anchor" aria-label="anchor" href="#coefficient-methods-for-lmms-and-plmms"></a></h2>
+      <h2 id="coefficient-methods-for-plmms">Coefficient methods for PLMMs<a class="anchor" aria-label="anchor" href="#coefficient-methods-for-plmms"></a></h2>
       
       
 
@@ -155,22 +126,6 @@
           <code><a href="coef.plmm.html">coef(<i>&lt;plmm&gt;</i>)</a></code> 
         </dt>
         <dd>Coef method for "plmm" class</dd>
-      </dl></div><div class="section level2">
-      <h2 id="inference-for-plmms-1">Inference for PLMMs<a class="anchor" aria-label="anchor" href="#inference-for-plmms-1"></a></h2>
-      
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="mfdr.html">mfdr()</a></code> 
-        </dt>
-        <dd>mfdr: Marginal false discovery rates for PLMMs</dd>
       </dl></div><div class="section level2">
       <h2 id="other-model-fitting-methods-and-some-helper-functions-">Other model fitting methods (and some helper functions)<a class="anchor" aria-label="anchor" href="#other-model-fitting-methods-and-some-helper-functions-"></a></h2>
       
@@ -194,7 +149,7 @@
         <dd>Extract residuals from a PLMM fit</dd>
       </dl><dl><dt>
           
-          <code><a href="v_hat.html">v_hat()</a></code> 
+          <code><a href="construct_variance.html">construct_variance()</a></code> 
         </dt>
         <dd>a function to create the estimated variance matrix from a PLMM fit</dd>
       </dl></div><div class="section level2">
@@ -212,17 +167,27 @@
           
           <code><a href="get_data.html">get_data()</a></code> 
         </dt>
-        <dd>Read in processed data This function is intended to be called after <code><a href="../reference/process_plink.html">process_plink()</a></code> has been called once.</dd>
+        <dd>Read in processed data This function is intended to be called after either <code><a href="../reference/process_plink.html">process_plink()</a></code> or <code><a href="../reference/process_X.html">process_X()</a></code> has been called once.</dd>
       </dl><dl><dt>
           
-          <code><a href="plink_example.html">plink_example()</a></code> 
+          <code><a href="get_example_data.html">get_example_data()</a></code> 
         </dt>
         <dd>A function to help with accessing example PLINK files</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_bm_from_plink.html">get_bm_from_plink()</a></code> 
+        </dt>
+        <dd>A function to convert the output of <code><a href="../reference/process_plink.html">process_plink()</a></code> into a <code>big.matrix</code> (such as could be passed to <code><a href="https://rdrr.io/pkg/biglasso/man/biglasso.html" class="external-link">biglasso::biglasso()</a></code>)</dd>
       </dl><dl><dt>
           
           <code><a href="process_plink.html">process_plink()</a></code> 
         </dt>
         <dd>Preprocess PLINK files using the <code>bigsnpr</code> package</dd>
+      </dl><dl><dt>
+          
+          <code><a href="process_X.html">process_X()</a></code> 
+        </dt>
+        <dd>A function to read in large data files as an FBM</dd>
       </dl><dl><dt>
           
           <code><a href="relatedness_mat.html">relatedness_mat()</a></code> 
@@ -269,11 +234,6 @@
           <code><a href="plot.plmm.html">plot(<i>&lt;plmm&gt;</i>)</a></code> 
         </dt>
         <dd>Plot method for plmm class</dd>
-      </dl><dl><dt>
-          
-          <code><a href="mfdr_plot.html">mfdr_plot()</a></code> 
-        </dt>
-        <dd>Plot method for mFDR</dd>
       </dl></div><div class="section level2">
       <h2 id="prediction">Prediction<a class="anchor" aria-label="anchor" href="#prediction"></a></h2>
       
