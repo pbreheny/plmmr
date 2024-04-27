@@ -3,7 +3,7 @@
 \name{get_data}
 \alias{get_data}
 \title{Read in processed data
-This function is intended to be called after \code{process_plink()} has been called once.}
+This function is intended to be called after either \code{process_plink()} or \code{process_X()} has been called once.}
 \usage{
 get_data(path, returnX, trace = TRUE)
 }
@@ -27,7 +27,7 @@ A list with these components:
 }
 \description{
 Read in processed data
-This function is intended to be called after \code{process_plink()} has been called once.
+This function is intended to be called after either \code{process_plink()} or \code{process_X()} has been called once.
 }
 \details{
 The .rds object should have an 'std_X' element - this is what will be used as the design matrix for analysis. This design matrix should \emph{not} include an intercept column (this will be added later in \code{plmm_fit}()).

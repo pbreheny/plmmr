@@ -4,10 +4,12 @@
 \alias{untransform}
 \title{Untransform coefficient values back to the original scale}
 \usage{
-untransform(untransformed_b1, std_X_details, fbm_flag)
+untransform(untransformed_b1, p, std_X_details, fbm_flag)
 }
 \arguments{
 \item{untransformed_b1}{The estimated coefficients on the standardized scale}
+
+\item{p}{The number of columns in the original design matrix}
 
 \item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'}
 

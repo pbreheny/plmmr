@@ -2,42 +2,34 @@
 % Please edit documentation in R/standardize_fbm.R
 \name{standardize_fbm}
 \alias{standardize_fbm}
-\title{A helper function to standardize an FBM}
+\title{A helper function to standardize an \code{FBM}}
 \usage{
-standardize_fbm(
-  obj,
-  prefix,
-  rds_dir,
-  non_gen,
-  complete_phen,
-  id_var,
-  outfile,
-  quiet
-)
+standardize_fbm(subset_X, prefix, rds_dir, ns, non_gen, outfile, quiet)
 }
 \arguments{
-\item{obj}{A \code{bigSNP} object}
+\item{subset_X}{An FBM}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+\item{prefix}{The data file name without the extension}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+\item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files}
 
-\item{non_gen}{An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
-Note: this is typically passed from the result of \code{add_predictors()}}
+\item{ns}{Integer vector with indices of non-singular columns of \code{subset_X}}
 
-\item{complete_phen}{Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
+\item{non_gen}{Integer vector of indices with non-genomic covariates}
 
-\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written.}
 
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
-
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
 }
 \value{
-A list with a new component of \code{obj} called 'std_X' - this is an FBM with column-standardized data.
-List also includes several other indices/meta-data on the standardized matrix
+A list that includes:
+\itemize{
+\item 'std_X' - the standardized FBM
+\item 'center' - a vector with  the values used to center the columns
+\item 'scale' - a vector with the values used to scale the columns
+}
 }
 \description{
-A helper function to standardize an FBM
+A helper function to standardize an \code{FBM}
 }
 \keyword{internal}

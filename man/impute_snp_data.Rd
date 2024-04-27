@@ -2,7 +2,7 @@
 % Please edit documentation in R/impute_snp_data.R
 \name{impute_snp_data}
 \alias{impute_snp_data}
-\title{Title}
+\title{A function to impute SNP data}
 \usage{
 impute_snp_data(obj, X, impute, impute_method, outfile, quiet, ...)
 }
@@ -32,6 +32,6 @@ impute_snp_data(obj, X, impute, impute_method, outfile, quiet, ...)
 Nothing is returned, but the \code{obj$genotypes} is overwritten with the imputed version of the data
 }
 \description{
-Title
+A function to impute SNP data
 }
 \keyword{internal}

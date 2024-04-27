@@ -33,27 +33,23 @@ process_plink(
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
 \item{impute_method}{If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
-\itemize{
-\item mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
-\item random: Imputes sampling according to allele frequencies.
-\item mean0: Imputes the rounded mean.
-\item mean2: Imputes the mean rounded to 2 decimal places.
-\item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
-}}
+* mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
+* random: Imputes sampling according to allele frequencies.
+* mean0: Imputes the rounded mean.
+* mean2: Imputes the mean rounded to 2 decimal places.
+* xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
 
 \item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 
 \item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
-\itemize{
-\item "prune" (default): observations with missing phenotype are removed
-\item "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
-\item "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-\item "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-}}
+* "prune" (default): observations with missing phenotype are removed
+* "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
+* "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).}
 
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 
 \item{gz}{Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.}
 
@@ -63,18 +59,18 @@ process_plink(
 
 \item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
 
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).}
+\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+This argument takes one of two kinds of arguments:
+- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files. 
+                      The names will be used to subset and align this external covariate with the supplied PLINK data.
+}\if{html}{\out{</div>}}}
 
 \item{keep_bigSNP}{Logical: should the intermediate steps of data processing be saved as a \code{bigSNP} object? Defaults to FALSE.}
 
-\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")
-This argument takes one of two kinds of arguments:
-\itemize{
-\item a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.
-\item a numeric matrix whose row names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.
-}}
+\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
 \value{
 Nothing is returned by this function, but (at least) two files are created in
@@ -119,7 +115,9 @@ The '.rds' object created by this function has the following elements:
 }
 \examples{
 \dontrun{
+my_dir <- tempdir()
 process_plink(data_dir = get_example_data(parent = T),
+  rds_dir = my_dir,
   prefix = "penncath_lite",
   gz = TRUE,
   outfile = "process_penncath",

@@ -12,7 +12,6 @@
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
 #' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -86,7 +85,6 @@ plmm <- function(X,
                  std_needed = NULL,
                  col_names = NULL,
                  non_genomic = NULL,
-                 k = NULL, 
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
@@ -112,7 +110,6 @@ plmm <- function(X,
                               col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
-                              k = k, 
                               K = K,
                               diag_K = diag_K,
                               eta_star = eta_star,
@@ -136,11 +133,9 @@ plmm <- function(X,
                           p = checked_data$p,
                           y = checked_data$y,
                           K = checked_data$K,
-                          k = checked_data$k,
                           diag_K = checked_data$diag_K,
                           fbm_flag = checked_data$fbm_flag,
                           trace = trace)
-
 
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
@@ -162,7 +157,7 @@ plmm <- function(X,
   if (trace) {
     cat("\nBeta values are estimated -- almost done!")
     }
-  
+
   # format results ---------------------------------------------------
   if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
 
@@ -178,7 +173,7 @@ plmm <- function(X,
                                      snp_names = col_names,
                                      fbm_flag = checked_data$fbm_flag)
     
-  
+    
   return(the_final_product)
   
   

@@ -4,18 +4,18 @@
 #' coefficient values on their original scale. It is called by plmm_format().
 #' 
 #' @param untransformed_b1 The estimated coefficients on the standardized scale
+#' @param p  The number of columns in the original design matrix
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
 #' @keywords internal
 
 
-untransform <- function(untransformed_b1, std_X_details, fbm_flag){
+untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- untransformed_b1[1, , drop = FALSE] # this is the intercept 
   b <- untransformed_b1[-1, , drop=FALSE]
-  p <- max(std_X_details$ns)
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
   if (fbm_flag) {

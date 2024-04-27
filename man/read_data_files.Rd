@@ -5,16 +5,7 @@
 \title{A function to read in a large file as a numeric file-backed matrix (\code{FBM})
 Note: this function is a wrapper for \code{bigstatsr::big_read()}}
 \usage{
-read_data_files(
-  file,
-  data_dir,
-  rds_dir,
-  ind.col,
-  outfile,
-  overwrite,
-  quiet,
-  ...
-)
+read_data_files(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet)
 }
 \arguments{
 \item{file}{The name of the file to read, not including its directory. Directory should be specified in \code{data_dir}}

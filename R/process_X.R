@@ -1,6 +1,7 @@
 #' A function to read in large data files as an FBM 
 #'
-#' @param file          The file to be read in, without the filepath. 
+#' @param file          The file to be read in, without the filepath. This should be a file of numeric values, no header row! 
+#'                      Headers should be taken out of the file and supplied to the `col_names` argument in `plmm()`
 #'                      Example: use `file = "myfile.txt"`, not `file = "~/mydirectory/myfile.txt"`
 #' @param data_dir      The directory to the file
 #' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files
@@ -69,8 +70,10 @@ process_X <- function(file,
   }
   
   # read in data files --------------------------------
- X <- read_data_files(file, data_dir, rds_dir, ind.col, 
-                               outfile, overwrite, quiet)
+ X <- read_data_files(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet)
+  # note the original dimensions
+  n <- nrow(X)
+  p <- ncol(X)
   
   # notify about missing values ---------------------------------
   colstats <- bigstatsr::big_colstats(X)
@@ -87,15 +90,7 @@ process_X <- function(file,
       are working to develop this feature. 
       \nFor now, plmmr::process_X() will drop all columns of X with NA values.")
   }
-  # imputation ------------------------------------------------------------------
-  # TODO: currently working to develop an imputation method 
-  # if (impute) {
-  #   step4_obj <- impute_data(X, rds_dir, prefix, na_idx, impute_method)
-  # } else {
-  #   which(!na_idx) -> idx_cols
-  #   step4_obj <- bigstatsr::big_copy(X, ind.col = idx_cols)
-  # }
-  # 
+ 
   # subsetting -----------------------------------------------------------------
   # goal: subset columns to remove constant features 
   ns <- which(colstats$var > 1e-8) 
@@ -109,14 +104,17 @@ process_X <- function(file,
   }
   
   # standardization ------------------------------------------------------------
-  std_X_list <- standardize_fbm(subset_X, prefix, rds_dir, ns, non_gen, id_var,
+  std_X_list <- standardize_fbm(subset_X, prefix, rds_dir, ns, non_gen, 
                            outfile, quiet)
+  std_X_list$n <- n
+  std_X_list$p <- p
+  
+  saveRDS(std_X_list, file.path(rds_dir, paste0("std_", prefix, ".rds")))
   
   # cleanup --------------------------------------------------------------------
     system(paste0("rm ", rds_dir, "/", prefix, ".rds"))
     system(paste0("rm ", rds_dir, "/", prefix, ".bk"))
-    saveRDS(std_X_list, paste0(rds_dir, "/std_", prefix, ".rds"))
-  
+
   if(!quiet){cat("\nDone with standardization. 
                  Processed files now saved as .rds object.")}
   close(log_con)

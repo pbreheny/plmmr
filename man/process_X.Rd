@@ -9,28 +9,48 @@ process_X(
   data_dir,
   rds_dir = data_dir,
   ind.col,
-  impute = TRUE,
-  impute_method = "mean",
+  non_gen = NULL,
   outfile,
   overwrite = FALSE,
-  quiet = FALSE,
-  ...
+  quiet = FALSE
 )
 }
 \arguments{
-\item{file}{}
+\item{file}{The file to be read in, without the filepath. This should be a file of numeric values, no header row!
+Headers should be taken out of the file and supplied to the \code{col_names} argument in \code{plmm()}
+Example: use \code{file = "myfile.txt"}, not \code{file = "~/mydirectory/myfile.txt"}}
 
-\item{rds_dir}{}
+\item{data_dir}{The directory to the file}
 
-\item{ind.col}{}
+\item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files
+Defaults to \code{data_dir}}
 
-\item{outfile}{}
+\item{ind.col}{Numeric vector of the columns to read in. Don't use negative indicies.
+If you're not sure how many columns are in your file,
+use something like \code{data.table::fread()} to examine the first row or two.}
 
-\item{overwrite}{}
+\item{non_gen}{Numeric vector with indices of columns that have non-genomic information. \strong{Note}: if you plan on
+estimating the genomic relatedness among observations in your file, you
+\strong{must} include this information in order for the estimates to be correct.}
 
-\item{quiet}{}
+\item{outfile}{Optional: the name (character string) of the prefix of the
+logfile to be written. Defaults to 'process_X', i.e. you will get 'process_X.log' as the outfile.}
 
-\item{...}{}
+\item{overwrite}{Optional: the name (character string) of the prefix of the logfile to be written.
+Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+
+\item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
+}
+\value{
+Nothing is returned by this function, but (at least) two files are created in
+the location specified by \code{rds_dir}:
+\itemize{
+\item 'std_prefix.rds': This is the \code{bigsnpr::bigSNP} object
+that holds the PLINK data along with meta-data. See details for explanation of what
+is included in this meta-data
+\item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
+backingfile that stores the numeric data of the standardized design matrix \code{std_X}
+}
 }
 \description{
 A function to read in large data files as an FBM
@@ -42,7 +62,6 @@ process_X(file = "colon2.txt",
  data_dir = get_example_data(parent = T),
  rds_dir = "~/tmp_files",
   ind.col = 2:2002)
-
 
 }
 

@@ -8,7 +8,6 @@
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
 #' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -29,7 +28,6 @@ plmm_checks <- function(X,
                         std_needed = NULL,
                         col_names = NULL,
                         non_genomic = NULL,
-                        k = NULL, 
                         K = NULL,
                         diag_K = NULL,
                         eta_star = NULL,
@@ -42,22 +40,14 @@ plmm_checks <- function(X,
                         trace = FALSE,
                         ...){
   # check X types -------------------------------------------------
-  ## filebacked matrix *not* from process_plink() -----------
-  if (any(grepl("FBM", class(X)))){
-    # TODO: make this accommodate the case where "big.matrix" %in% class(X)
-    fbm_flag <- TRUE
-    if (std_needed) {
-      # centering & scaling 
-      scale_info <- bigstatsr::big_scale()(X)
-      if (any(scale_info$scale < 1e-6))
-        std_X <- big_std(X)
-    } else {
-      std_X <- X
-    }
+  if (!any(class(X) %in% c("character", "matrix"))) {
+    stop("\nThe X argument must be either (1) a numeric matrix or (2) a character
+         string specifying a filepath to an RDS object that you created using 
+         process_X() or process_plink().")
   }
-  
-  ## string with a filepath (from process_plink()-----------------------------
+  # read in X -----------------------------------------------------
   if("character" %in% class(X)){
+    # case 1: X is a filebacked matrix from process_X() or process_plink()
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
     std_needed <- FALSE
@@ -65,42 +55,40 @@ plmm_checks <- function(X,
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
-    col_names <- dat$X_colnames
+    col_names <- dat$X_colnames # TODO: think about better way to handle X dimnames
 
     # create a list that captures the centering/scaling for std_X; will need this 
     # later, see `untransform()`
       std_X_details <- list(
         center = dat$std_X_center,
         scale = dat$std_X_scale,
-        ns = dat$ns,
-        X_colnames = dat$colnames,
-        X_rownames = dat$rownames,
-        std_X_rownames = dat$std_X_rownames,
-        std_X_colnames = dat$std_X_colnames
-      )
-
+        ns = dat$ns)
+      
+      if ('colnames' %in% names(dat) | 'std_X_colnames' %in% names(dat)){
+        std_X_details$X_colnames <- dat$colnames
+        std_X_details$X_rownames <-  dat$rownames
+        std_X_details$std_X_rownames <- dat$std_X_rownames
+        std_X_details$std_X_colnames <-  dat$std_X_colnames
+      } else if (!missing(col_names)){
+        std_X_details$X_colnames <- col_names
+        std_X_details$std_X_colnames <- col_names[std_X_details$ns]
+      }
+        
     if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
       fbm_flag <- TRUE
     } else {
       fbm_flag <- FALSE
     }
-  }
-  
-  ### set fbm flag ---------------------------
-  # if FBM flag is not 'on' by now, set it 'off' & turn on standardization
-  if (!exists('fbm_flag')){
-    fbm_flag <- FALSE
-  }
-  
-  ## matrix -------------------------------
-  if (!fbm_flag){
-    
+  } else {
+    # case 2: X is a matrix in-memory 
     if (!inherits(X, "matrix")) {
       tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
       if (inherits(tmp, "try-error")) stop("X must be a matrix or able to be coerced to a matrix", call.=FALSE)
     }
     if (typeof(X)=="integer") storage.mode(X) <- "double"
     if (typeof(X)=="character") stop("if X is a matrix, it must be a numeric matrix", call.=FALSE)
+    
+    fbm_flag <- FALSE
     
     # designate the dimensions of the original design matrix 
     n <- nrow(X)
@@ -110,28 +98,15 @@ plmm_checks <- function(X,
     if (is.null(col_names) & !is.null(attr(X, "dimnames")[[2]])) {
       col_names <- attr(X, "dimnames")[[2]]
     }
- 
-    # handle standardization ---------------------------------------------
-    if (is.null(std_needed) & !fbm_flag){
-      std_X <- ncvreg::std(X)
-      std_X_details <- list(center = attr(std_X, 'center'),
-                            scale = attr(std_X, 'scale'),
-                            ns = attr(std_X, 'nonsingular'))
-      if (!is.null(penalty.factor)) {
-        # if user supplied penalty factor, make sure to adjust for columns that 
-        # may have been constant features 
-        penalty.factor <- penalty.factor[std_X_details$ns]
-      }
-    } else if(std_needed){
-      std_X <- ncvreg::std(X)
-      std_X_details <- list(center = attr(std_X, 'center'),
-                            scale = attr(std_X, 'scale'),
-                            ns = attr(std_X, 'nonsingular'))
-      
-      # designate the dimensions of the standardized design matrix, with only ns columns
+    
+    # handle standardization (still in matrix case)
+    if (is.null(std_needed) | std_needed){
+      std_res <- standardize_matrix(X, penalty.factor)
+      std_X <- std_res$std_X
+      std_X_details <- std_res$std_X_details
+      penalty.factor <- std_res$penalty.factor
     } else if (!std_needed) {
       std_X <- X
-      # TODO: may need to change this default setting 
       
       if (trace) { 
         cat("\nYou have left std_needed = FALSE; this means you are assuming that 
@@ -151,21 +126,26 @@ plmm_checks <- function(X,
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
-  }
- 
+    } # this bracket closes case 2 (the matrix case )
 
-  #  check y types -------------------------------
+  #  check y types & read y -------------------------------
   # if y is null, use .fam file 
   if(is.null(y)){
     # default: use data from 6th column of .fam file
-    y <- dat$phen
+    if ("phen" %in% names(dat)){
+      y <- dat$phen
+    } else {
+      stop("\nIf the data did not come from process_plink(), you must specify a 
+           'y' argument")
+    }
+    
   }
   
   if (!is.double(y)) {
     op <- options(warn=2)
     on.exit(options(op))
     y <- tryCatch(
-      error = function(cond) stop("y must be numeric or able to be coerced to numeric", call.=FALSE),
+      error = function(cond) stop("\ny must be numeric or able to be coerced to numeric", call.=FALSE),
       as.double(y))
     options(op)
   }  
@@ -193,7 +173,6 @@ plmm_checks <- function(X,
                                             \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
   } else {
-    
     #  error checking for FBM X 
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
     if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
@@ -220,21 +199,6 @@ plmm_checks <- function(X,
     }
     
   }
-
-  # # create a list that captures the centering/scaling for std_X; will need this 
-  # # later, see `untransform()`
-  # if(fbm_flag){
-  #   std_X_details <- list(
-  #     center = dat$std_X_center,
-  #     scale = dat$std_X_scale,
-  #     ns = dat$ns,
-  #     X_colnames = dat$colnames,
-  #     X_rownames = dat$rownames,
-  #     std_X_rownames = dat$std_X_rownames,
-  #     std_X_colnames = dat$std_X_colnames
-  #   )
-  # } 
-  # 
   
   # return list for model preparation ---------------------------------
   

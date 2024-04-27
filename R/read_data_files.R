@@ -14,7 +14,6 @@
 read_data_files <- function(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet){
   
   prefix <- unlist(strsplit(file, split = "\\."))[1]
-  
   path <- file.path(rds_dir,  paste0(prefix, ".rds"))
   bk_path <- file.path(rds_dir, paste0(prefix, ".bk"))
   std_bk_path <- file.path(rds_dir, paste0("std_", prefix, ".bk"))
