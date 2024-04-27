@@ -18,6 +18,7 @@ if(identical(cv1$cve, cv2$cve))stop("BLUP and response types give same result")
 # #################################
 # # used to check BLUP calculation #
 # #################################
+# library(zeallot)
 # aggregate X and newX to compute V
 # X_all <- rbind(std_X, std_newX)
 # c(S_all, U_all) %<-% svd(X_all, nv = 0) # D, U

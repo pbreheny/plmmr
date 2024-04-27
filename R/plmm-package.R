@@ -8,5 +8,4 @@
 #' @import stats
 #' @import utils
 #' @importFrom glmnet glmnet
-#' @importFrom zeallot %<-%
 NULL

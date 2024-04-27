@@ -101,20 +101,8 @@ tinytest::expect_equivalent(matrix(0,
                  ncol = length(fit3$lambda)
                  ),
           fit3$beta_vals[monomorphic_snps,])
-# Test 4: case where K is simulated to have no population structure ----------
 
-# K_independent <- sim_ps_x(n = nrow(admix$X),
-#                           p = ncol(admix$X),
-#                           # supposing all individuals are independent 
-#                           nJ = nrow(admix$X),
-#                           structureX = "independent"
-# ) |> 
-#   relatedness_mat()
-
-# TODO come back here
-
-
-# Test 5: make sure in-memory and filebacked computations match ---------------
+# Test 4: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
   # filebacked fit 
   process_plink(data_dir = get_example_data(parent = T),
@@ -141,10 +129,7 @@ if (interactive()) {
 }
 
 
-
-
-# TODO: come back here and see if this test is necessary 
-# Test 6: make sure predict method is working -------------------
+# Test 5: make sure predict method is working -------------------
 plmm_fit <- plmm(admix$X,
                  admix$y,
                  # K = relatedness_mat(admix$X),
@@ -167,7 +152,7 @@ if(abs(mean(test[,2] - test[,4])) > 5) stop("PLMM and GLMNET predictions are far
 # NB: the 5 above is chosen arbitrarily, based on my experience with the admix data 
 
 
-# Test 7: is resid. method working ----------------------------------------------
+# Test 6: is resid. method working ----------------------------------------------
 R <- residuals(object = plmm(admix$X, admix$y, penalty = "lasso",
                                   diag_K = TRUE, lambda = lambda0))
 
@@ -179,7 +164,7 @@ for(j in 1:ncol(ncv_R)){
 
 tinytest::expect_equivalent(R, ncv_R)
 
-# Test 8: make sure eta is estimated correctly ---------------
+# Test 7: make sure eta is estimated correctly ---------------
 K8 <- relatedness_mat(admix$X)
 hat_eta <- rep(NA_integer_, 100)
 for(i in 1:100){
@@ -193,7 +178,7 @@ tinytest::expect_equivalent(current = mean(hat_eta),
                             tolerance = 0.05)
 
 
-# Test 9: make sure plmm() runs in-memory and filebacked ---------------------
+# Test 8: make sure plmm() runs in-memory and filebacked ---------------------
 lambda9 <- c(1, 0.1, 0.01, 0.001) # same as lambda0
 
 if (interactive()) {

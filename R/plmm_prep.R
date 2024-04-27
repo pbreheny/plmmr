@@ -102,10 +102,6 @@ plmm_prep <- function(std_X,
     if (trace) {cat("\nK is a list; will pass SVD components from list to model fitting.")}
     s <- K$s # no need to adjust singular values by p; choose_k() does this via relatedness_mat()
     U <- K$U
-    # TODO: add a check for list names
-    # stopifnot("K_approx" %in% names(K))
-    # sign_check <- flip_signs(X = K$K_approx, U = U, V = U, d = s)
-    # U <- sign_check$U
   }
   # otherwise, need to do eigendecomposition:
   if(sum(c(flag1, flag2, flag3)) == 0){
@@ -125,19 +121,12 @@ plmm_prep <- function(std_X,
         K <- eigen_res$K
         s <- eigen_res$s
         U <- eigen_res$U
-        # TODO: add check signs 
-        # if(trace){cat("\nChecking eigenvector signs")}
-        # sign_check <- flip_signs(X = eigen_res$K, U = U, V = U, d = s)
-        # U <- sign_check$U
       
     } else {
       # last case: K is a user-supplied matrix 
       eigen_res <- eigen(K)
       s <- eigen_res$values*(1/p) # note: our definition of the RRM averages over the number of features
       U <- eigen_res$vectors
-      # check signs
-      # sign_check <- flip_signs(X = K, U = U, V = U, d = s)
-      # U <- sign_check$U
     }
     
   }

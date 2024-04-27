@@ -7,7 +7,6 @@
 #' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv.plmm. 
 #' @param cv.args List of additional arguments to be passed to plmm.
 #' @param ... Optional arguments to `predict.list`
-#' @importFrom zeallot %<-%
 #' @keywords internal
 cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   

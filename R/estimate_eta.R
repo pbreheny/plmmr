@@ -44,15 +44,6 @@ test_eta_estimation <- function(sig_s, sig_eps, K, ...){
 
   eig_K <- eigen(K)
   
-  # check signs 
-  # TODO: determine if we need this here
-  # nz <- which(eig_K$values > 0.00000001
-  # sign_check <- flip_signs(X = K,
-  #                          U = eig_K$vectors[,nz],
-  #                          V = eig_K$vectors[,nz], 
-  #                          d = eig_K$values[nz])
-  # U <- sign_check$U
-  
   # estimate eta
   eta <- estimate_eta(n = length(y),
                       s = eig_K$values,

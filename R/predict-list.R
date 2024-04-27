@@ -63,7 +63,7 @@ predict.list <- function(fit,
     # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
     
     # test1 <- V21 %*% chol2inv(chol(V11)) # true 
-    # TODO: to find the inverse of V11 using svd results of K, i.e., the inverse of a submatrix, might need to use Woodbury's formula 
+    # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
     if (fbm) {
       bm_oldX <- fbm2bm(oldX)
       Xb_train <- sweep(bm_oldX %*% b, 2, a, "+")
