@@ -23,3 +23,24 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids){
   # rownames(add_predictor) <- [ordered_ids]
   return(add_predictor)
 }
+
+
+#' A helper function to support `process_X()`
+#' @param rownames_X A character vector with the rownames or IDs of the observations in the filebacked matrix of data 
+#' @param id_var character vector with the same values as `rownames_X` 
+#' @param quiet Logical: should a message be printed?
+#' @param add_predictor External data to include in design matrix. This is the add_predictors... arg in `process_X()`
+#'
+#' @return An object of the same type as add_predictor
+#' @keywords internal
+#' 
+align_ids <- function(rownames_X, id_var, quiet, add_predictor){
+  browser()
+  ordered_ids <- order(id_var, rownames_X)
+  if (is.vector(add_predictor)) {
+    add_predictor <- add_predictor[ordered_ids]
+  } else {
+    add_predictor <- add_predictor[ordered_ids,]
+  }
+  return(add_predictor)
+}

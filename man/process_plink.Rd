@@ -101,25 +101,25 @@ Preprocess PLINK files using the \code{bigsnpr} package
 \details{
 The '.rds' object created by this function has the following elements:
 \itemize{
-\item std_X:
-\item fam:
-\item map:
-\item colnames:
-\item rownames:
-\item n:
-\item p:
-\item ns:
-\item std_X_center:
-\item std_X_scale:
-\item std_X_colnames:
-\item std_X_rownames:
-\item complete_phen:
-\item id_var:
+\item std_X: The file-backed design matrix, as an \code{FBM} object (see \code{bigstatsr} package for more info)
+\item fam: Data frame equivalent of PLINK '.bim' file
+\item map: Data frame equivalent of PLINK '.fam' file
+\item colnames: Character vector of column names for the original data (includes constant features, i.e. monomorphic SNPs)
+\item rownames: Character vector of row names for the original data.
+\item n: Number of rows (samples) in the original data
+\item p: Number of columns (features, SNPs, markers, ...) in the original data
+\item ns: Numeric vector of indices marking the non-singular columns of the original data
+\item std_X_center: Numeric vector of values used to center the non-singular columns of the data
+\item std_X_scale: Numeric vector of values used to scale the non-singular columns of the data
+\item std_X_colnames: Character vector of column names for the standardized data
+\item std_X_rownames: Character vector of row names for the standardized data.
+\item complete_phen: Numeric vector of indices marking the samples with a non-missing phenotype. Ony applicable if \code{handle_missing_phen = 'prune'}
+\item id_var: String specifying which ID column in the '.fam' file had the unique sample ID: 'FID' (1st column) or 'IID' (2nd column)
 }
 }
 \examples{
 \dontrun{
-process_plink(data_dir = plink_example(parent = T),
+process_plink(data_dir = get_example_data(parent = T),
   prefix = "penncath_lite",
   gz = TRUE,
   outfile = "process_penncath",

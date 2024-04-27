@@ -65,7 +65,7 @@ reference:
   - title: Data (pre)processing and wrangling
     contents:
     - get_data
-    - plink_example 
+    - get_example_data 
     - process_plink
     - relatedness_mat
 

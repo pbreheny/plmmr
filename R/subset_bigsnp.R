@@ -1,4 +1,4 @@
-#' A helper function to subset `FBM` objects 
+#' A helper function to subset `bigSNP` objects 
 #'
 #' @param obj                   A `bigSNP` object 
 #' @param counts                A dataframe as returned by `bigstatsr::big_counts()`
@@ -22,7 +22,7 @@
 #' The 'ns' index plays an important role in `plmm_format()` and `untransform()` (both helper functions in model fitting)
 #' @keywords internal
 #'
-subset_fbm <- function(obj, counts, handle_missing_phen, complete_phen, non_gen,
+subset_bigsnp <- function(obj, counts, handle_missing_phen, complete_phen, non_gen,
                        data_dir, prefix, outfile, quiet){
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not 
   # included in analysis

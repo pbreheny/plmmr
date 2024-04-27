@@ -117,7 +117,7 @@ tinytest::expect_equivalent(matrix(0,
 # Test 5: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
   # filebacked fit 
-  process_plink(data_dir = plink_example(parent = T),
+  process_plink(data_dir = get_example_data(parent = T),
                 prefix = "penncath_lite",
                 gz = TRUE,
                 outfile = "process_penncath",
@@ -125,13 +125,13 @@ if (interactive()) {
                 impute_method = "mode",
                 keep_bigSNP = TRUE)
   
-  my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+  my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
   fb_fit <- plmm(X = my_fb_data,
                  returnX = FALSE,
                  trace = TRUE)
   
   # in memory fit 
-  pen <- bigsnpr::snp_attach(paste0(plink_example(parent = T), "/penncath_lite.rds"))
+  pen <- bigsnpr::snp_attach(paste0(get_example_data(parent = T), "/penncath_lite.rds"))
   inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
                     y = pen$fam$affection[pen$complete_phen],
                     trace = T)

@@ -11,10 +11,10 @@
 #' @keywords internal
 #'
 read_plink_files <- function(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet){
-  path <- paste0(rds_dir, "/", prefix, ".rds")
-  bk_path <- paste0(rds_dir, "/", prefix, ".bk")
-  std_bk_path <- paste0(rds_dir, "/std_", prefix, ".bk")
-  sub_bk_path <- paste0(rds_dir, "/subset_", prefix, ".bk")
+  path <- file.path(rds_dir, paste0(prefix, ".rds"))
+  bk_path <- file.path(rds_dir, paste0(prefix, ".bk"))
+  std_bk_path <- file.path(rds_dir, paste0("std_", prefix, ".bk"))
+  sub_bk_path <- file.path(rds_dir, paste0("subset_", prefix, ".bk"))
   
   # check for overwrite: 
   if (file.exists(bk_path)){
@@ -43,7 +43,7 @@ read_plink_files <- function(data_dir, prefix, rds_dir, gz, outfile, overwrite, 
   cat("\nCreating ", prefix, ".rds\n", file = outfile, append = TRUE)
   if(!quiet){
     cat("\nCreating ", prefix, ".rds\n")
-    
+  }
     # check for compressed files 
     if (file.exists(file.path(data_dir, paste0(prefix, ".bed")))) {
       if (!quiet) {
@@ -62,7 +62,6 @@ read_plink_files <- function(data_dir, prefix, rds_dir, gz, outfile, overwrite, 
                          backingfile = paste0(rds_dir, "/", prefix))
     
     obj <- bigsnpr::snp_attach(paste0(rds_dir, "/", prefix, ".rds"))
-  }
   
   return(obj)
   

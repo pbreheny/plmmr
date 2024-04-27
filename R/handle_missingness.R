@@ -34,7 +34,7 @@ handle_missingness <- function(obj, X, counts, na_phenotype_vals,
   
   # handle missing phenotypes ---------------------------------------
   # make missing phenotypes explicit (need both of the following because 
-  # bigstatsr::big_cop() does not handle negative indices)
+  # bigstatsr::big_copy() does not handle negative indices)
   complete_phen <- which(!(obj$fam$affection %in% na_phenotype_vals))
   na_phen <- which(obj$fam$affection %in% na_phenotype_vals)
   names(na_phen) <- obj$fam$sample.ID[na_phen]

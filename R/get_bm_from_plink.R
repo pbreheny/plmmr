@@ -16,14 +16,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' process_plink(data_dir = plink_example(parent = T),
+#' process_plink(data_dir = get_example_data(parent = T),
 #'   prefix = "penncath_lite",
 #'   gz = TRUE,
 #'   outfile = "process_penncath",
 #'   # overwrite = TRUE, # uncomment if needed 
 #'   impute_method = "mode")
 #'   
-#'   my_path <- paste0(plink_example(parent = T), "/penncath_lite")
+#'   my_path <- paste0(get_example_data(parent = T), "/penncath_lite")
 #'   bm_data <- get_bm_from_plink(my_path)
 #' }
 get_bm_from_plink <- function(path, standardize = TRUE){

@@ -1,4 +1,4 @@
-#' Title
+#' A function to impute SNP data 
 #'
 #' @param obj a `bigSNP` object (as created by `read_plink_files()`)
 #' @param X A matrix of genotype data as  returned by `name_and_count_bigsnp`

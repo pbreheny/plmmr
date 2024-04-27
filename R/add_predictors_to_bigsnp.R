@@ -12,7 +12,7 @@
 #' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
 #' @keywords internal
 #'
-add_predictors <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og_plink_ids, quiet){
+add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og_plink_ids, quiet){
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream

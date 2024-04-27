@@ -72,7 +72,7 @@
 #' # filebacked example (file path is specific to current machine)
 #' # since this dataset is < 100Mb, have to specify returnX = FALSE for 
 #' # `get_data()` to return an FBM
-#' my_fb_data <- paste0(plink_example(parent = T), "/penncath_lite")
+#' my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
 #' 
 #' cv_fb_fit <- cv.plmm(X = my_fb_data, type = 'blup', returnX = FALSE,
 #'  trace = TRUE, nfolds = 3)
