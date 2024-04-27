@@ -5,7 +5,7 @@
 #'
 #' @param X              Design matrix for model fitting. May include clinical covariates and other non-SNP data.
 #' @param y              Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
-#' @param std_needed     Logical: does the supplied X need to be standardized? Defaults to FALSE, since `process_plink()` standardizes the design matrix by default. 
+#' @param std_needed     Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
 #'                       By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
 #' @param col_names      Optional vector of column names for design matrix. Defaults to NULL.
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
@@ -85,7 +85,7 @@
 #' 
 cv.plmm <- function(X, 
                     y = NULL,
-                    std_needed = NULL,
+                    std_needed = TRUE,
                     col_names = NULL,
                     k = NULL,
                     K = NULL,
@@ -116,6 +116,7 @@ cv.plmm <- function(X,
   # run checks ------------------------------
   checked_data <- plmm_checks(X = X,
                               y = y,
+                              std_needed = std_needed,
                               trace = trace,
                               ...)  
   

@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   eval = FALSE,
   comment = "#>") 
+options(rmarkdown.html_vignette.check_title = FALSE)
 # TODO: get the filepath issues sorted out so that I can set eval = TRUE
 ```
 

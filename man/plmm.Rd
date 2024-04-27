@@ -7,7 +7,7 @@
 plmm(
   X,
   y = NULL,
-  std_needed = NULL,
+  std_needed = TRUE,
   col_names = NULL,
   non_genomic = NULL,
   K = NULL,
@@ -38,8 +38,7 @@ plmm(
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
-\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to FALSE, since \code{process_plink()} standardizes the design matrix by default.
-By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
+\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.
 For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.}

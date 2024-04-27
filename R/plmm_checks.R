@@ -100,12 +100,12 @@ plmm_checks <- function(X,
     }
     
     # handle standardization (still in matrix case)
-    if (is.null(std_needed) | std_needed){
+    if (std_needed){
       std_res <- standardize_matrix(X, penalty.factor)
       std_X <- std_res$std_X
       std_X_details <- std_res$std_X_details
       penalty.factor <- std_res$penalty.factor
-    } else if (!std_needed) {
+    } else {
       std_X <- X
       
       if (trace) { 
@@ -140,7 +140,7 @@ plmm_checks <- function(X,
     }
     
   }
-  
+
   if (!is.double(y)) {
     op <- options(warn=2)
     on.exit(options(op))
