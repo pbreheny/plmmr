@@ -27,6 +27,8 @@ library(biglasso)
 library(bigsnpr)
 ```
 
+**Preliminary note**: rendering this vignette is proving to be tricky, given that these examples read in external data files. Right now, this renders on my local machine -- I am still working out the kinks of getting this to render for our website. For now, I've left `eval=FALSE` just so you all can at least see the code. Let me know if you have any questions. --Tabitha 
+
 In many applications of high dimensional data analysis, the dataset is too large to read into R -- the session will crash for lack of memory. This is almost always an issue with analyzing genetic data from [PLINK](https://www.cog-genomics.org/plink/) files. To analyze such large datasets, `plmmr` is equipped to analyze data using *filebacking* - a strategy that lets R 'point' to a file on disk, rather than reading the file into the R session. Many other packages use this technique - [bigstatsr](https://privefl.github.io/bigstatsr/) and [biglasso](https://github.com/pbreheny/biglasso) are two examples of packages that use filebacking. The novelties of `plmmr` are: 
 
   (1) **Integration**: `plmmr` combines the functionality of several packages in order to do quality control, model fitting/analysis, and data visualization all in one package. `plmmr` will take you from PLINK files all the way to a list of SNPs for downstream analysis. 
@@ -71,7 +73,7 @@ apply(std_X, 2, var) |> summary() # ... & variance 1
 
 ### What if my data aren't in PLINK format? 
 
-# The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
+The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
 
 ```{r}
 process_X(file = "colon2.txt",
