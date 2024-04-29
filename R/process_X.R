@@ -13,7 +13,7 @@
 #'                      estimating the genomic relatedness among observations in your file, you 
 #'                      **must** include this information in order for the estimates to be correct. 
 #' @param outfile       Optional: the name (character string) of the prefix of the 
-#'                      logfile to be written. Defaults to 'process_X', i.e. you will get 'process_X.log' as the outfile.
+#'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
 #' @param overwrite     Optional: the name (character string) of the prefix of the logfile to be written. 
 #'                      Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet         Logical: should the messages printed to the console be silenced? Defaults to FALSE.
@@ -33,7 +33,7 @@
 #' @examples
 #' 
 #' \dontrun{
-#' process_X(file = "colon2.txt",
+#' process_delim(file = "colon2.txt",
 #'  data_dir = get_example_data(parent = T),
 #'  rds_dir = "~/tmp_files",
 #'   ind.col = 2:2002)
@@ -41,7 +41,7 @@
 #' }
 #' 
 #' 
-process_X <- function(file,
+process_delim <- function(file,
                       data_dir,
                       rds_dir = data_dir,
                       ind.col, 
@@ -80,15 +80,15 @@ process_X <- function(file,
   na_idx <- is.na(colstats$sum) # logical index
   
   cat("\nThere are a total of ", sum(na_idx), "features with missing values. 
-      \nAt this time, plmmr::process_X() does not impute missing values. We 
+      \nAt this time, plmmr::process_delim() does not impute missing values. We 
       are working to develop this feature. 
-      \nFor now, plmmr::process_X() will drop all columns of X with NA values.",
+      \nFor now, plmmr::process_delim() will drop all columns of X with NA values.",
       file = outfile, append = TRUE)
   if(!quiet){
     cat("\nThere are a total of ", sum(na_idx), "features with missing values. 
-      \nAt this time, plmmr::process_X() does not impute missing values. We 
+      \nAt this time, plmmr::process_delim() does not impute missing values. We 
       are working to develop this feature. 
-      \nFor now, plmmr::process_X() will drop all columns of X with NA values.")
+      \nFor now, plmmr::process_delim() will drop all columns of X with NA values.")
   }
  
   # subsetting -----------------------------------------------------------------

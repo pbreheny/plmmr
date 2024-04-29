@@ -76,7 +76,7 @@ apply(std_X, 2, var) |> summary() # ... & variance 1
 The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
 
 ```{r}
-process_X(file = "colon2.txt",
+process_delim(file = "colon2.txt",
           data_dir = get_example_data(parent = T),
           rds_dir = temp_dir,
           ind.col = 2:2002) # don't use the 1st column; it has IDs in it
@@ -99,7 +99,7 @@ fb_fit <- plmm(X = my_fb_data,
                trace = TRUE)
 ```
 
-The format is similar for data that came from `process_X` -- however, in the case of our `colon2` data, we need to supply our own kinship matrix. The data are not genomic, so estimating a genomic relatedness matrix doesn't make sense. For our purposes, we will make up a 'dummy' K matrix. 
+The format is similar for data that came from `process_delim` -- however, in the case of our `colon2` data, we need to supply our own kinship matrix. The data are not genomic, so estimating a genomic relatedness matrix doesn't make sense. For our purposes, we will make up a 'dummy' K matrix. 
 
 ```{r}
 # pretend genomic data from 500 SNPs

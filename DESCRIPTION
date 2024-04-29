@@ -1,14 +1,13 @@
 Package: plmmr
-Title: Fit nonconvex-penalized linear mixed models to account for the
-    presence of unobserved confounding effects
+Title: Fit Nonconvex-Penalized Linear Mixed Models to Account for the Presence of Unobserved Confounding Effects
 Version: 3.0.0
 Date: 2024-04-29
 Authors@R: c(
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),
-    person("Patrick J.", "Breheny", role = "aut",
+    person("Patrick J.", "Breheny", role = c("aut","cre"),
            comment = c(ORCID = "0000-0002-0650-1119")),
-    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = c("aut", "cre"),
+    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),
     person("Yujing", "Lu", role = "aut")
   )

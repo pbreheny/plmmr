@@ -1,5 +1,5 @@
 #' @keywords internal
-#' @aliases plmm-package NULL
+#' @aliases plmmr-package NULL
 "_PACKAGE"
 
 #' @useDynLib plmmr, .registration=TRUE

@@ -2,7 +2,7 @@
 % Please edit documentation in R/align_famfile_ids.R
 \name{align_ids}
 \alias{align_ids}
-\title{A helper function to support \code{process_X()}}
+\title{A helper function to support \code{process_delim()}}
 \usage{
 align_ids(rownames_X, id_var, quiet, add_predictor)
 }
@@ -13,12 +13,12 @@ align_ids(rownames_X, id_var, quiet, add_predictor)
 
 \item{quiet}{Logical: should a message be printed?}
 
-\item{add_predictor}{External data to include in design matrix. This is the add_predictors... arg in \code{process_X()}}
+\item{add_predictor}{External data to include in design matrix. This is the add_predictors... arg in \code{process_delim()}}
 }
 \value{
 An object of the same type as add_predictor
 }
 \description{
-A helper function to support \code{process_X()}
+A helper function to support \code{process_delim()}
 }
 \keyword{internal}

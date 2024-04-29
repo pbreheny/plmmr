@@ -1,5 +1,5 @@
 #' Read in processed data
-#' This function is intended to be called after either `process_plink()` or `process_X()` has been called once. 
+#' This function is intended to be called after either `process_plink()` or `process_delim()` has been called once. 
 #' 
 #' @param path The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path. 
 #' @param returnX Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.

@@ -56,7 +56,7 @@ reference:
     - get_example_data 
     - get_bm_from_plink
     - process_plink
-    - process_X
+    - process_delim
     - relatedness_mat
 
     

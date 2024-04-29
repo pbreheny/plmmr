@@ -6,7 +6,6 @@
 #' @param scale A vector of scaling values 
 #' @param ns A vector with the indices marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).
 #' @param std_bk_extension The string specifying the backingfile for the standardized copy of X. Default uses a temporary directory.
-#' @param ... Other arguments to `bigstatsr::big_apply()`
 #'
 #' @return A standardized matrix of class FBM
 #' @keywords internal

@@ -43,11 +43,11 @@ plmm_checks <- function(X,
   if (!any(class(X) %in% c("character", "matrix"))) {
     stop("\nThe X argument must be either (1) a numeric matrix or (2) a character
          string specifying a filepath to an RDS object that you created using 
-         process_X() or process_plink().")
+         process_delim() or process_plink().")
   }
   # read in X -----------------------------------------------------
   if("character" %in% class(X)){
-    # case 1: X is a filebacked matrix from process_X() or process_plink()
+    # case 1: X is a filebacked matrix from process_delim() or process_plink()
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
     std_needed <- FALSE
