@@ -188,7 +188,7 @@ this is like the <code>colon</code> data that ships with the
 <code>biglasso</code> package, only here I’ve inserted some NA values
 just for didactic purposes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/process_X.html">process_X</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/process_delim.html">process_delim</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span>
 <span>          data_dir <span class="op">=</span> <span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>          rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span>
 <span>          ind.col <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">2002</span><span class="op">)</span> <span class="co"># don't use the 1st column; it has IDs in it</span></span>
@@ -211,11 +211,11 @@ as what PLINK does).</p>
 <span>               <span class="co"># this datset is small enough to fit in memory</span></span>
 <span>               <span class="co"># by setting returnX = FALSE, I force plmm() to run on the filebacked data</span></span>
 <span>               trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>The format is similar for data that came from <code>process_X</code>
-– however, in the case of our <code>colon2</code> data, we need to
-supply our own kinship matrix. The data are not genomic, so estimating a
-genomic relatedness matrix doesn’t make sense. For our purposes, we will
-make up a ‘dummy’ K matrix.</p>
+<p>The format is similar for data that came from
+<code>process_delim</code> – however, in the case of our
+<code>colon2</code> data, we need to supply our own kinship matrix. The
+data are not genomic, so estimating a genomic relatedness matrix doesn’t
+make sense. For our purposes, we will make up a ‘dummy’ K matrix.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># pretend genomic data from 500 SNPs</span></span>
 <span><span class="va">genomic_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">62</span><span class="op">*</span><span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">62</span>, ncol <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
