@@ -1,10 +1,5 @@
 ---
 title: "Analyze high-dimensional PLINK data with filebacking"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Analyze large data with filebacking}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
 ---

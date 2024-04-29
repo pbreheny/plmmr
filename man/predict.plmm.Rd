@@ -62,7 +62,8 @@ the estimated correlation structure of data into our prediction of the outcome.
 }
 \examples{
 set.seed(123)
-train_idx <- sample(1:nrow(admix$X), 100) # shuffling is important here! Keeps test and train groups comparable.
+train_idx <- sample(1:nrow(admix$X), 100) 
+# Note: ^ shuffling is important here! Keeps test and train groups comparable.
 train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
 fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))

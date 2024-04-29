@@ -17,8 +17,6 @@ big_std(X, center = NULL, scale, ns = NULL, std_bk_extension = NULL)
 \item{ns}{A vector with the indices marking the Non-Singular columns of X. Defaults to NULL (meaning all columns are assumed to be nonsingular).}
 
 \item{std_bk_extension}{The string specifying the backingfile for the standardized copy of X. Default uses a temporary directory.}
-
-\item{...}{Other arguments to \code{bigstatsr::big_apply()}}
 }
 \value{
 A standardized matrix of class FBM
