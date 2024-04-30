@@ -19,9 +19,8 @@
 #'  This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome. 
 #'  
 #' @keywords internal
-#'
 
-predict.list <- function(fit,
+predict_list <- function(fit,
                          oldX,
                          newX,
                          type=c("lp", "blup"),
@@ -79,6 +78,3 @@ predict.list <- function(fit,
   }
 
 }
-
-
-

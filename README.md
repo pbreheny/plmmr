@@ -1,6 +1,6 @@
 <!-- badges: start -->
-[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=2.2.1&color=blue&logo=github)](https://github.com/pbreheny/plmm)
-[![R-CMD-check](https://github.com/pbreheny/plmm/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmm/actions)
+[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=2.2.1&color=blue&logo=github)](https://github.com/pbreheny/plmmr)
+[![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions)
 [![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
 <!-- badges: end -->
 
