@@ -216,12 +216,12 @@ cv.plmm <- function(X,
   # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")  
   # set up progress bar -- this can take a while
-  if(trace){pb <- txtProgressBar(min = 0, max = nfolds, style = 3)}
+  if(trace){pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)}
   for (i in 1:nfolds) {
     # case 1: user-specified cluster
     if (!missing(cluster)) {
       res <- fold.results[[i]] # refers to lines from above
-      if (trace) {setTxtProgressBar(pb, i)}
+      if (trace) {utils::setTxtProgressBar(pb, i)}
     } else {
       # case 2: cluster NOT user specified (this is the typical use case)
       res <- cvf(i = i,
@@ -229,7 +229,7 @@ cv.plmm <- function(X,
                  type = type,
                  cv.args = cv.args,
                  estimated_V = estimated_V)
-      if (trace) {setTxtProgressBar(pb, i)}
+      if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
     

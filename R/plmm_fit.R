@@ -181,7 +181,7 @@ plmm_fit <- function(prep,
   # main attraction -----------------------------------------------------------
   if('matrix' %in% class(stdrot_X)){
     # set up progress bar -- this can take a while
-    if(prep$trace){pb <- txtProgressBar(min = 0, max = nlambda, style = 3)}
+    if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
     for (ll in 1:nlambda){
       lam <- lambda[ll]
       res <- ncvreg::ncvfit(X = stdrot_X,
@@ -203,7 +203,7 @@ plmm_fit <- function(prep,
       converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
       loss[ll] <- res$loss
       r <- res$resid
-      if(prep$trace){setTxtProgressBar(pb, ll)}
+      if(prep$trace){utils::setTxtProgressBar(pb, ll)}
       
     }
     

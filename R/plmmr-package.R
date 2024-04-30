@@ -3,9 +3,5 @@
 "_PACKAGE"
 
 #' @useDynLib plmmr, .registration=TRUE
-
-#' @import methods
 #' @import stats
-#' @import utils
-#' @importFrom glmnet glmnet
 NULL

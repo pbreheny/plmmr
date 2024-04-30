@@ -15,15 +15,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-# TODO: figure out where to add this line --
-# options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 ```{r setup}
 library(plmmr)
 ```
-
-**NOTE**: This vignette is under development -- not all of the examples here are fully worked through. My work here is an example of [working with the garage door open](https://notes.andymatuschak.org/About_these_notes?stackedNotes=z21cgR9K3UcQ5a7yPsj2RUim3oM2TzdBByZu).
 
 ## Introduction 
 

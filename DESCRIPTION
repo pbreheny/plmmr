@@ -5,7 +5,7 @@ Date: 2024-04-29
 Authors@R: c(
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),
-    person("Patrick J.", "Breheny", , "patrick-breheny@uiowa.edu", role = c("aut","cre"),
+    person("Patrick J.", "Breheny", , "patrick-breheny@uiowa.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0650-1119")),
     person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),
@@ -23,18 +23,14 @@ Description: Fits penalized linear mixed models that correct for
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
 Depends: R (>= 3.5.0)
-Imports: 
+Imports:
     bigmemory,
     bigsnpr,
     bigstatsr,
     biglasso (>= 1.6.0),
     ncvreg,
-    glmnet,
-    Matrix,
-    methods,
-    stats,
-    utils
-Suggests: 
+    Matrix
+Suggests:
     graphics,
     grDevices,
     knitr,
@@ -43,8 +39,7 @@ Suggests:
     parallel,
     rmarkdown,
     tinytest
-VignetteBuilder: 
-    knitr
+VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
