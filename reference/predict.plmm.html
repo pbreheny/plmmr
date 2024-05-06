@@ -129,6 +129,12 @@ Required if <code>type == 'blup'</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>Depends on the <code>type</code> - see Details</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for <code>type</code> are as follows:</p><ul><li><p>'response' (default): uses the product of newX and beta-hat to predict new values of the outcome. This does not incorporate the correlation structure of the data.
 For the stats folks out there, this is simply the linear predictor.</p></li>

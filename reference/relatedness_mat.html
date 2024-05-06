@@ -75,7 +75,8 @@ and is computed XX'/p, where X is standardized.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>X</dt>
-<dd><p>A numeric matrix of genotypes (from <em>fully-imputed</em> data)</p></dd>
+<dd><p>An n x p numeric matrix of genotypes (from <em>fully-imputed</em> data).
+Note: This matrix should <em>not</em> include non-genetic features.</p></dd>
 
 
 <dt>std</dt>
@@ -94,6 +95,14 @@ and is computed XX'/p, where X is standardized.</p>
 <dd><p>Other optional arguments to <code>bigstatsr::bigapply()</code> (like <code>ncores = ...</code>)</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>An n x n numeric matrix capturing the genomic relatedness of the
+samples represented in <code>X</code>. In our notation, we call this matrix K for 'kinship';
+this matrix is also sometimes called the GRM for 'genomic relatedness matrix'</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
