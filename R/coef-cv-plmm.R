@@ -7,17 +7,19 @@
 #' 
 #' @rdname coef.cv.plmm
 #' 
+#' @returns Returns a named numeric vector. Values are the coefficients of the 
+#' model at the specified value of either `lambda` or `which`. Names are the 
+#' values of `lambda`.
+#' 
 #' @export
 #' 
 #' @examples 
-#' \dontrun{
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+#' \donttest{
+#' #' cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
 #' head(coef.cv.plmm(cv_fit))
 #' }
 #' 
-#' 
-
-
+#'
 coef.cv.plmm <- function(object, lambda, which = object$min, ...){
   coef.plmm(object$fit, lambda = lambda, which = which, ...)
 }

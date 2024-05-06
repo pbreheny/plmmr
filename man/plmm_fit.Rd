@@ -100,7 +100,7 @@ where 1 = predictor was penalized.
 lasso penalties was used. Not relevant for lasso models.
 \item alpha: numeric value indicating the elastic net tuning parameter.
 \item ns: the indices for the nonsingular values of X
-\item snp_names: ormatted column names of the design matrix
+\item snp_names: formatted column names of the design matrix
 \item nlambda: number of lambda values used in model fitting
 \item eps: tolerance ('epsilon') used for model fitting
 \item max.iter: max. number of iterations per model fit

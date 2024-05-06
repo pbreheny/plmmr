@@ -7,7 +7,8 @@
 relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 }
 \arguments{
-\item{X}{A numeric matrix of genotypes (from \emph{fully-imputed} data)}
+\item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data).
+Note: This matrix should \emph{not} include non-genetic features.}
 
 \item{std}{Logical: should X be standardized? If you set this to FALSE, you should know exactly why that is appropriate... standardization is a best practice, and this will impact results.}
 
@@ -16,6 +17,11 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 \item{ns}{Optional vector of values indicating the indices of nonsingular features}
 
 \item{...}{Other optional arguments to \code{bigstatsr::bigapply()} (like \code{ncores = ...})}
+}
+\value{
+An n x n numeric matrix capturing the genomic relatedness of the
+samples represented in \code{X}. In our notation, we call this matrix K for 'kinship';
+this matrix is also sometimes called the GRM for 'genomic relatedness matrix'
 }
 \description{
 This function allows you to generate an n by n genetic relatedness matrix. If a numeric matrix is supplied, the RRM (Hayes, 2009) is used

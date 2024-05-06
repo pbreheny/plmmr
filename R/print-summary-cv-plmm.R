@@ -5,6 +5,11 @@
 #' @param ... Not used
 #'
 #' @rdname print.summary.cv.plmm 
+#' 
+#' @returns Nothing is returned; instead, a message is printed to the console 
+#' summarizing the results of the cross-validated model fit. 
+#' 
+#' 
 #' @export
 #'
 #' @examples

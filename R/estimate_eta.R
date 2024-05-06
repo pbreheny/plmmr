@@ -20,36 +20,3 @@ estimate_eta <- function(n, s, U, y, eta_star){
   
   return(eta)
 }
-
-#' a function to write tests of estimate_eta
-#' @param sig_s Variance attributable to structure 
-#' @param sig_eps Variance of random error 
-#' @param K Matrix to use as relatedness matrix.
-#' @param ... Additional args to pass into `estimate_eta()`
-#' @keywords internal
-test_eta_estimation <- function(sig_s, sig_eps, K, ...){
-  
-  # Note: true_eta <- sig_s/(sig_s + sig_eps)
-  
-  # simulate data
-  intcpt <- rep(1, nrow(K))
-  
-  u <- mvtnorm::rmvnorm(n = 1,
-                        sigma = sig_s*K) |> drop()
-  
-  eps <- mvtnorm::rmvnorm(n = 1,
-                          sigma = sig_eps*diag(nrow = nrow(K))) |> drop()
-  
-  y <- intcpt + u + eps # null model = intercept only model s
-
-  eig_K <- eigen(K)
-  
-  # estimate eta
-  eta <- estimate_eta(n = length(y),
-                      s = eig_K$values,
-                      U = eig_K$vectors,
-                      y = y,
-                       ...)
-  
-  return(eta)
-}

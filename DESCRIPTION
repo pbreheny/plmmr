@@ -1,5 +1,5 @@
 Package: plmmr
-Title: Fit Nonconvex-Penalized Linear Mixed Models to Account for the Presence of Unobserved Confounding Effects
+Title: Nonconvex Penalized Linear Mixed Models For Correlated Data 
 Version: 3.0.0
 Date: 2024-04-29
 Authors@R: c(
@@ -16,7 +16,8 @@ Description: Fits penalized linear mixed models that correct for
     presence of unobserved confounding effects such as population
     stratification and environmental heterogeneity. It then fits a linear
     model via penalized maximum likelihood. Originally designed for the
-    multivariate analysis of SNP data, 'plmmr' eliminates the need for
+    multivariate analysis of single nucleotide polymorphisms (SNPs) measured 
+    in a genome-wide association study (GWAS), 'plmmr' eliminates the need for
     subpopulation-specific analyses and post-analysis p-value adjustments.
     Functions for the appropriate processing of 'PLINK' files are also
     supplied. For examples, see the package homepage. 
@@ -35,7 +36,6 @@ Suggests:
     grDevices,
     knitr,
     MASS,
-    mvtnorm,
     parallel,
     rmarkdown,
     tinytest

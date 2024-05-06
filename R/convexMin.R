@@ -6,8 +6,19 @@
 #' @param gamma The tuning parameter of the MCP/SCAD penalty. Default is 3 for MCP and 3.7 for SCAD.
 #' @param l2 L2.
 #' @param family Only "gaussian" currently supported.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. 
+#' If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. 
+#' The purpose of penalty.factor is to apply differential penalization if some coefficients are 
+#' thought to be more likely than others to be in the model. 
+#' In particular, penalty.factor can be 0, in which case the coefficient is 
+#' always in the model without shrinkage.
+#' 
+#' @returns A numeric value indicating the index at which the objective function 
+#' is no longer locally convex
+#' 
 #' @export
+#' 
+
 
 # from ncvreg
 convexMin <- function(b, X, penalty, gamma, l2, family = "gaussian", penalty.factor) {
@@ -16,10 +27,10 @@ convexMin <- function(b, X, penalty, gamma, l2, family = "gaussian", penalty.fac
   l <- ncol(b)
 
   if (penalty=="MCP") {
-    if(is.null(gamma)){gamma <- 3} # TODO: verify that this is appropriate
+    if(is.null(gamma)){gamma <- 3}
     k <- 1/gamma
   } else if (penalty=="SCAD") {
-    if(is.null(gamma)){gamma <- 3.7} # TODO: verify that this is appropriate
+    if(is.null(gamma)){gamma <- 3.7} 
     k <- 1/(gamma-1)
   } else if (penalty=="lasso") {
     return(NULL)
@@ -27,7 +38,6 @@ convexMin <- function(b, X, penalty, gamma, l2, family = "gaussian", penalty.fac
   if (l==0) return(NULL)
 
   val <- NULL
-  # TODO: handle cases below for models running filebacked that have MCP/SCAD penalties
   for (i in 1:l) {
     A1 <- if (i==1) rep(1,p) else b[,i]==0
     if (i==l) {

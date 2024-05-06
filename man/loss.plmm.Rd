@@ -7,9 +7,13 @@
 loss.plmm(y, yhat)
 }
 \arguments{
-\item{y}{Observed response vector}
+\item{y}{Observed outcomes (response) vector}
 
-\item{yhat}{Predicted response vector}
+\item{yhat}{Predicted outcomes (response) vector}
+}
+\value{
+A numeric vector of the squared-error loss values forthe given
+observed and predicted outcomes
 }
 \description{
 Loss method for "plmm" class

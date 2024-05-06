@@ -17,15 +17,18 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+Either a numeric matrix (if model was fit on data stored in memory)
+or a sparse matrix (if model was fit on data stored filebacked). Rownames are
+feature names, columns are values of \code{lambda}.
+}
 \description{
 Coef method for "plmm" class
 }
 \examples{
-\dontrun{
+\donttest{
 fit <- plmm(admix$X, admix$y)
 (coef.plmm(fit)[1:10, 1:5])
-# TODO: in R CMD CHECK, this throws the error: 
-# could not find function "coef.plmm"
 }
 
 

@@ -51,7 +51,7 @@
 #'    lasso penalties was used. Not relevant for lasso models.
 #'   * alpha: numeric value indicating the elastic net tuning parameter. 
 #'   * ns: the indices for the nonsingular values of X
-#'   * snp_names: ormatted column names of the design matrix
+#'   * snp_names: formatted column names of the design matrix
 #'   * nlambda: number of lambda values used in model fitting 
 #'   * eps: tolerance ('epsilon') used for model fitting 
 #'   * max.iter: max. number of iterations per model fit 
@@ -70,7 +70,6 @@ plmm_fit <- function(prep,
                      penalty = "MCP",
                      gamma,
                      alpha = 1,
-                     # lambda.min = ifelse(n>p, 0.001, 0.05),
                      lambda.min,
                      nlambda = 100,
                      lambda,
@@ -117,7 +116,6 @@ plmm_fit <- function(prep,
   #   this will not be a vector of 1s (remember: plmm does *not* restandardize
   #   within each fold)
   if('matrix' %in% class(prep$std_X)){
-    # TODO: unpack with PB why we are standardizing this way? 
     xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE)) 
   } else if('FBM' %in% class(prep$std_X)){
     xtx <- bigstatsr::big_apply(X = stdrot_X,

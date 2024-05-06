@@ -12,10 +12,4 @@ varp(x)
 \description{
 This function allows you to calculate the population variance; we assume our sample is the population.
 }
-\examples{
-\dontrun{
-v <- rnorm(5)
-varp(v)
-}
-}
 \keyword{internal}

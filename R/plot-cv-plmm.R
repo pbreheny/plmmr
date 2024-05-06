@@ -7,6 +7,10 @@
 #' @param vertical.line Logical to indicate whether vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.
 #' @param col Color for vertical line, if plotted. Defaults to "red."
 #' @param ... Additional arguments.
+#' 
+#' @returns Nothing is returned; instead, a plot is drawn representing the relationship
+#' between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).
+#' 
 #' @export
 
 ## from cv.ncvreg

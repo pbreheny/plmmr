@@ -4,9 +4,4 @@
 #' @param x numeric vector
 #' @keywords internal
 #' 
-#' @examples 
-#' \dontrun{
-#' v <- rnorm(5)
-#' varp(v)
-#' }
 varp <- function(x) mean((x-mean(x))^2)

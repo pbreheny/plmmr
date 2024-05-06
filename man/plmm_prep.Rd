@@ -75,14 +75,4 @@ List with these components:
 PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
 This is an internal function for \code{cv.plmm}
 }
-\examples{
-
-\dontrun{
-# this is an internal function; to call this, you would need to use the triple 
-# colon, e.g., plmmr:::plmm_prep()
-prep1 <- plmm_prep(X = admix$X, y = admix$y, trace = TRUE)
-prep2 <- plmm_prep(X = admix$X, y = admix$y, diag_K = TRUE, trace = TRUE)
-}
-
-}
 \keyword{internal}

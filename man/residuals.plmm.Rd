@@ -30,9 +30,10 @@
 Currently, only deviance residuals are supported.
 }
 \examples{
-\dontrun{
+\donttest{
 fit <- plmm(admix$X, admix$y)
 residuals.plmm(fit)[1:5, 1:5]
 head(residuals.plmm(fit, which = 50))
 }
+
 }

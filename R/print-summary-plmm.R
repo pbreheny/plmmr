@@ -3,6 +3,11 @@
 #' @param x A `summary.plmm` object
 #' @param ... Not used
 #' @rdname print.summary.plmm
+#' 
+#' @returns Nothing is returned; instead, a message is printed to the console 
+#' summarizing the results of the model fit. 
+#' 
+#' 
 #' @export
 #'
 #' @examples

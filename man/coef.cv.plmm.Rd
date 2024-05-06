@@ -15,12 +15,17 @@
 
 \item{...}{Additional arguments (not used).}
 }
+\value{
+Returns a named numeric vector. Values are the coefficients of the
+model at the specified value of either \code{lambda} or \code{which}. Names are the
+values of \code{lambda}.
+}
 \description{
 Coef method for "cv.plmm" class
 }
 \examples{
-\dontrun{
-cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+\donttest{
+#' cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
 head(coef.cv.plmm(cv_fit))
 }
 

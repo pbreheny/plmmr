@@ -29,6 +29,10 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+Nothing is returned; instead, a plot is drawn representing the relationship
+between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).
+}
 \description{
 Plot method for cv.plmm class
 }

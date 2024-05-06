@@ -45,6 +45,9 @@ Required if \code{type == 'blup'}.}
 
 \item{...}{Additional optional arguments}
 }
+\value{
+Depends on the \code{type} - see Details
+}
 \description{
 Predict method for plmm class
 }

@@ -6,12 +6,17 @@
 #' @param shade Logical to indicate whether a local nonconvex region should be shaded. Defaults to TRUE.
 #' @param col Vector of colors for coefficient lines. 
 #' @param ... Additional arguments.
+#' 
+#' @returns Nothing is returned; instead, a plot of the coefficient paths is drawn
+#' at each value of lambda (one 'path' for each value of lambda). 
+#' 
+#' 
 #' @export
 #' 
 #' @examples 
 #' fit <- plmm(admix$X[,1:10], admix$y, nlambda = 10)
 #' # for the sake of illustration, I consider only 10 SNPs in the plot 
-#' plot(fit)
+#' plot(fit) 
 #' plot(fit, log.l = TRUE)
 
 ## from ncvreg

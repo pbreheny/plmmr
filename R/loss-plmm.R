@@ -1,7 +1,12 @@
 #' Loss method for "plmm" class
 #'
-#' @param y Observed response vector
-#' @param yhat Predicted response vector
+#' @param y Observed outcomes (response) vector
+#' @param yhat Predicted outcomes (response) vector
+#' 
+#' @returns A numeric vector of the squared-error loss values forthe given 
+#' observed and predicted outcomes
+#' 
+#' 
 #' @export
 #' 
 #' @examples 

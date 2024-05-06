@@ -19,12 +19,16 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+Nothing is returned; instead, a plot of the coefficient paths is drawn
+at each value of lambda (one 'path' for each value of lambda).
+}
 \description{
 Plot method for plmm class
 }
 \examples{
 fit <- plmm(admix$X[,1:10], admix$y, nlambda = 10)
 # for the sake of illustration, I consider only 10 SNPs in the plot 
-plot(fit)
+plot(fit) 
 plot(fit, log.l = TRUE)
 }

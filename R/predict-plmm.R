@@ -37,6 +37,10 @@
 #' 
 #' 
 #' @rdname predict.plmm
+#' 
+#' @returns Depends on the `type` - see Details
+#' 
+#' 
 #' @export
 #'
 #' @examples 

@@ -12,12 +12,17 @@
 #' @rdname residuals.plmm
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fit <- plmm(admix$X, admix$y)
 #' residuals.plmm(fit)[1:5, 1:5]
 #' head(residuals.plmm(fit, which = 50))
 #' }
+#' 
+#' @returns 
+#' 
 #' @export
+#' 
+#' 
 
 residuals.plmm <- function(object,
                            lambda,

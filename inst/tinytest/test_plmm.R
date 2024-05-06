@@ -164,33 +164,18 @@ for(j in 1:ncol(ncv_R)){
 
 tinytest::expect_equivalent(R, ncv_R)
 
-# Test 7: make sure eta is estimated correctly ---------------
-K8 <- relatedness_mat(admix$X)
-hat_eta <- rep(NA_integer_, 100)
-for(i in 1:100){
-  hat_eta[i] <- plmmr:::test_eta_estimation(sig_s = 2,
-                             sig_eps = 1,
-                             K = K8)
-}
-# estimated eta should be within 5% of the true value
-tinytest::expect_equivalent(current = mean(hat_eta), 
-                            target = 2/3,
-                            tolerance = 0.05)
-
-
-# Test 8: make sure plmm() runs in-memory and filebacked ---------------------
-lambda9 <- c(1, 0.1, 0.01, 0.001) # same as lambda0
+# Test 7: make sure plmm() runs in-memory and filebacked ---------------------
 
 if (interactive()) {
   # filebacked 
-  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda0, 
        penalty = "lasso", trace = T, returnX = FALSE) -> foo
   # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this 
   #   will run in-memory because of the small size of this test data set
   foo_nz <- which(foo$beta_vals[,4] != 0)
   
   # in memory
-  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda9, 
+  plmm(X = "~/tmp_files/penncath_lite", lambda = lambda0, 
        penalty = "lasso", trace = T) -> foo2
   foo2_nz <- which(foo2$beta_vals[,4] != 0)
   

@@ -10,15 +10,6 @@
 #' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @keywords internal
 #' 
-#' @examples 
-#' \dontrun{
-#' RRM <- relatedness_mat(X = scale(admix$X))
-#' fit <- plmm_lasso(X = admix$X, y = admix$y, K = RRM, p1 = 10)
-#' (setup_lambda(admix$X, admix$y, alpha = 0.1, nlambda = 10,
-#'  penalty.factor = fit$penalty.factor)) # use default lambda.min
-#' }
-
-
 setup_lambda <- function(X, y, alpha, lambda.min, nlambda, penalty.factor, intercept = TRUE) {
 
   # error checking: 
