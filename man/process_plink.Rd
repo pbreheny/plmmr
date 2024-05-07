@@ -13,6 +13,9 @@ process_plink(
   na_phenotype_vals = c(-9),
   id_var = "IID",
   handle_missing_phen = "prune",
+  add_phen = NULL,
+  pheno_id = NULL,
+  pheno_name = NULL,
   quiet = FALSE,
   gz = FALSE,
   outfile,
@@ -45,9 +48,16 @@ process_plink(
 
 \item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
 * "prune" (default): observations with missing phenotype are removed
-* "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
 * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).}
+* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
+Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
+(2) prune missing values, or (3) impute missing values.}
+
+\item{add_phen}{Optional: A \strong{data frame} with at least two columns: and ID column and a phenotype column}
+
+\item{pheno_id}{Optional: A string specifying the name of the ID column in \code{pheno}. MUST be specified if \code{add_phen} is specified.}
+
+\item{pheno_name}{Optional: A string specifying the name of the phenotype column in \code{pheno}.  MUST be specified if \code{add_phen} is specified. This column will be used as the default \code{y} argument to 'plmm()'.}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 

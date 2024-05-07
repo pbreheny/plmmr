@@ -30,7 +30,8 @@ Imports:
     bigstatsr,
     biglasso (>= 1.6.0),
     ncvreg,
-    Matrix
+    Matrix,
+    dplyr
 Suggests:
     graphics,
     grDevices,

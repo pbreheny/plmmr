@@ -12,11 +12,15 @@
 #'                                * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set. 
 #' @param na_phenotype_vals   A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
 #' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
+#' @param add_phen            Optional: A **data frame** with at least two columns: and ID column and a phenotype column
+#' @param pheno_id            Optional: A string specifying the name of the ID column in `pheno`. MUST be specified if `add_phen` is specified. 
+#' @param pheno_name           Optional: A string specifying the name of the phenotype column in `pheno`.  MUST be specified if `add_phen` is specified. This column will be used as the default `y` argument to 'plmm()'.
 #' @param handle_missing_phen A string indicating how missing phenotypes should be handled: 
 #'                                * "prune" (default): observations with missing phenotype are removed
-#'                                * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
 #'                                * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
 #'                                * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
+#'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
+#'                            (2) prune missing values, or (3) impute missing values. 
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #' @param gz                  Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.
 #' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
@@ -90,6 +94,9 @@ process_plink <- function(data_dir,
                           na_phenotype_vals = c(-9),
                           id_var = "IID",
                           handle_missing_phen = "prune",
+                          add_phen = NULL, 
+                          pheno_id = NULL,
+                          pheno_name = NULL,
                           quiet = FALSE,
                           gz = FALSE,
                           outfile,
@@ -116,10 +123,29 @@ process_plink <- function(data_dir,
   }
 
   # read in PLINK files --------------------------------
-  step1_obj <- read_plink_files(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet)
+  plink_obj <- read_plink_files(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet)
 
+  # add external phenotype, if needed -----------------
+  if (id_var == "IID"){
+    geno_id <- "sample.ID"
+  } else if (id_var == "FID"){
+    geno_id <- "family.ID"
+  } else {
+    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID'.")
+  }
+  
+  if (!is.null(add_phen)){
+    step1 <- add_external_phenotype(geno = plink_obj, geno_id = geno_id,
+                                    pheno = add_phen, pheno_id = pheno_id,
+                                    pheno_col = pheno_name)
+    
+  } else {
+    step1 <- plink_obj
+    
+  }
+ 
   # name and count ------------------------------------
-  step2 <- name_and_count_bigsnp(step1_obj, id_var, quiet)
+  step2 <- name_and_count_bigsnp(step1, id_var, quiet)
 
   # chromosome check ---------------------------------
   # only consider SNPs on chromosomes 1-22
@@ -141,7 +167,7 @@ process_plink <- function(data_dir,
   step4_obj <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
                                outfile, quiet,...)
 
-  # add predictors from external files ----------------------------------------
+  # add predictors from external files -----------------------------
   step5 <- add_predictors_to_bigsnp(step4_obj, add_predictor_fam, add_predictor_ext,
                           id_var, step2$og_plink_ids, quiet)
 
@@ -173,8 +199,8 @@ process_plink <- function(data_dir,
       complete_phen = step7$complete_phen,
       id_var = step7$id_var
     )
-    system(paste0("rm ", rds_dir, "/", prefix, ".rds"))
-    system(paste0("rm ", rds_dir, "/", prefix, ".bk"))
+    system(paste0("rm ", rds_dir, "/", prefix, "*.rds"))
+    system(paste0("rm ", rds_dir, "/", prefix, "*.bk"))
     saveRDS(ret, paste0(rds_dir, "/std_", prefix, ".rds"))
   }
 

@@ -133,7 +133,14 @@ plmm_checks <- function(X,
   if(is.null(y)){
     # default: use data from 6th column of .fam file
     if ("fam" %in% names(dat)){
-      y <- dat$fam$affection[dat$complete_phen]
+      # case 1: if handle_missing_phen was set to 'prune', use 'complete_phen' for subsetting 
+      if (length(dat$complete_phen) > 1) {
+        y <- dat$fam$affection[dat$complete_phen]
+      } else {
+        # case 2: use all dat$fam$affection values 
+        y <- dat$fam$affection
+      }
+      
     } else {
       stop("\nIf the data did not come from process_plink(), you must specify a 
            'y' argument")

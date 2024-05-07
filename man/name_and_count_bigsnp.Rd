@@ -7,7 +7,7 @@
 name_and_count_bigsnp(obj, id_var, quiet)
 }
 \arguments{
-\item{obj}{a \code{bigSNP} object}
+\item{obj}{a \code{bigSNP} object, possibly subset by \code{add_external_phenotype()}}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 

@@ -1,6 +1,6 @@
 #' A helper function to label and summarize the contents of a `bigSNP`
 #'
-#' @param obj a `bigSNP` object 
+#' @param obj a `bigSNP` object, possibly subset by `add_external_phenotype()`
 #' @param id_var String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID". 
 #' @param quiet Logical: should messages be printed to the console? Defaults to TRUE
 #'
@@ -13,7 +13,6 @@
 
 name_and_count_bigsnp <- function(obj, id_var, quiet){
   
-  # make X the 'genotypes' matrix 
   X <- obj$genotypes
   
   # set object names 
@@ -23,10 +22,7 @@ name_and_count_bigsnp <- function(obj, id_var, quiet){
     obj$rownames <- og_plink_ids <- as.character(obj$fam$family.ID)
   } else if (id_var == "IID") {
     obj$rownames <- og_plink_ids <- as.character(obj$fam$sample.ID)
-  } else {
-    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID'.")
   }
-  
   
   chr_range <- range(obj$map$chromosome)
   # save the dimensions of the *original* (pre-standardized) design matrix
@@ -46,7 +42,7 @@ name_and_count_bigsnp <- function(obj, id_var, quiet){
               obj = obj,
               og_plink_ids = og_plink_ids,
               chr = obj$map$chromosome,
-              X = obj$genotypes,
+              X = X,
               pos = obj$map$physical.pos,
               chr_range = chr_range))
   
