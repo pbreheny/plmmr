@@ -57,7 +57,7 @@ You'll see a lot of messages printed to the console here ... the result of all t
 We can examine what's in `std_penncath_lite.rds` using the `snp_attach()` function from the `bigsnpr` package:
 
 ```{r}
-pen <- readRDS(paste0(temp_dir, "std_penncath_lite.rds"))
+pen <- readRDS(file.path(temp_dir, "std_penncath_lite.rds"))
 str(pen) # note: genotypes and std_X are *not* in memory
 # 
 # we can check to see that our data have been standardized 

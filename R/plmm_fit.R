@@ -88,9 +88,6 @@ plmm_fit <- function(prep,
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
   
-  # TODO: adjust line below to accommodate FBM 
-  # if (length(init)!=prep$std_X$ncol) stop("Dimensions of init and X do not match", call.=FALSE)
-  
   if(prep$trace){cat("\nBeginning rotation ('preconditioning').")}
 
   # rotate data ----------------------------------------------------------------
@@ -226,7 +223,7 @@ plmm_fit <- function(prep,
     linear.predictors <- bm_stdrot_X%*%b
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
-    loss <- res$loss # TODO: this needs to be fixed! 
+    loss <- res$loss
     r <- res$resid
   }
   

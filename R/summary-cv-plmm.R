@@ -42,7 +42,7 @@ summary.cv.plmm <- function(object, lambda = "min", ...){
     nvars <- predict(object$fit, type="nvars", lambda = lambda)
   }
   
-  # TODO: determine what else should go here 
+  # TODO: think about what else should go here 
   out <- structure(list(lambda.min = object$lambda.min,
                         lambda.1se = object$lambda.1se,
                         penalty = object$penalty,

@@ -1,7 +1,7 @@
 Package: plmmr
 Title: Nonconvex Penalized Linear Mixed Models For Correlated Data 
 Version: 3.0.0
-Date: 2024-04-29
+Date: 2024-05-06
 Authors@R: c(
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),

@@ -16,8 +16,7 @@ eigen_K <- function(std_X, p, fbm_flag, ...){
   # calculate K (which will be stored in memory regardless of how std_X is stored)
   if(fbm_flag){
     K <- bigstatsr::big_tcrossprodSelf(std_X, ...) 
-    # TODO: this function returns an FBM. Need to think about adding the option 
-    # for K to be stored filebacked. For now, make K stay in memory.
+    # For now, we make K stay in memory.
      K <- K[,]/p
   } else {
     # make std_X an FBM so that bigstatsr::big_tcrossprodSelf can be used... 

@@ -10,6 +10,10 @@
 ^.*\cad_mid.bed$
 ^.*\cad_mid.bim$
 ^.*\cad_mid.fam$
+^penncath_lite\.bed$
+^penncath_lite\.bim$
+^penncath_lite\.fam$
+^std_penncath_lite\.*$
 ^scratch.R$
 ^vignettes/articles$
 ^.*\.log$

@@ -9,7 +9,7 @@ construct_variance(fit, K = NULL, eta = NULL)
 \arguments{
 \item{fit}{An object returned by \code{plmm()}}
 
-\item{K}{An optional matrix or list as returned by \code{choose_K()}}
+\item{K}{An optional matrix}
 
 \item{eta}{An optional numeric value between 0 and 1; if \code{fit} is not supplied, then this option must be specified.}
 }

@@ -31,7 +31,7 @@ plmm_checks <- function(X,
                         K = NULL,
                         diag_K = NULL,
                         eta_star = NULL,
-                        penalty = c("MCP", "SCAD", "lasso"), # TODO: think about making lasso default
+                        penalty = c("MCP", "SCAD", "lasso"), 
                         penalty.factor = NULL,
                         init = NULL,
                         gamma,
@@ -132,8 +132,8 @@ plmm_checks <- function(X,
   # if y is null, use .fam file 
   if(is.null(y)){
     # default: use data from 6th column of .fam file
-    if ("phen" %in% names(dat)){
-      y <- dat$phen
+    if ("fam" %in% names(dat)){
+      y <- dat$fam$affection[dat$complete_phen]
     } else {
       stop("\nIf the data did not come from process_plink(), you must specify a 
            'y' argument")

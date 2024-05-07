@@ -17,7 +17,7 @@ cvf(i, fold, type, cv.args, estimated_V, ...)
 
 \item{estimated_V}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv.plmm.}
 
-\item{...}{Optional arguments to \code{predict_list}}
+\item{...}{Optional arguments to \code{predict_within_cv}}
 }
 \description{
 Internal function for cv.plmm which calls plmm on a fold subset of the original data.

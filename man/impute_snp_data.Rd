@@ -4,7 +4,16 @@
 \alias{impute_snp_data}
 \title{A function to impute SNP data}
 \usage{
-impute_snp_data(obj, X, impute, impute_method, outfile, quiet, ...)
+impute_snp_data(
+  obj,
+  X,
+  impute,
+  impute_method,
+  outfile,
+  quiet,
+  seed = as.numeric(Sys.Date()),
+  ...
+)
 }
 \arguments{
 \item{obj}{a \code{bigSNP} object (as created by \code{read_plink_files()})}
@@ -20,9 +29,9 @@ impute_snp_data(obj, X, impute, impute_method, outfile, quiet, ...)
 \item mean0: Imputes the rounded mean.
 \item mean2: Imputes the mean rounded to 2 decimal places.
 \item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
+@param seed Numeric value to be passed as the seed for \code{impute_method = 'xgboost'}. Defaults to \code{as.numeric(Sys.Date())}
+\@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 }}
-
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
 

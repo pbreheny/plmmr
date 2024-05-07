@@ -16,7 +16,7 @@
 \arguments{
 \item{object}{Object of class \code{plmm}.}
 
-\item{lambda}{Values of the regularization parameter at which residuals are requested (numeric vector). For values of lambda not in the sequence of fitted models, linear interpolation is used.}
+\item{lambda}{Optional numeric value(s) of the regularization parameter at which residuals are requested (numeric vector). For values of lambda not in the sequence of fitted models, linear interpolation is used.}
 
 \item{which}{Index of the penalty parameter at which residuals are requested (default = all indices). If \code{lambda} is specified, this take precedence over \code{which}.}
 
@@ -25,6 +25,11 @@
 \item{unrotate}{Logical: should residuals be 'unrotated', i.e. transformed back to the original scale?}
 
 \item{...}{Not used.}
+}
+\value{
+a numeric matrix with the residuals on the \strong{transformed scale}, where
+rows correspond to observations (e.g., samples) and columns correspond to
+values of \code{lambda} at which the model was fit.
 }
 \description{
 Currently, only deviance residuals are supported.

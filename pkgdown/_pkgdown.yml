@@ -101,7 +101,7 @@ reference:
     - plmm_fit
     - plmm_format
     - plmm_prep
-    - predict_list
+    - predict_within_cv
     - read_data_files
     - read_plink_files
     - rotate_filebacked

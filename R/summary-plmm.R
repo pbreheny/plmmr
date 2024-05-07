@@ -60,6 +60,7 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
   out <- structure(list(
     penalty=object$penalty,
     n=object$n, 
+    std_X_n = object$std_X_n,
     p=nrow(object$beta_vals),
     converged=object$converged[idx],
     lambda=lambda, 

@@ -98,9 +98,6 @@ get_data <- function(path, returnX, trace = TRUE){
       if(obj$id_var == "IID"){row_names <- as.character(obj$fam$sample.ID[obj$complete_phen])}
       if(obj$id_var == "FID"){row_names <- as.character(obj$fam$family.ID[obj$complete_phen])}
       
-      dimnames(std_X) <- list(obj$std_X_rownames,
-                              obj$std_X_colnames)
-      
       ret$X_colnames <- obj$colnames
       ret$X_rownames <- obj$rownames
       ret$fam <- obj$fam

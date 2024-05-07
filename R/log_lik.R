@@ -13,8 +13,7 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL){
   
   # first, the constant (comes from 1st term in derivation)
   constant <- n*log(2*pi)
-  
-  # TODO: think about simplifying what follows with `rotate()`
+
   # we will need the sum of the nonzero values from the diagonal matrix of weights
   w2 <- ((eta*s) + (1 - eta))
   
@@ -29,7 +28,6 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL){
   if(is.null(rot_y) & !(missing(y))){
     rot_y <- wUt %*% y
   } 
-  
   
   # rotate the intercept (this is the only term in the null model)
   intcpt <- rep(1, n)

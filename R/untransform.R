@@ -61,7 +61,7 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
   }
   
   if (!is.null(std_X_details$X_colnames)) {
-    rownames(untransformed_beta) <- std_X_details$X_colnames
+    rownames(untransformed_beta) <- c("(Intercept)",std_X_details$X_colnames)
   }
   
   # Final step: return un-transformed beta values 

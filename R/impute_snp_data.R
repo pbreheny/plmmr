@@ -9,14 +9,16 @@
 #'  * mean0: Imputes the rounded mean.
 #'  * mean2: Imputes the mean rounded to 2 decimal places.
 #'  * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set. 
-#' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#'  @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
+#' \@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet Logical: should messages be printed to the console? Defaults to TRUE
 #' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return Nothing is returned, but the `obj$genotypes` is overwritten with the imputed version of the data 
 #' @keywords internal
 #'
-impute_snp_data <- function(obj, X, impute, impute_method, outfile, quiet,...){
+impute_snp_data <- function(obj, X, impute, impute_method,
+                            outfile, quiet, seed = as.numeric(Sys.Date()),...){
   if(!quiet & impute){
     # catch for misspellings
     if(!(impute_method %in% c('mode', 'random', 'mean0', 'mean2', 'xgboost'))){
@@ -41,7 +43,7 @@ impute_snp_data <- function(obj, X, impute, impute_method, outfile, quiet,...){
       obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
                                                ncores = bigstatsr::nb_cores(),
                                                infos.chr = obj$chr,
-                                               seed = as.numeric(Sys.Date()),
+                                               seed = seed,
                                                ...) # dots can pass other args
       
       cat("\n ***************** NOTE ********************************

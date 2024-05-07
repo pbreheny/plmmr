@@ -6,7 +6,7 @@
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv.plmm. 
 #' @param cv.args List of additional arguments to be passed to plmm.
-#' @param ... Optional arguments to `predict_list`
+#' @param ... Optional arguments to `predict_within_cv`
 #' @keywords internal
 cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   
@@ -18,7 +18,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$fbm_flag){
     cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
     cv.args$prep$U <- bigstatsr::big_copy(full_cv_prep$U,
-                                          ind.row =  which(fold!=i)) # TODO: should we also be subsetting by column?
+                                          ind.row =  which(fold!=i)) 
   } else {
     cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
@@ -45,7 +45,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   fit.i <- do.call("plmm_fit", cv.args)
   
   if(type == "lp"){
-    yhat <- predict_list(fit = fit.i,
+    yhat <- predict_within_cv(fit = fit.i,
                           oldX = cv.args$prep$std_X,
                           newX = test_X,
                           type = 'lp',
@@ -58,7 +58,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     V21 <- estimated_V[fold==i, fold!=i, drop = FALSE] 
     V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE] 
     
-    yhat <- predict_list(fit = fit.i,
+    yhat <- predict_within_cv(fit = fit.i,
                          oldX = cv.args$prep$std_X,
                          newX = test_X,
                          type = 'blup',

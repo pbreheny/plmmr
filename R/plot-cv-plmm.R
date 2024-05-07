@@ -74,7 +74,7 @@ plot.cv.plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "al
   graphics::points(l[ind], y[ind], col=col, pch=19, cex=.5)
   if (selected) {
     if(inherits(x$fit, "list")){
-      n.s <- predict_list(x$fit, lambda=x$lambda, type="nvars")
+      n.s <- predict_within_cv(x$fit, lambda=x$lambda, type="nvars")
     } else {
       n.s <- predict.plmm(x$fit, lambda=x$lambda, type="nvars")
     }

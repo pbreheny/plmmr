@@ -1,4 +1,4 @@
-#' Predict method for a list used in cross-validation (within \code{cvf})
+#' Predict method to use in cross-validation (within \code{cvf})
 #'
 #' @param fit  A list with the components returned by `plmm_fit`. 
 #' @param oldX The standardized design matrix of training data, *pre-rotation*. 
@@ -20,7 +20,7 @@
 #'  
 #' @keywords internal
 
-predict_list <- function(fit,
+predict_within_cv <- function(fit,
                          oldX,
                          newX,
                          type=c("lp", "blup"),
