@@ -41,4 +41,6 @@ residuals.plmm(fit)[1:5, 1:5]
 head(residuals.plmm(fit, which = 50))
 }
 
+
+
 }

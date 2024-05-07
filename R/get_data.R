@@ -15,8 +15,18 @@
 #' @export
 #' 
 #' @examples
-#' \dontrun{
-#' pen <- get_data(path = "../tmp_files/penncath_lite", trace = TRUE)
+#' \donttest{
+#' temp_dir <- paste0(tempdir(),"/") # using a temporary directory
+#' process_plink(data_dir = get_example_data(parent = TRUE), # reads data from inst/extdata
+#'               rds_dir = temp_dir,
+#'               prefix = "penncath_lite",
+#'               gz = TRUE,
+#'               outfile = "process_penncath",
+#'               overwrite = TRUE,
+#'               impute_method = "mode")
+#'               
+#'  pen <- get_data(file.path(temp_dir, "std_penncath_lite.rds"))             
+#'  str(pen)
 #' }
 #' 
 #' @details

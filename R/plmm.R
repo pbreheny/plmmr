@@ -66,18 +66,8 @@
 #' print(s2)
 #' plot(fit_admix2) # notice: the default penalty is MCP
 #' 
-#' # now use PLINK data files
-#' \dontrun{
-#' # filebacked example (file path is specific to current machine)
-#' # since this dataset is < 100Mb, have to specify returnX = FALSE for 
-#' # get_data() to return an FBM
-#' my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
-#' fb_fit <- plmm(X = my_fb_data,
-#'                returnX = FALSE,
-#'                trace = TRUE)
-#'                
-#' summary(fb_fit, idx = 50)
-#' }
+#' # Note: for examples with large data that are too big to fit in memory, 
+#' # see the filebacking article 
 #' 
 plmm <- function(X, 
                  y = NULL,

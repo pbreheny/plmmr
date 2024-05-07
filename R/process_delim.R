@@ -32,10 +32,11 @@
 #'
 #' @examples
 #' 
-#' \dontrun{
+#' \donttest{
+#' temp_dir <- tempdir()
 #' process_delim(file = "colon2.txt",
-#'  data_dir = get_example_data(parent = T),
-#'  rds_dir = "~/tmp_files",
+#'  data_dir = get_example_data(parent = TRUE),
+#'  rds_dir = temp_dir,
 #'   ind.col = 2:2002)
 #' 
 #' }

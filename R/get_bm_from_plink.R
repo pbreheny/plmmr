@@ -15,15 +15,15 @@
 #' @details This function is a wrapper combining `get_data()` and `fbm2bm()`
 #'
 #' @examples
-#' \dontrun{
-#' process_plink(data_dir = get_example_data(parent = T),
+#' \donttest{
+#' process_plink(data_dir = get_example_data(parent = TRUE),
 #'   prefix = "penncath_lite",
 #'   gz = TRUE,
 #'   outfile = "process_penncath",
 #'   # overwrite = TRUE, # uncomment if needed 
 #'   impute_method = "mode")
 #'   
-#'   my_path <- paste0(get_example_data(parent = T), "/penncath_lite")
+#'   my_path <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
 #'   bm_data <- get_bm_from_plink(my_path)
 #' }
 get_bm_from_plink <- function(path, standardize = TRUE){

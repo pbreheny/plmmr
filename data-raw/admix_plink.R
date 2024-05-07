@@ -11,7 +11,7 @@ ped <- data.frame(
   IID = 1:nrow(admix$X),
   FATHER = 0,
   MOTHER = 0,
-  SEX = sample(1:2, nrow(admix$X), replace = T),
+  SEX = sample(1:2, nrow(admix$X), replace = TRUE),
   y = admix$y
 )
 

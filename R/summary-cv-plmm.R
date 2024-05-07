@@ -23,7 +23,7 @@
 #'
 #' @examples 
 #' cv_fit <- cv.plmm(X = admix$X, y = admix$y,
-#'  K = relatedness_mat(admix$X), penalty = 'lasso', returnBiasDetails = T)
+#'  K = relatedness_mat(admix$X), penalty = 'lasso', returnBiasDetails = TRUE)
 #' summary(cv_fit)
 
 summary.cv.plmm <- function(object, lambda = "min", ...){

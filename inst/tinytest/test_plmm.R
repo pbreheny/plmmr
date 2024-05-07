@@ -11,7 +11,7 @@ plmm0 <- plmm(X = admix$X,
               diag_K = TRUE,
               lambda = lambda0,
               penalty = "lasso",
-              trace = T)
+              trace = TRUE)
 
 lasso0 <- glmnet::glmnet(x = admix$X,
                  y = admix$y,
@@ -105,7 +105,7 @@ tinytest::expect_equivalent(matrix(0,
 # Test 4: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
   # filebacked fit 
-  process_plink(data_dir = get_example_data(parent = T),
+  process_plink(data_dir = get_example_data(parent = TRUE),
                 prefix = "penncath_lite",
                 gz = TRUE,
                 outfile = "process_penncath",
@@ -113,16 +113,16 @@ if (interactive()) {
                 impute_method = "mode",
                 keep_bigSNP = TRUE)
   
-  my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
+  my_fb_data <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
   fb_fit <- plmm(X = my_fb_data,
                  returnX = FALSE,
                  trace = TRUE)
   
   # in memory fit 
-  pen <- bigsnpr::snp_attach(paste0(get_example_data(parent = T), "/penncath_lite.rds"))
+  pen <- bigsnpr::snp_attach(paste0(get_example_data(parent = TRUE), "/penncath_lite.rds"))
   inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
                     y = pen$fam$affection[pen$complete_phen],
-                    trace = T)
+                    trace = TRUE)
   
   tinytest::expect_equivalent(inmem_fit$beta_vals, as.matrix(fb_fit$beta_vals),
                               tolerance = 0.01)
@@ -169,14 +169,14 @@ tinytest::expect_equivalent(R, ncv_R)
 if (interactive()) {
   # filebacked 
   plmm(X = "~/tmp_files/penncath_lite", lambda = lambda0, 
-       penalty = "lasso", trace = T, returnX = FALSE) -> foo
+       penalty = "lasso", trace = TRUE, returnX = FALSE) -> foo
   # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this 
   #   will run in-memory because of the small size of this test data set
   foo_nz <- which(foo$beta_vals[,4] != 0)
   
   # in memory
   plmm(X = "~/tmp_files/penncath_lite", lambda = lambda0, 
-       penalty = "lasso", trace = T) -> foo2
+       penalty = "lasso", trace = TRUE) -> foo2
   foo2_nz <- which(foo2$beta_vals[,4] != 0)
   
   # look at head of values (checks SNP names)

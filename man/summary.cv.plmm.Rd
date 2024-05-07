@@ -18,19 +18,24 @@ The return value is an object with S3 class \code{summary.cv.plmm}. The class ha
 \itemize{
 \item \code{lambda.min}: The lambda value at the minimum cross validation error
 \item \code{lambda.1se}: The maximum lambda value within 1 standard error of the minimum cross validation error
+\item \code{penalty}: The penalty applied to the fitted model
 \item \code{nvars}: The number of non-zero coefficients at the selected lambda value
 \item \code{cve}: The cross validation error at all folds
 \item \code{min}: The minimum cross validation error
 \item \code{fit}: The \code{plmm} fit used in the cross validation
+}
+
+if \code{returnBiasDetails = TRUE}, two more items are returned:
+\itemize{
 \item \code{bias}: The mean bias of the cross validation
-\item \code{loss}: The loss (at each fold?) TODO: double-check this
-\item \code{penalty}: The penalty applied to the fitted model
+\item \code{loss}: The loss at each value of \code{lambda}
 }
 }
 \description{
 A summary function for cv.plmm objects
 }
 \examples{
-cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+cv_fit <- cv.plmm(X = admix$X, y = admix$y,
+ K = relatedness_mat(admix$X), penalty = 'lasso', returnBiasDetails = TRUE)
 summary(cv_fit)
 }

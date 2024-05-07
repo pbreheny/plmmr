@@ -8,11 +8,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' pen <- get_data("../temp_files/penncath_lite", fbm = T)
-#' pen_bm <- fbm2bm(pen$std_X)
-#' fit <- biglasso::biglasso(X = pen_bm, y = pen$fam$affection, family = "gaussian")
-#' }
+#' colon2 <- read.delim(get_example_data("colon2.txt"), header = TRUE)
+#' class(colon2)
+#' bigstatsr::as_FBM(colon2) -> colon2_fbm
+#' fbm2bm(colon2_fbm) -> colon2_bm
+#' class(colon2_bm)
+#' 
 fbm2bm <- function(fbm, desc = FALSE){
   if(desc){
     desc <- fbm$bm.desc()

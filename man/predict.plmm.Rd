@@ -82,18 +82,5 @@ min(mspe)
 # null model = intercept only -> y_hat is always mean(y)
 crossprod(mean(test$y) - test$y)/length(test$y)
 
- \dontrun{
-  # file-backed example 
-  plmm(X = "~/tmp_files/penncath_lite", penalty = "lasso", trace = T, returnX = FALSE) -> foo
-  pen <- bigsnpr::snp_attach("~/tmp_files/penncath_lite.rds")
-  y_hat <- predict(foo, newX = pen$genotypes)
-  y <- pen$fam$affection
-  # notice: many of the rows in pen$genotypes correspond to samples with a missing phenotype
-  # to assess the quality of the fit 
-  names(y) <- pen$fam$family.ID
-  y_idx <- which(as.character(pen$std_X_rownames) \%in\% names(y))
-  crossprod(y - y_hat[y_idx,50])/length(y) # estimate of MSPE
- }
- 
  
 }

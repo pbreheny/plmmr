@@ -114,9 +114,9 @@ The '.rds' object created by this function has the following elements:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 my_dir <- tempdir()
-process_plink(data_dir = get_example_data(parent = T),
+process_plink(data_dir = get_example_data(parent = TRUE),
   rds_dir = my_dir,
   prefix = "penncath_lite",
   gz = TRUE,

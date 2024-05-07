@@ -24,9 +24,7 @@
 #' head(residuals.plmm(fit, which = 50))
 #' }
 #' 
-#' @returns 
 #'
-#' 
 #' 
 
 residuals.plmm <- function(object,

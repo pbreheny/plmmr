@@ -43,7 +43,7 @@ The most important step is where you begin -- for GWAS data, we have to tell `pl
 
 ```{r}
 temp_dir <- paste0(tempdir(),"/") # using a temporary directory
-process_plink(data_dir = get_example_data(parent = T), # reads data from inst/extdata
+process_plink(data_dir = get_example_data(parent = TRUE), # reads data from inst/extdata
               rds_dir = temp_dir,
               prefix = "penncath_lite",
               gz = TRUE,
@@ -72,7 +72,7 @@ The methodology in `plmmr` was motivated by applications in GWAS, but it certain
 
 ```{r}
 process_delim(file = "colon2.txt",
-          data_dir = get_example_data(parent = T),
+          data_dir = get_example_data(parent = TRUE),
           rds_dir = temp_dir,
           ind.col = 2:2002) # don't use the 1st column; it has IDs in it
 
@@ -98,14 +98,14 @@ The format is similar for data that came from `process_delim` -- however, in the
 
 ```{r}
 # pretend genomic data from 500 SNPs
-genomic_dat <- matrix(sample(0:2, 62*500, replace = T), nrow = 62, ncol = 500)
+genomic_dat <- matrix(sample(0:2, 62*500, replace = TRUE), nrow = 62, ncol = 500)
 K <- relatedness_mat(genomic_dat)
 
 colon2_fit <- plmm(X = file.path(temp_dir, "std_colon2"),
                    y = rnorm(62),
                    K = K,
                    returnX = FALSE,
-                   trace = T)
+                   trace = TRUE)
 ```
 
 
@@ -181,14 +181,14 @@ summary(cv_fb_lasso)
 In many biological applications, we want to include some features/covariates/predictors in addition to the genomic information, like clinical or demographic information. Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `process_plink()`: 
 
 ```{r}
-pen_clinic <- read.csv(paste0(get_example_data(parent = T), "/penncath_clinical.csv"))
+pen_clinic <- read.csv(paste0(get_example_data(parent = TRUE), "/penncath_clinical.csv"))
 extdata <- pen_clinic[,3:4]
 rownames(extdata) <- pen_clinic$FamID # This is important! 
 
 # create a new temporary directory
 temp_dir2 <- paste0(tempdir(), sample(LETTERS, 1))
 
-process_plink(data_dir = get_example_data(parent = T),
+process_plink(data_dir = get_example_data(parent = TRUE),
               rds_dir = temp_dir2, # using a temporary directory
               prefix = "penncath_lite",
               id_var = "FID", # this is KEY!

@@ -9,7 +9,7 @@ admix_rds <- readRDS(file = "data-raw/admix.rds")
 str(admix_rds)
 
 # attempt to fit filebacked model 
-plmm(X = "data-raw/admix", trace = T)
+plmm(X = "data-raw/admix", trace = TRUE)
 
 # compare with in-memory model 
-plmm(X = admix$X, y = admix$y, std_needed = T)
+plmm(X = admix$X, y = admix$y, std_needed = TRUE)

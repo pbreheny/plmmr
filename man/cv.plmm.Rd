@@ -132,7 +132,7 @@ linear mixed models over a grid of values for the regularization parameter \code
 }
 \examples{
 cv_fit <- cv.plmm(X = admix$X, y = admix$y, seed = 321)
-\dontrun{
+\donttest{
 cv_s <- summary.cv.plmm(cv_fit, lambda = "1se")
 print(cv_s)
 plot(cv_fit)
@@ -140,7 +140,7 @@ plot(cv_fit)
 # filebacked example (file path is specific to current machine)
 # since this dataset is < 100Mb, have to specify returnX = FALSE for 
 # `get_data()` to return an FBM
-my_fb_data <- paste0(get_example_data(parent = T), "/penncath_lite")
+my_fb_data <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
 
 cv_fb_fit <- cv.plmm(X = my_fb_data, type = 'blup', returnX = FALSE,
  trace = TRUE, nfolds = 3)

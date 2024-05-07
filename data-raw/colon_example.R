@@ -8,9 +8,9 @@ X[sample(1:nrow(X), 20), to_make_na] <- NA_real_
 sum(is.na(X))
 
 # create toy data, add in a simulated 'sex' variable 
-sex <- sample(1:2, nrow(X), replace = T)
+sex <- sample(1:2, nrow(X), replace = TRUE)
 colon2 <- cbind(sex, colon$y, X)
-
+colnames(colon2)[2] <- "y"
 write.table(colon2, 
             "inst/extdata/colon2.txt",
             sep = "\t",

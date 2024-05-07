@@ -84,8 +84,8 @@ plmm_prep <- function(std_X,
   flag2 <- diag_K & !is.null(K) & ('matrix' %in% class(K))
   if(flag2){
     if (trace) {(cat("\nUsing supplied diagonal matrix for K, similar to a lm() with weights."))}
-    s <- sort(diag(K), decreasing = T)
-    U <- diag(nrow = n)[,order(diag(K), decreasing = T)]
+    s <- sort(diag(K), decreasing = TRUE)
+    U <- diag(nrow = n)[,order(diag(K), decreasing = TRUE)]
   }
   # case 3: K is a user-supplied list, as passed from choose_k()
   flag3 <- !is.null(K) & ('list' %in% class(K))
