@@ -66,7 +66,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">impute_snp_data</span><span class="op">(</span><span class="va">obj</span>, <span class="va">X</span>, <span class="va">impute</span>, <span class="va">impute_method</span>, <span class="va">outfile</span>, <span class="va">quiet</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">impute_snp_data</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">impute</span>,</span>
+<span>  <span class="va">impute_method</span>,</span>
+<span>  <span class="va">outfile</span>,</span>
+<span>  <span class="va">quiet</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -88,12 +97,10 @@
 <li><p>random: Imputes sampling according to allele frequencies.</p></li>
 <li><p>mean0: Imputes the rounded mean.</p></li>
 <li><p>mean2: Imputes the mean rounded to 2 decimal places.</p></li>
-<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
+<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.
+@param seed Numeric value to be passed as the seed for <code>impute_method = 'xgboost'</code>. Defaults to <code>as.numeric(Sys.Date())</code>
+\@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></li>
 </ul></dd>
-
-
-<dt>outfile</dt>
-<dd><p>Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
 
 
 <dt>quiet</dt>

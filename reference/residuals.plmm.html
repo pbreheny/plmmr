@@ -84,7 +84,7 @@
 
 
 <dt>lambda</dt>
-<dd><p>Values of the regularization parameter at which residuals are requested (numeric vector). For values of lambda not in the sequence of fitted models, linear interpolation is used.</p></dd>
+<dd><p>Optional numeric value(s) of the regularization parameter at which residuals are requested (numeric vector). For values of lambda not in the sequence of fitted models, linear interpolation is used.</p></dd>
 
 
 <dt>which</dt>
@@ -103,6 +103,14 @@
 <dd><p>Not used.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>a numeric matrix with the residuals on the <strong>transformed scale</strong>, where
+rows correspond to observations (e.g., samples) and columns correspond to
+values of <code>lambda</code> at which the model was fit.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -113,6 +121,8 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">residuals.plmm</span><span class="op">(</span><span class="va">fit</span>, which <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in residuals.plmm(fit, which = 50):</span> could not find function "residuals.plmm"</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

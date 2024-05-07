@@ -88,11 +88,16 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">pen</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_data.html">get_data</a></span><span class="op">(</span><span class="st">"../temp_files/penncath_lite"</span>, fbm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pen_bm</span> <span class="op">&lt;-</span> <span class="fu">fbm2bm</span><span class="op">(</span><span class="va">pen</span><span class="op">$</span><span class="va">std_X</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">biglasso</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/biglasso/man/biglasso.html" class="external-link">biglasso</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">pen_bm</span>, y <span class="op">=</span> <span class="va">pen</span><span class="op">$</span><span class="va">fam</span><span class="op">$</span><span class="va">affection</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span><span class="st">"colon2.txt"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">colon2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "data.frame"</span>
+<span class="r-in"><span><span class="fu">bigstatsr</span><span class="fu">::</span><span class="fu"><a href="https://privefl.github.io/bigstatsr/reference/FBM-class.html" class="external-link">as_FBM</a></span><span class="op">(</span><span class="va">colon2</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">colon2_fbm</span></span></span>
+<span class="r-in"><span><span class="fu">fbm2bm</span><span class="op">(</span><span class="va">colon2_fbm</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">colon2_bm</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">colon2_bm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "big.matrix"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"package")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "bigmemory"</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

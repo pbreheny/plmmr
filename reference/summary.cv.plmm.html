@@ -90,25 +90,26 @@
 
 <p>The return value is an object with S3 class <code>summary.cv.plmm</code>. The class has its own print method and contains the following list elements:</p><ul><li><p><code>lambda.min</code>: The lambda value at the minimum cross validation error</p></li>
 <li><p><code>lambda.1se</code>: The maximum lambda value within 1 standard error of the minimum cross validation error</p></li>
+<li><p><code>penalty</code>: The penalty applied to the fitted model</p></li>
 <li><p><code>nvars</code>: The number of non-zero coefficients at the selected lambda value</p></li>
 <li><p><code>cve</code>: The cross validation error at all folds</p></li>
 <li><p><code>min</code>: The minimum cross validation error</p></li>
 <li><p><code>fit</code>: The <code>plmm</code> fit used in the cross validation</p></li>
-<li><p><code>bias</code>: The mean bias of the cross validation</p></li>
-<li><p><code>loss</code>: The loss (at each fold?) TODO: double-check this</p></li>
-<li><p><code>penalty</code>: The penalty applied to the fitted model</p></li>
+</ul><p>if <code>returnBiasDetails = TRUE</code>, two more items are returned:</p><ul><li><p><code>bias</code>: The mean bias of the cross validation</p></li>
+<li><p><code>loss</code>: The loss at each value of <code>lambda</code></p></li>
 </ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, K <span class="op">=</span> <span class="fu"><a href="relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span></span>
+<span class="r-in"><span> K <span class="op">=</span> <span class="fu"><a href="relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="st">'lasso'</span>, returnBiasDetails <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized model with n=197 and p=100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.4279):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized model with n=197 and p=100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.2625):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 2.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 1.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.398</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -257,22 +257,29 @@ this quantity may not be meaningful.</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu">cv.plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, seed <span class="op">=</span> <span class="fl">321</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="summary.cv.plmm.html">summary.cv.plmm</a></span><span class="op">(</span><span class="va">cv_fit</span>, lambda <span class="op">=</span> <span class="st">"1se"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in summary.cv.plmm(cv_fit, lambda = "1se"):</span> could not find function "summary.cv.plmm"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cv_s</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cv_s' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="cv.plmm-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># filebacked example (file path is specific to current machine)</span></span></span>
 <span class="r-in"><span><span class="co"># since this dataset is &lt; 100Mb, have to specify returnX = FALSE for </span></span></span>
 <span class="r-in"><span><span class="co"># `get_data()` to return an FBM</span></span></span>
-<span class="r-in"><span><span class="va">my_fb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, <span class="st">"/penncath_lite"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my_fb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"/penncath_lite"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cv_fb_fit</span> <span class="op">&lt;-</span> <span class="fu">cv.plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>, type <span class="op">=</span> <span class="st">'blup'</span>, returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span> trace <span class="op">=</span> <span class="cn">TRUE</span>, nfolds <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/home/runner/work/_temp/Library/plmmr/extdata/penncath_lite.rds', probable reason 'No such file or directory'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fb_fit</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cv_fb_fit' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fb_fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cv_fb_fit' not found</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
