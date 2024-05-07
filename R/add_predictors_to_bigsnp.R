@@ -36,6 +36,9 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                            a.combine = cbind,
                            res = obj$geno_plus_predictors)
       
+      # adjust colnames
+      obj$colnames <- c(add_predictor_fam, obj$colnames)
+      
       # save non_gen: an index marking the first column as non-genomic predictor
       non_gen <- 1
       
