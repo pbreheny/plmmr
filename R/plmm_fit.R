@@ -255,7 +255,7 @@ plmm_fit <- function(prep,
   untransformed_b1[-1,] <- sweep(x = b[-1, , drop=FALSE], 
                                  # un-scale the non-intercept values & fill in the placeholder
                                  MARGIN = 1, # beta values are on rows 
-                                 STATS = stdrot_X_scale , # TODO: check these dimensions
+                                 STATS = stdrot_X_scale,
                                  FUN = "/")
   
 

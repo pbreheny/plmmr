@@ -55,7 +55,7 @@ plmm_checks <- function(X,
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
-    col_names <- dat$X_colnames # TODO: think about better way to handle X dimnames
+    col_names <- dat$X_colnames 
 
     # create a list that captures the centering/scaling for std_X; will need this 
     # later, see `untransform()`

@@ -154,6 +154,7 @@ predict.plmm <- function(object,
    #  ns <- ifelse(object$ns_idx)
     if (is.null(K)){
       # TODO: consider whether using the standardized scale for prediction would be better....
+      # TODO: Need to come back here and work this through for filebacked data 
     # standardize (this won't affect predicted y)
     # std_X <- ncvreg::std(X)
     # std_newX <- ncvreg::std(newX)

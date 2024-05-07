@@ -7,7 +7,6 @@
 #' @export
 #' 
 construct_variance <- function(fit, K = NULL, eta = NULL){
-  # TODO: check the inputs for this function...
   # if 'fit' is given 
   if (!missing(fit)){
       # note: K is a matrix 
@@ -15,7 +14,7 @@ construct_variance <- function(fit, K = NULL, eta = NULL){
   } else if (!is.null(K) & !is.null(eta)) {
     Sigma_hat <- (eta * K) + ((1-eta) * diag(nrow(K)))
   } else {
-    stop("\nOptions to construct_variance must be either (1) supply a plmm object to 
+    stop("\nOptions to construct_variance must be either: \n(1) supply a plmm object to 
          fit or \n(2) supply both K and eta arguments.")
   }
   

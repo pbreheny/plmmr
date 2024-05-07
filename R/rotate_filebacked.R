@@ -25,7 +25,7 @@ rotate_filebacked <- function(prep, ...){
   std_X_with_intcpt <- bigstatsr::FBM(init = 1,
                               nrow = prep$std_X$nrow,
                               ncol = prep$std_X$ncol + 1) 
-  # TODO check the lines below 
+
   # fill in other columns with values of std_X
   bigstatsr::big_apply(prep$std_X,
                        a.FUN = function(X, ind, res){
@@ -33,8 +33,6 @@ rotate_filebacked <- function(prep, ...){
                        },
                        a.combine = cbind,
                        res = std_X_with_intcpt)
-  
-  # identical(std_X_with_intcpt[,2], prep$std_X[,1]) # check the preceding step
   
   # rotate X and y
   rot_X <- bigstatsr::FBM(nrow = nrow(wUt), ncol = std_X_with_intcpt$ncol)

@@ -47,7 +47,7 @@ residuals.plmm <- function(object,
     # w <- (object$eta * object$s + (1 - object$eta))^(-1/2)
     # W_inv <- sweep(object$U, 2, 1/(w), "*")
     # WR <- W_inv%*%R
-    # TODO: if this were worth pursuing, I need to finish working this through
+    # TODO: if this is worth pursuing, I need to finish working this through
 
   } 
   

@@ -8,7 +8,7 @@
 #' @param overwrite Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc. 
 #' @param quiet     Logical: should messages be printed to the console? Defaults to TRUE
 #' 
-#' @return '.rds' and '.bk' files are created in `data_dir`, and `obj` (a `bigSNP` object) is returned. See `bigsnpr` documentation for more info on the `bigSNP` class.
+#' @returns '.rds' and '.bk' files are created in `data_dir`, and `obj` (a `bigSNP` object) is returned. See `bigsnpr` documentation for more info on the `bigSNP` class.
 #' @keywords internal
 #'
 read_data_files <- function(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet){

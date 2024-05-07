@@ -57,7 +57,6 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
                         U = fit$U,
                         K = fit$K,
                         rot_y = fit$rot_y,
-                        # rot_X = fit$rot_X, # TODO: think of whether this is important to keep, e.g., for GIC
                         linear.predictors = fit$linear.predictors,
                         penalty = fit$penalty,
                         gamma = fit$gamma,

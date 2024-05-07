@@ -19,8 +19,8 @@
 #' RRM <- relatedness_mat(X = admix$X)
 relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...){
   if (fbm){
-    if (!std) stop("\nAt this time, standardization cannot be 'turned off' for filebacked data (because of the default behavior of process_plink()). 
-                          \nWe are working to extend this to a more general filebacked case.")
+    if (!std) stop("\nAt this time, standardization cannot be 'turned off' for 
+    filebacked data (because of the default behavior of process_plink()).")
     # cross product 
     cprod <- bigstatsr::big_tcrossprodSelf(X,
                                            # TODO: figure out why the line below makes the function return all NA values

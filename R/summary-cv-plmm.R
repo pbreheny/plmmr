@@ -6,20 +6,24 @@
 #' @return The return value is an object with S3 class `summary.cv.plmm`. The class has its own print method and contains the following list elements: 
 #' * `lambda.min`: The lambda value at the minimum cross validation error 
 #' * `lambda.1se`: The maximum lambda value within 1 standard error of the minimum cross validation error 
+#' * `penalty`: The penalty applied to the fitted model
 #' * `nvars`: The number of non-zero coefficients at the selected lambda value 
 #' * `cve`: The cross validation error at all folds
 #' * `min`: The minimum cross validation error 
 #' * `fit`: The \code{plmm} fit used in the cross validation
-#' * `bias`: The mean bias of the cross validation
-#' * `loss`: The loss (at each fold?) TODO: double-check this  
-#' * `penalty`: The penalty applied to the fitted model
+#' 
+#' if `returnBiasDetails = TRUE`, two more items are returned: 
+#' * `bias`: The mean bias of the cross validation 
+#' * `loss`: The loss at each value of `lambda`
+#' 
 #' 
 #' @rdname summary.cv.plmm
 #' 
 #' @export
 #'
 #' @examples 
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+#' cv_fit <- cv.plmm(X = admix$X, y = admix$y,
+#'  K = relatedness_mat(admix$X), penalty = 'lasso', returnBiasDetails = T)
 #' summary(cv_fit)
 
 summary.cv.plmm <- function(object, lambda = "min", ...){
@@ -45,7 +49,7 @@ summary.cv.plmm <- function(object, lambda = "min", ...){
   # TODO: think about what else should go here 
   out <- structure(list(lambda.min = object$lambda.min,
                         lambda.1se = object$lambda.1se,
-                        penalty = object$penalty,
+                        penalty = object$fit$penalty,
                         nvars = nvars,
                         cve = object$cve,
                         min = object$min,

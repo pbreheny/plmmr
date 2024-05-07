@@ -31,7 +31,6 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
   # lambda/which 
   if(missing(lambda) & missing(idx)) stop("One of the arguments 'lambda' or 'idx' must be provided.")
   if(missing(lambda)) lambda <- object$lambda[idx]
-  # TODO: make sure the following line is robust
   if(missing(idx)) {
     idx <- which(abs(object$lambda - lambda) < eps)
     if(sum(idx) == 0) {
