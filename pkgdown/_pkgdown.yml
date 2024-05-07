@@ -80,6 +80,7 @@ reference:
     
   - title: internal
     contents: 
+    - add_external_phenotype
     - add_predictors_to_bigsnp
     - align_ids
     - align_famfile_ids
