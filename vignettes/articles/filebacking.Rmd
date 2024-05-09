@@ -208,6 +208,7 @@ We usually want these kinds of variables to always be in the model (i.e., they a
 dat_plus_newvars <- paste0(temp_dir2, "/std_penncath_lite")
 fit_plus_newvars <- plmm(X = dat_plus_newvars,
                penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+                K = list(U = fb_fit$U[,], s = fb_fit$s), 
                returnX = FALSE,
                trace = TRUE)
 ```

@@ -3,44 +3,46 @@
 #' Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized 
 #'  linear mixed models over a grid of values for the regularization parameter `lambda`.
 #'
-#' @param X              Design matrix for model fitting. May include clinical covariates and other non-SNP data.
-#' @param y              Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
-#' @param std_needed     Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
-#'                       By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
-#' @param col_names      Optional vector of column names for design matrix. Defaults to NULL.
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
-#' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
-#'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
-#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
-#' @param nlambda Length of the sequence of lambda. Default is 100. 
-#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
-#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
-#' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
-#' @param type           A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are 
-#'                      based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor 
-#'                      and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method 
-#'                      in many applications.
-#' @param cluster        cv.plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in 
-#'                      advance using parallel::makeCluster(). The cluster must then be passed to cv.plmm().
-#' @param nfolds         The number of cross-validation folds. Default is 10.
-#' @param fold           Which fold each observation belongs to. By default, the observations are randomly assigned.
-#' @param seed           You may set the seed of the random number generator in order to obtain reproducible results.
-#' @param returnY        Should cv.plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE, 
-#'                      this will return a matrix in which the element for row i, column j is the fitted value for observation i from 
-#'                      the fold in which observation i was excluded from the fit, at the jth value of lambda.
+#' @param X               Design matrix for model fitting. May include clinical covariates and other non-SNP data.
+#' @param y               Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
+#' @param std_needed      Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
+#'                        By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
+#' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
+#' @param k               An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
+#' @param K               Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
+#' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
+#'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
+#' @param eta_star        Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+#' @param penalty         The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda.min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param nlambda         Length of the sequence of lambda. Default is 100. 
+#' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
+#' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
+#' @param max.iter        Maximum number of iterations (total across entire path). Default is 10000.
+#' @param convex          Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param dfmax           Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
+#' @param penalty.factor  A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param init            Initial values for coefficients. Default is 0 for all columns of X. 
+#' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are 
+#'                        based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor 
+#'                        and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method 
+#'                        in many applications.
+#' @param cluster         cv.plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in 
+#'                        advance using parallel::makeCluster(). The cluster must then be passed to cv.plmm().
+#' @param nfolds          The number of cross-validation folds. Default is 10.
+#' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
+#' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
+#' @param returnY         Should cv.plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE, 
+#'                        this will return a matrix in which the element for row i, column j is the fitted value for observation i from 
+#'                        the fold in which observation i was excluded from the fit, at the jth value of lambda.
 #' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
-#' @param trace          If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
-#' @param ...            Additional arguments to `plmm_fit`
+#' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
+#' @param save_rds        Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result. 
+#' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
+#' @param ...             Additional arguments to `plmm_fit`
 
 #' 
 #' @returns a list with 11 items: 
@@ -112,6 +114,8 @@ cv.plmm <- function(X,
                     returnY=FALSE,
                     returnBiasDetails = FALSE,
                     trace=FALSE,
+                    save_rds = NULL,
+                    return_fit = TRUE,
                     ...) {
   # run checks ------------------------------
   checked_data <- plmm_checks(X = X,
@@ -281,4 +285,28 @@ cv.plmm <- function(X,
     val$Loss <- E
   }
   structure(val, class="cv.plmm")
+  
+  
+  
+  
+  # handle output  
+  if (!is.null(save_rds)){
+    saveRDS(val, save_rds)
+  }  
+  
+  if (is.null(save_rds) & !return_fit){
+    cat("\nYou accidentally left save_rds NULL while setting return_fit = FALSE;
+        to prevent you from losing your work, I am saving the output as cv_plmm_results.rds 
+        in your current working directory (current folder). 
+        \nNext time, make sure to specify your own filepath to the save_rds argument.")
+    
+    rdsfile <- paste0(getwd(),"/cv_plmm_results.rds")
+    saveRDS(val, rdsfile)
+  }
+  
+  if (return_fit){
+    return(val)
+  }
+  
+  
 }

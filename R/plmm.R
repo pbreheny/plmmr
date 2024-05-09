@@ -11,7 +11,10 @@
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
 #' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
-#' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
+#' @param K Similarity matrix used to rotate the data. This should either be:
+#'  (1) a known matrix that reflects the covariance of y, 
+#'  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or 
+#'  (3) a list with components 'd' and 'U', as returned by a previous `plmm()` model fit on the same data. 
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
@@ -29,6 +32,8 @@
 #' @param convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#' @param save_rds Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result. 
+#' @param return_fit Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ... Additional optional arguments to `plmm_checks()`
 #' @returns A list which includes: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
@@ -91,6 +96,8 @@ plmm <- function(X,
                  convex = TRUE,
                  warn = TRUE,
                  trace = FALSE, 
+                 save_rds = NULL,
+                 return_fit = TRUE,
                  ...) {
 
 # run checks ------------------------------
@@ -160,10 +167,28 @@ plmm <- function(X,
     the_final_product <- plmm_format(fit = the_fit,
                                      std_X_details = checked_data$std_X_details,
                                      snp_names = col_names,
-                                     fbm_flag = checked_data$fbm_flag)
+                                     fbm_flag = checked_data$fbm_flag,
+                                     non_genomic = checked_data$non_genomic)
     
     
-  return(the_final_product)
   
-  
+    # handle output  
+    if (!is.null(save_rds)){
+      saveRDS(the_final_product, save_rds)
+    }  
+    
+    if (is.null(save_rds) & !return_fit){
+      cat("\nYou accidentally left save_rds NULL while setting return_fit = FALSE;
+        to prevent you from losing your work, I am saving the output as plmm_results.rds 
+        in your current working directory (current folder). 
+        \nNext time, make sure to specify your own filepath to the save_rds argument.")
+      
+      rdsfile <- paste0(getwd(),"/plmm_results.rds")
+      saveRDS(the_final_product, rdsfile)
+    }
+    
+    if (return_fit){
+      return(the_final_product)
+    }
+    
 }

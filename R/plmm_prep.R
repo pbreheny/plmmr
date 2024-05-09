@@ -87,12 +87,16 @@ plmm_prep <- function(std_X,
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = n)[,order(diag(K), decreasing = TRUE)]
   }
-  # case 3: K is a user-supplied list, as passed from choose_k()
+  # case 3: K is a user-supplied list
   flag3 <- !is.null(K) & ('list' %in% class(K))
   if( flag3) {
-    if (trace) {cat("\nK is a list; will pass SVD components from list to model fitting.")}
-    s <- K$s # no need to adjust singular values by p; choose_k() does this via relatedness_mat()
-    U <- K$U
+    if (trace) {cat("\nK is a list; will pass U,s components from list to model fitting.")}
+    s <- K$s # no need to adjust singular values by p
+    if ('FBM' %in% class(K$U)){
+      U <- K$U[,]
+    } else {
+      U <- K$U
+    }
   }
   # otherwise, need to do eigendecomposition:
   if(sum(c(flag1, flag2, flag3)) == 0){

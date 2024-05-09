@@ -119,7 +119,9 @@ predict.plmm <- function(object,
                            res[,ind+1] <- X[,ind]
                          },
                          a.combine = cbind,
-                         res = newX_with_intcpt)
+                         res = newX_with_intcpt,
+                         ncores = bigstatsr::nb_cores())
+    
     # convert to big.matrix (FBM cannot multiply with dgCMatrix type of beta_vals)
     bm_newX <- fbm2bm(newX_with_intcpt)
     # calculate linear predictor 

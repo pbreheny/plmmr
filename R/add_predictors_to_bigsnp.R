@@ -34,7 +34,8 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                              res[,ind+1] <- X[,ind]
                            },
                            a.combine = cbind,
-                           res = obj$geno_plus_predictors)
+                           res = obj$geno_plus_predictors,
+                           ncores = bigstatsr::nb_cores())
       
       # adjust colnames
       obj$colnames <- c(add_predictor_fam, obj$colnames)
@@ -89,7 +90,8 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                              res[,ind+length(non_gen)] <- X[,ind]
                            },
                            a.combine = cbind,
-                           res = obj$geno_plus_predictors)
+                           res = obj$geno_plus_predictors,
+                           ncores = bigstatsr::nb_cores())
       
       # adjust colnames
       obj$colnames <- c(deparse(substitute(add_predictor_ext)), obj$colnames)
@@ -135,7 +137,8 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                              res[,ind+length(non_gen)] <- X[,ind]
                            },
                            a.combine = cbind,
-                           res = obj$geno_plus_predictors)
+                           res = obj$geno_plus_predictors,
+                           ncores = bigstatsr::nb_cores())
       
       # adjust colnames if applicable 
       if (!is.null(colnames(add_predictor_ext))){

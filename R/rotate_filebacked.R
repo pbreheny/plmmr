@@ -19,7 +19,8 @@ rotate_filebacked <- function(prep, ...){
                                       STATS = w,
                                       "*")},
                               a.combine = cbind,
-                              w = w)
+                              w = w,
+                              ncores = bigstatsr::nb_cores())
   
   # add column of 1s for intercept
   std_X_with_intcpt <- bigstatsr::FBM(init = 1,
@@ -32,8 +33,9 @@ rotate_filebacked <- function(prep, ...){
                          res[,ind+1] <- X[,ind]
                        },
                        a.combine = cbind,
-                       res = std_X_with_intcpt)
-  
+                       res = std_X_with_intcpt,
+                       ncores = bigstatsr::nb_cores())
+
   # rotate X and y
   rot_X <- bigstatsr::FBM(nrow = nrow(wUt), ncol = std_X_with_intcpt$ncol)
   bigstatsr::big_apply(X = std_X_with_intcpt,
@@ -41,17 +43,12 @@ rotate_filebacked <- function(prep, ...){
                                         ind,
                                         wUt,
                                         res){
-                         # TODO: revisit this to improve computational efficiency
-                         for(i in 1:nrow(wUt)){
-                           r <- wUt[i,,drop=FALSE]
-                           v <- bigstatsr::big_cprodVec(X = X, y.row = r)
-                           res[i, ind] <- t(v)
-                         }
-                         
+                         res[,ind] <- wUt %*% X[,ind]
                        },
-                       a.combine = rbind,
+                       a.combine = cbind,
                        wUt = wUt,
-                       res = rot_X)
+                       res = rot_X,
+                       ncores = bigstatsr::nb_cores())
   
   rot_y <- wUt%*%prep$y
   

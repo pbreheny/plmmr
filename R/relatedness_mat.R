@@ -38,7 +38,8 @@ relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...){
                                               FUN = "/")},
                          a.combine = cbind,
                          p = X$ncol,
-                         res = rrm)
+                         res = rrm,
+                         ncores = bigstatsr::nb_cores())
     
   } else {
     if (std){

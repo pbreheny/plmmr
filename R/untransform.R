@@ -7,10 +7,13 @@
 #' @param p  The number of columns in the original design matrix
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
+#' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
+#' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
+#' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
 #' @keywords internal
 
 
-untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
+untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomic){
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -20,12 +23,12 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag){
   # this will create columns of zeros for betas corresponding to singular columns
   if (fbm_flag) {
     untransformed_beta <- Matrix::Matrix(0,
-                                 nrow = (p + 1), # + 1 is for the intercept
+                                 nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
                                  ncol = ncol(untransformed_b1),
                                  sparse = TRUE)
   } else {
     untransformed_beta <- matrix(0,
-                                 nrow = (p + 1), # + 1 is for the intercept
+                                 nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
                                  ncol = ncol(untransformed_b1))
   }
   

@@ -231,11 +231,12 @@ plmm_checks <- function(X,
   if (exists('dat')){
     ret$n <- dat$n
     ret$p <- dat$p
-    ret$non_gen <- dat$non_gen
+    ret$non_genomic <- dat$non_gen
     ret$dat <- dat
   } else {
     ret$n <- n
     ret$p <- p
+    ret$non_genomic <- non_genomic
   }
   
   return(ret)

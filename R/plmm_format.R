@@ -7,7 +7,9 @@
 #'  * 'ns': indicies of nonsingular columns in `std_X`
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`. 
 #' @param snp_names A vector of names for features, passed internally if such names are included with the data `X` passed to `plmm()`
-#' 
+#' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
+#' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
+#' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
 #' @returns A list with the components: 
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit. 
@@ -30,13 +32,14 @@
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #' @keywords internal
 #'
-plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL){
+plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_genomic = NULL){
 
   # get beta values back in original scale; reverse the PRE-ROTATION standardization 
   untransformed_b2 <- untransform(untransformed_b1 = fit$untransformed_b1,
                                   p = fit$p,
                                   std_X_details = std_X_details,
-                                  fbm_flag = fbm_flag)
+                                  fbm_flag = fbm_flag,
+                                  non_genomic = non_genomic)
   
   # give the matrix of beta_values readable names 
   # SNPs (or covariates) on the rows, lambda values on the columns
