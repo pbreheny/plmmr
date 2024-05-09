@@ -22,12 +22,21 @@ relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...){
     if (!std) stop("\nAt this time, standardization cannot be 'turned off' for 
     filebacked data (because of the default behavior of process_plink()).")
     # cross product 
-    cprod <- bigstatsr::big_tcrossprodSelf(X,
-                                           # TODO: figure out why the line below makes the function return all NA values
-                                           # fun.scaling = bigstatsr::as_scaling_fun(scale.col = rep(X$ncol, length(ns)),
-                                           #                                         center.col = rep(0, length(ns))),
-                                           ind.col = ns,
-                                           ...)
+    if (length(ns) %in% 1:(ncol(X)-1)){
+      cprod <- bigstatsr::big_tcrossprodSelf(X,
+                                             # TODO: figure out why the line below makes the function return all NA values
+                                             # fun.scaling = bigstatsr::as_scaling_fun(scale.col = rep(X$ncol, length(ns)),
+                                             #                                         center.col = rep(0, length(ns))),
+                                             ind.col = ns,
+                                             ...)
+    } else {
+      cprod <- bigstatsr::big_tcrossprodSelf(X,
+                                             # TODO: figure out why the line below makes the function return all NA values
+                                             # fun.scaling = bigstatsr::as_scaling_fun(scale.col = rep(X$ncol, length(ns)),
+                                             #                                         center.col = rep(0, length(ns))),
+                                             ...)
+    }
+    
     rrm <- bigstatsr::FBM(cprod$nrow, cprod$ncol)
     # scale by p, the number of columns in the design matrix (including constant features)
     bigstatsr::big_apply(X = cprod,
