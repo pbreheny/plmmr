@@ -391,14 +391,16 @@ to include this in the model as an unpenalized covariate (i.e., we would
 want ‘ancestry’ to always be in the model). Here is how that could
 look:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">race</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
+<code class="sourceCode R"><span><span class="va">X_plus_ancestry</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">race</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">X_plus_ancestry</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ancestry"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">admix_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_plus_ancestry</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
 <span>                   penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
 <span>                   non_genomic <span class="op">=</span> <span class="fl">1</span>, <span class="co"># mark ancestry variable as non-genomic </span></span>
 <span>                   <span class="co"># make the penalty factor 0 to keep the corresponding covariate unpenalized</span></span>
 <span>                   penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit2</span>, idx <span class="op">=</span> <span class="fl">95</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.00077</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.00076</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -415,16 +417,18 @@ often use cross validation. Below is an example of using
 <code>cv.plmm</code> to select a <span class="math inline">\(\lambda\)</span> that minimizes cross-validation
 error:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">race</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
-<span>                    penalty <span class="op">=</span> <span class="st">"lasso"</span>, penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_plus_ancestry</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>                    penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
+<span>                    non_genomic <span class="op">=</span> <span class="fl">1</span>, <span class="co"># mark ancestry variable as non-genomic</span></span>
+<span>                    penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">admix_cv_s</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized model with n=197 and p=101</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.1851):</span></span>
+<span><span class="co">#&gt; lasso-penalized model with n=197 and p=100</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.1848):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.31</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.146</span></span></code></pre></div>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.32</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.147</span></span></code></pre></div>
 <p>We can also plot the cross-validation error (CVE) versus <span class="math inline">\(\lambda\)</span> (on the log scale):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_cv</span><span class="op">)</span></span></code></pre></div>
@@ -459,7 +463,7 @@ from an intercept-only model using mean squared prediction error (MSPE)
 <span><span class="co"># our model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/matmult-methods.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">y_hat</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 1.110391</span></span></code></pre></div>
+<span><span class="co">#&gt; [1,] 1.109475</span></span></code></pre></div>
 <p>We see our model has better predictions than the null</p>
 </div>
 

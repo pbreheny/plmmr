@@ -66,7 +66,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span><span class="va">fit</span>, <span class="va">std_X_details</span>, <span class="va">fbm_flag</span>, snp_names <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span><span class="va">fit</span>, <span class="va">std_X_details</span>, <span class="va">fbm_flag</span>, snp_names <span class="op">=</span> <span class="cn">NULL</span>, non_genomic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -88,6 +88,12 @@
 
 <dt>snp_names</dt>
 <dd><p>A vector of names for features, passed internally if such names are included with the data <code>X</code> passed to <code><a href="plmm.html">plmm()</a></code></p></dd>
+
+
+<dt>non_genomic</dt>
+<dd><p>Optional vector specifying which columns of the design matrix represent features that are <em>not</em> genomic, as these features are excluded from the empirical estimation of genomic relatedness.
+For cases where X is a filepath to an object created by <code><a href="process_plink.html">process_plink()</a></code>, this is handled automatically via the arguments to <code><a href="process_plink.html">process_plink()</a></code>.
+For all other cases, 'non_genomic' defaults to NULL (meaning <code><a href="plmm.html">plmm()</a></code> will assume that all columns of <code>X</code> represent genomic features).</p></dd>
 
 </dl></div>
     <div class="section level2">
