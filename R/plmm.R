@@ -132,7 +132,8 @@ plmm <- function(X,
                           diag_K = checked_data$diag_K,
                           fbm_flag = checked_data$fbm_flag,
                           trace = trace)
-
+  if (trace)(cat("\nEigendecomposition finished at ",
+                 format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       std_X_details = checked_data$std_X_details,
@@ -171,7 +172,8 @@ plmm <- function(X,
                                      non_genomic = checked_data$non_genomic)
     
     
-  
+    if (trace)(cat("\nModel ready at ",
+                   format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
     # handle output  
     if (!is.null(save_rds)){
       saveRDS(the_final_product, save_rds)

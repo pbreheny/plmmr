@@ -108,6 +108,10 @@ plmm_fit <- function(prep,
     stdrot_X <- rot_res$stdrot_X 
     stdrot_X_scale <- rot_res$stdrot_X_scale
   }
+  
+  if (prep$trace)(cat("\nRotation (preconditiong) finished at ", 
+                      format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+  
   # calculate population var without mean 0; will need this for call to ncvfit()
   # this needs to be done for cross validation; once we subset the data, 
   #   this will not be a vector of 1s (remember: plmm does *not* restandardize
@@ -226,7 +230,8 @@ plmm_fit <- function(prep,
     loss <- res$loss
     r <- res$resid
   }
-  
+  if (prep$trace)(cat("\nModel fitting finished at ",
+                      format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
   # eliminate saturated lambda values, if any
   ind <- !is.na(iter)
   iter <- iter[ind]
