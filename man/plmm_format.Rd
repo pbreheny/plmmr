@@ -4,7 +4,7 @@
 \alias{plmm_format}
 \title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
 \usage{
-plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL)
+plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL, non_genomic = NULL)
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
@@ -19,6 +19,10 @@ plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL)
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
 
 \item{snp_names}{A vector of names for features, passed internally if such names are included with the data \code{X} passed to \code{plmm()}}
+
+\item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
+For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
+For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
 }
 \value{
 A list with the components:

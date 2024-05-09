@@ -27,6 +27,8 @@ plmm(
   convex = TRUE,
   warn = TRUE,
   trace = FALSE,
+  save_rds = NULL,
+  return_fit = TRUE,
   ...
 )
 }
@@ -47,7 +49,10 @@ For cases where X is a filepath to an object created by \code{process_plink()}, 
 For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
 For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
 
-\item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().}
+\item{K}{Similarity matrix used to rotate the data. This should either be:
+(1) a known matrix that reflects the covariance of y,
+(2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
+(3) a list with components 'd' and 'U', as returned by a previous \code{plmm()} model fit on the same data.}
 
 \item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.}
@@ -81,6 +86,10 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
+
+\item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
+
+\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 
 \item{...}{Additional optional arguments to \code{plmm_checks()}}
 }

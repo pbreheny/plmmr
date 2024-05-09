@@ -5,10 +5,18 @@
 #'
 #' @param X               Design matrix for model fitting. May include clinical covariates and other non-SNP data.
 #' @param y               Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector. 
-#' @param std_needed      Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
-#'                        By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses. 
+#' @param std_needed      Logical: does the supplied X need to be standardized? Defaults to TRUE. 
+#'                        For data processed from PLINK files, standardization happens in `process_plink()`. 
+#'                        For data supplied as a matrix, standardization happens here in `plmm()`. 
+#'                        If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. 
+#'                        **Note**: failing to standardize data will lead to incorrect analyses. 
+#'                        By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. 
+#'                        For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. 
+#'                        **Note**: failing to standardize data will lead to incorrect analyses. 
 #' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
-#' @param k               An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
+#' @param non_genomic     Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness. 
+#'                        For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
+#'                        For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
 #' @param K               Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -89,7 +97,7 @@ cv.plmm <- function(X,
                     y = NULL,
                     std_needed = TRUE,
                     col_names = NULL,
-                    k = NULL,
+                    non_genomic = NULL,
                     K = NULL,
                     diag_K = NULL,
                     eta_star = NULL,
@@ -120,6 +128,7 @@ cv.plmm <- function(X,
   # run checks ------------------------------
   checked_data <- plmm_checks(X = X,
                               y = y,
+                              non_genomic = non_genomic,
                               std_needed = std_needed,
                               trace = trace,
                               ...)  
@@ -132,7 +141,6 @@ cv.plmm <- function(X,
                       p = checked_data$p,
                       y = checked_data$y,
                       K = checked_data$K,
-                      k = checked_data$k,
                       diag_K = checked_data$diag_K,
                       fbm_flag = checked_data$fbm_flag,
                       trace = trace,
@@ -169,7 +177,8 @@ cv.plmm <- function(X,
   fit_to_return <- plmm_format(fit = fit,
                                std_X_details = checked_data$std_X_details,
                                snp_names = col_names,
-                               fbm_flag = checked_data$fbm_flag)
+                               fbm_flag = checked_data$fbm_flag,
+                               non_genomic = checked_data$non_genomic)
   
   # set up arguments for cv ---------------------------
   cv.args <- fit.args
@@ -279,15 +288,12 @@ cv.plmm <- function(X,
               min1se = min1se,
               lambda.1se = lambda[min1se],
               null.dev=mean(loss.plmm(checked_data$y, rep(mean(checked_data$y), n))))
+  
   if (returnY) val$Y <- Y
   if (returnBiasDetails){
     val$Bias <- Bias
     val$Loss <- E
   }
-  structure(val, class="cv.plmm")
-  
-  
-  
   
   # handle output  
   if (!is.null(save_rds)){
@@ -305,8 +311,7 @@ cv.plmm <- function(X,
   }
   
   if (return_fit){
-    return(val)
+    return(structure(val, class="cv.plmm"))
   }
-  
   
 }

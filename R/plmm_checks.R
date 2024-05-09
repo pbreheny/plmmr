@@ -92,7 +92,9 @@ plmm_checks <- function(X,
     
     # designate the dimensions of the original design matrix 
     n <- nrow(X)
-    p <- ncol(X) 
+    p <- ncol(X) - length(non_genomic) 
+    # Note: p only includes genomic markers (in GWAS context); 
+    # This parallels the behavior of `process_plink()` for filebacked data
     
     # set default column names of X
     if (is.null(col_names) & !is.null(attr(X, "dimnames")[[2]])) {

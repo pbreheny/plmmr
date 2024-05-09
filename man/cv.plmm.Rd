@@ -9,7 +9,7 @@ cv.plmm(
   y = NULL,
   std_needed = TRUE,
   col_names = NULL,
-  k = NULL,
+  non_genomic = NULL,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
@@ -34,6 +34,8 @@ cv.plmm(
   returnY = FALSE,
   returnBiasDetails = FALSE,
   trace = FALSE,
+  save_rds = NULL,
+  return_fit = TRUE,
   ...
 )
 }
@@ -42,12 +44,20 @@ cv.plmm(
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
-\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.
-By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
+\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE.
+For data processed from PLINK files, standardization happens in \code{process_plink()}.
+For data supplied as a matrix, standardization happens here in \code{plmm()}.
+If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
+\strong{Note}: failing to standardize data will lead to incorrect analyses.
+By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}.
+For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
+\strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 
-\item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
+\item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
+For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
+For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().}
 
@@ -103,6 +113,10 @@ the fold in which observation i was excluded from the fit, at the jth value of l
 \item{returnBiasDetails}{Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.}
+
+\item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
+
+\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 
 \item{...}{Additional arguments to \code{plmm_fit}}
 }

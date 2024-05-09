@@ -73,7 +73,9 @@ plot(admix_fit)
 Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). Here is how that could look: 
 
 ```{r}
-admix_fit2 <- plmm(X = cbind(admix$race, admix$X), y = admix$y,
+X_plus_ancestry <- cbind(admix$race, admix$X)
+colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
+admix_fit2 <- plmm(X = X_plus_ancestry, y = admix$y,
                    penalty = "lasso",
                    non_genomic = 1, # mark ancestry variable as non-genomic 
                    # make the penalty factor 0 to keep the corresponding covariate unpenalized
@@ -88,8 +90,10 @@ plot(admix_fit2)
 To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv.plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
-admix_cv <- cv.plmm(X = cbind(admix$race, admix$X), y = admix$y,
-                    penalty = "lasso", penalty.factor = c(0, rep(1, ncol(admix$X))))
+admix_cv <- cv.plmm(X = X_plus_ancestry, y = admix$y,
+                    penalty = "lasso",
+                    non_genomic = 1, # mark ancestry variable as non-genomic
+                    penalty.factor = c(0, rep(1, ncol(admix$X))))
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 ```
