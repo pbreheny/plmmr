@@ -19,6 +19,8 @@
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
 #' @param dfmax Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
+#' @param save_rds  Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result. 
+#' @param return_fit Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ... Additional arguments to `get_data()`
 #'
 #' @keywords internal
@@ -38,6 +40,8 @@ plmm_checks <- function(X,
                         alpha = 1,
                         dfmax = NULL,
                         trace = FALSE,
+                        save_rds = NULL,
+                        return_fit = TRUE,
                         ...){
   # check X types -------------------------------------------------
   if (!any(class(X) %in% c("character", "matrix"))) {
@@ -240,6 +244,8 @@ plmm_checks <- function(X,
     ret$p <- p
     ret$non_genomic <- non_genomic
   }
+  
+  if (trace & !is.null(save_rds)){cat("\nYour results will be saved to ", save_rds)}
   
   return(ret)
   
