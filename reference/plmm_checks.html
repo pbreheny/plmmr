@@ -82,6 +82,8 @@
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  return_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -145,11 +147,19 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>dfmax</dt>
-<dd><p>Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
+<dd><p>Option to be added soon: Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
 
 
 <dt>trace</dt>
 <dd><p>If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.</p></dd>
+
+
+<dt>save_rds</dt>
+<dd><p>Optional: if a filepath and name is specified (e.g., <code>save_rds = "~/dir/my_results.rds"</code>), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.</p></dd>
+
+
+<dt>return_fit</dt>
+<dd><p>Optional: a logical value indicating whether the fitted model should be returned as a <code>plmm</code> object in the current (assumed interactive) session. Defaults to TRUE.</p></dd>
 
 
 <dt>...</dt>
