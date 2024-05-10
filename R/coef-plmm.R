@@ -15,12 +15,9 @@
 #' @export
 #' 
 #' @examples 
-#' \donttest{
 #' fit <- plmm(admix$X, admix$y)
-#' (coef.plmm(fit)[1:10, 1:5])
-#' }
-#' 
-#' 
+#' coef(fit)[1:10, 1:5]
+
 
 coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TRUE, ...){
   # error check for supplied lambda value 
