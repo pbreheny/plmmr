@@ -34,9 +34,7 @@ plmm(
 }
 \arguments{
 \item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
-\itemize{
-\item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-}}
+* Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
@@ -69,7 +67,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{Option to be added soon: Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
@@ -135,6 +133,6 @@ print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
 
 # Note: for examples with large data that are too big to fit in memory, 
-# see the filebacking article 
+# see the article "PLINK files/file-backed matrices" on our website
 
 }
