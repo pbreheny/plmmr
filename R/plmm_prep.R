@@ -146,11 +146,6 @@ plmm_prep <- function(std_X,
     eta <- eta_star
   }
 
-# if FBM, keep U filebacked
-  if(fbm_flag){
-    U <- bigstatsr::as_FBM(U)
-  }
-
   # return values to be passed into plmm_fit(): 
   ret <- structure(list(
     n = n,

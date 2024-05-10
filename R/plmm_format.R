@@ -53,28 +53,33 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_geno
   colnames(fit$linear.predictors) <- lamNames(fit$lambda)
 
   # output 
-  val <- structure(list(beta_vals = untransformed_b2,
-                        rotated_scale_beta_vals = fit$untransformed_b1,
-                        lambda = fit$lambda,
-                        eta = fit$eta,
-                        s = fit$s,
-                        U = fit$U,
-                        K = fit$K,
-                        rot_y = fit$rot_y,
-                        linear.predictors = fit$linear.predictors,
-                        penalty = fit$penalty,
-                        gamma = fit$gamma,
-                        alpha = fit$alpha,
-                        convex.min = fit$convex.min,
-                        loss = fit$loss,
-                        penalty.factor = fit$penalty.factor,
-                        ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE! 
-                        p = fit$p,
-                        n = fit$n, 
-                        std_X_n = fit$std_X_n,
-                        std_X_p = fit$std_X_p,
-                        iter = fit$iter,
-                        converged = fit$converged),
+  ret <- list(beta_vals = untransformed_b2,
+              rotated_scale_beta_vals = fit$untransformed_b1,
+              lambda = fit$lambda,
+              eta = fit$eta,
+              s = fit$s,
+              U = fit$U,
+              rot_y = fit$rot_y,
+              linear.predictors = fit$linear.predictors,
+              penalty = fit$penalty,
+              gamma = fit$gamma,
+              alpha = fit$alpha,
+              convex.min = fit$convex.min,
+              loss = fit$loss,
+              penalty.factor = fit$penalty.factor,
+              ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE! 
+              p = fit$p,
+              n = fit$n, 
+              std_X_n = fit$std_X_n,
+              std_X_p = fit$std_X_p,
+              iter = fit$iter,
+              converged = fit$converged)
+  
+  if (inherits(fit$K, "matrix")){
+    ret$K <- fit$K
+  }
+  
+  val <- structure(ret,
                    class = "plmm")
   
   

@@ -129,7 +129,7 @@ plmm_fit <- function(prep,
                                 ncores = bigstatsr::nb_cores())
 
   }
-  if(prep$trace){cat("\nRotation complete. Beginning model fitting.")}
+  if(prep$trace){cat("\nBeginning model fitting.")}
 
   # set up lambda -------------------------------------------------------
   

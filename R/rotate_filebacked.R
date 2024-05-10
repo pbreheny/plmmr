@@ -11,16 +11,7 @@
 rotate_filebacked <- function(prep, ...){
  
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
-  Ut <- bigstatsr::big_transpose(prep$U)
-  wUt <- bigstatsr::big_apply(Ut,
-                              a.FUN = function(X, ind, w, res){
-                                sweep(x = X[,ind],
-                                      MARGIN = 1,
-                                      STATS = w,
-                                      "*")},
-                              a.combine = cbind,
-                              w = w,
-                              ncores = bigstatsr::nb_cores())
+  wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
   
   # add column of 1s for intercept
   std_X_with_intcpt <- bigstatsr::FBM(init = 1,
