@@ -31,16 +31,14 @@
 #' @export
 #'
 #' @examples
-#' 
-#' \donttest{
 #' temp_dir <- tempdir()
 #' process_delim(file = "colon2.txt",
 #'  data_dir = get_example_data(parent = TRUE),
 #'  rds_dir = temp_dir,
 #'   ind.col = 2:2002)
-#' 
-#' }
-#' 
+#'   
+#' # colon2_rds <- readRDS(paste0(temp_dir, "std_colon2.rds"))
+#' # str(colon2_rds)
 #' 
 process_delim <- function(file,
                       data_dir,

@@ -154,7 +154,7 @@ plmm_fit <- function(prep,
   new.penalty.factor <- c(0, penalty.factor)
   
   # placeholders for results ---------------------------------
-  # setting up 'init' as below is not needed when this is called from plmm or cv.plmm
+  # setting up 'init' as below is not needed when this is called from plmm or cv_plmm
   # as those user-facing functions set up 'init' as a vector of zeroes
   if (is.null(init)){
     init <- rep(0, ncol(stdrot_X))

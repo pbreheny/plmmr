@@ -2,7 +2,7 @@
 % Please edit documentation in R/cvf.R
 \name{cvf}
 \alias{cvf}
-\title{Cross-validation internal function for cv.plmm}
+\title{Cross-validation internal function for cv_plmm}
 \usage{
 cvf(i, fold, type, cv.args, estimated_V, ...)
 }
@@ -15,11 +15,11 @@ cvf(i, fold, type, cv.args, estimated_V, ...)
 
 \item{cv.args}{List of additional arguments to be passed to plmm.}
 
-\item{estimated_V}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv.plmm.}
+\item{estimated_V}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.}
 
 \item{...}{Optional arguments to \code{predict_within_cv}}
 }
 \description{
-Internal function for cv.plmm which calls plmm on a fold subset of the original data.
+Internal function for cv_plmm which calls plmm on a fold subset of the original data.
 }
 \keyword{internal}

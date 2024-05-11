@@ -38,12 +38,12 @@
 #'                        based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor 
 #'                        and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method 
 #'                        in many applications.
-#' @param cluster         cv.plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in 
-#'                        advance using parallel::makeCluster(). The cluster must then be passed to cv.plmm().
+#' @param cluster         cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in 
+#'                        advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
 #' @param nfolds          The number of cross-validation folds. Default is 10.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
-#' @param returnY         Should cv.plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE, 
+#' @param returnY         Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE, 
 #'                        this will return a matrix in which the element for row i, column j is the fitted value for observation i from 
 #'                        the fold in which observation i was excluded from the fit, at the jth value of lambda.
 #' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
@@ -73,27 +73,16 @@
 #' @export
 #' 
 #' @examples 
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y, seed = 321)
-#' \donttest{
-#' cv_s <- summary.cv.plmm(cv_fit, lambda = "1se")
+#' cv_fit <- cv_plmm(X = admix$X, y = admix$y, seed = 321)
+#' cv_s <- summary(cv_fit, lambda = "1se")
 #' print(cv_s)
 #' plot(cv_fit)
 #' 
-#' # filebacked example (file path is specific to current machine)
-#' # since this dataset is < 100Mb, have to specify returnX = FALSE for 
-#' # `get_data()` to return an FBM
-#' my_fb_data <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
-#' 
-#' cv_fb_fit <- cv.plmm(X = my_fb_data, type = 'blup', returnX = FALSE,
-#'  trace = TRUE, nfolds = 3)
-#' 
-#' plot(cv_fb_fit)
-#' summary(cv_fb_fit)
-#' }
+#' # Note: for examples with filebacked data, see the filebacking vignette
+#' # https://pbreheny.github.io/plmmr/articles/filebacking.html
 #' 
 #' 
-#' 
-cv.plmm <- function(X, 
+cv_plmm <- function(X, 
                     y = NULL,
                     std_needed = TRUE,
                     col_names = NULL,
@@ -287,7 +276,7 @@ cv.plmm <- function(X,
               lambda.min=lambda[min],
               min1se = min1se,
               lambda.1se = lambda[min1se],
-              null.dev=mean(loss.plmm(checked_data$y, rep(mean(checked_data$y), n))))
+              null.dev=mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))))
   
   if (returnY) val$Y <- Y
   if (returnBiasDetails){
@@ -311,7 +300,7 @@ cv.plmm <- function(X,
   }
   
   if (return_fit){
-    return(structure(val, class="cv.plmm"))
+    return(structure(val, class="cv_plmm"))
   }
   
 }

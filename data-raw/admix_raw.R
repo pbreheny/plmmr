@@ -35,10 +35,10 @@ true_X <- as.matrix(admix_raw)
 y <- true_X%*%true_beta + noise
 
 # test this data with a couple of the plmm functions
-fit <- cv.plmm(X = admix_raw, y = y, penalty = "lasso") 
+fit <- cv_plmm(X = admix_raw, y = y, penalty = "lasso") 
 summary(fit); fit$fit$beta_vals[,fit$min]
 
-fit2 <- cv.plmm(X = admix_raw, y = y)
+fit2 <- cv_plmm(X = admix_raw, y = y)
 summary(fit2); fit2$fit$beta_vals[,fit2$min]
 
 mfdr(fit$fit)

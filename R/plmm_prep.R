@@ -1,5 +1,5 @@
 #' PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-#' This is an internal function for \code{cv.plmm}
+#' This is an internal function for \code{cv_plmm}
 #'
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
 #' @param std_X_n The number of observations in std_X (integer)

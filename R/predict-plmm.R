@@ -96,7 +96,7 @@ predict.plmm <- function(object,
   
   # prepare other arguments 
   type <- match.arg(type)
-  beta_vals <- coef.plmm(object, lambda, which=idx, drop=FALSE) # includes intercept 
+  beta_vals <- coef(object, lambda, which=idx, drop=FALSE) # includes intercept 
   p <- object$p 
   n <- object$n 
 

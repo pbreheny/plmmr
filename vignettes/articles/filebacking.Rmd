@@ -113,7 +113,7 @@ colon2_fit <- plmm(X = file.path(temp_dir, "std_colon2"),
 In most applications, we will want to fit a model using cross validation 
 
 ```{r}
-cv_fb_fit <- cv.plmm(X = my_fb_data,
+cv_fb_fit <- cv_plmm(X = my_fb_data,
                      type = 'blup',
                      returnX = FALSE,
                      nfolds = 3, # for sake of testing, I made this small. 
@@ -164,7 +164,7 @@ summary(fb_lasso, idx = 50)
 
 
 # with CV 
-cv_fb_lasso <- cv.plmm(X = my_fb_data,
+cv_fb_lasso <- cv_plmm(X = my_fb_data,
                        penalty = "lasso",
                      type = 'blup',
                      nfolds = 3, 

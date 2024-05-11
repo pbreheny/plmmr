@@ -15,17 +15,19 @@
 #' @details This function is a wrapper combining `get_data()` and `fbm2bm()`
 #'
 #' @examples
-#' \donttest{
+#' my_folder <- paste0(tempdir(),"/") # change this to be the directory of your choice...
 #' process_plink(data_dir = get_example_data(parent = TRUE),
+#'   rds_dir = my_folder,
 #'   prefix = "penncath_lite",
 #'   gz = TRUE,
 #'   outfile = "process_penncath",
 #'   # overwrite = TRUE, # uncomment if needed 
-#'   impute_method = "mode")
+#'   impute_method = "mode") # this takes a few seconds...
 #'   
-#'   my_path <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
+#'   my_path <- paste0(my_folder, "/std_penncath_lite")
 #'   bm_data <- get_bm_from_plink(my_path)
-#' }
+#'   str(bm_data)
+#' 
 get_bm_from_plink <- function(path, standardize = TRUE){
   
   rds <- get_data(path = path, returnX = FALSE)
