@@ -111,20 +111,12 @@ Otherwise, the data corresponding to <code>subset_X</code> is returned</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Creating  penncath_lite .rds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Unzipping .gz files - this could take a second</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> There are  1401  observations and  4367  genomic features in the specified data files, representing chromosomes  1  -  22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> There are a total of  3514 SNPs with missing values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Of these,  13  are missing in at least 50% of the samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Will prune out  468  samples/observations with missing phenotype data.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Imputing the missing (genotype) values using  mode  method</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Two levels of parallelism are used. See `?assert_cores`.</span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span>  <span class="va">my_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"/penncath_lite"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">bm_data</span> <span class="op">&lt;-</span> <span class="fu">get_bm_from_plink</span><span class="op">(</span><span class="va">my_path</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: The design matrix is being returned as a file-backed matrix (FBM) -- see bigstatsr::FBM() for details.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Reminder: the X that is returned here is column-standardized.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A copy of the original data is available via the 'genotypes' matrix in the .rds object</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (obj$id_var == "IID") {    row_names &lt;- as.character(obj$fam$sample.ID[obj$complete_phen])}:</span> argument is of length zero</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/home/runner/work/_temp/Library/plmmr/extdata/penncath_lite.rds', probable reason 'No such file or directory'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

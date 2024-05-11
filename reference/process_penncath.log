@@ -1,11 +1,6 @@
 ### Processing PLINK files for PLMM ###
 Logging to  process_penncath.log
 Preprocessing penncath_lite data:
-Overwriting existing files:  penncath_lite .bk/.rds
-
 Creating  penncath_lite .rds
 
 Unzipping .gz files - this could take a second
-There are a total of  3514 SNPs with missing values
-Of these,  13  are missing in at least 50% of the samples
-Imputing the missing values using  mode  method
