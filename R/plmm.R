@@ -119,7 +119,8 @@ plmm <- function(X,
                               ...)  
   
   # prep (SVD)-------------------------------------------------
-  if(trace){cat("\nInput data passed all checks.")}
+  if(trace){cat("\nInput data passed all checks at ",
+                format(Sys.time(), "%Y-%m-%d %H:%M:%S"))}
   
     the_prep <- plmm_prep(std_X = checked_data$std_X,
                           std_X_n = checked_data$std_X_n,
@@ -134,6 +135,7 @@ plmm <- function(X,
                           trace = trace)
   if (trace)(cat("\nEigendecomposition finished at ",
                  format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+    
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       std_X_details = checked_data$std_X_details,

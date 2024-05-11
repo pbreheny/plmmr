@@ -54,8 +54,9 @@ read_plink_files <- function(data_dir, prefix, rds_dir, gz, outfile, overwrite, 
       system(paste0("gunzip -k ", file.path(data_dir, paste0(prefix, "*"))))
     }
     
-    bigsnpr::snp_readBed(bedfile = paste0(data_dir, "/", prefix, ".bed"),
-                         backingfile = paste0(rds_dir, "/", prefix))
+    bigsnpr::snp_readBed2(bedfile = paste0(data_dir, "/", prefix, ".bed"),
+                         backingfile = paste0(rds_dir, "/", prefix),
+                         ncores = bigstatsr::nb_cores())
     
     obj <- bigsnpr::snp_attach(paste0(rds_dir, "/", prefix, ".rds"))
   

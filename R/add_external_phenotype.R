@@ -2,7 +2,7 @@
 #'
 #' @param geno      An object created by `name_and_count_bigsnp()`
 #' @param geno_id   A character string indicating the ID column name in the 'fam' 
-#'                  element of the genotype data list. Defautls to 'sample.ID', equivalent to 'IID' in PLINK.
+#'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK.
 #' @param pheno     A data frame with at least two columns: and ID column and a phenotype column 
 #' @param pheno_id  A string specifying the name of the ID column in `pheno`
 #' @param pheno_col A string specifying the name of the phenotype column in `pheno`. This column will be used as the default `y` argument to 'plmm()'.
@@ -36,9 +36,12 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
     # case 2: geno and pheno data represent the same samples
     geno_keep <- geno
   }
-
+  
   # subset and order pheno data to match genotype data
-  subset_pheno <- dplyr::inner_join(geno_keep$fam, pheno, by = c("sample.ID" = "IID"))
+  subset_pheno <- data.table::merge.data.table(x = data.table::as.data.table(geno_keep$fam),
+                                               by.x = geno_id,
+                                               y = data.table::as.data.table( pheno),
+                                               by.y = pheno_id)
   
   # add new phenotype value to fam file 
   geno_keep$fam$affection <- subset_pheno[[pheno_col]]
