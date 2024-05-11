@@ -25,6 +25,10 @@ The branches of this repo are organized in the following way:
 
   - `master` is the main branch with all the latest updates
 
+  - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets.
+
+  - `update_syntax` is where we are preparing our package for CRAN (improvind documentation, making function names follow a consistent convention, etc.) 
+
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
   - `estimate_eta` is an **archived** branch where we worked through an alternative approach for estimating $\eta$. We're keeping this around for reference as we are writing. 
