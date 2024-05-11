@@ -29,8 +29,8 @@
 #' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max.iter        Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex          Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax           Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
+#' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param penalty.factor  A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X. 
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.

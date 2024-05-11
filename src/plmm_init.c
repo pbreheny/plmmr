@@ -6,9 +6,6 @@
 #include <R_ext/Rdynload.h>
 #include <R_ext/Applic.h>
 
-extern SEXP mfdr_gaussian(SEXP);
-extern SEXP rawfit_gaussian(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-
 // List accessor function
 SEXP getListElement(SEXP list, const char *str) {
   SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
@@ -49,7 +46,6 @@ double g_loss(double *r, int n) {
 
 
 static const R_CallMethodDef CallEntries[] = {
-  {"mfdr_gaussian",  (DL_FUNC) &mfdr_gaussian,   1},
   {NULL, NULL, 0}
 };
 

@@ -12,7 +12,7 @@
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param convex (future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X. 
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
@@ -239,19 +239,6 @@ plmm_fit <- function(prep,
   lambda <- lambda[ind]
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("\nMaximum number of iterations reached")
-
-  if (convex) {
-    convex.min <- convexMin(b = b,
-                             X = stdrot_X,
-                             penalty = penalty,
-                             gamma = gamma, 
-                             l2 = lambda*(1-alpha),
-                             family = 'gaussian',
-                             penalty.factor = new.penalty.factor)
-  } else {
-    convex.min <- NULL
-  }
-
 
   # un-standardizing -------
   # reverse the POST-ROTATION standardization on estimated betas  

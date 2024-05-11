@@ -53,7 +53,7 @@ plmm_fit(
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
+\item{convex}{(future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
 \item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 

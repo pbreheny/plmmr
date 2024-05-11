@@ -46,7 +46,6 @@ reference:
     
   - title: Other model fitting methods (and some helper functions)
     contents: 
-    - convexMin
     - residuals.plmm
     - construct_variance
     
