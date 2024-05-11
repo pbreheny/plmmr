@@ -229,7 +229,7 @@ make sense. For our purposes, we will make up a ‘dummy’ K matrix.</p>
 <p>In most applications, we will want to fit a model using cross
 validation</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cv_fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
+<code class="sourceCode R"><span><span class="va">cv_fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
 <span>                     type <span class="op">=</span> <span class="st">'blup'</span>,</span>
 <span>                     returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                     nfolds <span class="op">=</span> <span class="fl">3</span>, <span class="co"># for sake of testing, I made this small. </span></span>
@@ -277,7 +277,7 @@ lasso model as shown:</p>
 <span></span>
 <span></span>
 <span><span class="co"># with CV </span></span>
-<span><span class="va">cv_fb_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv.plmm.html">cv.plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
+<span><span class="va">cv_fb_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
 <span>                       penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
 <span>                     type <span class="op">=</span> <span class="st">'blup'</span>,</span>
 <span>                     nfolds <span class="op">=</span> <span class="fl">3</span>, </span>

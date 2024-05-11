@@ -78,7 +78,7 @@ NB: this function is simply a wrapper for plmm_prep -&gt; plmm_fit -&gt; plmm_fo
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
+<span>  penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
 <span>  penalty.factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">gamma</span>,</span>
@@ -141,7 +141,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>penalty</dt>
-<dd><p>The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".</p></dd>
+<dd><p>The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".</p></dd>
 
 
 <dt>penalty.factor</dt>
@@ -161,7 +161,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>dfmax</dt>
-<dd><p>Option to be added soon: Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
+<dd><p>(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
 
 
 <dt>lambda.min</dt>
@@ -185,7 +185,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 
 <dt>convex</dt>
-<dd><p>Calculate index for which objective function ceases to be locally convex? Default is TRUE.</p></dd>
+<dd><p>(future idea; not yet incorporated)Calculate index for which objective function ceases to be locally convex? Default is TRUE.</p></dd>
 
 
 <dt>warn</dt>
@@ -239,11 +239,11 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 <span class="r-in"><span><span class="va">fit_admix1</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, std_needed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix1</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=197, p=101 at lambda=0.01401</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized regression model with n=197, p=101 at lambda=0.01401</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  88 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  83 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_admix1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plmm-1.png" alt="" width="700" height="433"></span>
@@ -252,17 +252,18 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 <span class="r-in"><span><span class="va">fit_admix2</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_admix2</span>, idx <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MCP-penalized regression model with n=50, p=101 at lambda=0.0402</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized regression model with n=50, p=101 at lambda=0.0402</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  30 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # of non-zero coefficients:  44 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_admix2</span><span class="op">)</span> <span class="co"># notice: the default penalty is MCP</span></span></span>
 <span class="r-plt img"><img src="plmm-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Note: for examples with large data that are too big to fit in memory, </span></span></span>
 <span class="r-in"><span><span class="co"># see the article "PLINK files/file-backed matrices" on our website</span></span></span>
+<span class="r-in"><span><span class="co"># https://pbreheny.github.io/plmmr/articles/filebacking.html</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

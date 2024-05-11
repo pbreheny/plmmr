@@ -52,7 +52,7 @@
     <loc>/reference/big_std.html</loc>
   </url>
   <url>
-    <loc>/reference/coef.cv.plmm.html</loc>
+    <loc>/reference/coef.cv_plmm.html</loc>
   </url>
   <url>
     <loc>/reference/coef.plmm.html</loc>
@@ -61,13 +61,10 @@
     <loc>/reference/construct_variance.html</loc>
   </url>
   <url>
-    <loc>/reference/convexMin.html</loc>
-  </url>
-  <url>
     <loc>/reference/count_constant_features.html</loc>
   </url>
   <url>
-    <loc>/reference/cv.plmm.html</loc>
+    <loc>/reference/cv_plmm.html</loc>
   </url>
   <url>
     <loc>/reference/cvf.html</loc>
@@ -106,16 +103,13 @@
     <loc>/reference/index_std_X.html</loc>
   </url>
   <url>
-    <loc>/reference/lamNames.html</loc>
+    <loc>/reference/lam_names.html</loc>
   </url>
   <url>
     <loc>/reference/lasso.html</loc>
   </url>
   <url>
     <loc>/reference/log_lik.html</loc>
-  </url>
-  <url>
-    <loc>/reference/loss.plmm.html</loc>
   </url>
   <url>
     <loc>/reference/name_and_count_bigsnp.html</loc>
@@ -136,13 +130,16 @@
     <loc>/reference/plmm_format.html</loc>
   </url>
   <url>
+    <loc>/reference/plmm_loss.html</loc>
+  </url>
+  <url>
     <loc>/reference/plmm_prep.html</loc>
   </url>
   <url>
     <loc>/reference/plmmr-package.html</loc>
   </url>
   <url>
-    <loc>/reference/plot.cv.plmm.html</loc>
+    <loc>/reference/plot.cv_plmm.html</loc>
   </url>
   <url>
     <loc>/reference/plot.plmm.html</loc>
@@ -154,7 +151,7 @@
     <loc>/reference/predict_within_cv.html</loc>
   </url>
   <url>
-    <loc>/reference/print.summary.cv.plmm.html</loc>
+    <loc>/reference/print.summary.cv_plmm.html</loc>
   </url>
   <url>
     <loc>/reference/print.summary.plmm.html</loc>
@@ -199,7 +196,7 @@
     <loc>/reference/subset_bigsnp.html</loc>
   </url>
   <url>
-    <loc>/reference/summary.cv.plmm.html</loc>
+    <loc>/reference/summary.cv_plmm.html</loc>
   </url>
   <url>
     <loc>/reference/summary.plmm.html</loc>
