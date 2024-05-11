@@ -94,7 +94,7 @@ reference:
     - handle_missingness
     - impute_snp_data
     - index_std_X
-    - lamNames
+    - lam_names
     - lasso
     - MCP
     - name_and_count_bigsnp

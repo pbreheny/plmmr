@@ -37,10 +37,10 @@ predict_within_cv <- function(fit,
   # format dim. names
   if(is.null(dim(beta_vals))) {
     # case 1: beta_vals is a vector 
-    names(beta_vals) <- lamNames(fit$lambda)
+    names(beta_vals) <- lam_names(fit$lambda)
   } else {
     # case 2: beta_vals is a matrix
-    colnames(beta_vals) <- lamNames(fit$lambda)
+    colnames(beta_vals) <- lam_names(fit$lambda)
   }
 
   # calculate the estimated mean values for test data 

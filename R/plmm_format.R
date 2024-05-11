@@ -49,8 +49,8 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_geno
   } 
 
   varnames <- c("(Intercept)", snp_names) # add intercept 
-  dimnames(untransformed_b2) <- list(varnames, lamNames(fit$lambda))
-  colnames(fit$linear.predictors) <- lamNames(fit$lambda)
+  dimnames(untransformed_b2) <- list(varnames, lam_names(fit$lambda))
+  colnames(fit$linear.predictors) <- lam_names(fit$lambda)
 
   # output 
   ret <- list(beta_vals = untransformed_b2,
