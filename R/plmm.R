@@ -18,7 +18,7 @@
 #' @param diag_K              Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'                            Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star            Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param penalty             The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param penalty             The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param penalty.factor      A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init                Initial values for coefficients. Default is 0 for all columns of X. 
 #' @param gamma               The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
@@ -82,7 +82,7 @@ plmm <- function(X,
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
-                 penalty = "MCP",
+                 penalty = "lasso",
                  penalty.factor = NULL,
                  init = NULL,
                  gamma,

@@ -1,5 +1,5 @@
 Package: plmmr
-Title: Nonconvex Penalized Linear Mixed Models For Correlated Data 
+Title: Penalized Linear Mixed Models For Correlated Data 
 Version: 3.0.0
 Date: 2024-05-06
 Authors@R: c(

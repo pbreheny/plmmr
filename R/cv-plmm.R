@@ -21,7 +21,7 @@
 #' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE. 
 #'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star        Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param penalty         The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
+#' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
 #' @param lambda.min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
@@ -90,7 +90,7 @@ cv_plmm <- function(X,
                     K = NULL,
                     diag_K = NULL,
                     eta_star = NULL,
-                    penalty = "MCP",
+                    penalty = "lasso",
                     penalty.factor = NULL,
                     type = 'blup',
                     gamma,
