@@ -24,10 +24,10 @@ For a description of the motivation of the functions in this package (along with
 The branches of this repo are organized in the following way: 
 
   - `master` is the main branch with all the latest updates
+  
+  - `update_syntax` is where we are preparing our package for CRAN (improvind documentation, making function names follow a consistent convention, etc.) 
 
   - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets.
-
-  - `update_syntax` is where we are preparing our package for CRAN (improvind documentation, making function names follow a consistent convention, etc.) 
 
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
