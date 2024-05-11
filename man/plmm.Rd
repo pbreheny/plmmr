@@ -34,9 +34,7 @@ plmm(
 }
 \arguments{
 \item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
-\itemize{
-\item Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-}}
+* Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
@@ -135,6 +133,6 @@ print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
 
 # Note: for examples with large data that are too big to fit in memory, 
-# see the filebacking article 
+# see the article "PLINK files/file-backed matrices" on our website
 
 }

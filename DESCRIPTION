@@ -31,7 +31,7 @@ Imports:
     biglasso (>= 1.6.0),
     ncvreg,
     Matrix,
-    dplyr
+    data.table
 Suggests:
     graphics,
     grDevices,

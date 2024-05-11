@@ -10,7 +10,7 @@ add_external_phenotype(geno, geno_id = "sample.ID", pheno, pheno_id, pheno_col)
 \item{geno}{An object created by \code{name_and_count_bigsnp()}}
 
 \item{geno_id}{A character string indicating the ID column name in the 'fam'
-element of the genotype data list. Defautls to 'sample.ID', equivalent to 'IID' in PLINK.}
+element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK.}
 
 \item{pheno}{A data frame with at least two columns: and ID column and a phenotype column}
 

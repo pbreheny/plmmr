@@ -7,6 +7,6 @@
 NULL
 
 ## usethis namespace: start
-#' @importFrom dplyr inner_join
+#' @importFrom data.table merge.data.table
 ## usethis namespace: end
 NULL

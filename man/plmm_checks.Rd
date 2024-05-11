@@ -20,6 +20,8 @@ plmm_checks(
   alpha = 1,
   dfmax = NULL,
   trace = FALSE,
+  save_rds = NULL,
+  return_fit = TRUE,
   ...
 )
 }
@@ -59,6 +61,10 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
+
+\item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
+
+\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 
 \item{...}{Additional arguments to \code{get_data()}}
 }
