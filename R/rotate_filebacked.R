@@ -2,45 +2,29 @@
 #'
 #'@returns a list with 4 items: 
 #'  * rot_X" `X` on the rotated scale, without re-standardizing (an FBM)
-#'  * roty_y: `y` on the rotated scale (a numeric vector)
+#'  * rot_y: `y` on the rotated scale (a numeric vector)
 #'  * stdrot_X: `X` on the rotated scale, re-standardized (an FBM)
 #'  * stdrot_X_scale: numeric vector of values used to standardize `rot_X`
 #'  
 #' @keywords internal
 #' 
 rotate_filebacked <- function(prep, ...){
- 
+ browser()
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
-  
-  # add column of 1s for intercept
-  std_X_with_intcpt <- bigstatsr::FBM(init = 1,
-                              nrow = prep$std_X$nrow,
-                              ncol = prep$std_X$ncol + 1) 
 
-  # fill in other columns with values of std_X
-  bigstatsr::big_apply(prep$std_X,
-                       a.FUN = function(X, ind, res){
-                         res[,ind+1] <- X[,ind]
-                       },
-                       a.combine = cbind,
-                       res = std_X_with_intcpt,
-                       ncores = bigstatsr::nb_cores())
-
-  # rotate X and y
-  rot_X <- bigstatsr::FBM(nrow = nrow(wUt), ncol = std_X_with_intcpt$ncol)
-  bigstatsr::big_apply(X = std_X_with_intcpt,
-                       a.FUN = function(X,
-                                        ind,
-                                        wUt,
-                                        res){
-                         res[,ind] <- wUt %*% X[,ind]
-                       },
-                       a.combine = cbind,
-                       wUt = wUt,
-                       res = rot_X,
-                       ncores = bigstatsr::nb_cores())
+  # rotate X
+  std_X <- fbm2bm(prep$std_X)
+  rot_X <- bigstatsr::FBM(nrow = nrow(wUt), ncol = ncol(std_X)) |> fbm2bm()
+  rot_X_res <- .Call("rotate_filebacked",
+                 std_X@address,
+                 wUt, 
+                 rot_X_init@address, 
+                 as.integer(bigstatsr::nb_cores()),
+                 PACKAGE = 'plmmr')
+  rot_X@address <- rot_X_res[[1]]
   
+  # rotate y
   rot_y <- wUt%*%prep$y
   
   # re-scale rot_X
