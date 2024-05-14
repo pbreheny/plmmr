@@ -13,19 +13,21 @@ rotate_filebacked <- function(prep, ...){
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
-  # rotate X
+  # rotate X (since std_X is big, we do this in C++)
   std_X <- fbm2bm(prep$std_X)
   rot_X <- bigstatsr::FBM(nrow = nrow(wUt), ncol = ncol(std_X)) |> fbm2bm()
   rot_X_res <- .Call("rotate_filebacked",
                  std_X@address,
                  wUt, 
-                 rot_X_init@address, 
+                 rot_X@address, 
                  as.integer(bigstatsr::nb_cores()),
                  PACKAGE = 'plmmr')
   rot_X@address <- rot_X_res[[1]]
   
   # rotate y
   rot_y <- wUt%*%prep$y
+  
+  # Pick up here: decide how to handle intercept and re-scaling
   
   # re-scale rot_X
   rot_X_scale_info <- bigstatsr::big_scale()(rot_X)
