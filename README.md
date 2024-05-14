@@ -25,7 +25,7 @@ The branches of this repo are organized in the following way:
 
   - `master` is the main branch with all the latest updates
   
-  - `update_syntax` is where we are preparing our package for CRAN (improvind documentation, making function names follow a consistent convention, etc.) 
+  - `rework_intercept` is where we are revising the way we are handling the intercept in light of some new theoretical insights... more on this later.
 
   - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets.
 
