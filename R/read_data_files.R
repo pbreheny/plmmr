@@ -23,16 +23,16 @@ read_data_files <- function(file, data_dir, rds_dir, ind.col, outfile, overwrite
     if (overwrite){
       # notify 
       cat("\nOverwriting existing files: ", prefix, ".bk/.rds\n",
-          file = outfile, append = TRUE)
+          file = outfile, append = TRUE, sep='')
       
       if (!quiet){
-        cat("\nOverwriting existing files: ", prefix, ".bk/.rds\n")
+        cat("\nOverwriting existing files: ", prefix, ".bk/.rds\n", sep='')
       }
       
-      # overwrite existing files 
-      system(paste0("rm ", bk_path))
-      system(paste0("rm ", std_bk_path))
-      system(paste0("rm ", path))
+      # overwrite existing files
+      file.remove(bk_path)
+      file.remove(std_bk_path)
+      file.remove(path)
     } else {
       stop("\nThere are existing .rds and/or .bk files in the specified directory.  
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'. 

@@ -202,8 +202,8 @@ process_plink <- function(data_dir,
       complete_phen = step7$complete_phen,
       id_var = step7$id_var
     )
-    system(paste0("rm ", rds_dir, "/", prefix, "*.rds"))
-    system(paste0("rm ", rds_dir, "/", prefix, "*.bk"))
+    file.remove(paste0(rds_dir, "/", prefix, "*.rds"))
+    file.remove(paste0(rds_dir, "/", prefix, "*.bk"))
     saveRDS(ret, paste0(rds_dir, "/std_", prefix, ".rds"))
   }
 
