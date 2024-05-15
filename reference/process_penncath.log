@@ -1,4 +1,4 @@
 ### Processing PLINK files for PLMM ###
 Logging to  process_penncath.log
 Preprocessing penncath_lite data:
-Creating  penncath_lite .rds
+Creating penncath_lite.rds
