@@ -30,16 +30,21 @@ A function to convert the output of \code{process_plink()} into a \code{big.matr
 This function is a wrapper combining \code{get_data()} and \code{fbm2bm()}
 }
 \examples{
+\dontrun{
 my_folder <- paste0(tempdir(),"/") # change this to be the directory of your choice...
-process_plink(data_dir = get_example_data(parent = TRUE),
+
+process_plink(
+  data_dir = get_example_data(parent = TRUE), # assumes you have unzipped the data
   rds_dir = my_folder,
   prefix = "penncath_lite",
   outfile = "process_penncath",
-  # overwrite = TRUE, # uncomment if needed 
+  # overwrite = TRUE, # uncomment if needed
   impute_method = "mode") # this takes a few seconds...
-  
+
   my_path <- paste0(my_folder, "/std_penncath_lite")
   bm_data <- get_bm_from_plink(my_path)
   str(bm_data)
-
+}
+# for more details and examples, see the article on analyzing filebacked data:
+# https://pbreheny.github.io/plmmr/articles/filebacking.html
 }
