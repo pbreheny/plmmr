@@ -31,13 +31,11 @@ setup_lambda <- function(X, y, alpha, lambda.min, nlambda, penalty.factor, inter
     p <- X$ncol 
   }
 
-  # identify which variables (e.g. SNPs) to penalize 
-  penalty.factor <- c(0, penalty.factor) 
-  # NB: don't penalize the intercept!
+  # identify which elements to penalize
   p_ind <- which(penalty.factor != 0) # p = penalized
   # np_ind <- which(penalty.factor == 0) # np = not penalized 
   # set up a fit using non-penalized covariates -- use this to derive residuals 
-  if (length(p_ind) != (p-1)) { # case 1: not all `p` columns are to be penalized
+  if (length(p_ind) != (p)) { # case 1: not all `p` columns are to be penalized
     fit <- stats::glm(y ~ -1 + X[, -p_ind, drop = FALSE], family='gaussian')
   } else { # case 2: all columns are penalized (here, intercept is the only 'np_ind')
     fit <- stats::glm(y ~ -1 + X[, 1, drop = FALSE], family='gaussian')
