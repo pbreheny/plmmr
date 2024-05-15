@@ -155,7 +155,7 @@ plmm_prep <- function(std_X,
     y = y,
     std_X = std_X,
     y = y,
-    K = K,
+    K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())
     s = s,
     U = U,
     eta = eta, # carry eta over to fit

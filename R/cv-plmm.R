@@ -74,7 +74,7 @@
 #' 
 #' @examples 
 #' cv_fit <- cv_plmm(X = admix$X, y = admix$y, seed = 321)
-#' cv_s <- summary(cv_fit, lambda = "1se")
+#' cv_s <- summary(cv_fit)
 #' print(cv_s)
 #' plot(cv_fit)
 #' 
