@@ -2,5 +2,3 @@
 Logging to  process_penncath.log
 Preprocessing penncath_lite data:
 Creating  penncath_lite .rds
-
-Unzipping .gz files - this could take a second

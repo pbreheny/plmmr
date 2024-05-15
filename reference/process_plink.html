@@ -79,7 +79,6 @@
 <span>  pheno_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pheno_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  gz <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  add_predictor_fam <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -147,10 +146,6 @@ Note: for data coming from PLINK, no missing values of the phenotype are allowed
 
 <dt>quiet</dt>
 <dd><p>Logical: should messages to be printed to the console be silenced? Defaults to FALSE</p></dd>
-
-
-<dt>gz</dt>
-<dd><p>Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.</p></dd>
 
 
 <dt>outfile</dt>
@@ -228,17 +223,15 @@ files; in subsequent data analysis/scripts, <code><a href="get_data.html">get_da
 <span class="r-in"><span><span class="fu">process_plink</span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="co"># reads data that ships with plmmr</span></span></span>
 <span class="r-in"><span>              rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span></span>
 <span class="r-in"><span>              prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span></span>
-<span class="r-in"><span>              gz <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>              outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span></span>
 <span class="r-in"><span>              overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>              impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Logging to process_penncath.log</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Preprocessing penncath_lite data:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> It looks like your files are zipped -- please unzip them before calling process_plink().</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Creating  penncath_lite .rds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Unzipping .gz files - this could take a second</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Two levels of parallelism are used. See `?assert_cores`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> File '/home/runner/work/_temp/Library/plmmr/extdata/penncath_lite.bed' doesn't exist.</span>
 <span class="r-in"><span>              </span></span>
 <span class="r-in"><span> <span class="co"># pen &lt;- get_data(file.path(temp_dir, "std_penncath_lite"))             </span></span></span>
 <span class="r-in"><span> <span class="co"># str(pen)</span></span></span>
