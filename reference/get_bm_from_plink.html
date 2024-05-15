@@ -98,27 +98,23 @@ Otherwise, the data corresponding to <code>subset_X</code> is returned</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">my_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"/"</span><span class="op">)</span> <span class="co"># change this to be the directory of your choice...</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">my_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,<span class="st">"/"</span><span class="op">)</span> <span class="co"># change this to be the directory of your choice...</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="process_plink.html">process_plink</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data_dir <span class="op">=</span> <span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="co"># assumes you have unzipped the data</span></span></span>
 <span class="r-in"><span>  rds_dir <span class="op">=</span> <span class="va">my_folder</span>,</span></span>
 <span class="r-in"><span>  prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span></span>
 <span class="r-in"><span>  outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span></span>
-<span class="r-in"><span>  <span class="co"># overwrite = TRUE, # uncomment if needed </span></span></span>
+<span class="r-in"><span>  <span class="co"># overwrite = TRUE, # uncomment if needed</span></span></span>
 <span class="r-in"><span>  impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span> <span class="co"># this takes a few seconds...</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Logging to process_penncath.log</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Preprocessing penncath_lite data:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It looks like your files are zipped -- please unzip them before calling process_plink().</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Creating  penncath_lite .rds</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> File '/home/runner/work/_temp/Library/plmmr/extdata/penncath_lite.bed' doesn't exist.</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">my_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">my_folder</span>, <span class="st">"/std_penncath_lite"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">bm_data</span> <span class="op">&lt;-</span> <span class="fu">get_bm_from_plink</span><span class="op">(</span><span class="va">my_path</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/tmp/RtmpMc07MW//std_penncath_lite.rds', probable reason 'No such file or directory'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">bm_data</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'bm_data' not found</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># for more details and examples, see the article on analyzing filebacked data:</span></span></span>
+<span class="r-in"><span><span class="co"># https://pbreheny.github.io/plmmr/articles/filebacking.html</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
