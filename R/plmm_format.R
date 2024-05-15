@@ -48,7 +48,7 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_geno
     snp_names <- paste("Var", 1:(fit$p + length(non_genomic)), sep="") 
   } 
 
-  varnames <- c("(Intercept)", snp_names) # add intercept 
+  varnames <- c("(Intercept)", snp_names) # add intercept label
   dimnames(untransformed_b2) <- list(varnames, lam_names(fit$lambda))
   colnames(fit$linear.predictors) <- lam_names(fit$lambda)
 

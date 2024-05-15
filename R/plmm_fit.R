@@ -94,13 +94,14 @@ plmm_fit <- function(prep,
   if('matrix' %in% class(prep$std_X)) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
-    rot_X <- wUt %*% cbind(1, prep$std_X)
+    rot_X <- wUt %*% prep$std_X
     rot_y <- wUt %*% prep$y
+    
     # re-standardize rot_X
-    stdrot_X_temp <- scale_varp(rot_X[,-1, drop = FALSE]) # NB: we're not scaling the intercept 
-    stdrot_X_noInt <- stdrot_X_temp$scaled_X
-    stdrot_X <- cbind(rot_X[,1, drop = FALSE], stdrot_X_noInt) # re-attach intercept
-    stdrot_X_scale <- stdrot_X_temp$scale_vals
+    stdrot_X_scaling <- scale_varp(rot_X)
+    stdrot_X <- stdrot_X_scaling$scaled_X
+    stdrot_X_scale <- stdrot_X_scaling$scale_vals
+    
   } else if ('FBM' %in% class(prep$std_X)){
     rot_res <- rotate_filebacked(prep) # this is quite involved, so I put this in its own function
     rot_X <- rot_res$rot_X
@@ -150,9 +151,6 @@ plmm_fit <- function(prep,
     user.lambda <- TRUE
   }
   
-  # make sure to *not* penalize the intercept term 
-  new.penalty.factor <- c(0, penalty.factor)
-  
   # placeholders for results ---------------------------------
   # setting up 'init' as below is not needed when this is called from plmm or cv_plmm
   # as those user-facing functions set up 'init' as a vector of zeroes
@@ -171,6 +169,10 @@ plmm_fit <- function(prep,
                                         center = rep(0, ncol(stdrot_X)),
                                         scale = rep(1, ncol(stdrot_X)),
                                         ncores = bigstatsr::nb_cores())
+    
+    
+    # make sure to *not* penalize the intercept term 
+    new.penalty.factor <- c(0, penalty.factor)
   }
   
   iter <- integer(nlambda)
@@ -194,7 +196,7 @@ plmm_fit <- function(prep,
                             lambda= lam,
                             eps = eps, 
                             max.iter = max.iter,
-                            penalty.factor = new.penalty.factor,
+                            penalty.factor = penalty.factor,
                             warn = warn)
       b[, ll] <- init <- res$beta
       linear.predictors[,ll] <- stdrot_X%*%(res$beta)
@@ -242,14 +244,15 @@ plmm_fit <- function(prep,
 
   # un-standardizing -------
   # reverse the POST-ROTATION standardization on estimated betas  
-  untransformed_b1 <- b # create placeholder vector
-
-  untransformed_b1[-1,] <- sweep(x = b[-1, , drop=FALSE], 
+  # untransformed_b1 <- b # create placeholder
+  untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
+  # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work. 
+  untransformed_b1[1,] <- mean(prep$y) 
+  untransformed_b1[-1,] <- sweep(x = b, 
                                  # un-scale the non-intercept values & fill in the placeholder
                                  MARGIN = 1, # beta values are on rows 
                                  STATS = stdrot_X_scale,
                                  FUN = "/")
-  
 
   ret <- structure(list(
     n = prep$n,
@@ -272,7 +275,7 @@ plmm_fit <- function(prep,
     converged = converged, 
     loss = loss, 
     penalty = penalty, 
-    penalty.factor = new.penalty.factor,
+    # penalty.factor = ifelse(exists('new.penalty.factor'), new.penalty.factor, penalty.factor),
     gamma = gamma,
     alpha = alpha,
     ns = prep$ns,
@@ -283,6 +286,12 @@ plmm_fit <- function(prep,
     warn = warn,
     init = init,
     trace = prep$trace)) 
+  
+  if (exists('new.penalty.factor')) {
+    ret$penalty.factor <- new.penalty.factor
+  } else {
+    ret$penalty.factor <- penalty.factor
+  }
   
   return(ret)
   

@@ -58,9 +58,8 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomi
     
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$center[std_X_details$ns],
-                                            untransformed_b2)
-    
+    untransformed_beta[1,] <- a 
+
   }
   
   if (!is.null(std_X_details$X_colnames)) {
