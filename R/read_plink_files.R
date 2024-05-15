@@ -45,15 +45,12 @@ read_plink_files <- function(data_dir, prefix, rds_dir, outfile, overwrite, quie
   }
 
   # create the RDS file  ------------------------
-  cat("\nCreating ", prefix, ".rds\n", file = outfile, append = TRUE)
-  if(!quiet){
-    cat("\nCreating ", prefix, ".rds\n")
-  }
+  cat("\nCreating ", prefix, ".rds\n", file = outfile, append = TRUE, sep='')
+  if (!quiet) cat("\nCreating ", prefix, ".rds\n", sep='')
 
-
-    bigsnpr::snp_readBed2(bedfile = paste0(data_dir, "/", prefix, ".bed"),
-                          backingfile = paste0(rds_dir, "/", prefix),
-                          ncores = bigstatsr::nb_cores())
+  bigsnpr::snp_readBed2(bedfile = paste0(data_dir, "/", prefix, ".bed"),
+                        backingfile = paste0(rds_dir, "/", prefix),
+                        ncores = bigstatsr::nb_cores())
 
   obj <- bigsnpr::snp_attach(paste0(rds_dir, "/", prefix, ".rds"))
 
