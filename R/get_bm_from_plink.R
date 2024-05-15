@@ -19,7 +19,6 @@
 #' process_plink(data_dir = get_example_data(parent = TRUE),
 #'   rds_dir = my_folder,
 #'   prefix = "penncath_lite",
-#'   gz = TRUE,
 #'   outfile = "process_penncath",
 #'   # overwrite = TRUE, # uncomment if needed 
 #'   impute_method = "mode") # this takes a few seconds...

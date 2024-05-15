@@ -111,8 +111,8 @@ process_delim <- function(file,
   saveRDS(std_X_list, file.path(rds_dir, paste0("std_", prefix, ".rds")))
   
   # cleanup --------------------------------------------------------------------
-    system(paste0("rm ", rds_dir, "/", prefix, ".rds"))
-    system(paste0("rm ", rds_dir, "/", prefix, ".bk"))
+    file.remove(paste0(rds_dir, "/", prefix, ".rds"))
+    file.remove(paste0(rds_dir, "/", prefix, ".bk"))
 
   if(!quiet){cat("\nDone with standardization. 
                  Processed files now saved as .rds object.")}
