@@ -22,7 +22,6 @@
 #'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
 #'                            (2) prune missing values, or (3) impute missing values. 
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
-#' @param gz                  Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.
 #' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc. 
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
@@ -80,7 +79,6 @@
 #' process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
 #'               rds_dir = temp_dir,
 #'               prefix = "penncath_lite",
-#'               gz = TRUE,
 #'               outfile = "process_penncath",
 #'               overwrite = TRUE,
 #'               impute_method = "mode")
@@ -101,7 +99,6 @@ process_plink <- function(data_dir,
                           pheno_id = NULL,
                           pheno_name = NULL,
                           quiet = FALSE,
-                          gz = FALSE,
                           outfile,
                           overwrite = FALSE,
                           add_predictor_fam = NULL,
@@ -126,7 +123,7 @@ process_plink <- function(data_dir,
   }
 
   # read in PLINK files --------------------------------
-  plink_obj <- read_plink_files(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet)
+  plink_obj <- read_plink_files(data_dir, prefix, rds_dir, outfile, overwrite, quiet)
 
   # add external phenotype, if needed -----------------
   if (id_var == "IID"){
@@ -202,8 +199,8 @@ process_plink <- function(data_dir,
       complete_phen = step7$complete_phen,
       id_var = step7$id_var
     )
-    system(paste0("rm ", rds_dir, "/", prefix, "*.rds"))
-    system(paste0("rm ", rds_dir, "/", prefix, "*.bk"))
+    file.remove(paste0(rds_dir, "/", prefix, "*.rds"))
+    file.remove(paste0(rds_dir, "/", prefix, "*.bk"))
     saveRDS(ret, paste0(rds_dir, "/std_", prefix, ".rds"))
   }
 

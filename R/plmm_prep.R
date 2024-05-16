@@ -10,28 +10,28 @@
 #' @param y Continuous outcome vector.
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`. 
+#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`. 
+#' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
 #'
-#' @returns List with these components: 
+#' @returns List with these components:
 #' * n: the number of rows in the original design matrix
-#' * p: the number of columns in the original design matrix 
+#' * p: the number of columns in the original design matrix
 #' * y: The vector of outcomes
-#' * std_X: standardized design matrix 
-#' * std_X_details: a list with 2 vectors: 
+#' * std_X: standardized design matrix
+#' * std_X_details: a list with 2 vectors:
 #'    * 'center' (values used to center X)
 #'    * 'scale' (values used to scale X)
-#' * s: vector with the eigenvalues of K 
-#' * U: the eigenvectors of K (same as left singular values of X). 
+#' * s: vector with the eigenvalues of K
+#' * U: the eigenvectors of K (same as left singular values of X).
 #' * ns: the indices for the nonsingular values of X
-#' * penalty.factor: the penalty factors for the penalized non-singular values 
-#' * snp_names: formatted column names of the design matrix 
+#' * penalty.factor: the penalty factors for the penalized non-singular values
+#' * snp_names: formatted column names of the design matrix
 #'
 #' @keywords internal
-#' 
+
 plmm_prep <- function(std_X,
                       std_X_n,
                       std_X_p,
@@ -45,35 +45,35 @@ plmm_prep <- function(std_X,
                       eta_star = NULL,
                       fbm_flag,
                       penalty.factor = rep(1, ncol(std_X)),
-                      trace = NULL, 
+                      trace = NULL,
                       ...){
-  
-  
+
+
   ## coersion
   U <- s <- eta <- NULL
-  
+
   if(is.null(k)){
     trunc_flag <- FALSE
   }
-  
+
   if(!is.null(k)){
-    
+
     if(k < min(std_X_n, std_X_p)){
       trunc_flag <- TRUE
     } else {
-      stop("\nk value is out of bounds. 
-         \nIf specified, k must be an integer in the range from 1 to min(nrow(std_X), ncol(std_X)). 
+      stop("\nk value is out of bounds.
+         \nIf specified, k must be an integer in the range from 1 to min(nrow(std_X), ncol(std_X)).
          \nwhere std_X does not include singular columns. For help detecting singularity,
          \nsee ncvreg::std()")
     }
-    
+
   }
-  
+
   # set default: if diag_K not specified, set to false
   if(is.null(diag_K)){diag_K <- FALSE}
- 
-  # handle the cases where no decomposition is needed: 
-  # case 1: K is the identity matrix 
+
+  # handle the cases where no decomposition is needed:
+  # case 1: K is the identity matrix
   flag1 <- diag_K & is.null(K)
   if(flag1){
     if (trace) {(cat("\nUsing identity matrix for K."))}
@@ -99,54 +99,54 @@ plmm_prep <- function(std_X,
     }
   }
   # otherwise, need to do eigendecomposition:
-  if(sum(c(flag1, flag2, flag3)) == 0){
-    if(trace){cat("\nStarting decomposition.")}
+  if (sum(c(flag1, flag2, flag3)) == 0) {
+    if (trace) {cat("\nStarting decomposition.")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
-    if(is.null(K) & is.null(s)){
-      # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases 
-      
-        if(trace){cat("\nCalculating the eigendecomposition of K")}
+    if (is.null(K) & is.null(s)) {
+      # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
-        if (identical(genomic,1:std_X_p)) {
-          # if all columns are genomic, no need to filter
-          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag) 
-        } else {
-          eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic) 
-        }
-        K <- eigen_res$K
-        s <- eigen_res$s
-        U <- eigen_res$U
-      
+      if (trace) cat("\nCalculating the eigendecomposition of K")
+
+      if (identical(genomic,1:std_X_p)) {
+        # if all columns are genomic, no need to filter
+        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag)
+      } else {
+        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic)
+      }
+      K <- eigen_res$K
+      s <- eigen_res$s
+      U <- eigen_res$U
+
     } else {
-      # last case: K is a user-supplied matrix 
+      # last case: K is a user-supplied matrix
       eigen_res <- eigen(K)
       s <- eigen_res$values*(1/p) # note: our definition of the RRM averages over the number of features
       U <- eigen_res$vectors
     }
-    
+
   }
-  
+
   # error check: what if the combination of args. supplied was none of the SVD cases above?
   if (is.null(s) | is.null(U)){
     stop("\nSomething is wrong in the SVD/eigendecomposition.
-    \nThe combination of supplied arguments does not match any cases handled in 
+    \nThe combination of supplied arguments does not match any cases handled in
          \n svd_X(), the internal function called by plmm() via plmm_prep().
          \n Re-examine the supplied arguments -- here are some common mistakes:
-         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'. 
+         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'.
          \n \t \t *If you used choose_k(), make sure you are supplying the 'svd_K' element returned from that function's result as the 'K' here.*
          \n \tDid you intend to set diag_K = TRUE?
          \n \tDid you set diag_K = TRUE and specifiy a k value at the same time? This combination of arguments is incompatible.")
   }
- 
+
   # estimate eta if needed
   if (is.null(eta_star)) {
-    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = y) 
+    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = y)
   } else {
     # otherwise, use the user-supplied value (this option is mainly for simulation)
     eta <- eta_star
   }
 
-  # return values to be passed into plmm_fit(): 
+  # return values to be passed into plmm_fit():
   ret <- structure(list(
     n = n,
     p = p,
@@ -155,15 +155,11 @@ plmm_prep <- function(std_X,
     y = y,
     std_X = std_X,
     y = y,
-    K = K,
+    K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())
     s = s,
     U = U,
-    eta = eta, # carry eta over to fit 
+    eta = eta, # carry eta over to fit
     trace = trace))
-  
- 
+
   return(ret)
-  
-  
-  
 }
