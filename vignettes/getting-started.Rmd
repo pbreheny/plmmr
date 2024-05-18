@@ -87,10 +87,10 @@ plot(admix_fit2)
 
 ## Cross validation 
 
-To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv.plmm` to select a $\lambda$ that minimizes cross-validation error: 
+To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
-admix_cv <- cv.plmm(X = X_plus_ancestry, y = admix$y,
+admix_cv <- cv_plmm(X = X_plus_ancestry, y = admix$y,
                     penalty = "lasso",
                     non_genomic = 1, # mark ancestry variable as non-genomic
                     penalty.factor = c(0, rep(1, ncol(admix$X))))

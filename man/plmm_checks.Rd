@@ -13,7 +13,7 @@ plmm_checks(
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-  penalty = c("MCP", "SCAD", "lasso"),
+  penalty = "lasso",
   penalty.factor = NULL,
   init = NULL,
   gamma,
@@ -50,7 +50,9 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X.
+The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
+In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
@@ -58,7 +60,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{Option to be added soon: Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 

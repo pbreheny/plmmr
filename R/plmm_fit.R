@@ -8,61 +8,61 @@
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
 #' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
-#' @param nlambda Length of the sequence of lambda. Default is 100. 
+#' @param nlambda Length of the sequence of lambda. Default is 100.
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
+#' @param convex (future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param init Initial values for coefficients. Default is 0 for all columns of X. 
+#' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
-#' @returns  A list with these components: 
+#' @returns  A list with these components:
 #'   * n: # of rows in X
 #'   * p: # of columns in X (including constant features)
-#'   * y: outcome on original scale 
+#'   * y: outcome on original scale
 #'   * std_X_details: list with 'center' and 'scale' vectors, same as `plmm_prep()`
 #'   * s: eigenvalues of K
 #'   * U: eigenvectors of K
-#'   * rot_X: X on the rotated (i.e., transformed) scale. 
+#'   * rot_X: X on the rotated (i.e., transformed) scale.
 #'    Note that the dimensions of `rot_X` are likely to be different than those of X.
-#'   * rot_y: y on the rotated scale 
-#'   * stdrot_X: X on the rotated scale once it has been re-standardized. 
-#'   * lambda: vector of tuning parameter values 
+#'   * rot_y: y on the rotated scale
+#'   * stdrot_X: X on the rotated scale once it has been re-standardized.
+#'   * lambda: vector of tuning parameter values
 #'   * b: the coefficients estimated on the scale of `stdrot_X`
 #'   * untransformed_b1: the coefficients estimated on the scale of `std_X`
-#'   * linear.predictors: the product of `stdrot_X` and `b` 
+#'   * linear.predictors: the product of `stdrot_X` and `b`
 #'    (linear predictors on the transformed and restandardized scale)
-#'   * eta: a number (double) between 0 and 1 representing the estimated 
-#'    proportion of the variance in the outcome attributable to population/correlation 
+#'   * eta: a number (double) between 0 and 1 representing the estimated
+#'    proportion of the variance in the outcome attributable to population/correlation
 #'    structure.
-#'   * iter: numeric vector with the number of iterations needed in model fitting 
+#'   * iter: numeric vector with the number of iterations needed in model fitting
 #'    for each value of `lambda`
-#'   * converged: vector of logical values indicating whether the model fitting 
+#'   * converged: vector of logical values indicating whether the model fitting
 #'    converged at each value of `lambda`
-#'   * loss: vector with the numeric values of the loss at each value of `lambda` 
+#'   * loss: vector with the numeric values of the loss at each value of `lambda`
 #'    (calculated on the ~rotated~ scale)
-#'   * penalty: character string indicating the penalty with which the model was 
+#'   * penalty: character string indicating the penalty with which the model was
 #'    fit (e.g., 'MCP')
-#'   * penalty.factor: vector of indicators corresponding to each predictor, 
-#'    where 1 = predictor was penalized. 
-#'   * gamma: numeric value indicating the tuning parameter used for the SCAD or 
+#'   * penalty.factor: vector of indicators corresponding to each predictor,
+#'    where 1 = predictor was penalized.
+#'   * gamma: numeric value indicating the tuning parameter used for the SCAD or
 #'    lasso penalties was used. Not relevant for lasso models.
-#'   * alpha: numeric value indicating the elastic net tuning parameter. 
+#'   * alpha: numeric value indicating the elastic net tuning parameter.
 #'   * ns: the indices for the nonsingular values of X
 #'   * snp_names: formatted column names of the design matrix
-#'   * nlambda: number of lambda values used in model fitting 
-#'   * eps: tolerance ('epsilon') used for model fitting 
-#'   * max.iter: max. number of iterations per model fit 
-#'   * warn: logical - should warnings be given if model fit does not converge? 
-#'   * init: initial values for model fitting 
+#'   * nlambda: number of lambda values used in model fitting
+#'   * eps: tolerance ('epsilon') used for model fitting
+#'   * max.iter: max. number of iterations per model fit
+#'   * warn: logical - should warnings be given if model fit does not converge?
+#'   * init: initial values for model fitting
 #'   * trace: logical - should messages be printed to the console while models are fit?
-#' 
-#' @keywords internal 
+#'
+#' @keywords internal
 #'
 
-plmm_fit <- function(prep, 
+plmm_fit <- function(prep,
                      std_X_details,
                      eta_star,
                      penalty.factor,
@@ -87,52 +87,44 @@ plmm_fit <- function(prep,
   if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
-  
+
   if(prep$trace){cat("\nBeginning rotation ('preconditioning').")}
 
   # rotate data ----------------------------------------------------------------
   if('matrix' %in% class(prep$std_X)) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
-    rot_X <- wUt %*% cbind(1, prep$std_X)
+    rot_X <- wUt %*% prep$std_X
     rot_y <- wUt %*% prep$y
+
     # re-standardize rot_X
-    stdrot_X_temp <- scale_varp(rot_X[,-1, drop = FALSE]) # NB: we're not scaling the intercept 
-    stdrot_X_noInt <- stdrot_X_temp$scaled_X
-    stdrot_X <- cbind(rot_X[,1, drop = FALSE], stdrot_X_noInt) # re-attach intercept
-    stdrot_X_scale <- stdrot_X_temp$scale_vals
+    stdrot_X_scaling <- scale_varp(rot_X)
+    stdrot_X <- stdrot_X_scaling$scaled_X
+    stdrot_X_scale <- stdrot_X_scaling$scale_vals
+
   } else if ('FBM' %in% class(prep$std_X)){
-    rot_res <- rotate_filebacked(prep) # this is quite involved, so I put this in its own function
-    rot_X <- rot_res$rot_X
+    rot_res <- rotate_filebacked(prep)
     rot_y <- rot_res$rot_y
-    stdrot_X <- rot_res$stdrot_X 
+    stdrot_X <- rot_res$stdrot_X
     stdrot_X_scale <- rot_res$stdrot_X_scale
+    xtx <- rot_res$xtx
   }
-  
-  if (prep$trace)(cat("\nRotation (preconditiong) finished at ", 
+
+  if (prep$trace)(cat("\nRotation (preconditiong) finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
-  
+
   # calculate population var without mean 0; will need this for call to ncvfit()
-  # this needs to be done for cross validation; once we subset the data, 
+  # NOTE: this needs to be done for cross validation; once we subset the data,
   #   this will not be a vector of 1s (remember: plmm does *not* restandardize
   #   within each fold)
+  # NOTE: this quantity was returned by rotate_filebacked() for large data
   if('matrix' %in% class(prep$std_X)){
-    xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE)) 
-  } else if('FBM' %in% class(prep$std_X)){
-    xtx <- bigstatsr::big_apply(X = stdrot_X,
-                                a.FUN = function(X, ind){
-                                  apply(X[,ind], 2,
-                                        function(col){mean(col^2,
-                                                           na.rm = TRUE)})
-                                },
-                                a.combine = c,
-                                ncores = bigstatsr::nb_cores())
-
+    xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE))
   }
-  if(prep$trace){cat("\nBeginning model fitting.")}
+
 
   # set up lambda -------------------------------------------------------
-  
+  if(prep$trace){cat("\nSetting up lambda/preparing for model fitting.")}
   if (missing(lambda)) {
     lambda <- setup_lambda(X = stdrot_X,
                            y = rot_y,
@@ -149,42 +141,35 @@ plmm_fit <- function(prep,
     nlambda <- length(lambda)
     user.lambda <- TRUE
   }
-  
-  # make sure to *not* penalize the intercept term 
-  new.penalty.factor <- c(0, penalty.factor)
-  
+
   # placeholders for results ---------------------------------
-  # setting up 'init' as below is not needed when this is called from plmm or cv.plmm
+  # setting up 'init' as below is not needed when this is called from plmm or cv_plmm
   # as those user-facing functions set up 'init' as a vector of zeroes
   if (is.null(init)){
     init <- rep(0, ncol(stdrot_X))
-  } else {
-    init <- c(0, init) # add one for intercept
   }
 
   if('matrix' %in% class(stdrot_X)){
     r <- drop(rot_y - stdrot_X %*% init)
     linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
-    b <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda) 
+    b <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
   } else {
-    r <- rot_y - bigstatsr::big_prodVec(X = stdrot_X, y.col = init,
-                                        center = rep(0, ncol(stdrot_X)),
-                                        scale = rep(1, ncol(stdrot_X)),
-                                        ncores = bigstatsr::nb_cores())
+    r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
   }
-  
+
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-
+  # browser()
   # main attraction -----------------------------------------------------------
+  if(prep$trace){cat("\nBeginning model fitting.")}
   if('matrix' %in% class(stdrot_X)){
     # set up progress bar -- this can take a while
     if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
     for (ll in 1:nlambda){
       lam <- lambda[ll]
       res <- ncvreg::ncvfit(X = stdrot_X,
-                            y = rot_y, 
+                            y = rot_y,
                             init = init,
                             r = r,
                             xtx = xtx,
@@ -192,9 +177,9 @@ plmm_fit <- function(prep,
                             gamma = gamma,
                             alpha = alpha,
                             lambda= lam,
-                            eps = eps, 
+                            eps = eps,
                             max.iter = max.iter,
-                            penalty.factor = new.penalty.factor,
+                            penalty.factor = penalty.factor,
                             warn = warn)
       b[, ll] <- init <- res$beta
       linear.predictors[,ll] <- stdrot_X%*%(res$beta)
@@ -203,32 +188,52 @@ plmm_fit <- function(prep,
       loss[ll] <- res$loss
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
-      
+
     }
-    
+
+    # reverse the POST-ROTATION standardization on estimated betas
+    untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
+    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
+    untransformed_b1[1,] <- mean(prep$y)
+    untransformed_b1[-1,] <- sweep(x = b,
+                                   # un-scale the non-intercept values & fill in the placeholder
+                                   MARGIN = 1, # beta values are on rows
+                                   STATS = stdrot_X_scale,
+                                   FUN = "/")
   } else {
-    bm_stdrot_X <- fbm2bm(stdrot_X)
-    # the biglasso function loops thru the lambda values 
-    res <- biglasso::biglasso_path(X = bm_stdrot_X,
-                                  y = rot_y,
-                                  r = r,
-                                  init = init,
-                                  xtx = xtx,
-                                  penalty = penalty, 
-                                  lambda = lambda, # biglasso_path loops thru lambda values 
-                                  alpha = alpha,
-                                  gamma = gamma,
-                                  eps = eps,
-                                  max.iter = max.iter, 
-                                  penalty.factor = new.penalty.factor,
-                                  ...)
- 
-    b <- res$beta
-    linear.predictors <- bm_stdrot_X%*%b
+    # the biglasso function loops thru the lambda values
+    res <- biglasso::biglasso_path(X = stdrot_X,
+                                   y = rot_y,
+                                   r = r,
+                                   init = init,
+                                   xtx = xtx,
+                                   penalty = penalty,
+                                   lambda = lambda, # biglasso_path loops thru lambda values
+                                   alpha = alpha,
+                                   gamma = gamma,
+                                   eps = eps,
+                                   max.iter = max.iter,
+                                   penalty.factor = penalty.factor,
+                                   ...)
+
+    b <- res$beta # for now, this 'b' includes the intercept
+    linear.predictors <- stdrot_X%*%b
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
     r <- res$resid
+
+    # reverse the POST-ROTATION standardization on estimated betas
+    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
+    untransformed_b1 <- Matrix::sparseMatrix(i = rep(1,ncol(b)),
+                                             j = 1:ncol(b),
+                                             x = mean(prep$y),
+                                             dims = c(nrow(b) + 1,ncol = ncol(b)))
+    untransformed_b1[-1,] <- sweep(x = b,
+                                   # un-scale the non-intercept values & fill in the placeholder
+                                   MARGIN = 1, # beta values are on rows
+                                   STATS = stdrot_X_scale,
+                                   FUN = "/")
   }
   if (prep$trace)(cat("\nModel fitting finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
@@ -240,29 +245,6 @@ plmm_fit <- function(prep,
   loss <- loss[ind]
   if (warn & sum(iter) == max.iter) warning("\nMaximum number of iterations reached")
 
-  if (convex) {
-    convex.min <- convexMin(b = b,
-                             X = stdrot_X,
-                             penalty = penalty,
-                             gamma = gamma, 
-                             l2 = lambda*(1-alpha),
-                             family = 'gaussian',
-                             penalty.factor = new.penalty.factor)
-  } else {
-    convex.min <- NULL
-  }
-
-
-  # un-standardizing -------
-  # reverse the POST-ROTATION standardization on estimated betas  
-  untransformed_b1 <- b # create placeholder vector
-
-  untransformed_b1[-1,] <- sweep(x = b[-1, , drop=FALSE], 
-                                 # un-scale the non-intercept values & fill in the placeholder
-                                 MARGIN = 1, # beta values are on rows 
-                                 STATS = stdrot_X_scale,
-                                 FUN = "/")
-  
 
   ret <- structure(list(
     n = prep$n,
@@ -270,10 +252,9 @@ plmm_fit <- function(prep,
     std_X_n = prep$std_X_n,
     std_X_p = prep$std_X_p,
     y = prep$y,
-    K = prep$K,
     s = prep$s,
     U = prep$U,
-    rot_X = rot_X,
+    # rot_X = rot_X,
     rot_y = rot_y,
     stdrot_X = stdrot_X,
     lambda = lambda,
@@ -282,10 +263,9 @@ plmm_fit <- function(prep,
     linear.predictors = linear.predictors,
     eta = prep$eta,
     iter = iter,
-    converged = converged, 
-    loss = loss, 
-    penalty = penalty, 
-    penalty.factor = new.penalty.factor,
+    converged = converged,
+    loss = loss,
+    penalty = penalty,
     gamma = gamma,
     alpha = alpha,
     ns = prep$ns,
@@ -295,10 +275,20 @@ plmm_fit <- function(prep,
     max.iter = max.iter,
     warn = warn,
     init = init,
-    trace = prep$trace)) 
-  
+    trace = prep$trace))
+
+  if (exists('new.penalty.factor')) {
+    ret$penalty.factor <- new.penalty.factor
+  } else {
+    ret$penalty.factor <- penalty.factor
+  }
+
+  if (exists("rot_X")){
+    ret$rot_X <- rot_X
+  }
+
   return(ret)
-  
-  
-  
+
+
+
 }

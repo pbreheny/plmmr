@@ -1,6 +1,6 @@
-#' Plot method for cv.plmm class
+#' Plot method for cv_plmm class
 #'
-#' @param x An object of class cv.plmm
+#' @param x An object of class cv_plmm
 #' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.
 #' @param type Type of plot to return. Defaults to "cve."
 #' @param selected Logical to indicate which variables should be plotted. Defaults to TRUE.
@@ -14,7 +14,7 @@
 #' @export
 
 ## from cv.ncvreg
-plot.cv.plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "all"), selected=TRUE, vertical.line=TRUE, col="red", ...) {
+plot.cv_plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "all"), selected=TRUE, vertical.line=TRUE, col="red", ...) {
   type <- match.arg(type)
   if (type=="all") {
     plot(x, log.l=log.l, type="cve", selected=selected, ...)
@@ -76,7 +76,7 @@ plot.cv.plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "al
     if(inherits(x$fit, "list")){
       n.s <- predict_within_cv(x$fit, lambda=x$lambda, type="nvars")
     } else {
-      n.s <- predict.plmm(x$fit, lambda=x$lambda, type="nvars")
+      n.s <- predict(x$fit, lambda=x$lambda, type="nvars")
     }
     graphics::axis(3, at=l, labels=n.s, tick=FALSE, line=-0.5)
     graphics::mtext("Variables selected", cex=0.8, line=1.5)

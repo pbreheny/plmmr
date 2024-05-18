@@ -1,5 +1,5 @@
 Package: plmmr
-Title: Nonconvex Penalized Linear Mixed Models For Correlated Data 
+Title: Penalized Linear Mixed Models For Correlated Data 
 Version: 3.0.0
 Date: 2024-05-06
 Authors@R: c(
@@ -23,7 +23,7 @@ Description: Fits penalized linear mixed models that correct for
     supplied. For examples, see the package homepage. 
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
-Depends: R (>= 3.5.0), bigmemory (>= 4.5.0)
+Depends: R (>= 3.5.0), bigalgebra
 Imports:
     bigsnpr,
     bigstatsr,

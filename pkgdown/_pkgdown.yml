@@ -34,19 +34,18 @@ reference:
     
   - title: Loss, information, and cross-validation for PLMMs
     contents:
-    - cv.plmm
-    - loss.plmm
+    - cv_plmm
+    - plmm_loss
     - log_lik
     - residuals.plmm
     
   - title: Coefficient methods for PLMMs
     contents:
-    - coef.cv.plmm
+    - coef.cv_plmm
     - coef.plmm
     
   - title: Other model fitting methods (and some helper functions)
     contents: 
-    - convexMin
     - residuals.plmm
     - construct_variance
     
@@ -64,9 +63,9 @@ reference:
     contents:
     - summary.plmm
     - print.summary.plmm
-    - summary.cv.plmm
-    - print.summary.cv.plmm
-    - plot.cv.plmm
+    - summary.cv_plmm
+    - print.summary.cv_plmm
+    - plot.cv_plmm
     - plot.plmm
     
   - title: Prediction
@@ -94,7 +93,7 @@ reference:
     - handle_missingness
     - impute_snp_data
     - index_std_X
-    - lamNames
+    - lam_names
     - lasso
     - MCP
     - name_and_count_bigsnp

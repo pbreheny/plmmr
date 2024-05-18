@@ -24,6 +24,10 @@ For a description of the motivation of the functions in this package (along with
 The branches of this repo are organized in the following way: 
 
   - `master` is the main branch with all the latest updates
+  
+  - `rework_intercept` is where we are revising the way we are handling the intercept in light of some new theoretical insights... more on this later.
+
+  - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets.
 
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   

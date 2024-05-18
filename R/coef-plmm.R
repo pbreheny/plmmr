@@ -15,12 +15,9 @@
 #' @export
 #' 
 #' @examples 
-#' \donttest{
 #' fit <- plmm(admix$X, admix$y)
-#' (coef.plmm(fit)[1:10, 1:5])
-#' }
-#' 
-#' 
+#' coef(fit)[1:10, 1:5]
+
 
 coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TRUE, ...){
   # error check for supplied lambda value 
@@ -40,10 +37,10 @@ coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TR
     # format dim. names
     if(is.null(dim(beta_vals))) {
       # case 1: beta_vals is a vector 
-      names(beta_vals) <- lamNames(lambda)
+      names(beta_vals) <- lam_names(lambda)
       } else {
         # case 2: beta_vals is a matrix
-      colnames(beta_vals) <- lamNames(lambda)
+      colnames(beta_vals) <- lam_names(lambda)
     }
     
   }

@@ -17,7 +17,6 @@ process_plink(
   pheno_id = NULL,
   pheno_name = NULL,
   quiet = FALSE,
-  gz = FALSE,
   outfile,
   overwrite = FALSE,
   add_predictor_fam = NULL,
@@ -60,8 +59,6 @@ Note: for data coming from PLINK, no missing values of the phenotype are allowed
 \item{pheno_name}{Optional: A string specifying the name of the phenotype column in \code{pheno}.  MUST be specified if \code{add_phen} is specified. This column will be used as the default \code{y} argument to 'plmm()'.}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
-
-\item{gz}{Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
@@ -125,14 +122,16 @@ The '.rds' object created by this function has the following elements:
 }
 \examples{
 \donttest{
-my_dir <- tempdir()
-process_plink(data_dir = get_example_data(parent = TRUE),
-  rds_dir = my_dir,
-  prefix = "penncath_lite",
-  gz = TRUE,
-  outfile = "process_penncath",
-  overwrite = TRUE,
-  impute_method = "mode")
-}
-
+temp_dir <- paste0(tempdir()) # using a temporary directory here 
+process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
+              rds_dir = temp_dir,
+              prefix = "penncath_lite",
+              outfile = "process_penncath",
+              overwrite = TRUE,
+              impute_method = "mode")
+              
+ # pen <- get_data(file.path(temp_dir, "std_penncath_lite"))             
+ # str(pen)
+ }
+ 
 }

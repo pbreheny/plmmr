@@ -43,8 +43,8 @@ gb <- function(n=100, p=256, s=4, gamma=6, beta=2, B=20) {
 }
 l <- gb()
 cvg <- cv.glmnet(l$X, l$y)
-cvp <- cv.plmm(l$X, l$y, penalty='lasso')
-cvp_blup <- cv.plmm(l$X, l$y, penalty='lasso',
+cvp <- cv_plmm(l$X, l$y, penalty='lasso')
+cvp_blup <- cv_plmm(l$X, l$y, penalty='lasso',
                     type = 'blup',
                     returnBiasDetails = TRUE)
 
@@ -79,11 +79,11 @@ crossprod(l$beta - coef(cvp_blup)[-1]) |> drop()
 ```{r, include=FALSE, eval=FALSE}
 # Recall from the article on mfdr our results for analyzing the admix data: 
 # using lasso penalty 
-fit <- cv.plmm(X = admix$X, y = admix$y, penalty = "lasso") 
+fit <- cv_plmm(X = admix$X, y = admix$y, penalty = "lasso") 
 summary(fit); plot(fit)
 
 # using MCP penalty 
-fit2 <- cv.plmm(X = admix$X, y = admix$y)
+fit2 <- cv_plmm(X = admix$X, y = admix$y)
 summary(fit2); plot(fit2)
 
 res1 <- mfdr(fit$fit); res2 <- mfdr(fit2$fit)

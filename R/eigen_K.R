@@ -14,10 +14,9 @@
 eigen_K <- function(std_X, p, fbm_flag, ...){
   # Note: std_X has already been scaled, so no need to do that here
   # calculate K (which will be stored in memory regardless of how std_X is stored)
-  if(fbm_flag){
-    K <- bigstatsr::big_tcrossprodSelf(std_X, ...) 
-    # For now, we make K stay in memory.
-     K <- K[,]/p
+  if (fbm_flag) {
+    K <- bigstatsr::big_tcrossprodSelf(std_X, ...)
+    K <- K[,]/p
   } else {
     # make std_X an FBM so that bigstatsr::big_tcrossprodSelf can be used... 
     # need this for subsetting columns & passing additional arguments

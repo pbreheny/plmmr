@@ -4,7 +4,7 @@
 \alias{read_plink_files}
 \title{A function to read in PLINK files using \code{bigsnpr} methods}
 \usage{
-read_plink_files(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet)
+read_plink_files(data_dir, prefix, rds_dir, outfile, overwrite, quiet)
 }
 \arguments{
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
@@ -12,8 +12,6 @@ read_plink_files(data_dir, prefix, rds_dir, gz, outfile, overwrite, quiet)
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
-
-\item{gz}{Logical: are the bed/bim/fam files g-zipped? Defaults to FALSE. NOTE: if TRUE, process_plink will unzip your zipped files.}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 

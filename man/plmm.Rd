@@ -13,7 +13,7 @@ plmm(
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-  penalty = "MCP",
+  penalty = "lasso",
   penalty.factor = NULL,
   init = NULL,
   gamma,
@@ -57,7 +57,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
-\item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
+\item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 
 \item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
@@ -67,7 +67,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{dfmax}{Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
@@ -79,7 +79,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
+\item{convex}{(future idea; not yet incorporated)Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
@@ -97,22 +97,24 @@ A list which includes:
 \item \code{beta_vals}: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
 \item \code{rotated_scale_beta_vals}: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
-\item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
-\item \code{s}: a vectof of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvalues of relatedness matrix \code{K}
+\item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
 \item \code{linear.predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
-\item \code{convex.min}: NULL (This is an option we will add in the future!)
 \item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
 \item \code{penalty.factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-\item \code{ns_idx}: vector with the indicies of predictors which were constant features (i.e., had no variation).
+\item \code{ns_idx}: vector with the indices of predictors which were constant features (i.e., had no variation).
 \item \code{p}: the number of features
 \item \code{n}: the number of observations (instances)
 \item \code{iter}: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}
 \item \code{converged}: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
+\item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
+\itemize{
+\item \code{s}: a vector of the eigenvalues of the genomic relatedness matrix; see \code{relatedness_mat()} for details.
+\item \code{U}: a matrix of the eigenvalues of the genomic relatedness matrix
+}
 }
 }
 \description{
@@ -120,8 +122,8 @@ This function allows you to fit a linear mixed model via non-convex penalized ma
 NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
-# using admix data 
-fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
+# using admix data
+fit_admix1 <- plmm(X = admix$X, y = admix$y)
 s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
@@ -132,7 +134,8 @@ s2 <- summary(fit_admix2, idx = 99)
 print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
 
-# Note: for examples with large data that are too big to fit in memory, 
+# Note: for examples with large data that are too big to fit in memory,
 # see the article "PLINK files/file-backed matrices" on our website
+# https://pbreheny.github.io/plmmr/articles/filebacking.html
 
 }

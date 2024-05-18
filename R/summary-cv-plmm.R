@@ -1,9 +1,9 @@
-#' A summary function for cv.plmm objects
+#' A summary function for cv_plmm objects
 #'
-#' @param object A \code{cv.plmm} object
+#' @param object A \code{cv_plmm} object
 #' @param lambda The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min.'
 #' @param ...  Not used 
-#' @return The return value is an object with S3 class `summary.cv.plmm`. The class has its own print method and contains the following list elements: 
+#' @return The return value is an object with S3 class `summary.cv_plmm`. The class has its own print method and contains the following list elements: 
 #' * `lambda.min`: The lambda value at the minimum cross validation error 
 #' * `lambda.1se`: The maximum lambda value within 1 standard error of the minimum cross validation error 
 #' * `penalty`: The penalty applied to the fitted model
@@ -17,16 +17,16 @@
 #' * `loss`: The loss at each value of `lambda`
 #' 
 #' 
-#' @rdname summary.cv.plmm
+#' @rdname summary.cv_plmm
 #' 
 #' @export
 #'
 #' @examples 
-#' cv_fit <- cv.plmm(X = admix$X, y = admix$y,
+#' cv_fit <- cv_plmm(X = admix$X, y = admix$y,
 #'  K = relatedness_mat(admix$X), penalty = 'lasso', returnBiasDetails = TRUE)
 #' summary(cv_fit)
 
-summary.cv.plmm <- function(object, lambda = "min", ...){
+summary.cv_plmm <- function(object, lambda = "min", ...){
 
   # determine the number of nonzero coefficients at specified lambda value
   
@@ -54,7 +54,7 @@ summary.cv.plmm <- function(object, lambda = "min", ...){
                         cve = object$cve,
                         min = object$min,
                         fit = object$fit), 
-                   class = "summary.cv.plmm")
+                   class = "summary.cv_plmm")
   if("Bias" %in% names(object)){
     out$bias <- object$Bias
     out$loss <- object$Loss

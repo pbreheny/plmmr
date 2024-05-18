@@ -1,16 +1,16 @@
-#' Cross-validation internal function for cv.plmm
+#' Cross-validation internal function for cv_plmm
 #'
-#' Internal function for cv.plmm which calls plmm on a fold subset of the original data.
+#' Internal function for cv_plmm which calls plmm on a fold subset of the original data.
 #' @param i Fold number to be excluded from fit.
 #' @param fold n-length vector of fold-assignments.
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
-#' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv.plmm. 
+#' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm. 
 #' @param cv.args List of additional arguments to be passed to plmm.
 #' @param ... Optional arguments to `predict_within_cv`
 #' @keywords internal
 cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   
-  # save the 'prep' object from the plmm_prep() in cv.plmm
+  # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv.args$prep
   
   # subset std_X, U, and y to match fold indices 
@@ -68,6 +68,6 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     
   }
 
-  loss <- sapply(1:ncol(yhat), function(ll) loss.plmm(test_y, yhat[,ll]))
+  loss <- sapply(1:ncol(yhat), function(ll) plmm_loss(test_y, yhat[,ll]))
   list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
 }

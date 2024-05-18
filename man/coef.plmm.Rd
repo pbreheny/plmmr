@@ -26,10 +26,6 @@ feature names, columns are values of \code{lambda}.
 Coef method for "plmm" class
 }
 \examples{
-\donttest{
 fit <- plmm(admix$X, admix$y)
-(coef.plmm(fit)[1:10, 1:5])
-}
-
-
+coef(fit)[1:10, 1:5]
 }

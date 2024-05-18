@@ -3,7 +3,7 @@
 \name{plmm_prep}
 \alias{plmm_prep}
 \title{PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-This is an internal function for \code{cv.plmm}}
+This is an internal function for \code{cv_plmm}}
 \usage{
 plmm_prep(
   std_X,
@@ -73,6 +73,6 @@ List with these components:
 }
 \description{
 PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-This is an internal function for \code{cv.plmm}
+This is an internal function for \code{cv_plmm}
 }
 \keyword{internal}

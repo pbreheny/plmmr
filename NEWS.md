@@ -11,5 +11,5 @@
 
 * **Notable changes**
 
-  * Changed package name to `plmmr` - note that `plmm()`, `cv.plmm()`, and other functions starting with `plmm_` have not changed names. 
+  * Changed package name to `plmmr` - note that `plmm()`, `cv_plmm()`, and other functions starting with `plmm_` have not changed names. 
 
