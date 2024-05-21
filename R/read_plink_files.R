@@ -12,9 +12,14 @@
 read_plink_files <- function(data_dir, prefix, rds_dir, outfile, overwrite, quiet){
 
   # check for compressed files
-  if (file.exists(file.path(data_dir, paste0(prefix, ".bed.gz")))) {
-    cat("\nIt looks like your files are zipped -- please unzip them before calling process_plink().")
+  if (!file.exists(file.path(data_dir, paste0(prefix, ".bed")))){
+    if (file.exists(file.path(data_dir, paste0(prefix, ".bed.gz")))) {
+      cat("\nIt looks like your files are zipped -- please unzip them before calling process_plink().")
+    } else {
+      cat("\nThe PLINK files with the specified prefix do not appear in the provided data_dir folder.")
+    }
   }
+
 
   path <- file.path(rds_dir, paste0(prefix, ".rds"))
   bk_path <- file.path(rds_dir, paste0(prefix, ".bk"))
@@ -33,10 +38,12 @@ read_plink_files <- function(data_dir, prefix, rds_dir, outfile, overwrite, quie
       }
 
       # overwrite existing files
-      file.remove(bk_path)
-      file.remove(std_bk_path)
-      file.remove(sub_bk_path)
-      file.remove(path)
+      gc()
+      if (file.exists(bk_path)) file.remove(bk_path)
+      if (file.exists(std_bk_path)) file.remove(std_bk_path)
+      if (file.exists(sub_bk_path)) file.remove(sub_bk_path)
+      if (file.exists(path)) file.remove(path)
+      gc()
     } else {
       stop("\nThere are existing prefix.rds and prefix.bk files in the specified directory.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.

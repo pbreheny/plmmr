@@ -164,21 +164,21 @@ process_plink <- function(data_dir,
                               outfile = outfile, quiet = quiet)
 
   # imputation ------------------------------------------------------------------
-  step4_obj <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
+  step4 <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
                                outfile, quiet,...)
 
   # add predictors from external files -----------------------------
-  step5 <- add_predictors_to_bigsnp(step4_obj, add_predictor_fam, add_predictor_ext,
+  step5 <- add_predictors_to_bigsnp(step4, add_predictor_fam, add_predictor_ext,
                           id_var, step2$og_plink_ids, quiet)
 
   # subsetting -----------------------------------------------------------------
-  step6_obj <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
+  step6 <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
                       step3$complete_phen, step5$non_gen, data_dir, prefix,
                       outfile, quiet)
 
   # standardization ------------------------------------------------------------
-  step7 <- standardize_bigsnp(step6_obj, prefix, rds_dir, step5$non_gen, step3$complete_phen,
-                  id_var, outfile, quiet)
+  step7 <- standardize_bigsnp(step6, prefix, rds_dir, step5$non_gen, step3$complete_phen,
+                  id_var, outfile, quiet, overwrite)
 
   # cleanup --------------------------------------------------------------------
   if (!keep_bigSNP) {
@@ -199,7 +199,8 @@ process_plink <- function(data_dir,
       complete_phen = step7$complete_phen,
       id_var = step7$id_var
     )
-    # This needs some work
+
+    # This removes intermediate files created by the steps of the data management process
     list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
       file.remove()
     list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
@@ -210,7 +211,6 @@ process_plink <- function(data_dir,
   }
 
 
-  if(!quiet){cat("\nDone with standardization.
-                 Processed files now saved as .rds object.")}
+  if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
   close(log_con)
 }
