@@ -108,13 +108,13 @@ process_plink <- function(data_dir,
 
   # start log ------------------------------------------
   if(missing(outfile)){
-    outfile = paste0(data_dir, "/process_plink.log")
+    outfile = file.path(rds_dir, "process_plink.log")
   } else {
     outfile = paste0(outfile, ".log")
   }
   log_con <- file(outfile)
   cat("### Processing PLINK files for PLMM ###", file = log_con)
-  cat("\nLogging to ", outfile, file = outfile, append = TRUE)
+  cat("\nLogging to", outfile, file = outfile, append = TRUE)
   cat("\nPreprocessing", prefix, "data:", file = outfile, append = TRUE)
 
   if(!quiet){
