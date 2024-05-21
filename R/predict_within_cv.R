@@ -18,6 +18,11 @@
 #'  * 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
 #'  This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.
 #'
+#' Note: the main difference between this function and the `predict.plmm()` method is that
+#' here in CV, predictions are made on the *standardized* scale (i.e., both
+#' the oldX and newX data come from std_X). The `predict.plmm()` method
+#' makes predictions on the scale of X (the original scale)
+#'
 #' @keywords internal
 
 predict_within_cv <- function(fit,
@@ -30,6 +35,24 @@ predict_within_cv <- function(fit,
                          V21 = NULL, ...) {
 
   type <- match.arg(type)
+
+  # make sure X is in the correct format...
+  # case 1: newX is an FBM
+  if (inherits(newX,"FBM")){
+    fbm_flag <- TRUE
+    # convert to big.matrix (FBM cannot multiply with dgCMatrix type of beta_vals)
+    newX <- fbm2bm(newX)
+  } else if (inherits(newX, "big.matrix")){
+    # case 2: newX is a big.matrix
+    fbm_flag <- TRUE
+  } else {
+    # case 3: X is in-memory
+    fbm_flag <- FALSE
+  }
+
+  if (fbm){
+    oldX <- fbm2bm(oldX)
+  }
 
   # get beta values (for nonsingular features) from fit
   beta_vals <- fit$untransformed_b1[,idx,drop = FALSE]
@@ -46,30 +69,18 @@ predict_within_cv <- function(fit,
   # calculate the estimated mean values for test data
   a <- beta_vals[1,]
   b <- beta_vals[-1,,drop=FALSE]
+  Xb <- sweep(newX %*% b, 2, a, "+")
 
-  if (fbm) {
-    bm_newX <- fbm2bm(newX)
-    Xb <- sweep(bm_newX %*% b, 2, a, "+")
-  } else {
-    Xb <- sweep(newX %*% b, 2, a, "+")
-  }
-
+# browser()
   # for linear predictor, return mean values
   if (type=="lp") return(drop(Xb))
 
   # for blup, will incorporate the estimated variance
   if (type == "blup"){
     # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
-
     # test1 <- V21 %*% chol2inv(chol(V11)) # true
     # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
-    if (fbm) {
-      bm_oldX <- fbm2bm(oldX)
-      Xb_train <- sweep(bm_oldX %*% b, 2, a, "+")
-    } else {
-      Xb_train <- sweep(oldX %*% b, 2, a, "+")
-    }
-
+    Xb_train <- sweep(oldX %*% b, 2, a, "+")
     resid_train <- (fit$y - Xb_train)
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
     blup <- Xb + ranef

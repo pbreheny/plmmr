@@ -122,7 +122,6 @@ plmm_fit <- function(prep,
     xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE))
   }
 
-
   # set up lambda -------------------------------------------------------
   if(prep$trace){cat("\nSetting up lambda/preparing for model fitting.")}
   if (missing(lambda)) {
@@ -160,7 +159,7 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-  # browser()
+
   # main attraction -----------------------------------------------------------
   if(prep$trace){cat("\nBeginning model fitting.")}
   if('matrix' %in% class(stdrot_X)){
@@ -237,6 +236,7 @@ plmm_fit <- function(prep,
   }
   if (prep$trace)(cat("\nModel fitting finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+
   # eliminate saturated lambda values, if any
   ind <- !is.na(iter)
   iter <- iter[ind]

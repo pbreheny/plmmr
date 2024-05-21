@@ -9,10 +9,7 @@
 #'                        For data processed from PLINK files, standardization happens in `process_plink()`.
 #'                        For data supplied as a matrix, standardization happens here in `plmm()`.
 #'                        If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case.
-#'                        **Note**: failing to standardize data will lead to incorrect analyses.
-#'                        By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`.
-#'                        For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case.
-#'                        **Note**: failing to standardize data will lead to incorrect analyses.
+#'                        **Note**: failing to correctly standardize data will lead to incorrect analyses.
 #' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
 #' @param non_genomic     Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #'                        For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -117,18 +114,18 @@ cv_plmm <- function(X,
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
                               std_needed = std_needed,
-                              col_names = col_names,
+                              # col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
-                              K = K,
-                              diag_K = diag_K,
-                              eta_star = eta_star,
-                              penalty = penalty,
-                              penalty.factor = penalty.factor,
-                              init = init,
-                              dfmax = dfmax,
-                              gamma = gamma,
-                              alpha = alpha,
+                              # K = K,
+                              # diag_K = diag_K,
+                              # eta_star = eta_star,
+                              # penalty = penalty,
+                              # penalty.factor = penalty.factor,
+                              # init = init,
+                              # dfmax = dfmax,
+                              # gamma = gamma,
+                              # alpha = alpha,
                               trace = trace,
                               ...)
 
@@ -147,24 +144,24 @@ cv_plmm <- function(X,
                       ...)) # ... additional arguments to plmm_prep()
 
   prep <- do.call('plmm_prep', prep.args)
-browser() # pick up here: see what is going on with these args (compare/contrast with plmm())
+
   # full model fit ----------------------------------
-  fit.args <- c(list(prep = prep,
-                     std_X_details = checked_data$std_X_details,
-                     eta_star = eta_star,
-                     penalty.factor = checked_data$penalty.factor,
-                     fbm_flag = checked_data$fbm_flag,
-                     penalty = checked_data$penalty,
-                     gamma = checked_data$gamma,
-                     lambda.min = checked_data$lambda.min,
-                     nlambda = checked_data$nlambda,
-                     lambda = checked_data$lambda,
-                     eps = checked_data$eps,
-                     max.iter = checked_data$max.iter,
-                     warn = checked_data$warn,
-                     convex = checked_data$convex,
-                     dfmax = checked_data$dfmax),
-                list(...))
+  fit.args <- c(list(
+    prep = prep,
+    std_X_details = checked_data$std_X_details,
+    eta_star = eta_star,
+    penalty.factor = checked_data$penalty.factor,
+    fbm_flag = checked_data$fbm_flag,
+    penalty = checked_data$penalty,
+    gamma = checked_data$gamma,
+    alpha = alpha,
+    nlambda = nlambda,
+    max.iter = max.iter,
+    warn = warn,
+    convex = convex,
+    dfmax = dfmax
+  ),
+  list(...))
 
   fit <- do.call('plmm_fit', fit.args)
 
