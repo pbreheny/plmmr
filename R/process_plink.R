@@ -182,7 +182,7 @@ process_plink <- function(data_dir,
 
   # cleanup --------------------------------------------------------------------
   if (!keep_bigSNP) {
-    ret <- list(
+    rds <- list(
       std_X = step7$std_X,
       fam = step7$fam,
       map = step7$map,
@@ -207,7 +207,7 @@ process_plink <- function(data_dir,
       file.remove()
     rm(step1)
     gc()
-    saveRDS(ret, paste0(rds_dir, "/std_", prefix, ".rds"))
+    saveRDS(rds, paste0(rds_dir, "/std_", prefix, ".rds"))
   }
 
 
