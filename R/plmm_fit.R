@@ -98,9 +98,10 @@ plmm_fit <- function(prep,
     rot_y <- wUt %*% prep$y
 
     # re-standardize rot_X
-    stdrot_X_scaling <- scale_varp(rot_X)
-    stdrot_X <- stdrot_X_scaling$scaled_X
-    stdrot_X_scale <- stdrot_X_scaling$scale_vals
+    stdrot_X <- ncvreg::std(rot_X)
+    stdrot_X_details <-list(center = attr(stdrot_X, "center"),
+                            scale = attr(stdrot_X, "scale"),
+                            ns = attr(stdrot_X, "nonsingular"))
 
   } else if ('FBM' %in% class(prep$std_X)){
     rot_res <- rotate_filebacked(prep) # this is quite involved, so I put this in its own function
@@ -114,11 +115,8 @@ plmm_fit <- function(prep,
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
 
   # calculate population var without mean 0; will need this for call to ncvfit()
-  # this needs to be done for cross validation; once we subset the data,
-  #   this will not be a vector of 1s (remember: plmm does *not* restandardize
-  #   within each fold)
   if('matrix' %in% class(prep$std_X)){
-    xtx <- apply(stdrot_X, 2, function(x) mean(x^2, na.rm = TRUE))
+    xtx <- rep(1, ncol(stdrot_X))
   } else if('FBM' %in% class(prep$std_X)){
     xtx <- bigstatsr::big_apply(X = stdrot_X,
                                 a.FUN = function(X, ind){
@@ -208,12 +206,14 @@ plmm_fit <- function(prep,
 
     untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-    untransformed_b1[1,] <- mean(prep$y)
     untransformed_b1[-1,] <- sweep(x = b,
                                    # un-scale the non-intercept values & fill in the placeholder
                                    MARGIN = 1, # beta values are on rows
-                                   STATS = stdrot_X_scale,
+                                   STATS = stdrot_X_details$scale,
                                    FUN = "/")
+    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center,
+                                                     untransformed_b1[-1,])
+
   } else {
     bm_stdrot_X <- fbm2bm(stdrot_X)
     # the biglasso function loops thru the lambda values
@@ -239,7 +239,7 @@ plmm_fit <- function(prep,
     r <- res$resid
 
     # reverse the POST-ROTATION standardization on estimated betas
-    untransformed_b1 <- b # create placeholder vector
+    untransformed_b1 <- b
     untransformed_b1[-1,] <- sweep(x = b[-1, , drop=FALSE],
                                    # un-scale the non-intercept values & fill in the placeholder
                                    MARGIN = 1, # beta values are on rows
@@ -268,6 +268,7 @@ plmm_fit <- function(prep,
     rot_X = rot_X,
     rot_y = rot_y,
     stdrot_X = stdrot_X,
+    # stdrot_X_details = stdrot_X_details,
     lambda = lambda,
     b = b,
     untransformed_b1 = untransformed_b1,
