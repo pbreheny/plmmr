@@ -71,7 +71,7 @@ This argument takes one of two kinds of arguments:
 - a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
 The names will be used to subset and align this external covariate with the supplied PLINK data.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files. 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files.
                       The names will be used to subset and align this external covariate with the supplied PLINK data.
 }\if{html}{\out{</div>}}}
 
@@ -122,16 +122,16 @@ The '.rds' object created by this function has the following elements:
 }
 \examples{
 \donttest{
-temp_dir <- paste0(tempdir()) # using a temporary directory here 
+temp_dir <- paste0(tempdir()) # using a temporary directory here
 process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
               rds_dir = temp_dir,
               prefix = "penncath_lite",
               outfile = "process_penncath",
               overwrite = TRUE,
               impute_method = "mode")
-              
- # pen <- get_data(file.path(temp_dir, "std_penncath_lite"))             
+
+ # pen <- get_data(file.path(temp_dir, "std_penncath_lite"))
  # str(pen)
  }
- 
+
 }
