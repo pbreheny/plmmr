@@ -61,8 +61,8 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomi
       untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
       untransformed_beta[1,] <- a - crossprod(std_X_details$center,
                                               untransformed_b2)
-      cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center, c)})
-      untransformed_beta[1,] <- a - cp
+      # cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center, c)})
+      # untransformed_beta[1,] <- a - cp
 
     } else {
       # case 2: ns and center/scale values **do not** have same length
@@ -75,8 +75,8 @@ untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomi
       untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
       untransformed_beta[1,] <- a - crossprod(std_X_details$center[std_X_details$ns],
                                               untransformed_b2)
-      cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center[std_X_details$ns], c)})
-      untransformed_beta[1,] <- a - cp
+      # cp <- apply(X = untransformed_b2, 2, function(c){crossprod(std_X_details$center[std_X_details$ns], c)})
+      # untransformed_beta[1,] <- a - cp
 
     }
 

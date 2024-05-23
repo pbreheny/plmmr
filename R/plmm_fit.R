@@ -191,12 +191,11 @@ plmm_fit <- function(prep,
     untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
     untransformed_b1[-1,] <- sweep(x = b,
-                                   # un-scale the non-intercept values & fill in the placeholder
-                                   MARGIN = 1, # beta values are on rows
-                                   STATS = stdrot_X_details$scale,
-                                   FUN = "/")
-    cp <- apply(X = untransformed_b1[-1,], 2, function(c){crossprod(stdrot_X_details$center, c)})
-    untransformed_beta[1,] <- mean(prep$y) - cp
+                # un-scale the non-intercept values & fill in the placeholder
+                MARGIN = 1, # beta values are on rows
+                STATS = stdrot_X_details$scale,
+                FUN = "/")
+    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center,untransformed_b1[-1,])
 
   } else {
     # the biglasso function loops thru the lambda values
