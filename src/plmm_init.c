@@ -1,55 +1,34 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include <R_ext/Rdynload.h>
-#include <R_ext/Applic.h>
+// #include <R_ext/Applic.h>
+#include <R_ext/Visibility.h>  // optional
 
-// List accessor function
-SEXP getListElement(SEXP list, const char *str) {
-  SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
-  for (int i = 0; i < length(list); i++)
-    if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
-      elmt = VECTOR_ELT(list, i);
-      break;
-    }
-  return elmt;
-}
+// re-scale a rotated matrix of data
+extern SEXP big_rescale(SEXP rot_X_,
+                       SEXP ncore_);
 
+// rotate_filebacked
+extern SEXP rotate_filebacked(SEXP std_X_,
+                              SEXP WUt_,
+                              SEXP rot_X_,
+                              SEXP ncore_);
 
-// Cross product of y with jth column of X
-double crossprod(double *X, double *y, int n, int j) {
-  int nn = n*j;
-  double val=0;
-  for (int i=0;i<n;i++) val += X[nn+i]*y[i];
-  return(val);
-}
+// big_crossprod
+extern SEXP big_crossprod(SEXP X_,
+                   SEXP y_,
+                   SEXP ind_col_,
+                   SEXP ncore_);
 
-// TODO: adjust what is below to handle filebacked case
-// Sum of squares of jth column of X
-double sqsum(double *X, int n, int j) {
-  int nn = n*j;
-  double val=0;
-  for (int i=0;i<n;i++) val += pow(X[nn+i], 2);
-  return(val);
-}
-
-// Gaussian loss
-double g_loss(double *r, int n) {
-  double l = 0;
-  for (int i=0;i<n;i++) l = l + pow(r[i],2);
-  return(l);
-}
-
-// Update for rawfit_gaussian
-
-
-static const R_CallMethodDef CallEntries[] = {
+static const R_CallMethodDef callMethods[] = {
+  {"rotate_filebacked", (DL_FUNC) &rotate_filebacked, 4},
+  {"big_crossprod", (DL_FUNC) &big_crossprod, 4},
+  {"big_rescale", (DL_FUNC) &big_rescale, 2},
   {NULL, NULL, 0}
 };
 
 void R_init_plmm(DllInfo *dll) {
-  R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
 }

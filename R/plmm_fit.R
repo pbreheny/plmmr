@@ -99,16 +99,16 @@ plmm_fit <- function(prep,
 
     # re-standardize rot_X
     stdrot_X <- ncvreg::std(rot_X)
-    stdrot_X_details <-list(center = attr(stdrot_X, "center"),
+    stdrot_X_details <- list(center = attr(stdrot_X, "center"),
                             scale = attr(stdrot_X, "scale"),
                             ns = attr(stdrot_X, "nonsingular"))
 
   } else if ('FBM' %in% class(prep$std_X)){
-    rot_res <- rotate_filebacked(prep) # this is quite involved, so I put this in its own function
-    rot_X <- rot_res$rot_X
+    rot_res <- rotate_filebacked(prep)
     rot_y <- rot_res$rot_y
     stdrot_X <- rot_res$stdrot_X
     stdrot_X_scale <- rot_res$stdrot_X_scale
+    xtx <- rot_res$xtx
   }
 
   if (prep$trace)(cat("\nRotation (preconditiong) finished at ",
@@ -117,21 +117,10 @@ plmm_fit <- function(prep,
   # calculate population var without mean 0; will need this for call to ncvfit()
   if('matrix' %in% class(prep$std_X)){
     xtx <- rep(1, ncol(stdrot_X))
-  } else if('FBM' %in% class(prep$std_X)){
-    xtx <- bigstatsr::big_apply(X = stdrot_X,
-                                a.FUN = function(X, ind){
-                                  apply(X[,ind], 2,
-                                        function(col){mean(col^2,
-                                                           na.rm = TRUE)})
-                                },
-                                a.combine = c,
-                                ncores = bigstatsr::nb_cores())
-
   }
-  if(prep$trace){cat("\nBeginning model fitting.")}
 
   # set up lambda -------------------------------------------------------
-
+  if(prep$trace){cat("\nSetting up lambda/preparing for model fitting.")}
   if (missing(lambda)) {
     lambda <- setup_lambda(X = stdrot_X,
                            y = rot_y,
@@ -161,14 +150,7 @@ plmm_fit <- function(prep,
     linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
     b <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
   } else {
-    r <- rot_y - bigstatsr::big_prodVec(X = stdrot_X, y.col = init,
-                                        center = rep(0, ncol(stdrot_X)),
-                                        scale = rep(1, ncol(stdrot_X)),
-                                        ncores = bigstatsr::nb_cores())
-
-
-    # make sure to *not* penalize the intercept term
-    new.penalty.factor <- c(0, penalty.factor)
+    r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
   }
 
   iter <- integer(nlambda)
@@ -176,6 +158,7 @@ plmm_fit <- function(prep,
   loss <- numeric(nlambda)
 
   # main attraction -----------------------------------------------------------
+  if(prep$trace){cat("\nBeginning model fitting.")}
   if('matrix' %in% class(stdrot_X)){
     # set up progress bar -- this can take a while
     if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
@@ -204,6 +187,7 @@ plmm_fit <- function(prep,
 
     }
 
+    # reverse the POST-ROTATION standardization on estimated betas
     untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
     untransformed_b1[-1,] <- sweep(x = b,
@@ -211,43 +195,50 @@ plmm_fit <- function(prep,
                                    MARGIN = 1, # beta values are on rows
                                    STATS = stdrot_X_details$scale,
                                    FUN = "/")
-    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center,
-                                                     untransformed_b1[-1,])
+    cp <- apply(X = untransformed_b1[-1,], 2, function(c){crossprod(stdrot_X_details$center, c)})
+    untransformed_beta[1,] <- mean(prep$y) - cp
 
   } else {
-    bm_stdrot_X <- fbm2bm(stdrot_X)
     # the biglasso function loops thru the lambda values
-    res <- biglasso::biglasso_path(X = bm_stdrot_X,
-                                  y = rot_y,
-                                  r = r,
-                                  init = init,
-                                  xtx = xtx,
-                                  penalty = penalty,
-                                  lambda = lambda, # biglasso_path loops thru lambda values
-                                  alpha = alpha,
-                                  gamma = gamma,
-                                  eps = eps,
-                                  max.iter = max.iter,
-                                  penalty.factor = new.penalty.factor,
-                                  ...)
+    res <- biglasso::biglasso_path(X = stdrot_X,
+                                   y = rot_y,
+                                   r = r,
+                                   init = init,
+                                   xtx = xtx,
+                                   penalty = penalty,
+                                   lambda = lambda, # biglasso_path loops thru lambda values
+                                   alpha = alpha,
+                                   gamma = gamma,
+                                   eps = eps,
+                                   max.iter = max.iter,
+                                   penalty.factor = penalty.factor,
+                                   ...)
 
     b <- res$beta # for now, this 'b' includes the intercept
-    linear.predictors <- bm_stdrot_X%*%b
+    linear.predictors <- stdrot_X%*%b
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
     r <- res$resid
 
     # reverse the POST-ROTATION standardization on estimated betas
-    untransformed_b1 <- b
-    untransformed_b1[-1,] <- sweep(x = b[-1, , drop=FALSE],
+    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
+    untransformed_b1 <- Matrix::sparseMatrix(i = rep(1,ncol(b)),
+                                             j = 1:ncol(b),
+                                             x = mean(prep$y),
+                                             dims = c(nrow(b) + 1, ncol = ncol(b)))
+    untransformed_b1[-1,] <- sweep(x = b,
                                    # un-scale the non-intercept values & fill in the placeholder
                                    MARGIN = 1, # beta values are on rows
                                    STATS = stdrot_X_scale,
                                    FUN = "/")
+
+    # TODO: add 'un-centering' to this 'untransform' step
+
   }
   if (prep$trace)(cat("\nModel fitting finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+
   # eliminate saturated lambda values, if any
   ind <- !is.na(iter)
   iter <- iter[ind]
@@ -265,7 +256,7 @@ plmm_fit <- function(prep,
     y = prep$y,
     s = prep$s,
     U = prep$U,
-    rot_X = rot_X,
+    # rot_X = rot_X,
     rot_y = rot_y,
     stdrot_X = stdrot_X,
     # stdrot_X_details = stdrot_X_details,
@@ -293,6 +284,10 @@ plmm_fit <- function(prep,
     ret$penalty.factor <- new.penalty.factor
   } else {
     ret$penalty.factor <- penalty.factor
+  }
+
+  if (exists("rot_X")){
+    ret$rot_X <- rot_X
   }
 
   return(ret)

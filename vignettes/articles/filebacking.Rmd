@@ -34,6 +34,12 @@ In many applications of high dimensional data analysis, the dataset is too large
 
 The tutorial that follows will walk you through each step of the process. We will use the `penncath_lite` data that ships with our `plmmr` package -- if you've installed this package, you have this dataset as a set of PLINK files. These PLINK files represent about 1400 participants and 4,000+ SNPs. This dataset is small enough that we could read it into memory (4,000 is a small number of SNPs to study), but I will analyze it using filebacked methods here for the sake of example. The steps shown here would be the same for GWAS-sized datasets (100,000 - 800,000 SNPs). More information about the `penncath_lite` data is given in the `PLINK files` article. **Note**: if you haven't done so already, go ahead and [unzip the PLINK files that came with `plmmr`]{style="color:purple"}
 
+If you are on MacOS or Linux, you can run this command to unzip: 
+```{r, eval=FALSE}
+system(paste0("gunzip -k ",file.path(get_example_data(parent = TRUE),
+                                     paste0("penncath_lite", "*"))))
+```
+
 # Analyzing filebacked data from start to finish
 
 ## Step 1: preprocess the data

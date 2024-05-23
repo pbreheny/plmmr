@@ -23,9 +23,8 @@ Description: Fits penalized linear mixed models that correct for
     supplied. For examples, see the package homepage. 
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.5.0), bigalgebra
 Imports:
-    bigmemory,
     bigsnpr,
     bigstatsr,
     biglasso (>= 1.6.0),
@@ -40,6 +39,7 @@ Suggests:
     parallel,
     rmarkdown,
     tinytest
+LinkingTo: Rcpp, RcppArmadillo (>= 0.8.600), bigmemory, BH
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true

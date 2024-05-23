@@ -10,7 +10,7 @@ rotate_filebacked(prep, ...)
 a list with 4 items:
 \itemize{
 \item rot_X" \code{X} on the rotated scale, without re-standardizing (an FBM)
-\item roty_y: \code{y} on the rotated scale (a numeric vector)
+\item rot_y: \code{y} on the rotated scale (a numeric vector)
 \item stdrot_X: \code{X} on the rotated scale, re-standardized (an FBM)
 \item stdrot_X_scale: numeric vector of values used to standardize \code{rot_X}
 }
