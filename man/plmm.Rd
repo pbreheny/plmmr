@@ -122,8 +122,8 @@ This function allows you to fit a linear mixed model via non-convex penalized ma
 NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
-# using admix data 
-fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
+# using admix data
+fit_admix1 <- plmm(X = admix$X, y = admix$y)
 s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
@@ -134,7 +134,7 @@ s2 <- summary(fit_admix2, idx = 99)
 print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
 
-# Note: for examples with large data that are too big to fit in memory, 
+# Note: for examples with large data that are too big to fit in memory,
 # see the article "PLINK files/file-backed matrices" on our website
 # https://pbreheny.github.io/plmmr/articles/filebacking.html
 

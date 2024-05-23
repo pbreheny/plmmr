@@ -156,8 +156,6 @@ plmm_fit <- function(prep,
   # as those user-facing functions set up 'init' as a vector of zeroes
   if (is.null(init)){
     init <- rep(0, ncol(stdrot_X))
-  } else {
-    init <- c(0, init) # add one for intercept
   }
 
   if('matrix' %in% class(stdrot_X)){

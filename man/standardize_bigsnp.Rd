@@ -12,7 +12,8 @@ standardize_bigsnp(
   complete_phen,
   id_var,
   outfile,
-  quiet
+  quiet,
+  overwrite
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ Note: this is typically passed from the result of \code{add_predictors()}}
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten?}
 }
 \value{
 A list with a new component of \code{obj} called 'std_X' - this is an FBM with column-standardized data.
