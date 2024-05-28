@@ -100,8 +100,9 @@ plmm_fit <- function(prep,
     # re-standardize rot_X
     stdrot_X <- ncvreg::std(rot_X)
     stdrot_X_details <- list(center = attr(stdrot_X, "center"),
-                            scale = attr(stdrot_X, "scale"),
-                            ns = attr(stdrot_X, "nonsingular"))
+                            scale = attr(stdrot_X, "scale"))
+    # NB: since constant features are removed in pre-rotation standardization,
+    # stdrot_X will never have constant features
 
   } else if ('FBM' %in% class(prep$std_X)){
     rot_res <- rotate_filebacked(prep)
@@ -156,7 +157,7 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-
+# browser()
   # main attraction -----------------------------------------------------------
   if(prep$trace){cat("\nBeginning model fitting.")}
   if('matrix' %in% class(stdrot_X)){
@@ -188,14 +189,13 @@ plmm_fit <- function(prep,
     }
 
     # reverse the POST-ROTATION standardization on estimated betas
-    untransformed_b1 <- matrix(nrow = nrow(b) + 1, ncol = ncol(b))
+    untransformed_b1 <- matrix(0, nrow = nrow(b) + 1, ncol = ncol(b))
+    # first, unscale:
+    bb <-  b/stdrot_X_details$scale
+    untransformed_b1[stdrot_X_details$ns + 1,] <- bb
+    # next: uncenter:
+    untransformed_b1[1,] <- rep(mean(prep$y), nlambda) - crossprod(stdrot_X_details$center, bb)
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-    untransformed_b1[-1,] <- sweep(x = b,
-                # un-scale the non-intercept values & fill in the placeholder
-                MARGIN = 1, # beta values are on rows
-                STATS = stdrot_X_details$scale,
-                FUN = "/")
-    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center,untransformed_b1[-1,])
 
   } else {
     # the biglasso function loops thru the lambda values

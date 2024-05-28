@@ -3,7 +3,8 @@
 #' @param fit  A list with the components returned by `plmm_fit`.
 #' @param oldX The standardized design matrix of training data, *pre-rotation*.
 #' @param newX A design matrix used for computing predicted values (i.e, the test data).
-#' @param type A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
+#' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
+#'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.
 #' @param idx Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.
 #' @param V11 Variance-covariance matrix of the training data. Extracted from `estimated_V` that is generated using all observations. Required if \code{type == 'blup'}.
@@ -28,13 +29,11 @@
 predict_within_cv <- function(fit,
                          oldX,
                          newX,
-                         type=c("lp", "blup"),
+                         type,
                          fbm = FALSE,
                          idx=1:length(fit$lambda),
                          V11 = NULL,
                          V21 = NULL, ...) {
-
-  type <- match.arg(type)
 
   # make sure X is in the correct format...
   # case 1: newX is an FBM

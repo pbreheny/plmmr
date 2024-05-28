@@ -82,8 +82,8 @@ process_delim(file = "colon2.txt",
           rds_dir = temp_dir,
           ind.col = 2:2002) # don't use the 1st column; it has IDs in it
 
-colon2 <- readRDS(file = file.path(temp_dir, "std_colon2.rds"))
-str(colon2) # notice that the columns with NA values were dropped 
+std_colon2 <- readRDS(file = file.path(temp_dir, "std_colon2.rds"))
+str(std_colon2) # notice that the columns with NA values were dropped 
 ```
 
 ## Step 2: fit a model
@@ -111,7 +111,9 @@ colon2_fit <- plmm(X = file.path(temp_dir, "std_colon2"),
                    K = K,
                    returnX = FALSE,
                    trace = TRUE)
-```
+
+plot(colon2_fit)
+s```
 
 In most applications, we will want to fit a model using cross validation
 
@@ -125,6 +127,21 @@ cv_fb_fit <- cv_plmm(X = my_fb_data,
                      returnBiasDetails = TRUE,
                      trace = TRUE)
 ```
+
+Fitting an equivalent model using the `penncath_lite` data that uses RAM could look like this: 
+
+```{r, eval=FALSE}
+pen_cv_fit <- cv_plmm(X = std_X,
+                      y = pen$fam$affection[pen$complete_phen],
+                      std_needed = F, # std_X is already standardized
+                      trace = T,
+                      nfolds = 5)
+
+print(summary(pen_cv_fit))
+plot(pen_cv_fit)
+plot(pen_cv_fit$fit)
+```
+
 
 ## Step 3: Plot/summarize results
 

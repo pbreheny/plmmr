@@ -47,7 +47,7 @@
 #' # Note: ^ shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 #' test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
-#' fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
+#' fit <- plmm(X = train$X, y = train$y)
 #'
 #' # make predictions for all lambda values
 #'  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
