@@ -13,11 +13,9 @@ RcppExport SEXP rotate_filebacked(SEXP std_X_,
   int n = std_X->nrow(); // n = number of observations
   int p = std_X->ncol(); // p = number of features (including non-genomic predictors!)
   int r = WUt.nrow(); // r = number of eigenvalues used in rotation (r stands for 'rank')
-  int n2 = WUt.ncol();
   // Rprintf("\n nrow(std_X) %d\n", n);
   // Rprintf("\n ncol(std_X) %d\n", p);
   // Rprintf("\n nrow(WUt) %d\n", r);
-  // Rprintf("\n ncol(WUt) %d\n", n2);
 
  //Rprintf("\n initialize accessors");
   // initialize MatrixAccessors with std_X and rot_X
