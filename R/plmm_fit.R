@@ -102,9 +102,6 @@ plmm_fit <- function(prep,
     stdrot_X <- ncvreg::std(rot_X)
     stdrot_X_details <- list(center = attr(stdrot_X, "center"),
                             scale = attr(stdrot_X, "scale"))
-    # NB: since constant features are removed in pre-rotation standardization,
-    # stdrot_X will never have constant features
-
   } else {
     rot_res <- rotate_filebacked(prep)
     stdrot_X <- rot_res$stdrot_X
