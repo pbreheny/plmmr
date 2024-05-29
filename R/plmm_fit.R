@@ -1,4 +1,5 @@
 #' PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
+#'
 #' @param prep A list as returned from \code{plmm_prep}
 #' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)
 #' @param eta_star The ratio of variances (passed from plmm())

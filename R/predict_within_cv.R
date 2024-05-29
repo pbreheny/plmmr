@@ -27,13 +27,13 @@
 #' @keywords internal
 
 predict_within_cv <- function(fit,
-                         oldX,
-                         newX,
-                         type,
-                         fbm = FALSE,
-                         idx=1:length(fit$lambda),
-                         V11 = NULL,
-                         V21 = NULL, ...) {
+                              oldX,
+                              newX,
+                              type,
+                              fbm = FALSE,
+                              idx=1:length(fit$lambda),
+                              V11 = NULL,
+                              V21 = NULL, ...) {
 
   # make sure X is in the correct format...
   # case 1: newX is an FBM
@@ -70,12 +70,11 @@ predict_within_cv <- function(fit,
   b <- beta_vals[-1,,drop=FALSE]
   Xb <- sweep(newX %*% b, 2, a, "+")
 
-# browser()
   # for linear predictor, return mean values
   if (type=="lp") return(drop(Xb))
 
   # for blup, will incorporate the estimated variance
-  if (type == "blup"){
+  if (type == "blup") {
     # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
     # test1 <- V21 %*% chol2inv(chol(V11)) # true
     # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
