@@ -6,8 +6,9 @@
 
 ## plmmr <img src="man/figures/plmmr_hex_sticker.png" align="right" alt="" width="150" />
 
-The `plmmr` (**p**enalized **l**inear **m**ixed **m**odels in **R**) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects. Documentation for this package is in progress. 
+The `plmmr` (**p**enalized **l**inear **m**ixed **m**odels in **R**) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects.
 
+🚧🛠️ **Note**: this package is still under construction 🛠️🚧, as both the package and its underlying methodology are the core of my (Tabitha's 👷‍♀️) in-progress dissertation work. Will keep this page updated as I make progress. The dream is for this package to be able to fit penalized regression models in GWAS-scale data. 
 
 ## Installation 
 
@@ -23,11 +24,13 @@ For a description of the motivation of the functions in this package (along with
 
 The branches of this repo are organized in the following way: 
 
-  - `master` is the main branch with all the latest updates
+  - `master` is the main branch with all the latest updates. 
   
   - `rework_intercept` is where we are revising the way we are handling the intercept in light of some new theoretical insights... more on this later.
 
-  - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets.
+  - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets. In particular, I am in the process of converting more functions to `C++`/adjusting how `plmmr` interacts with [file-backed data](https://pbreheny.github.io/plmmr/articles/filebacking.html). Stay tuned for more on this.
+
+  - `touchup_data_processing` is a branch where we are working to improve the way `plmmr::process_plink()` reads in PLINK data. 
 
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
