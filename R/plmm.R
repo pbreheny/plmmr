@@ -153,20 +153,18 @@ plmm <- function(X,
                       warn = warn,
                       convex = convex,
                       dfmax = dfmax)
-  if (trace) {
-    cat("\nBeta values are estimated -- almost done!")
-    }
+    if (trace) cat("Beta values are estimated -- almost done!\n")
 
-  # format results ---------------------------------------------------
-  if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
+    # format results ---------------------------------------------------
+    if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
 
-  if (is.null(checked_data$col_names)){
-    if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$map$marker.ID
+    if (is.null(checked_data$col_names)){
+      if (!is.null(checked_data$dat)) {
+        col_names <- checked_data$dat$map$marker.ID
+      }
+    } else {
+      col_names <- checked_data$col_names
     }
-  } else {
-    col_names <- checked_data$col_names
-  }
     the_final_product <- plmm_format(fit = the_fit,
                                      std_X_details = checked_data$std_X_details,
                                      snp_names = col_names,

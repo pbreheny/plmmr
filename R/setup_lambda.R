@@ -12,44 +12,44 @@
 #'
 setup_lambda <- function(X, y, alpha, lambda.min, nlambda, penalty.factor, intercept = TRUE) {
 
-  # error checking:
   # make sure alpha is neither missing nor zero
-  if(is.na(alpha) | is.null(alpha) | alpha == 0){stop("Must provide a non-zero value for alpha.")}
+  if (is.na(alpha) | is.null(alpha) | alpha == 0) {
+    stop("Must provide a non-zero value for alpha.")
+  }
   # make sure user is not trying to use a lambda.min value of 0
-  if(!missing(lambda.min)){
+  if (!missing(lambda.min)){
     if(lambda.min == 0){stop("User-specified value for lambda.min cannot be zero")}
   }
 
   # label dimensions of X
-    n <- nrow(X)
-    p <- ncol(X)
+  n <- nrow(X)
+  p <- ncol(X)
 
-  # identify which elements to penalize
-  p_ind <- which(penalty.factor != 0) # p = penalized
-  # np_ind <- which(penalty.factor == 0) # np = not penalized
-  # set up a fit using non-penalized covariates -- use this to derive residuals
-  if (length(p_ind) != (p)) { # case 1: not all `p` columns are to be penalized
-    fit <- stats::glm(y ~ -1 + X[, -p_ind, drop = FALSE], family='gaussian')
-  } else { # case 2: all columns are penalized (here, intercept is the only 'np_ind')
-    fit <- stats::glm(y ~ -1 + X[, 1, drop = FALSE], family='gaussian')
+  # fit the model to unpenalized covariates (residuals will be used later)
+  ind <- which(penalty.factor != 0)
+  if (length(ind)!=p) {
+    fit <- lm(y ~ X[, -ind])
+  } else {
+    fit <- lm(y~1)
   }
 
   # determine the maximum value for lambda
   if('matrix' %in% class(X)){
-    decomp_backsolve <- abs(crossprod(X[,p_ind], fit$residuals))/penalty.factor[p_ind]
+    decomp_backsolve <- abs(crossprod(X[,ind], fit$residuals))/penalty.factor[ind]
   } else {
     # NOTE: the following line is the reason that the penalized columns must be a
     # *contiguous* submatrix! We checked for this back in plmm_checks()
-    pen_X <- bigmemory::sub.big.matrix(X,
-                                       firstCol = p_ind[1],
-                                       lastCol = p_ind[length(p_ind)])
+    pen_X <- bigmemory::sub.big.matrix(
+      X,
+      firstCol = ind[1],
+      lastCol = ind[length(ind)])
     cprod_res <- .Call("big_crossprod",
-                   pen_X@address,
-                   y,
-                   as.integer(bigstatsr::nb_cores()),
-                   PACKAGE = "plmmr")
+                       pen_X@address,
+                       y,
+                       as.integer(bigstatsr::nb_cores()),
+                       PACKAGE = "plmmr")
     cprod <- cprod_res[[1]]
-    decomp_backsolve <- abs(cprod)/penalty.factor[p_ind]
+    decomp_backsolve <- abs(cprod)/penalty.factor[ind]
   }
   zmax <- max(stats::na.exclude(decomp_backsolve))/n
   lambda.max <- zmax/alpha

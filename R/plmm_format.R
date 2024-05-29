@@ -10,6 +10,7 @@
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
 #' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#'
 #' @returns A list with the components:
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
@@ -29,21 +30,23 @@
 #'  * `n`: the number of observations (instances)
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
-#' @keywords internal
 #'
+#' @keywords internal
+
 plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_genomic = NULL){
 
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
-  untransformed_b2 <- untransform(untransformed_b1 = fit$untransformed_b1,
-                                  p = fit$p,
-                                  std_X_details = std_X_details,
-                                  fbm_flag = fbm_flag,
-                                  non_genomic = non_genomic)
+  untransformed_b2 <- untransform(
+    untransformed_b1 = fit$untransformed_b1,
+    p = fit$p,
+    std_X_details = std_X_details,
+    fbm_flag = fbm_flag,
+    non_genomic = non_genomic)
 
   # give the matrix of beta_values readable names
   # SNPs (or covariates) on the rows, lambda values on the columns
 
-  if (is.null(snp_names)){
+  if (is.null(snp_names)) {
     snp_names <- paste("Var", 1:(fit$p + length(non_genomic)), sep="")
   }
 
@@ -52,35 +55,24 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_geno
   colnames(fit$linear.predictors) <- lam_names(fit$lambda)
 
   # output
-  ret <- list(beta_vals = untransformed_b2,
-              rotated_scale_beta_vals = fit$untransformed_b1,
-              lambda = fit$lambda,
-              eta = fit$eta,
-              rot_y = fit$rot_y,
-              linear.predictors = fit$linear.predictors,
-              penalty = fit$penalty,
-              gamma = fit$gamma,
-              alpha = fit$alpha,
-              loss = fit$loss,
-              penalty.factor = fit$penalty.factor,
-              ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
-              p = fit$p,
-              n = fit$n,
-              std_X_n = fit$std_X_n,
-              std_X_p = fit$std_X_p,
-              iter = fit$iter,
-              converged = fit$converged)
-
- ret$K <- list(s = fit$s,
-               U = fit$U)
-
-  val <- structure(ret,
-                   class = "plmm")
-
-
-  return(val)
-
-
+  structure(list(
+    beta_vals = untransformed_b2,
+    rotated_scale_beta_vals = fit$untransformed_b1,
+    lambda = fit$lambda,
+    eta = fit$eta,
+    rot_y = fit$rot_y,
+    linear.predictors = fit$linear.predictors,
+    penalty = fit$penalty,
+    gamma = fit$gamma,
+    alpha = fit$alpha,
+    loss = fit$loss,
+    penalty.factor = fit$penalty.factor,
+    ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
+    p = fit$p,
+    n = fit$n,
+    std_X_n = fit$std_X_n,
+    std_X_p = fit$std_X_p,
+    iter = fit$iter,
+    converged = fit$converged,
+    K <- list(s = fit$s, U = fit$U)))
 }
-
-

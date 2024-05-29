@@ -121,7 +121,7 @@ plmm_fit <- function(prep,
   }
 
   # set up lambda -------------------------------------------------------
-  if(prep$trace){cat("\nSetting up lambda/preparing for model fitting.")}
+  if (prep$trace) cat("\nSetting up lambda/preparing for model fitting.")
   if (missing(lambda)) {
     lambda <- setup_lambda(X = stdrot_X,
                            y = rot_y,
@@ -159,8 +159,8 @@ plmm_fit <- function(prep,
   loss <- numeric(nlambda)
 
   # main attraction -----------------------------------------------------------
-  if(prep$trace){cat("\nBeginning model fitting.")}
-  if('matrix' %in% class(stdrot_X)){
+  if (prep$trace) cat("\nBeginning model fitting.")
+  if ('matrix' %in% class(stdrot_X)) {
     # set up progress bar -- this can take a while
     if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
     for (ll in 1:nlambda){
@@ -185,36 +185,31 @@ plmm_fit <- function(prep,
       loss[ll] <- res$loss
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
-
     }
 
     # reverse the POST-ROTATION standardization on estimated betas
     untransformed_b1 <- matrix(0, nrow = nrow(b) + 1, ncol = ncol(b))
-    # first, unscale:
     bb <-  b/stdrot_X_details$scale
     untransformed_b1[-1,] <- bb
-    # next: uncenter:
     untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
-    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-
   } else {
-    # the biglasso function loops thru the lambda values
-    res <- biglasso::biglasso_path(X = stdrot_X,
-                                   y = rot_y,
-                                   r = r,
-                                   init = init,
-                                   xtx = xtx,
-                                   penalty = penalty,
-                                   lambda = lambda, # biglasso_path loops thru lambda values
-                                   alpha = alpha,
-                                   gamma = gamma,
-                                   eps = eps,
-                                   max.iter = max.iter,
-                                   penalty.factor = penalty.factor,
-                                   ...)
+    res <- biglasso::biglasso_path(
+      X = stdrot_X,
+      y = rot_y,
+      r = r,
+      init = init,
+      xtx = xtx,
+      penalty = penalty,
+      lambda = lambda,
+      alpha = alpha,
+      gamma = gamma,
+      eps = eps,
+      max.iter = max.iter,
+      penalty.factor = penalty.factor,
+      ...)
 
     b <- res$beta # for now, this 'b' includes the intercept
-    linear.predictors <- stdrot_X%*%b
+    linear.predictors <- stdrot_X %*% b
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
@@ -235,8 +230,9 @@ plmm_fit <- function(prep,
     # TODO: add 'un-centering' to this 'untransform' step
 
   }
-  if (prep$trace)(cat("\nModel fitting finished at ",
-                      format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+  if (prep$trace) {
+    cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '\n')
+  }
 
   # eliminate saturated lambda values, if any
   ind <- !is.na(iter)
@@ -244,8 +240,7 @@ plmm_fit <- function(prep,
   converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
-  if (warn & sum(iter) == max.iter) warning("\nMaximum number of iterations reached")
-
+  if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
     n = prep$n,
@@ -290,7 +285,4 @@ plmm_fit <- function(prep,
   }
 
   return(ret)
-
-
-
 }
