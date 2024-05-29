@@ -8,7 +8,7 @@ predict_within_cv(
   fit,
   oldX,
   newX,
-  type = c("lp", "blup"),
+  type,
   fbm = FALSE,
   idx = 1:length(fit$lambda),
   V11 = NULL,
@@ -23,7 +23,8 @@ predict_within_cv(
 
 \item{newX}{A design matrix used for computing predicted values (i.e, the test data).}
 
-\item{type}{A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
+\item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
+Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{fbm}{Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.}
 
@@ -46,5 +47,10 @@ Note that this approach does not incorporate the correlation structure of the da
 \item 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
 This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.
 }
+
+Note: the main difference between this function and the \code{predict.plmm()} method is that
+here in CV, predictions are made on the \emph{standardized} scale (i.e., both
+the oldX and newX data come from std_X). The \code{predict.plmm()} method
+makes predictions on the scale of X (the original scale)
 }
 \keyword{internal}

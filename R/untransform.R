@@ -14,7 +14,6 @@
 
 
 untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomic) {
-  browser()
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts

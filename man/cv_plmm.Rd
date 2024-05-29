@@ -48,10 +48,7 @@ cv_plmm(
 For data processed from PLINK files, standardization happens in \code{process_plink()}.
 For data supplied as a matrix, standardization happens here in \code{plmm()}.
 If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
-\strong{Note}: failing to standardize data will lead to incorrect analyses.
-By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}.
-For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
-\strong{Note}: failing to standardize data will lead to incorrect analyses.}
+\strong{Note}: failing to correctly standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 

@@ -113,7 +113,7 @@ A list which includes:
 \item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
 \itemize{
 \item \code{s}: a vector of the eigenvalues of the genomic relatedness matrix; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvalues of the genomic relatedness matrix
+\item \code{U}: a matrix of the eigenvectors of the genomic relatedness matrix
 }
 }
 }
