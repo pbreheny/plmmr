@@ -157,7 +157,7 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-# browser()
+
   # main attraction -----------------------------------------------------------
   if(prep$trace){cat("\nBeginning model fitting.")}
   if('matrix' %in% class(stdrot_X)){
@@ -192,9 +192,9 @@ plmm_fit <- function(prep,
     untransformed_b1 <- matrix(0, nrow = nrow(b) + 1, ncol = ncol(b))
     # first, unscale:
     bb <-  b/stdrot_X_details$scale
-    untransformed_b1[stdrot_X_details$ns + 1,] <- bb
+    untransformed_b1[-1,] <- bb
     # next: uncenter:
-    untransformed_b1[1,] <- rep(mean(prep$y), nlambda) - crossprod(stdrot_X_details$center, bb)
+    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
 
   } else {

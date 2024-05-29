@@ -54,7 +54,7 @@
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #'  * `K`: a list with 2 elements, `s` and `U` ---
 #'    * `s`: a vector of the eigenvalues of the genomic relatedness matrix; see `relatedness_mat()` for details.
-#'    * `U`: a matrix of the eigenvalues of the genomic relatedness matrix
+#'    * `U`: a matrix of the eigenvectors of the genomic relatedness matrix
 #' @export
 #'
 #' @examples
