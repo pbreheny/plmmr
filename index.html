@@ -80,7 +80,8 @@
 <div class="section level2">
 <h2 id="plmmr-">plmmr <img src="reference/figures/plmmr_hex_sticker.png" align="right" alt="" width="150"><a class="anchor" aria-label="anchor" href="#plmmr-"></a>
 </h2>
-<p>The <code>plmmr</code> (<strong>p</strong>enalized <strong>l</strong>inear <strong>m</strong>ixed <strong>m</strong>odels in <strong>R</strong>) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects. Documentation for this package is in progress.</p>
+<p>The <code>plmmr</code> (<strong>p</strong>enalized <strong>l</strong>inear <strong>m</strong>ixed <strong>m</strong>odels in <strong>R</strong>) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects.</p>
+<p>🚧🛠️ <strong>Note</strong>: this package is still under construction 🛠️🚧, as both the package and its underlying methodology are the core of my (Tabitha’s 👷‍♀️) in-progress dissertation work. Will keep this page updated as I make progress. The dream is for this package to be able to fit penalized regression models in GWAS-scale data.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -95,9 +96,10 @@
 </h2>
 <p>The branches of this repo are organized in the following way:</p>
 <ul>
-<li><p><code>master</code> is the main branch with all the latest updates</p></li>
+<li><p><code>master</code> is the main branch with all the latest updates.</p></li>
 <li><p><code>rework_intercept</code> is where we are revising the way we are handling the intercept in light of some new theoretical insights… more on this later.</p></li>
-<li><p><code>scale_up</code> is where we are working to improve <code><a href="reference/plmm.html">plmm()</a></code>’s ability to scale up to larger datasets.</p></li>
+<li><p><code>scale_up</code> is where we are working to improve <code><a href="reference/plmm.html">plmm()</a></code>’s ability to scale up to larger datasets. In particular, I am in the process of converting more functions to <code>C++</code>/adjusting how <code>plmmr</code> interacts with <a href="https://pbreheny.github.io/plmmr/articles/filebacking.html" class="external-link">file-backed data</a>. Stay tuned for more on this.</p></li>
+<li><p><code>touchup_data_processing</code> is a branch where we are working to improve the way <code><a href="reference/process_plink.html">plmmr::process_plink()</a></code> reads in PLINK data.</p></li>
 <li><p><code>gh_pages</code> is where we are keeping all the documentation for <code>plmmr</code></p></li>
 <li><p><code>estimate_eta</code> is an <strong>archived</strong> branch where we worked through an alternative approach for estimating <span class="math inline"><em>η</em></span>. We’re keeping this around for reference as we are writing.</p></li>
 <li><p><code>sign_flip</code> is an <strong>archived</strong> branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.</p></li>
