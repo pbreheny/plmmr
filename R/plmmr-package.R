@@ -7,6 +7,9 @@
 NULL
 
 ## usethis namespace: start
+#' @importFrom bigmemory attach.big.matrix
+#' @importFrom bigmemory big.matrix
+#' @importFrom bigmemory sub.big.matrix
 #' @importFrom data.table merge.data.table
 ## usethis namespace: end
 NULL

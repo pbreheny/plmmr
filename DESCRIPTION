@@ -1,5 +1,5 @@
 Package: plmmr
-Title: Penalized Linear Mixed Models For Correlated Data 
+Title: Penalized Linear Mixed Models For Correlated Data
 Version: 3.0.0
 Date: 2024-05-06
 Authors@R: c(
@@ -16,21 +16,24 @@ Description: Fits penalized linear mixed models that correct for
     presence of unobserved confounding effects such as population
     stratification and environmental heterogeneity. It then fits a linear
     model via penalized maximum likelihood. Originally designed for the
-    multivariate analysis of single nucleotide polymorphisms (SNPs) measured 
-    in a genome-wide association study (GWAS), 'plmmr' eliminates the need for
-    subpopulation-specific analyses and post-analysis p-value adjustments.
-    Functions for the appropriate processing of 'PLINK' files are also
-    supplied. For examples, see the package homepage. 
+    multivariate analysis of single nucleotide polymorphisms (SNPs)
+    measured in a genome-wide association study (GWAS), 'plmmr' eliminates
+    the need for subpopulation-specific analyses and post-analysis p-value
+    adjustments.  Functions for the appropriate processing of 'PLINK'
+    files are also supplied. For examples, see the package homepage.
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
-Depends: R (>= 3.5.0), bigalgebra
+Depends: 
+    bigalgebra,
+    bigmemory,
+    R (>= 3.5.0)
 Imports:
+    biglasso (>= 1.6.0),
     bigsnpr,
     bigstatsr,
-    biglasso (>= 1.6.0),
-    ncvreg,
+    data.table,
     Matrix,
-    data.table
+    ncvreg
 Suggests:
     graphics,
     grDevices,
@@ -39,8 +42,13 @@ Suggests:
     parallel,
     rmarkdown,
     tinytest
-LinkingTo: Rcpp, RcppArmadillo (>= 0.8.600), bigmemory, BH
-VignetteBuilder: knitr
+LinkingTo: 
+    BH,
+    bigmemory,
+    Rcpp,
+    RcppArmadillo (>= 0.8.600)
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

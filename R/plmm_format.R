@@ -74,5 +74,6 @@ plmm_format <- function(fit, std_X_details, fbm_flag, snp_names = NULL, non_geno
     std_X_p = fit$std_X_p,
     iter = fit$iter,
     converged = fit$converged,
-    K <- list(s = fit$s, U = fit$U)))
+    K = list(s = fit$s, U = fit$U)),
+    class = "plmm")
 }

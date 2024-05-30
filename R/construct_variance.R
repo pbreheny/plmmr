@@ -7,6 +7,7 @@
 #' @export
 #'
 construct_variance <- function(fit, K = NULL, eta = NULL){
+
   # if 'fit' is given
   if (!missing(fit)){
     K <- fit$K

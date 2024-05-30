@@ -21,7 +21,12 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$fbm_flag) {
     cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
   } else {
+   # if (i == 5) browser()
     cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    # Note: subsetting the data into test/train sets may cause low variance features
+    #   to become constant features in the training data. The following lines address this issue
+    singular <- apply(cv.args$prep$std_X, 2, sd) < 1e-6
+    cv.args$penalty.factor[singular] <- Inf # do not fit a model on these singular features!
   }
   cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
 

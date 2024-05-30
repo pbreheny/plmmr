@@ -260,6 +260,7 @@ plmm_fit <- function(prep,
     untransformed_b1 = untransformed_b1,
     linear.predictors = linear.predictors,
     eta = prep$eta,
+    penalty.factor = penalty.factor,
     iter = iter,
     converged = converged,
     loss = loss,
@@ -274,12 +275,6 @@ plmm_fit <- function(prep,
     warn = warn,
     init = init,
     trace = prep$trace))
-
-  if (exists('new.penalty.factor')) {
-    ret$penalty.factor <- new.penalty.factor
-  } else {
-    ret$penalty.factor <- penalty.factor
-  }
 
   if (exists("rot_X")){
     ret$rot_X <- rot_X

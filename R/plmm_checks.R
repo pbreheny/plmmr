@@ -174,9 +174,6 @@ plmm_checks <- function(X,
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
 
-  # coercion for penalty
-  penalty <- match.arg(penalty)
-
   # set default gamma
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
 
