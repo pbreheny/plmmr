@@ -15,13 +15,20 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv.args$prep
-
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
   if (cv.args$fbm_flag) {
     cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
+    train_data <- fbm2bm(cv.args$prep$std_X)
+    # TODO: come back here to address FBM/big.matrix conversion - big.matrix
+    #   plays well with bigalgebra, but FBM allows non-contiguous subsetting...
+    train_data_sd <- .Call("big_sd",
+                      train_data@address,
+                      as.integer(bigstatsr::nb_cores()),
+                      PACKAGE = "plmmr")
+    singular <- train_data_sd$sd_vals < 1e-6
+    cv.args$penalty.factor[singular] <- Inf # do not fit a model on these singular features!
   } else {
-   # if (i == 5) browser()
     cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue

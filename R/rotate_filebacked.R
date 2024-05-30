@@ -12,15 +12,15 @@ rotate_filebacked <- function(prep, ...){
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
-  # rotate X (since std_X is big, we do this in C++)
+  # rotate X
   std_X <- fbm2bm(prep$std_X)
   rot_X <- wUt%*%std_X # using %*% method from bigalgebra
   stdrot_X <- bigmemory::big.matrix(nrow = nrow(wUt), ncol = ncol(std_X))
   # rotate y
   rot_y <- wUt%*%prep$y
 
-  # rescale
-  std_rot <- .Call("big_rescale",
+  # re-standardize (since std_X is big, we do this in C++)
+  std_rot <- .Call("big_std",
                    rot_X@address,
                    as.integer(bigstatsr::nb_cores()),
                    PACKAGE = "plmmr")
@@ -28,6 +28,6 @@ rotate_filebacked <- function(prep, ...){
 
   return(list(stdrot_X = stdrot_X,
               rot_y = rot_y,
-              stdrot_X_scale = std_rot[[2]],
-              xtx = std_rot[[3]]))
+              stdrot_X_center = std_rot[[2]],
+              stdrot_X_scale = std_rot[[3]]))
 }

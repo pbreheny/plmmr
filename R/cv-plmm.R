@@ -70,7 +70,7 @@
 #' @export
 #'
 #' @examples
-#' cv_fit <- cv_plmm(X = admix$X, y = admix$y)
+#' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
 #' cv_s <- summary(cv_fit)
 #' print(cv_s)
 #' plot(cv_fit)
@@ -268,7 +268,6 @@ cv_plmm <- function(X,
   u.se <- cve[min] + cvse[min]
   within1se <- which(cve >= l.se & cve <= u.se)
   min1se <- which.max(lambda %in% lambda[within1se])
-
   # bias correction
   e <- sapply(1:nfolds, function(i) apply(E[fold==i, , drop=FALSE], 2, mean))
   Bias <- mean(e[min,] - apply(e, 2, min))

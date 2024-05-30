@@ -38,12 +38,26 @@ NumericVector mean_sqsum(XPtr<BigMatrix> X_, int n, int p){
   return sqsum;
 }
 
+// columnwise means of filebacked matrix X
+NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
+  MatrixAccessor<double> X(*X_);
+  NumericVector sums(p);
+  NumericVector center_vals(p);
+
+  for (int j=0;j<p;j++) {
+    for (int i=0;i<n;i++) sums[j] += X[j][i];
+    center_vals[j] = sums[j]/n;
+  }
+
+  return center_vals;
+}
+
 // columnwise sum of squares of filebacked matrix X
 NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
   MatrixAccessor<double> X(*X_);
   NumericVector sqsum(p);
   NumericVector scale_vals(p);
-  for (int j=0;j<p;j++){
+  for (int j=0;j<p;j++) {
     for (int i=0;i<n;i++) sqsum[j] += pow(X[j][i], 2);
     scale_vals[j] = sqrt(sqsum[j]/n);
   }
@@ -51,14 +65,38 @@ NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
   return scale_vals;
 }
 
+// center columns of a filebacked matrix X
+void center_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector centers) {
+  MatrixAccessor<double> X(*X_);
+  for (int j=0;j<p;j++){
+    for (int i=0;i<n;i++){
+      X[j][i] = X[j][i] - centers[j];
+    }
+  }
+}
+
 // scale columns of a filebacked matrix X
-void rescale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales) {
+void scale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales) {
   MatrixAccessor<double> X(*X_);
   for (int j=0;j<p;j++){
     for (int i=0;i<n;i++){
       X[j][i] = X[j][i]/scales[j];
     }
   }
+}
+
+// column-wise standard deviation of a *centered*, filebacked matrix X
+NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
+  MatrixAccessor<double> X(*centered_X_);
+  NumericVector sums(p);
+  NumericVector sd_vals(p);
+
+  for (int j=0;j<p;j++) {
+    for (int i=0;i<n;i++) sums[j] += pow(X[j][i],2);
+    sd_vals[j] = sqrt(sums[j]/(n-1));
+  }
+
+  return(sd_vals);
 }
 
 // Gaussian loss

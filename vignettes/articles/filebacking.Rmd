@@ -113,7 +113,7 @@ colon2_fit <- plmm(X = file.path(temp_dir, "std_colon2"),
                    trace = TRUE)
 
 plot(colon2_fit)
-s```
+```
 
 In most applications, we will want to fit a model using cross validation
 
@@ -232,6 +232,12 @@ fit_plus_newvars <- plmm(X = dat_plus_newvars,
                          K = list(U = fb_fit$U, s = fb_fit$s), 
                          returnX = FALSE,
                          trace = TRUE)
+# TODO: work through the example below 
+# cv_plus_newvars <- cv_plmm(X = dat_plus_newvars,
+#                          penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+#                          K = list(U = fb_fit$U, s = fb_fit$s), 
+#                          returnX = FALSE,
+#                          trace = TRUE)
 ```
 
 We can check out how these additional covariates impact model fit:

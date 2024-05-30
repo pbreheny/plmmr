@@ -50,7 +50,7 @@ RcppExport SEXP rotate_filebacked(SEXP std_X_,
 
   // re-scale (analog to R function scale_varp())
   NumericVector scale_vals = colwise_l2mean(rot_X, r, p);
-  rescale_cols(rot_X, r, p, scale_vals);
+  scale_cols(rot_X, r, p, scale_vals);
 
   // save the means of the square values of each column (will pass to xtx in model fitting)
   NumericVector xtx = mean_sqsum(rot_X, r ,p);

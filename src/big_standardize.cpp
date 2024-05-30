@@ -1,11 +1,11 @@
 #include "utilities.h"
 
-RcppExport SEXP big_rescale(SEXP rot_X_,
+RcppExport SEXP big_std(SEXP rot_X_,
                             SEXP ncore_){
 
   // declarations
   XPtr<BigMatrix> rot_X(rot_X_); // points to the filebacked matrix of rotated data
-  MatrixAccessor<double> rot_X_acc(*rot_X);
+  // MatrixAccessor<double> rot_X_acc(*rot_X);
   int r = rot_X->nrow();
   int p = rot_X->ncol();
 
@@ -22,16 +22,21 @@ RcppExport SEXP big_rescale(SEXP rot_X_,
   omp_set_num_threads(useCores);
 #endif
 
-  // re-scale (analog to R function scale_varp())
+  // re-center
+  NumericVector center_vals = col_means(rot_X, r, p);
+  center_cols(rot_X, r, p, center_vals);
+
+  // re-scale
   NumericVector scale_vals = colwise_l2mean(rot_X, r, p);
-  rescale_cols(rot_X, r, p, scale_vals);
+  scale_cols(rot_X, r, p, scale_vals);
 
   // save the means of the square values of each column (will pass to xtx in model fitting)
-  NumericVector xtx = mean_sqsum(rot_X, r ,p);
+  //NumericVector xtx = mean_sqsum(rot_X, r ,p);
 
   Rcpp::List result;
   result["stdrot_X"] = rot_X; // the 'std' cues that this matrix has been standardized
-  result["stdrot_X_scales"] = scale_vals;
-  result["xtx"] = xtx;
+  result["stdrot_X_center"] = center_vals;
+  result["stdrot_X_scale"] = scale_vals;
+  //result["xtx"] = xtx;
   return result;
 }

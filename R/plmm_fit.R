@@ -68,7 +68,7 @@ plmm_fit <- function(prep,
                      eta_star,
                      penalty.factor,
                      fbm_flag,
-                     penalty = "MCP",
+                     penalty,
                      gamma,
                      alpha = 1,
                      lambda.min,
@@ -107,19 +107,14 @@ plmm_fit <- function(prep,
 
   } else if ('FBM' %in% class(prep$std_X)){
     rot_res <- rotate_filebacked(prep)
-    rot_y <- rot_res$rot_y
     stdrot_X <- rot_res$stdrot_X
-    stdrot_X_scale <- rot_res$stdrot_X_scale
-    xtx <- rot_res$xtx
+    rot_y <- rot_res$rot_y
+    stdrot_X_details <- list(center = rot_res$stdrot_X_center,
+                             scale = rot_res$stdrot_X_scale)
   }
 
   if (prep$trace)(cat("\nRotation (preconditiong) finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
-
-  # calculate population var without mean 0; will need this for call to ncvfit()
-  if('matrix' %in% class(prep$std_X)){
-    xtx <- rep(1, ncol(stdrot_X))
-  }
 
   # set up lambda -------------------------------------------------------
   if (prep$trace) cat("\nSetting up lambda/preparing for model fitting.")
@@ -158,6 +153,8 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
+  # population var is 1 since we re-standardized (pass this arg to fit function)
+  xtx <- rep(1, ncol(stdrot_X))
 
   # main attraction -----------------------------------------------------------
   if (prep$trace) cat("\nBeginning model fitting.")
@@ -222,13 +219,9 @@ plmm_fit <- function(prep,
                                              j = 1:ncol(b),
                                              x = mean(prep$y),
                                              dims = c(nrow(b) + 1, ncol = ncol(b)))
-    untransformed_b1[-1,] <- sweep(x = b,
-                                   # un-scale the non-intercept values & fill in the placeholder
-                                   MARGIN = 1, # beta values are on rows
-                                   STATS = stdrot_X_scale,
-                                   FUN = "/")
-
-    # TODO: add 'un-centering' to this 'untransform' step
+    bb <-  b/stdrot_X_details$scale
+    untransformed_b1[-1,] <- bb
+    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
 
   }
   if (prep$trace) {
