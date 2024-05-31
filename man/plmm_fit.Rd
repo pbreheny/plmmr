@@ -10,7 +10,7 @@ plmm_fit(
   eta_star,
   penalty.factor,
   fbm_flag,
-  penalty = "MCP",
+  penalty,
   gamma,
   alpha = 1,
   lambda.min,
@@ -79,7 +79,7 @@ Note that the dimensions of \code{rot_X} are likely to be different than those o
 \item rot_y: y on the rotated scale
 \item stdrot_X: X on the rotated scale once it has been re-standardized.
 \item lambda: vector of tuning parameter values
-\item b: the coefficients estimated on the scale of \code{stdrot_X}
+\item stdrot_scale_beta: the coefficients estimated on the scale of \code{stdrot_X}
 \item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
 \item linear.predictors: the product of \code{stdrot_X} and \code{b}
 (linear predictors on the transformed and restandardized scale)

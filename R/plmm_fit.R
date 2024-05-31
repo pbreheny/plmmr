@@ -31,7 +31,7 @@
 #'   * rot_y: y on the rotated scale
 #'   * stdrot_X: X on the rotated scale once it has been re-standardized.
 #'   * lambda: vector of tuning parameter values
-#'   * b: the coefficients estimated on the scale of `stdrot_X`
+#'   * stdrot_scale_beta: the coefficients estimated on the scale of `stdrot_X`
 #'   * std_scale_beta: the coefficients estimated on the scale of `std_X`
 #'   * linear.predictors: the product of `stdrot_X` and `b`
 #'    (linear predictors on the transformed and restandardized scale)
@@ -208,8 +208,8 @@ plmm_fit <- function(prep,
       penalty.factor = penalty.factor,
       ...)
 
-    stdrot_scale_beta <- res$beta # for now, this 'b' includes the intercept
-    linear.predictors <- stdrot_X %*% b
+    stdrot_scale_beta <- res$beta
+    linear.predictors <- stdrot_X %*% stdrot_scale_beta
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss

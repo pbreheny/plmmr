@@ -4,7 +4,13 @@
 \alias{plmm_format}
 \title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
 \usage{
-plmm_format(fit, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL)
+plmm_format(
+  fit,
+  std_X_details,
+  fbm_flag,
+  feature_names = NULL,
+  non_genomic = NULL
+)
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
