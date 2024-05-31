@@ -15,6 +15,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv.args$prep
+  browser()
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
   if (cv.args$fbm_flag) {

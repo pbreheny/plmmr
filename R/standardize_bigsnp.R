@@ -15,7 +15,7 @@
 #' List also includes several other indices/meta-data on the standardized matrix
 #' @keywords internal
 #'
-standardize_bigsnp<- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
+standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
                             outfile, quiet, overwrite){
   # check for files to be overwritten
   if (overwrite){
