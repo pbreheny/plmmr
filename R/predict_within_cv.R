@@ -54,20 +54,20 @@ predict_within_cv <- function(fit,
   }
 
   # get beta values (for nonsingular features) from fit
-  beta_vals <- fit$untransformed_b1[,idx,drop = FALSE]
+  std_scale_beta <- fit$std_scale_beta[,idx,drop = FALSE]
 
   # format dim. names
-  if(is.null(dim(beta_vals))) {
-    # case 1: beta_vals is a vector
-    names(beta_vals) <- lam_names(fit$lambda)
+  if(is.null(dim(std_scale_beta))) {
+    # case 1: std_scale_beta is a vector
+    names(std_scale_beta) <- lam_names(fit$lambda)
   } else {
-    # case 2: beta_vals is a matrix
-    colnames(beta_vals) <- lam_names(fit$lambda)
+    # case 2: std_scale_beta is a matrix
+    colnames(std_scale_beta) <- lam_names(fit$lambda)
   }
 
   # calculate the estimated mean values for test data
-  a <- beta_vals[1,]
-  b <- beta_vals[-1,,drop=FALSE]
+  a <- std_scale_beta[1,]
+  b <- std_scale_beta[-1,,drop=FALSE]
   Xb <- sweep(newX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values

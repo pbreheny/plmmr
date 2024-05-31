@@ -167,7 +167,7 @@ plmm <- function(X,
     }
     the_final_product <- plmm_format(fit = the_fit,
                                      std_X_details = checked_data$std_X_details,
-                                     snp_names = col_names,
+                                     feature_names = col_names,
                                      fbm_flag = checked_data$fbm_flag,
                                      non_genomic = checked_data$non_genomic)
 

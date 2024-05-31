@@ -80,7 +80,7 @@ Note that the dimensions of \code{rot_X} are likely to be different than those o
 \item stdrot_X: X on the rotated scale once it has been re-standardized.
 \item lambda: vector of tuning parameter values
 \item b: the coefficients estimated on the scale of \code{stdrot_X}
-\item untransformed_b1: the coefficients estimated on the scale of \code{std_X}
+\item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
 \item linear.predictors: the product of \code{stdrot_X} and \code{b}
 (linear predictors on the transformed and restandardized scale)
 \item eta: a number (double) between 0 and 1 representing the estimated
@@ -100,7 +100,7 @@ where 1 = predictor was penalized.
 lasso penalties was used. Not relevant for lasso models.
 \item alpha: numeric value indicating the elastic net tuning parameter.
 \item ns: the indices for the nonsingular values of X
-\item snp_names: formatted column names of the design matrix
+\item feature_names: formatted column names of the design matrix
 \item nlambda: number of lambda values used in model fitting
 \item eps: tolerance ('epsilon') used for model fitting
 \item max.iter: max. number of iterations per model fit

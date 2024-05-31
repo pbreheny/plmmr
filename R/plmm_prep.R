@@ -28,7 +28,7 @@
 #' * U: the eigenvectors of K (same as left singular values of X).
 #' * ns: the indices for the nonsingular values of X
 #' * penalty.factor: the penalty factors for the penalized non-singular values
-#' * snp_names: formatted column names of the design matrix
+#' * feature_names: formatted column names of the design matrix
 #'
 #' @keywords internal
 

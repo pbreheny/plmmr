@@ -68,7 +68,7 @@ List with these components:
 \item U: the eigenvectors of K (same as left singular values of X).
 \item ns: the indices for the nonsingular values of X
 \item penalty.factor: the penalty factors for the penalized non-singular values
-\item snp_names: formatted column names of the design matrix
+\item feature_names: formatted column names of the design matrix
 }
 }
 \description{

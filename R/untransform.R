@@ -3,7 +3,7 @@
 #' This function unwinds the initial standardization of the data to obtain
 #' coefficient values on their original scale. It is called by plmm_format().
 #'
-#' @param untransformed_b1 The estimated coefficients on the standardized scale
+#' @param std_scale_beta The estimated coefficients on the standardized scale
 #' @param p  The number of columns in the original design matrix
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
@@ -13,23 +13,23 @@
 #' @keywords internal
 
 
-untransform <- function(untransformed_b1, p, std_X_details, fbm_flag, non_genomic) {
+untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
-  a <- untransformed_b1[1, , drop = FALSE] # this is the intercept
-  b <- untransformed_b1[-1, , drop=FALSE]
+  a <- std_scale_beta[1, , drop = FALSE] # this is the intercept
+  b <- std_scale_beta[-1, , drop=FALSE]
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
   if (fbm_flag) {
     untransformed_beta <- Matrix::Matrix(0,
                                  nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
-                                 ncol = ncol(untransformed_b1),
+                                 ncol = ncol(std_scale_beta),
                                  sparse = TRUE)
   } else {
     untransformed_beta <- matrix(0,
                                  nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
-                                 ncol = ncol(untransformed_b1))
+                                 ncol = ncol(std_scale_beta))
   }
 
 

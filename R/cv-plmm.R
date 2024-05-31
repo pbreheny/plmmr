@@ -117,15 +117,6 @@ cv_plmm <- function(X,
                               # col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
-                              # K = K,
-                              # diag_K = diag_K,
-                              # eta_star = eta_star,
-                              # penalty = penalty,
-                              # penalty.factor = penalty.factor,
-                              # init = init,
-                              # dfmax = dfmax,
-                              # gamma = gamma,
-                              # alpha = alpha,
                               trace = trace,
                               ...)
 
@@ -172,7 +163,7 @@ cv_plmm <- function(X,
   }
   fit_to_return <- plmm_format(fit = fit,
                                std_X_details = checked_data$std_X_details,
-                               snp_names = col_names,
+                               feature_names = col_names,
                                fbm_flag = checked_data$fbm_flag,
                                non_genomic = checked_data$non_genomic)
 

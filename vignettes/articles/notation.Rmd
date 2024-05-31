@@ -68,11 +68,9 @@ Under these assumptions, we may write $\mathbf{y} \sim N(\dot{\mathbf{X}}\dot{\b
 
 ### Decomposition and rotation (prep and first part of fit)
 
--   Beginning with an eigendecomposition, we have $\mathbf{U}$ and $\mathbf{d}$ are the eigenvectors and eigenvalues of $\mathbf{K}$, as one would obtain from $\text{eigen}(\mathbf{K)} \equiv \mathbf{U}\mathbf{D}\mathbf{U}^\top$. The elements of $\mathbf{d}$ are the diagonal values of $\mathbf{D}$. Note, random effect $\mathbf{u}$ is distinct from the columns of matrix $\mathbf{U}$.
+-   Beginning with an eigendecomposition, we have $\mathbf{U}$ and $\mathbf{s}$ are the eigenvectors and eigenvalues of $\mathbf{K}$, as one would obtain from $\text{eigen}(\mathbf{K)} \equiv \mathbf{U}\mathbf{S}\mathbf{U}^\top$. The elements of $\mathbf{s}$ are the diagonal values of $\mathbf{S}$. Note, random effect $\mathbf{u}$ is distinct from the columns of matrix $\mathbf{U}$.
 
 -   $k$ represents the number of nonzero eigenvalues represented in $\mathbf{U}$ and $\mathbf{d}$, so $k \leq \text{min}(n,p)$.
-
--   $\mathbf{S} \equiv \frac{1}{p}\mathbf{D}^2$ is the $k \times k$ diagonal matrix whose diagonal values are $\frac{d_k^2}{p}$.
 
 -   Again, $\mathbf{K} \equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}$ is often referred to in the literature as the realized relatedness matrix (RRM) or genomic relatedness matrix (GRM). $\mathbf{K}$ has dimension $n \times n$. 
 
@@ -110,4 +108,18 @@ In the code, we denote the objects above in this way:
 
 -   $\ddot{\tilde{\mathbf{X}}}$ is `stdrot_X`
 
--   $\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}$ is `Xb`
+-   $\hat{\boldsymbol{\beta}}$ is named `og_scale_beta` in helper functions (for clarity) and returned in `plmm` objects as `beta_vals`. `beta_vals` and `og_scale_beta` are equivalent; both represent the estimated coefficients on the original scale. 
+
+-   $\hat{\dot{\boldsymbol{\beta}}}$ is `std_scale_beta`
+
+-   $\hat{\ddot{\boldsymbol{\beta}}}$ is `stdrot_scale_beta`
+
+-   $\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}$ is `Xb`
+
+-   $\ddot{\tilde{\mathbf{X}}} \hat{\ddot{\boldsymbol{\beta}}}$ is `linear.predictors`. Note: in words, this means the `linear.predictors` in the code are on the scale of the rotated and re-standardized data!
+
+
+
+
+
+

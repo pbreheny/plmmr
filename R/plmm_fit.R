@@ -32,7 +32,7 @@
 #'   * stdrot_X: X on the rotated scale once it has been re-standardized.
 #'   * lambda: vector of tuning parameter values
 #'   * b: the coefficients estimated on the scale of `stdrot_X`
-#'   * untransformed_b1: the coefficients estimated on the scale of `std_X`
+#'   * std_scale_beta: the coefficients estimated on the scale of `std_X`
 #'   * linear.predictors: the product of `stdrot_X` and `b`
 #'    (linear predictors on the transformed and restandardized scale)
 #'   * eta: a number (double) between 0 and 1 representing the estimated
@@ -52,7 +52,7 @@
 #'    lasso penalties was used. Not relevant for lasso models.
 #'   * alpha: numeric value indicating the elastic net tuning parameter.
 #'   * ns: the indices for the nonsingular values of X
-#'   * snp_names: formatted column names of the design matrix
+#'   * feature_names: formatted column names of the design matrix
 #'   * nlambda: number of lambda values used in model fitting
 #'   * eps: tolerance ('epsilon') used for model fitting
 #'   * max.iter: max. number of iterations per model fit
@@ -145,7 +145,7 @@ plmm_fit <- function(prep,
   if('matrix' %in% class(stdrot_X)){
     r <- drop(rot_y - stdrot_X %*% init)
     linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
-    b <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
+    stdrot_scale_beta <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
   } else {
     r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
   }
@@ -176,7 +176,7 @@ plmm_fit <- function(prep,
                             max.iter = max.iter,
                             penalty.factor = penalty.factor,
                             warn = warn)
-      b[, ll] <- init <- res$beta
+      stdrot_scale_beta[, ll] <- init <- res$beta
       linear.predictors[,ll] <- stdrot_X%*%(res$beta)
       iter[ll] <- res$iter
       converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
@@ -186,10 +186,12 @@ plmm_fit <- function(prep,
     }
 
     # reverse the POST-ROTATION standardization on estimated betas
-    untransformed_b1 <- matrix(0, nrow = nrow(b) + 1, ncol = ncol(b))
-    bb <-  b/stdrot_X_details$scale
-    untransformed_b1[-1,] <- bb
-    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
+    std_scale_beta <- matrix(0,
+                               nrow = nrow(stdrot_scale_beta) + 1,
+                               ncol = ncol(stdrot_scale_beta))
+    bb <-  stdrot_scale_beta/stdrot_X_details$scale
+    std_scale_beta[-1,] <- bb
+    std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
   } else {
     res <- biglasso::biglasso_path(
       X = stdrot_X,
@@ -206,7 +208,7 @@ plmm_fit <- function(prep,
       penalty.factor = penalty.factor,
       ...)
 
-    b <- res$beta # for now, this 'b' includes the intercept
+    stdrot_scale_beta <- res$beta # for now, this 'b' includes the intercept
     linear.predictors <- stdrot_X %*% b
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
@@ -215,13 +217,14 @@ plmm_fit <- function(prep,
 
     # reverse the POST-ROTATION standardization on estimated betas
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-    untransformed_b1 <- Matrix::sparseMatrix(i = rep(1,ncol(b)),
-                                             j = 1:ncol(b),
+    std_scale_beta <- Matrix::sparseMatrix(i = rep(1,ncol(stdrot_scale_beta)),
+                                             j = 1:ncol(stdrot_scale_beta),
                                              x = mean(prep$y),
-                                             dims = c(nrow(b) + 1, ncol = ncol(b)))
-    bb <-  b/stdrot_X_details$scale
-    untransformed_b1[-1,] <- bb
-    untransformed_b1[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
+                                             dims = c(nrow(stdrot_scale_beta) + 1,
+                                                      ncol = ncol(stdrot_scale_beta)))
+    bb <-  stdrot_scale_beta/stdrot_X_details$scale
+    std_scale_beta[-1,] <- bb
+    std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
 
   }
   if (prep$trace) {
@@ -249,8 +252,8 @@ plmm_fit <- function(prep,
     stdrot_X = stdrot_X,
     # stdrot_X_details = stdrot_X_details,
     lambda = lambda,
-    b = b,
-    untransformed_b1 = untransformed_b1,
+    stdrot_scale_beta = stdrot_scale_beta,
+    std_scale_beta = std_scale_beta,
     linear.predictors = linear.predictors,
     eta = prep$eta,
     penalty.factor = penalty.factor,
