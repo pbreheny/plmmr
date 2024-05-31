@@ -25,13 +25,9 @@ For a description of the motivation of the functions in this package (along with
 The branches of this repo are organized in the following way: 
 
   - `master` is the main branch with all the latest updates. 
-  
-  - `rework_intercept` is where we are revising the way we are handling the intercept in light of some new theoretical insights... more on this later.
 
   - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets. In particular, I am in the process of converting more functions to `C++`/adjusting how `plmmr` interacts with [file-backed data](https://pbreheny.github.io/plmmr/articles/filebacking.html). Stay tuned for more on this.
-
-  - `touchup_data_processing` is a branch where we are working to improve the way `plmmr::process_plink()` reads in PLINK data. 
-
+    
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
   - `estimate_eta` is an **archived** branch where we worked through an alternative approach for estimating $\eta$. We're keeping this around for reference as we are writing. 
