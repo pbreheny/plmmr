@@ -16,39 +16,50 @@
 #' @keywords internal
 #'
 standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
-                            outfile, quiet, overwrite){
+                               outfile, quiet, overwrite){
   # check for files to be overwritten
   if (overwrite){
-    list.files(rds_dir, pattern=paste0('^std_', prefix, '.*.bk'), full.names=TRUE) |>
+    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
       file.remove()
-    list.files(rds_dir, pattern=paste0('^std_', prefix, '.*.rds'), full.names=TRUE) |>
+    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
       file.remove()
   }
 
 
   # standardization ------------------------------------------------
   if (!quiet) {cat("\nColumn-standardizing the design matrix...")}
-
   # centering & scaling
-  scale_info <- bigstatsr::big_scale()(obj$subset_X)
+  subset_X <- bigstatsr::big_copy(obj$subset_X,
+                             type = "double", # this is key...
+                             backingfile = file.path(rds_dir, "std_X"))
+  subset_X_bm <- subset_X |> fbm2bm()
 
-  obj$std_X <- big_std(X = obj$subset_X,
-                       std_bk_extension = paste0(rds_dir, "/std_", prefix),
-                       center = scale_info$center,
-                       scale = scale_info$scale) # leave ns = NULL; X is already subset
+  std_res <- .Call("big_std",
+                   subset_X_bm@address,
+                   as.integer(bigstatsr::nb_cores()),
+                   PACKAGE = "plmmr")
+
+  std_X <- bigmemory::big.matrix(nrow = nrow(subset_X), ncol = ncol(subset_X))
+  std_X@address <- std_res$std_X
+
 
   # label return object ------------------------------------------------
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
-  obj$std_X_center <- scale_info$center
-  obj$std_X_scale <- scale_info$scale
-  obj$std_X_colnames <- obj$colnames[obj$ns]
-  obj$std_X_rownames <- obj$rownames[complete_phen]
-  obj$non_gen <- non_gen # save indices for non-genomic covariates
-  obj$complete_phen <- complete_phen # save indices for which samples had complete phenotypes
-  obj$id_var <- id_var # save ID variable - will need this downstream for analysis
-  obj <- bigsnpr::snp_save(obj)
+
+  ret <- list(
+    std_X = describe(std_X),
+    std_X_center = std_res$std_X_center,
+    std_X_scale = std_res$std_X_scale,
+    std_X_colnames = obj$colnames[obj$ns],
+    std_X_rownames = obj$rownames[complete_phen],
+    fam = obj$fam,
+    map = obj$map,
+    non_gen = non_gen, # save indices for non-genomic covariates
+    complete_phen = complete_phen, # save indices for which samples had complete phenotypes
+    id_var = id_var # save ID variable - will need this downstream for analysis
+  )
 
 
   if (!quiet){
@@ -56,5 +67,5 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
         file = outfile, append = TRUE)
   }
 
-  return(obj)
+  return(ret)
 }

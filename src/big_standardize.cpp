@@ -1,17 +1,18 @@
 #include "utilities.h"
 
-RcppExport SEXP big_std(SEXP rot_X_,
-                            SEXP ncore_){
+RcppExport SEXP big_std(SEXP X_,
+                        SEXP ncore_){
 
   // declarations
-  XPtr<BigMatrix> rot_X(rot_X_); // points to the filebacked matrix of rotated data
-  // MatrixAccessor<double> rot_X_acc(*rot_X);
-  int r = rot_X->nrow();
-  int p = rot_X->ncol();
+  // Rprintf("\nDeclarations in big_std()");
+  XPtr<BigMatrix> X(X_); // points to the filebacked matrix of rotated data
+  // MatrixAccessor<double> X_acc(*X);
+  int n = X->nrow();
+  int p = X->ncol();
 
 
   // set up omp
-  //Rprintf("\n set up OpenMP");
+  // Rprintf("\n set up OpenMP");
   int useCores = INTEGER(ncore_)[0];
 #ifdef PLMMR_OMP_H_
   int haveCores = omp_get_num_procs();
@@ -23,20 +24,22 @@ RcppExport SEXP big_std(SEXP rot_X_,
 #endif
 
   // re-center
-  NumericVector center_vals = col_means(rot_X, r, p);
-  center_cols(rot_X, r, p, center_vals);
+  // Rprintf("\nCalling col_means()");
+  NumericVector center_vals = col_means(X, n, p);
+  center_cols(X, n, p, center_vals);
 
   // re-scale
-  NumericVector scale_vals = colwise_l2mean(rot_X, r, p);
-  scale_cols(rot_X, r, p, scale_vals);
+  // Rprintf("\nCalling scaling functions");
+  NumericVector scale_vals = colwise_l2mean(X, n, p);
+  scale_cols(X, n, p, scale_vals);
 
   // save the means of the square values of each column (will pass to xtx in model fitting)
-  //NumericVector xtx = mean_sqsum(rot_X, r ,p);
+  //NumericVector xtx = mean_sqsum(X, r ,p);
 
   Rcpp::List result;
-  result["stdrot_X"] = rot_X; // the 'std' cues that this matrix has been standardized
-  result["stdrot_X_center"] = center_vals;
-  result["stdrot_X_scale"] = scale_vals;
+  result["std_X"] = X; // the 'std' cues that this matrix has been standardized
+  result["std_X_center"] = center_vals;
+  result["std_X_scale"] = scale_vals;
   //result["xtx"] = xtx;
   return result;
 }

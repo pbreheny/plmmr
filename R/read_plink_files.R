@@ -23,8 +23,6 @@ read_plink_files <- function(data_dir, prefix, rds_dir, outfile, overwrite, quie
 
   path <- file.path(rds_dir, paste0(prefix, ".rds"))
   bk_path <- file.path(rds_dir, paste0(prefix, ".bk"))
-  std_bk_path <- file.path(rds_dir, paste0("std_", prefix, ".bk"))
-  sub_bk_path <- file.path(rds_dir, paste0("subset_", prefix, ".bk"))
 
   # check for overwrite:
   if (file.exists(bk_path)){
@@ -37,12 +35,13 @@ read_plink_files <- function(data_dir, prefix, rds_dir, outfile, overwrite, quie
         cat("\nOverwriting existing files: ", prefix, ".bk/.rds\n")
       }
 
-      # overwrite existing files
+      # overwrite existing rds file
       gc()
-      if (file.exists(bk_path)) file.remove(bk_path)
-      if (file.exists(std_bk_path)) file.remove(std_bk_path)
-      if (file.exists(sub_bk_path)) file.remove(sub_bk_path)
       if (file.exists(path)) file.remove(path)
+      gc()
+      # remove old backingfile(s)
+      list.files(rds_dir, pattern=paste0('^.*.bk'), full.names=TRUE) |>
+        file.remove()
       gc()
     } else {
       stop("\nThere are existing prefix.rds and prefix.bk files in the specified directory.

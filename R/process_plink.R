@@ -182,34 +182,18 @@ process_plink <- function(data_dir,
 
   # cleanup --------------------------------------------------------------------
   if (!keep_bigSNP) {
-    rds <- list(
-      std_X = step7$std_X,
-      fam = step7$fam,
-      map = step7$map,
-      colnames = step7$colnames,
-      rownames = step7$rownames,
-      n = step7$n,
-      p = step7$p,
-      ns = step7$ns,
-      non_gen = step5$non_gen,
-      std_X_center = step7$std_X_center,
-      std_X_scale = step7$std_X_scale,
-      std_X_colnames = step7$std_X_colnames,
-      std_X_rownames = step7$std_X_rownames,
-      complete_phen = step7$complete_phen,
-      id_var = step7$id_var
-    )
-
-    # This removes intermediate files created by the steps of the data management process
+    # These steps remove intermediate rds/bk files created by the steps of the data management process
     list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
       file.remove()
     list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
       file.remove()
+    list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+      file.remove()
     rm(step1)
-    gc()
-    saveRDS(rds, paste0(rds_dir, "/std_", prefix, ".rds"))
+    gc() # this is important!
   }
 
+  saveRDS(step7, paste0(rds_dir, "/std_", prefix, ".rds"))
 
   if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
   close(log_con)

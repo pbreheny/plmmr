@@ -10,7 +10,7 @@
 extern SEXP big_sd(SEXP X_, SEXP ncore_);
 
 // standardize a rotated matrix of data
-extern SEXP big_std(SEXP rot_X_, SEXP ncore_);
+extern SEXP big_std(SEXP X_, SEXP ncore_);
 
 // rotate_filebacked
 extern SEXP rotate_filebacked(SEXP std_X_,

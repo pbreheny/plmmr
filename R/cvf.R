@@ -15,14 +15,11 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv.args$prep
-  browser()
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
   if (cv.args$fbm_flag) {
     cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
     train_data <- fbm2bm(cv.args$prep$std_X)
-    # TODO: come back here to address FBM/big.matrix conversion - big.matrix
-    #   plays well with bigalgebra, but FBM allows non-contiguous subsetting...
     train_data_sd <- .Call("big_sd",
                       train_data@address,
                       as.integer(bigstatsr::nb_cores()),
@@ -42,7 +39,9 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   # extract test set (comes from cv prep on full data)
   if (cv.args$fbm_flag){
-    test_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold==i))
+    test_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+                                  ind.row = which(fold==i)) |> fbm2bm()
+    browser() # Pick up here: make sure downstream functions can handle big.matrix types
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
   }
