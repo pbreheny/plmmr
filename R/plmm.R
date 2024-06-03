@@ -118,6 +118,7 @@ plmm <- function(X,
                               trace = trace,
                               ...)
 
+
   # prep (SVD)-------------------------------------------------
   if(trace){cat("\nInput data passed all checks at ",
                 format(Sys.time(), "%Y-%m-%d %H:%M:%S"))}
@@ -125,9 +126,9 @@ plmm <- function(X,
     the_prep <- plmm_prep(std_X = checked_data$std_X,
                           std_X_n = checked_data$std_X_n,
                           std_X_p = checked_data$std_X_p,
-                          genomic = checked_data$genomic,
                           n = checked_data$n,
                           p = checked_data$p,
+                          genomic = checked_data$genomic,
                           y = checked_data$y,
                           K = checked_data$K,
                           diag_K = checked_data$diag_K,
@@ -154,7 +155,7 @@ plmm <- function(X,
                       convex = convex,
                       dfmax = dfmax)
     if (trace) cat("Beta values are estimated -- almost done!\n")
-
+    browser()
     # format results ---------------------------------------------------
     if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
 

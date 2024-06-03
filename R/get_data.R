@@ -40,7 +40,6 @@ get_data <- function(path, returnX, trace = TRUE){
 
   rds <- paste0(path, ".rds")
   bk <- paste0(path, ".bk") # .bk will be present if RDS was created with bigsnpr methods
-
   obj <- readRDS(rds)
 
   # return data in a tractable format
@@ -57,7 +56,8 @@ get_data <- function(path, returnX, trace = TRUE){
 
   if(returnX){
     # get std_X as a matrix
-    std_X <- obj$std_X[,]
+    std_X_bm <- attach.big.matrix(obj$std_X)
+    std_X <- std_X_bm[,]
 
     ret <- list(n = obj$n,
          p = obj$p,
@@ -94,7 +94,7 @@ get_data <- function(path, returnX, trace = TRUE){
 
     ret <- list(n = obj$n,
                 p = obj$p,
-                std_X = obj$std_X,
+                std_X = attach.big.matrix(obj$std_X),
                 std_X_center = obj$std_X_center,
                 std_X_scale = obj$std_X_scale,
                 ns = obj$ns,

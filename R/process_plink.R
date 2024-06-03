@@ -3,6 +3,8 @@
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
 #' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
+#' @param bk_filename           Optional string to name the backingfile that will be created for the output data. Defaults to `paste0(std_`. `prefix`).
+#'                              **Note**: Do NOT include a `.bk` extension in the filename.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
 #'                                * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -32,8 +34,6 @@
 #'
 #'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
 #'                           The names will be used to subset and align this external covariate with the supplied PLINK data.
-#'
-#' @param keep_bigSNP         Logical: should the intermediate steps of data processing be saved as a `bigSNP` object? Defaults to FALSE.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return Nothing is returned by this function, but (at least) two files are created in
@@ -90,6 +90,7 @@
 process_plink <- function(data_dir,
                           prefix,
                           rds_dir = data_dir,
+                          bk_filename,
                           impute = TRUE,
                           impute_method = 'mode',
                           na_phenotype_vals = c(-9),
@@ -107,6 +108,10 @@ process_plink <- function(data_dir,
                           ...){
 
   # start log ------------------------------------------
+  if(missing(bk_filename)){
+    bk_filename <- paste0("std_", prefix)
+  }
+
   if(missing(outfile)){
     outfile = file.path(rds_dir, "process_plink.log")
   } else {
@@ -171,10 +176,18 @@ process_plink <- function(data_dir,
   step5 <- add_predictors_to_bigsnp(step4, add_predictor_fam, add_predictor_ext,
                           id_var, step2$og_plink_ids, quiet)
 
+  # check for files to be overwritten---------------------------------
+  if (overwrite){
+    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
+      file.remove()
+    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
+      file.remove()
+  }
+
   # subsetting -----------------------------------------------------------------
   step6 <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
-                      step3$complete_phen, step5$non_gen, data_dir, prefix,
-                      outfile, quiet)
+                      step3$complete_phen, step5$non_gen, data_dir, rds_dir,
+                      prefix, bk_filename, outfile, quiet)
 
   # standardization ------------------------------------------------------------
   step7 <- standardize_bigsnp(step6, prefix, rds_dir, step5$non_gen, step3$complete_phen,

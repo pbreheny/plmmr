@@ -63,8 +63,8 @@ plmm_checks <- function(X,
     std_X_p <- std_indices$std_X_p
     col_names <- dat$X_colnames
 
-    # create a list that captures the centering/scaling for std_X; will need this
-    # later, see `untransform()`
+    # create a list that captures the centering/scaling for std_X;
+    # will need this later, see `untransform()`
     std_X_details <- list(
       center = dat$std_X_center,
       scale = dat$std_X_scale,
@@ -80,7 +80,7 @@ plmm_checks <- function(X,
       std_X_details$std_X_colnames <- col_names[std_X_details$ns]
     }
 
-    if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
+    if(inherits(std_X, "big.matrix")){
       fbm_flag <- TRUE
     } else {
       fbm_flag <- FALSE
@@ -107,7 +107,7 @@ plmm_checks <- function(X,
       col_names <- attr(X, "dimnames")[[2]]
     }
 
-    # handle standardization (still in matrix case)
+    # handle standardization (for in-memory matrix case)
     if (std_needed){
       std_res <- standardize_matrix(X, penalty.factor)
       std_X <- std_res$std_X
@@ -181,11 +181,11 @@ plmm_checks <- function(X,
   if(!fbm_flag){
     # error check for matrix X
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
-    if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected.
+    if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected in outcome, 'y'.
                                             \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
   } else {
-    #  error checking for FBM X
+    #  error checking for filebacked X
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
     if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)

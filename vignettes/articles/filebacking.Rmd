@@ -67,14 +67,14 @@ pen <- readRDS(file.path(temp_dir, "std_penncath_lite.rds"))
 str(pen) # note: genotypes and std_X are *not* in memory
 # 
 # we can check to see that our data have been standardized 
-std_X <- pen$std_X[,]
-colMeans(std_X) |> summary() # columns have mean zero...
-apply(std_X, 2, var) |> summary() # ... & variance 1
+std_X <- attach.big.matrix(pen$std_X)
+colMeans(std_X[,]) |> summary() # columns have mean zero...
+apply(std_X[,], 2, var) |> summary() # ... & variance 1
 ```
 
 ### What if my data aren't in PLINK format?
 
-The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimemsional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
+The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimensional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
 
 ```{r}
 process_delim(file = "colon2.txt",
@@ -91,7 +91,7 @@ str(std_colon2) # notice that the columns with NA values were dropped
 Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defaults to using the 6th column from the '.fam' file as the phenotype/outcome (this is the same as what PLINK does).
 
 ```{r}
-my_fb_data <- paste0(temp_dir, "std_penncath_lite")
+my_fb_data <- paste0(temp_dir, "/std_penncath_lite")
 fb_fit <- plmm(X = my_fb_data,
                returnX = FALSE, 
                # this datset is small enough to fit in memory

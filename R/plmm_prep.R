@@ -109,9 +109,9 @@ plmm_prep <- function(std_X,
 
       if (identical(genomic,1:std_X_p)) {
         # if all columns are genomic, no need to filter
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag)
+        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
       } else {
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic)
+        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag, ind.col = genomic)
       }
       K <- eigen_res$K
       s <- eigen_res$s
@@ -120,7 +120,8 @@ plmm_prep <- function(std_X,
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K)
-      s <- eigen_res$values*(1/p) # note: our definition of the RRM averages over the number of features
+      s <- eigen_res$values*(1/std_X_p)
+      # note: our definition of the RRM averages over the number of features used to calculate K
       U <- eigen_res$vectors
     }
 
