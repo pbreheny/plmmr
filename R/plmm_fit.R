@@ -92,7 +92,7 @@ plmm_fit <- function(prep,
   if(prep$trace){cat("\nBeginning rotation ('preconditioning').")}
 
   # rotate data ----------------------------------------------------------------
-  if('matrix' %in% class(prep$std_X)) {
+  if(!fbm_flag) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- wUt %*% prep$std_X
@@ -105,7 +105,7 @@ plmm_fit <- function(prep,
     # NB: since constant features are removed in pre-rotation standardization,
     # stdrot_X will never have constant features
 
-  } else if ('FBM' %in% class(prep$std_X)){
+  } else {
     rot_res <- rotate_filebacked(prep)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
@@ -142,7 +142,7 @@ plmm_fit <- function(prep,
     init <- rep(0, ncol(stdrot_X))
   }
 
-  if('matrix' %in% class(stdrot_X)){
+  if(!fbm_flag){
     r <- drop(rot_y - stdrot_X %*% init)
     linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
     stdrot_scale_beta <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
@@ -158,7 +158,7 @@ plmm_fit <- function(prep,
 
   # main attraction -----------------------------------------------------------
   if (prep$trace) cat("\nBeginning model fitting.")
-  if ('matrix' %in% class(stdrot_X)) {
+  if (!fbm_flag) {
     # set up progress bar -- this can take a while
     if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
     for (ll in 1:nlambda){

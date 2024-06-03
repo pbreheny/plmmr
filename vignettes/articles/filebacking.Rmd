@@ -99,6 +99,16 @@ fb_fit <- plmm(X = my_fb_data,
                trace = TRUE)
 ```
 
+
+We can confirm that our filebacked methods and in-memory methods give the same results:
+```{r}
+fit <- plmm(X = my_fb_data, # will run in-memory by default, since data will fit
+            trace = TRUE)
+b1 <- fb_fit$beta_vals |> as.matrix()
+b2 <- fit$beta_vals
+tinytest::expect_equivalent(b1, b2, 0.01) 
+```
+
 The format is similar for data that came from `process_delim` -- however, in the case of our `colon2` data, we need to supply our own kinship matrix. The data are not genomic, so estimating a genomic relatedness matrix doesn't make sense. For our purposes, we will make up a 'dummy' K matrix.
 
 ```{r}

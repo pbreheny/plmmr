@@ -155,7 +155,7 @@ plmm <- function(X,
                       convex = convex,
                       dfmax = dfmax)
     if (trace) cat("Beta values are estimated -- almost done!\n")
-    browser()
+
     # format results ---------------------------------------------------
     if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
 
