@@ -135,21 +135,24 @@ cv_fb_fit <- cv_plmm(X = my_fb_data,
                      # In practice, 3 folds is usually not enough for robust 
                      # cross validation - hence, the default is nfolds = 10
                      returnBiasDetails = TRUE,
-                     trace = TRUE)
+                     trace = TRUE,
+                     seed = 123)
+
 ```
 
 Fitting an equivalent model using the `penncath_lite` data that uses RAM could look like this: 
 
 ```{r, eval=FALSE}
-pen_cv_fit <- cv_plmm(X = std_X,
-                      y = pen$fam$affection[pen$complete_phen],
-                      std_needed = F, # std_X is already standardized
-                      trace = T,
-                      nfolds = 5)
+cv_fit <- cv_plmm(X = my_fb_data,
+                  type = 'blup',
+                  nfolds = 10,
+                  returnBiasDetails = TRUE,
+                  trace = TRUE,
+                  seed = 123)
 
-print(summary(pen_cv_fit))
-plot(pen_cv_fit)
-plot(pen_cv_fit$fit)
+print(summary(cv_fit))
+plot(cv_fit)
+tinytest::expect_equivalent(cv_fb_fit$cve, cv_fit$cve)
 ```
 
 
