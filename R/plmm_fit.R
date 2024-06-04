@@ -113,6 +113,7 @@ plmm_fit <- function(prep,
                              scale = rot_res$stdrot_X_scale)
   }
 
+
   if (prep$trace)(cat("\nRotation (preconditiong) finished at ",
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
 
@@ -144,10 +145,14 @@ plmm_fit <- function(prep,
 
   if(!fbm_flag){
     r <- drop(rot_y - stdrot_X %*% init)
+    # cat("\nhead(residuals, 10):", head(r, 10))
+    # cat("\ntail(residuals, 10):", tail(r, 10))
     linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
     stdrot_scale_beta <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
   } else {
     r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
+    # cat("\nhead(residuals, 10):", head(r, 10))
+    # cat("\ntail(residuals, 10):", tail(r, 10))
   }
 
   iter <- integer(nlambda)
@@ -250,7 +255,7 @@ plmm_fit <- function(prep,
     # rot_X = rot_X,
     rot_y = rot_y,
     stdrot_X = stdrot_X,
-    # stdrot_X_details = stdrot_X_details,
+    stdrot_X_details = stdrot_X_details,
     lambda = lambda,
     stdrot_scale_beta = stdrot_scale_beta,
     std_scale_beta = std_scale_beta,

@@ -45,6 +45,7 @@ plmm_checks <- function(X,
                         save_rds = NULL,
                         return_fit = TRUE,
                         ...){
+
   # check X types -------------------------------------------------
   if (!any(class(X) %in% c("character", "matrix"))) {
     stop("\nThe X argument must be either (1) a numeric matrix or (2) a character

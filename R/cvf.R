@@ -18,12 +18,12 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
   if (cv.args$fbm_flag) {
-    cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X, ind.row = which(fold!=i))
-    train_data <- fbm2bm(cv.args$prep$std_X)
+    cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+                                              ind.row = which(fold!=i)) |> fbm2bm()
     train_data_sd <- .Call("big_sd",
-                      train_data@address,
-                      as.integer(bigstatsr::nb_cores()),
-                      PACKAGE = "plmmr")
+                           cv.args$prep$std_X@address,
+                           as.integer(bigstatsr::nb_cores()),
+                           PACKAGE = "plmmr")
     singular <- train_data_sd$sd_vals < 1e-6
     cv.args$penalty.factor[singular] <- Inf # do not fit a model on these singular features!
   } else {
@@ -41,7 +41,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$fbm_flag){
     test_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                   ind.row = which(fold==i)) |> fbm2bm()
-    browser() # Pick up here: make sure downstream functions can handle big.matrix types
+
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
   }
@@ -54,7 +54,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$prep$trace) {
     cat("Fitting model in fold ", i, ":\n")
   }
-
+# if (i==2) browser()
   fit.i <- do.call("plmm_fit", cv.args)
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
@@ -70,12 +70,12 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE]
 
     yhat <- predict_within_cv(fit = fit.i,
-                         oldX = cv.args$prep$std_X,
-                         newX = test_X,
-                         type = 'blup',
-                         fbm = cv.args$fbm_flag,
-                         V11 = V11,
-                         V21 = V21, ...)
+                              oldX = cv.args$prep$std_X,
+                              newX = test_X,
+                              type = 'blup',
+                              fbm = cv.args$fbm_flag,
+                              V11 = V11,
+                              V21 = V21, ...)
 
   }
 

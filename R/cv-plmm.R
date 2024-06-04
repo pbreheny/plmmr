@@ -241,7 +241,7 @@ cv_plmm <- function(X,
     }
     Y[fold==i, 1:res$nl] <- res$yhat
   }
-
+  # browser()
   # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep

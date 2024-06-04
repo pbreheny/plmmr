@@ -36,22 +36,8 @@ predict_within_cv <- function(fit,
                               V21 = NULL, ...) {
 
   # make sure X is in the correct format...
-  # case 1: newX is an FBM
-  if (inherits(newX,"FBM")){
-    fbm_flag <- TRUE
-    # convert to big.matrix (FBM cannot multiply with dgCMatrix type of beta_vals)
-    newX <- fbm2bm(newX)
-  } else if (inherits(newX, "big.matrix")){
-    # case 2: newX is a big.matrix
-    fbm_flag <- TRUE
-  } else {
-    # case 3: X is in-memory
-    fbm_flag <- FALSE
-  }
-
-  if (fbm){
-    oldX <- fbm2bm(oldX)
-  }
+  # case 1: newX is filebacked
+  fbm_flag <- inherits(newX,"big.matrix")
 
   # get beta values (for nonsingular features) from fit
   std_scale_beta <- fit$std_scale_beta[,idx,drop = FALSE]
