@@ -124,8 +124,9 @@ We can compare these predictions with the predictions we would get from an inter
 # intercept-only (or 'null') model
 crossprod(admix$y - mean(admix$y))/length(admix$y)
 
-# our model
-apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)})
+# our model at its best value of lambda
+apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
+min(mse)
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 
