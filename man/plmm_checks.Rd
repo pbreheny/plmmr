@@ -13,7 +13,7 @@ plmm_checks(
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-  penalty = c("MCP", "SCAD", "lasso"),
+  penalty,
   penalty.factor = NULL,
   init = NULL,
   gamma,
