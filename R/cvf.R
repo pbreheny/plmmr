@@ -54,8 +54,9 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$prep$trace) {
     cat("Fitting model in fold ", i, ":\n")
   }
-# if (i==2) browser()
+
   fit.i <- do.call("plmm_fit", cv.args)
+  if (i==2) browser()
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
                               oldX = cv.args$prep$std_X,

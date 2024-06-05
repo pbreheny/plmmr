@@ -46,7 +46,7 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
   # in plmm_fit().
 
   ret <- list(
-    std_X = describe(std_X),
+    std_X = bigmemory::describe(std_X),
     std_X_center = std_res$std_X_center,
     std_X_scale = std_res$std_X_scale,
     ns = obj$ns,

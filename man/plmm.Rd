@@ -7,6 +7,7 @@
 plmm(
   X,
   y = NULL,
+  relevel_binary_outcome = FALSE,
   std_needed = TRUE,
   col_names = NULL,
   non_genomic = NULL,
@@ -36,7 +37,11 @@ plmm(
 \item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
 * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
-\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
+\item{y}{Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
+
+\item{relevel_binary_outcome}{Logical: is \code{y} a binary outcome coded as 1 = control, 2 = case (per PLINK default settings)?
+If \code{TRUE}, the \code{y} will be transformed so that 0 = control, 1 = case (same as the \code{--1} flag in PLINK).
+Defaults to \code{FALSE}.}
 
 \item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 

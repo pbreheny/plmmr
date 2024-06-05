@@ -15,7 +15,8 @@ eigen_K <- function(std_X, fbm_flag, ...){
   # calculate K (which will be stored in memory regardless of how std_X is stored)
 
   if (fbm_flag) {
-    bk_file_path_sans_extension <- bigstatsr::sub_bk(paste0(dir.name(std_X), file.name(std_X)))
+    f <- paste0(bigmemory::dir.name(std_X), bigmemory::file.name(std_X))
+    bk_file_path_sans_extension <- bigstatsr::sub_bk(f)
     fbm_X <- bigstatsr::FBM(nrow = nrow(std_X), ncol = ncol(std_X),
                             create_bk = FALSE,
                             backingfile = bk_file_path_sans_extension)

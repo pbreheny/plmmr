@@ -93,6 +93,7 @@ Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defau
 ```{r}
 my_fb_data <- paste0(temp_dir, "/std_penncath_lite")
 fb_fit <- plmm(X = my_fb_data,
+               relevel_binary_outcome = TRUE,
                returnX = FALSE, 
                # this datset is small enough to fit in memory
                # by setting returnX = FALSE, I force plmm() to run on the filebacked data
@@ -145,7 +146,7 @@ Fitting an equivalent model using the `penncath_lite` data that uses RAM could l
 ```{r, eval=FALSE}
 cv_fit <- cv_plmm(X = my_fb_data,
                   type = 'blup',
-                  nfolds = 10,
+                  nfolds = 3,
                   returnBiasDetails = TRUE,
                   trace = TRUE,
                   seed = 123)

@@ -11,7 +11,9 @@ subset_bigsnp(
   complete_phen,
   non_gen,
   data_dir,
+  rds_dir,
   prefix,
+  bk_filename,
   outfile,
   quiet
 )
@@ -32,11 +34,16 @@ subset_bigsnp(
 \item{complete_phen}{Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
 
 \item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
-Note: this is typically passed from the result of \code{add_predictors()}}
+\strong{Note}: this is typically passed from the result of \code{add_predictors()}}
 
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
+\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+
+\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
+\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 

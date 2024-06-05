@@ -8,6 +8,7 @@ process_plink(
   data_dir,
   prefix,
   rds_dir = data_dir,
+  bk_filename,
   impute = TRUE,
   impute_method = "mode",
   na_phenotype_vals = c(-9),
@@ -31,6 +32,9 @@ process_plink(
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+
+\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
+\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -74,8 +78,6 @@ The names will be used to subset and align this external covariate with the supp
 \if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files.
                       The names will be used to subset and align this external covariate with the supplied PLINK data.
 }\if{html}{\out{</div>}}}
-
-\item{keep_bigSNP}{Logical: should the intermediate steps of data processing be saved as a \code{bigSNP} object? Defaults to FALSE.}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }

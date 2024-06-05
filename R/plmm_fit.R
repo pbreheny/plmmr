@@ -197,6 +197,7 @@ plmm_fit <- function(prep,
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
     std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
+
   } else {
     res <- biglasso::biglasso_path(
       X = stdrot_X,
