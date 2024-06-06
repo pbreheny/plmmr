@@ -103,28 +103,33 @@ tinytest::expect_equivalent(matrix(0,
 
 # Test 4: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
-  # filebacked fit
-  process_plink(data_dir = find_example_data(parent = TRUE),
+  # process PLINK files
+  temp_dir <- tempdir() # using a temp dir -- change to fit your preference
+  unzip_example_data(outdir = temp_dir)
+  process_plink(data_dir = temp_dir,
+                rds_dir = temp_dir,
                 prefix = "penncath_lite",
-                gz = TRUE,
                 outfile = "process_penncath",
                 overwrite = TRUE,
-                impute_method = "mode",
-                keep_bigSNP = TRUE)
+                impute_method = "mode")
 
-  my_fb_data <- paste0(find_example_data(parent = TRUE), "/penncath_lite")
+  # filebacked
+  my_fb_data <- paste0(temp_dir, "/std_penncath_lite")
   fb_fit <- plmm(X = my_fb_data,
                  returnX = FALSE,
+                 # this datset is small enough to fit in memory
+                 # by setting returnX = FALSE, I force plmm() to run on the filebacked data
                  trace = TRUE)
 
-  # in memory fit
-  pen <- bigsnpr::snp_attach(paste0(find_example_data(parent = TRUE), "/penncath_lite.rds"))
-  inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
-                    y = pen$fam$affection[pen$complete_phen],
-                    trace = TRUE)
+  # in-memory
+  fit <- plmm(X = my_fb_data, # will run in-memory by default, since data will fit
+              trace = TRUE)
 
-  tinytest::expect_equivalent(inmem_fit$beta_vals, as.matrix(fb_fit$beta_vals),
-                              tolerance = 0.01)
+  # check: these results match
+  b1 <- fb_fit$beta_vals |> as.matrix()
+  b2 <- fit$beta_vals
+  tinytest::expect_equivalent(b1, b2, 0.01) # passes
+
 }
 
 

@@ -46,11 +46,6 @@
 #' * 'std_prefix.bk': Created by the call to `standardize_fbm()`, this is the
 #' backingfile that stores the numeric data of the standardized design matrix `std_X`
 #'
-#'  Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
-#'  if `keep_bigSNP = TRUE`, these are not deleted at the end of the `process_plink()`
-#'  procedure. Note that these files could potentially be quite large - that's the
-#'  main reason that keeping these files is not the default setting.
-#'
 #'  Note that `process_plink()` need only be run once for a given set of PLINK
 #'  files; in subsequent data analysis/scripts, `get_data()` will access the '.rds' file.
 #'
@@ -104,7 +99,6 @@ process_plink <- function(data_dir,
                           overwrite = FALSE,
                           add_predictor_fam = NULL,
                           add_predictor_ext = NULL,
-                          keep_bigSNP = FALSE,
                           ...){
 
   # start log ------------------------------------------
@@ -194,17 +188,15 @@ process_plink <- function(data_dir,
                   id_var, outfile, quiet, overwrite)
 
   # cleanup --------------------------------------------------------------------
-  if (!keep_bigSNP) {
-    # These steps remove intermediate rds/bk files created by the steps of the data management process
-    list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
-      file.remove()
-    list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
-      file.remove()
-    list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
-      file.remove()
-    rm(step1)
-    gc() # this is important!
-  }
+  # These steps remove intermediate rds/bk files created by the steps of the data management process
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
+    file.remove()
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
+    file.remove()
+  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+    file.remove()
+  rm(step1)
+  gc() # this is important!
 
   saveRDS(step7, paste0(rds_dir, "/std_", prefix, ".rds"))
 

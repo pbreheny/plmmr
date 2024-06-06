@@ -7,6 +7,7 @@
 NULL
 
 ## usethis namespace: start
+#' @importFrom bigalgebra Arith
 #' @importFrom bigmemory attach.big.matrix
 #' @importFrom bigmemory big.matrix
 #' @importFrom bigmemory sub.big.matrix
