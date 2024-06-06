@@ -19,7 +19,7 @@
 #' my_folder <- paste0(tempdir(),"/") # change this to be the directory of your choice...
 #'
 #' process_plink(
-#'   data_dir = get_example_data(parent = TRUE), # assumes you have unzipped the data
+#'   data_dir = find_example_data(parent = TRUE), # assumes you have unzipped the data
 #'   rds_dir = my_folder,
 #'   prefix = "penncath_lite",
 #'   outfile = "process_penncath",

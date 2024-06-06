@@ -36,8 +36,8 @@ The tutorial that follows will walk you through each step of the process. We wil
 
 If you are on MacOS or Linux, you can run this command to unzip: 
 ```{r, eval=FALSE}
-system(paste0("gunzip -k ",file.path(get_example_data(parent = TRUE),
-                                     paste0("penncath_lite", "*"))))
+temp_dir <- tempdir() # using a temp dir -- change to fit your preference
+unzip_example_data(outdir = temp_dir)
 ```
 
 # Analyzing filebacked data from start to finish
@@ -50,7 +50,7 @@ Here, we will create the files we want in a temporary directory just for the sak
 
 ```{r}
 temp_dir <- paste0(tempdir()) # using a temporary directory
-process_plink(data_dir = get_example_data(parent = TRUE), # reads data from inst/extdata
+process_plink(data_dir = find_example_data(parent = TRUE), # reads data from inst/extdata
               rds_dir = temp_dir,
               prefix = "penncath_lite",
               outfile = "process_penncath",
@@ -78,7 +78,7 @@ The methodology in `plmmr` was motivated by applications in GWAS, but it certain
 
 ```{r}
 process_delim(file = "colon2.txt",
-          data_dir = get_example_data(parent = TRUE),
+          data_dir = find_example_data(parent = TRUE),
           rds_dir = temp_dir,
           ind.col = 2:2002) # don't use the 1st column; it has IDs in it
 
@@ -216,14 +216,14 @@ summary(cv_fb_lasso)
 In many biological applications, we want to include some features/covariates/predictors in addition to the genomic information, like clinical or demographic information. Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `process_plink()`:
 
 ```{r}
-pen_clinic <- read.csv(paste0(get_example_data(parent = TRUE), "/penncath_clinical.csv"))
+pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
 extdata <- pen_clinic[,3:4]
 rownames(extdata) <- pen_clinic$FamID # This is important! 
 
 # create a new temporary directory
 temp_dir2 <- paste0(tempdir(), sample(LETTERS, 1))
 
-process_plink(data_dir = get_example_data(parent = TRUE),
+process_plink(data_dir = find_example_data(parent = TRUE),
               rds_dir = temp_dir2, # using a temporary directory
               prefix = "penncath_lite",
               id_var = "FID", # this is KEY!

@@ -104,7 +104,7 @@ tinytest::expect_equivalent(matrix(0,
 # Test 4: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
   # filebacked fit
-  process_plink(data_dir = get_example_data(parent = TRUE),
+  process_plink(data_dir = find_example_data(parent = TRUE),
                 prefix = "penncath_lite",
                 gz = TRUE,
                 outfile = "process_penncath",
@@ -112,13 +112,13 @@ if (interactive()) {
                 impute_method = "mode",
                 keep_bigSNP = TRUE)
 
-  my_fb_data <- paste0(get_example_data(parent = TRUE), "/penncath_lite")
+  my_fb_data <- paste0(find_example_data(parent = TRUE), "/penncath_lite")
   fb_fit <- plmm(X = my_fb_data,
                  returnX = FALSE,
                  trace = TRUE)
 
   # in memory fit
-  pen <- bigsnpr::snp_attach(paste0(get_example_data(parent = TRUE), "/penncath_lite.rds"))
+  pen <- bigsnpr::snp_attach(paste0(find_example_data(parent = TRUE), "/penncath_lite.rds"))
   inmem_fit <- plmm(X = pen$genotypes[pen$complete_phen,],
                     y = pen$fam$affection[pen$complete_phen],
                     trace = TRUE)
@@ -167,14 +167,14 @@ tinytest::expect_equivalent(R, ncv_R)
 
 if (interactive()) {
   # process data
-  pen_clinic <- read.csv(paste0(get_example_data(parent = TRUE), "/penncath_clinical.csv"))
+  pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
   extdata <- pen_clinic[,3:4]
   rownames(extdata) <- pen_clinic$FamID # This is important!
 
   # create a new temporary directory
   temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
 
-  process_plink(data_dir = get_example_data(parent = TRUE),
+  process_plink(data_dir = find_example_data(parent = TRUE),
                 rds_dir = temp_dir, # using a temporary directory
                 prefix = "penncath_lite",
                 id_var = "FID", # this is KEY!
