@@ -114,9 +114,18 @@ cv_plmm <- function(X,
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
                               std_needed = std_needed,
-                              # col_names = col_names,
+                              col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
+                              K = K,
+                              diag_K = diag_K,
+                              eta_star = eta_star,
+                              penalty = penalty,
+                              penalty.factor = penalty.factor,
+                              init = init,
+                              dfmax = dfmax,
+                              gamma = gamma,
+                              alpha = alpha,
                               trace = trace,
                               ...)
 
@@ -130,9 +139,9 @@ cv_plmm <- function(X,
                       y = checked_data$y,
                       K = checked_data$K,
                       diag_K = checked_data$diag_K,
+                      eta_star = eta_star,
                       fbm_flag = checked_data$fbm_flag,
-                      trace = trace,
-                      ...)) # ... additional arguments to plmm_prep()
+                      trace = trace))
 
   prep <- do.call('plmm_prep', prep.args)
 
@@ -148,11 +157,14 @@ cv_plmm <- function(X,
     alpha = alpha,
     nlambda = nlambda,
     max.iter = max.iter,
+    eps = eps,
     warn = warn,
     convex = convex,
-    dfmax = dfmax
-  ),
-  list(...))
+    dfmax = dfmax))
+
+  if (!missing(lambda.min)){
+    fit.args$lambda.min <- lambda.min
+  }
 
   fit <- do.call('plmm_fit', fit.args)
 
@@ -241,7 +253,7 @@ cv_plmm <- function(X,
     }
     Y[fold==i, 1:res$nl] <- res$yhat
   }
-  # browser()
+
   # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
@@ -262,7 +274,7 @@ cv_plmm <- function(X,
   # bias correction
   e <- sapply(1:nfolds, function(i) apply(E[fold==i, , drop=FALSE], 2, mean))
   Bias <- mean(e[min,] - apply(e, 2, min))
-browser()
+
   val <- list(type=type,
               cve=cve,
               cvse=cvse,

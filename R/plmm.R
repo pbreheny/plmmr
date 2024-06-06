@@ -5,9 +5,6 @@
 #' @param X                       Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
 #'                                * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 #' @param y                       Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param relevel_binary_outcome  Logical: is `y` a binary outcome coded as 1 = control, 2 = case (per PLINK default settings)?
-#'                                If `TRUE`, the `y` will be transformed so that 0 = control, 1 = case (same as the `--1` flag in PLINK).
-#'                                Defaults to `FALSE`.
 #' @param std_needed              Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses.
 #' @param col_names               Optional vector of column names for design matrix. Defaults to NULL.
 #'                                For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -79,7 +76,6 @@
 #'
 plmm <- function(X,
                  y = NULL,
-                 relevel_binary_outcome = FALSE,
                  std_needed = TRUE,
                  col_names = NULL,
                  non_genomic = NULL,
@@ -110,7 +106,6 @@ plmm <- function(X,
                               col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
-                              relevel_binary_outcome = relevel_binary_outcome,
                               K = K,
                               diag_K = diag_K,
                               eta_star = eta_star,
@@ -125,8 +120,8 @@ plmm <- function(X,
 
 
   # prep (SVD)-------------------------------------------------
-  if(trace){cat("\nInput data passed all checks at ",
-                format(Sys.time(), "%Y-%m-%d %H:%M:%S"))}
+  if(trace){cat("Input data passed all checks at ",
+                format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"))}
 
     the_prep <- plmm_prep(std_X = checked_data$std_X,
                           std_X_n = checked_data$std_X_n,
@@ -140,7 +135,7 @@ plmm <- function(X,
                           fbm_flag = checked_data$fbm_flag,
                           trace = trace)
   if (trace)(cat("\nEigendecomposition finished at ",
-                 format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+                 format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
 
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
@@ -162,7 +157,7 @@ plmm <- function(X,
     if (trace) cat("Beta values are estimated -- almost done!\n")
 
     # format results ---------------------------------------------------
-    if(trace){cat("\nFormatting results (backtransforming coefs. to original scale).\n")}
+    if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
 
     if (is.null(checked_data$col_names)){
       if (!is.null(checked_data$dat)) {
@@ -178,18 +173,18 @@ plmm <- function(X,
                                      non_genomic = checked_data$non_genomic)
 
 
-    if (trace)(cat("\nModel ready at ",
-                   format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+    if (trace)(cat("Model ready at ",
+                   format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
     # handle output
     if (!is.null(save_rds)){
       saveRDS(the_final_product, save_rds)
     }
 
     if (is.null(save_rds) & !return_fit){
-      cat("\nYou accidentally left save_rds NULL while setting return_fit = FALSE;
+      cat("You accidentally left save_rds NULL while setting return_fit = FALSE;
         to prevent you from losing your work, I am saving the output as plmm_results.rds
-        in your current working directory (current folder).
-        \nNext time, make sure to specify your own filepath to the save_rds argument.")
+        in your current working directory (current folder).\n
+        Next time, make sure to specify your own filepath to the save_rds argument.\n")
 
       rdsfile <- paste0(getwd(),"/plmm_results.rds")
       saveRDS(the_final_product, rdsfile)

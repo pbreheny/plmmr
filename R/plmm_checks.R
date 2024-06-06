@@ -3,9 +3,6 @@
 #' @param X Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
 #' * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 #' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param relevel_binary_outcome Logical: is `y` a binary outcome coded as 1 = control, 2 = case (per PLINK default settings)?
-#' If `TRUE`, the `y` will be transformed so that 0 = control, 1 = case (same as the `--1` flag in PLINK).
-#' Defaults to `FALSE`.
 #' @param std_needed Logical: does the supplied X need to be standardized? Defaults to NULL, since by default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, leave `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses.
 #' @param col_names Optional vector of column names for design matrix. Defaults to NULL.
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
@@ -32,7 +29,6 @@
 #'
 plmm_checks <- function(X,
                         y = NULL,
-                        relevel_binary_outcome = NULL,
                         std_needed = NULL,
                         col_names = NULL,
                         non_genomic = NULL,
@@ -154,10 +150,6 @@ plmm_checks <- function(X,
         y <- dat$fam$affection
       }
 
-      # check: does user want 0/1 outcomes?
-      if (relevel_binary_outcome){
-        y <- y - 1 # relevels 1 = control, 2 = case to have 0 = control, 1 = case encoding
-      }
     } else {
       stop("\nIf the data did not come from process_plink(), you must specify a
            'y' argument")
@@ -183,8 +175,8 @@ plmm_checks <- function(X,
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
 
-  # set default gamma
-  if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, 3)
+  # set default gamma (gamma not used in 'lasso' option)
+  if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
   # error checking ------------------------------------------------------------
   if(!fbm_flag){
