@@ -45,8 +45,8 @@ get_data <- function(path, returnX, trace = TRUE){
   # return data in a tractable format
   if (missing(returnX)) {
     if (utils::object.size(obj$std_X) > 1e8) {
-      warning("\nDue to the large size of X (>100 Mb), X has been returned as a file-backed matrix (FBM).
-              \nTo turn this message off, explicitly specify fbm=TRUE or fbm=FALSE).")
+      warning("Due to the large size of X (>100 Mb), X has been returned as a file-backed matrix\n.
+              To turn this message off, explicitly specify fbm=TRUE or fbm=FALSE)\n.")
       returnX <- FALSE
     } else {
       # if it fits, it ships
@@ -107,8 +107,8 @@ get_data <- function(path, returnX, trace = TRUE){
       if(obj$id_var == "IID"){row_names <- as.character(obj$fam$sample.ID[obj$complete_phen])}
       if(obj$id_var == "FID"){row_names <- as.character(obj$fam$family.ID[obj$complete_phen])}
 
-      ret$X_colnames <- obj$colnames
-      ret$X_rownames <- obj$rownames
+      ret$X_colnames <- obj$X_colnames
+      ret$X_rownames <- obj$X_rownames
       ret$fam <- obj$fam
       ret$map <-  obj$map
       ret$complete_phen <- obj$complete_phen

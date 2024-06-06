@@ -52,6 +52,8 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
     ns = obj$ns,
     std_X_colnames = obj$colnames[obj$ns],
     std_X_rownames = obj$rownames[complete_phen],
+    X_colnames = obj$colnames,
+    X_rownames = obj$rownames,
     n = nrow(obj$fam),
     p = nrow(obj$map),
     fam = obj$fam,

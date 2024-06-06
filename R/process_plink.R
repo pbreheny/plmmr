@@ -172,10 +172,12 @@ process_plink <- function(data_dir,
 
   # check for files to be overwritten---------------------------------
   if (overwrite){
+    gc()
     list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
       file.remove()
     list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
       file.remove()
+    gc()
   }
 
   # subsetting -----------------------------------------------------------------
@@ -191,8 +193,10 @@ process_plink <- function(data_dir,
   # These steps remove intermediate rds/bk files created by the steps of the data management process
   list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
     file.remove()
+  gc() # this is important!
   list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
     file.remove()
+  gc() # this is important!
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
   rm(step1)

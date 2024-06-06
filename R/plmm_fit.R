@@ -162,7 +162,7 @@ plmm_fit <- function(prep,
   xtx <- rep(1, ncol(stdrot_X))
 
   # main attraction -----------------------------------------------------------
-  if (prep$trace) cat("\nBeginning model fitting.")
+  if (prep$trace) cat("Beginning model fitting.\n")
   if (!fbm_flag) {
     # set up progress bar -- this can take a while
     if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}

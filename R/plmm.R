@@ -117,7 +117,7 @@ plmm <- function(X,
                               alpha = alpha,
                               trace = trace,
                               ...)
-
+browser()
 
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",
@@ -134,9 +134,10 @@ plmm <- function(X,
                           diag_K = checked_data$diag_K,
                           fbm_flag = checked_data$fbm_flag,
                           trace = trace)
-  if (trace)(cat("\nEigendecomposition finished at ",
+  if (trace)(cat("Eigendecomposition finished at ",
                  format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
 
+     browser()
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       std_X_details = checked_data$std_X_details,
@@ -156,6 +157,7 @@ plmm <- function(X,
                       dfmax = dfmax)
     if (trace) cat("Beta values are estimated -- almost done!\n")
 
+     browser()
     # format results ---------------------------------------------------
     if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
 
@@ -172,7 +174,7 @@ plmm <- function(X,
                                      fbm_flag = checked_data$fbm_flag,
                                      non_genomic = checked_data$non_genomic)
 
-
+    browser()
     if (trace)(cat("Model ready at ",
                    format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
     # handle output

@@ -206,7 +206,7 @@ cv_plmm <- function(X,
   if(is.null(fold)) {
     if(trace){
       cat("'Fold' argument is either NULL or missing; assigning folds randomly (by default).
-          \nTo specify folds for each observation, supply a vector with fold assignments.")
+          \nTo specify folds for each observation, supply a vector with fold assignments.\n")
     }
     fold <- sample(1:n %% nfolds)
     fold[fold==0] <- nfolds
