@@ -167,7 +167,7 @@ cv_plmm <- function(X,
   }
 
   fit <- do.call('plmm_fit', fit.args)
-
+  cat("summary(lambda):", summary(fit$lambda), "\n")
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
       col_names <- checked_data$dat$map$marker.ID

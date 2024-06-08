@@ -20,7 +20,7 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
 
 
   # standardization ------------------------------------------------
-  if (!quiet) {cat("\nColumn-standardizing the design matrix...")}
+  if (!quiet) {cat("Column-standardizing the design matrix...\n")}
   # convert FBM pointer into a big.matrix pointer
   subset_X_bm <- obj$subset_X |> fbm2bm()
   # centering & scaling

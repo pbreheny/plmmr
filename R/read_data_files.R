@@ -29,8 +29,8 @@ read_data_files <- function(file, data_dir, rds_dir, ind.col, outfile, overwrite
         cat("\nOverwriting existing files:", prefix, ".bk/.rds\n", sep='')
       }
       file.remove(bk_path)
-      file.remove(std_bk_path)
       file.remove(path)
+      if (file.exists(std_bk_path)) file.remove(std_bk_path)
     } else {
       stop("\nThere are existing .rds and/or .bk files in the specified directory.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.

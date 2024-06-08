@@ -202,7 +202,7 @@ process_plink <- function(data_dir,
   rm(step1)
   gc() # this is important!
 
-  saveRDS(step7, paste0(rds_dir, "/std_", prefix, ".rds"))
+  saveRDS(step7, file.path(rds_dir, paste0("std_", prefix, ".rds")))
 
   if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
   close(log_con)

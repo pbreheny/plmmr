@@ -20,18 +20,25 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
   if (cv.args$fbm_flag) {
     cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
+
+    # check for singularity
     train_data_sd <- .Call("big_sd",
                            cv.args$prep$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
     singular <- train_data_sd$sd_vals < 1e-6
-    cv.args$penalty.factor[singular] <- Inf # do not fit a model on these singular features!
+
+    # do not fit a model on these singular features!
+    if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
+
   } else {
     cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
     singular <- apply(cv.args$prep$std_X, 2, sd) < 1e-6
-    cv.args$penalty.factor[singular] <- Inf # do not fit a model on these singular features!
+
+    # do not fit a model on these singular features!
+    if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
   }
   cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
 
@@ -55,8 +62,23 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  fit.i <- do.call("plmm_fit", cv.args)
-  # if (i==2) browser()
+  fit.i <- do.call("fit_within_cv", cv.args)
+
+  cat("summary(fit.i$lambda):", summary(fit.i$lambda), "\n")
+  # checks
+  # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
+  # if (any(abs(stdrot_beta_max_check) > 10)) browser()
+  #
+  # stdrot_beta_min_check <- apply(fit.i$stdrot_scale_beta, 1, min)
+  # if (any(abs(stdrot_beta_min_check) > 10)) browser()
+  #
+  # std_beta_max_check <- apply(fit.i$std_scale_beta, 1, max)
+  # if (any(abs(std_beta_max_check) > 10)) browser()
+  #
+  # std_beta_min_check <- apply(fit.i$std_scale_beta, 1, min)
+  # if (any(abs(std_beta_min_check) > 10)) browser()
+
+
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
                               oldX = cv.args$prep$std_X,
