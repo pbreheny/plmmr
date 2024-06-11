@@ -213,6 +213,7 @@ plmm_fit <- function(prep,
 
     stdrot_scale_beta <- res$beta
     linear.predictors <- stdrot_X %*% stdrot_scale_beta
+
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
@@ -227,6 +228,7 @@ plmm_fit <- function(prep,
                                                       ncol = ncol(stdrot_scale_beta)))
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
+    # browser()
     std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
 
   }

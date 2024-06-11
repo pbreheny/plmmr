@@ -216,7 +216,7 @@ fit_within_cv <- function(prep,
       ...)
 
     stdrot_scale_beta <- res$beta
-    linear.predictors <- stdrot_X %*% stdrot_scale_beta
+    # linear.predictors <- stdrot_X %*% stdrot_scale_beta
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
