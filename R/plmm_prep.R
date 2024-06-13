@@ -4,7 +4,7 @@
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
 #' @param std_X_n The number of observations in std_X (integer)
 #' @param std_X_p The number of features in std_X (integer)
-#' @param genomic A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
+#' @param genomic A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param y Continuous outcome vector.
@@ -153,7 +153,6 @@ plmm_prep <- function(std_X,
     p = p,
     std_X_n = std_X_n,
     std_X_p = std_X_p,
-    y = y,
     std_X = std_X,
     y = y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())

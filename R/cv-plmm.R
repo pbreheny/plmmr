@@ -165,7 +165,7 @@ cv_plmm <- function(X,
   if (!missing(lambda.min)){
     fit.args$lambda.min <- lambda.min
   }
-
+cat("full fit args:", str(fit.args))
   fit <- do.call('plmm_fit', fit.args)
   cat("summary(lambda):", summary(fit$lambda), "\n")
   if (is.null(col_names)){

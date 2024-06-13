@@ -62,6 +62,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
+  cat("fit.i", i, "args:", str(cv.args))
   fit.i <- do.call("fit_within_cv", cv.args)
 
   cat("summary(fit.i$lambda):", summary(fit.i$lambda), "\n")
