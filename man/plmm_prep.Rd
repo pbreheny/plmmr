@@ -30,7 +30,7 @@ plmm_prep(
 
 \item{std_X_p}{The number of features in std_X (integer)}
 
-\item{genomic}{A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.}
+\item{genomic}{A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.}
 
 \item{n}{The number of instances in the \emph{original} design matrix X. This should not be altered by standardization.}
 

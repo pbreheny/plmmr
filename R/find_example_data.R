@@ -18,10 +18,11 @@ find_example_data <- function(path, parent=FALSE) {
   }
 }
 
-#' a function to unzip the .gz files that ship with the package
+#' a companion function to unzip the .gz files that ship with the package
 #' *Note*: for Linux/Unix and MacOS only
 #'
-#' @param outdir The filepath to the directory to which the .gz files should be written
+#' @param outdir The file path to the directory to which the .gz files should be written
+#' @export
 unzip_example_data <- function(outdir){
 
   # Check if the operating system is Windows
