@@ -64,24 +64,24 @@
 #'
 
 fit_within_cv <- function(prep,
-                     std_X_details,
-                     eta_star,
-                     penalty.factor,
-                     fbm_flag,
-                     penalty,
-                     gamma,
-                     alpha = 1,
-                     lambda.min,
-                     nlambda = 100,
-                     lambda,
-                     eps = 1e-04,
-                     max.iter = 10000,
-                     convex = TRUE,
-                     dfmax = prep$p + 1,
-                     init = NULL,
-                     warn = TRUE,
-                     returnX = TRUE,
-                     ...){
+                          std_X_details,
+                          eta_star,
+                          penalty.factor,
+                          fbm_flag,
+                          penalty,
+                          gamma,
+                          alpha = 1,
+                          lambda.min,
+                          nlambda = 100,
+                          lambda,
+                          eps = 1e-04,
+                          max.iter = 10000,
+                          convex = TRUE,
+                          dfmax = prep$p + 1,
+                          init = NULL,
+                          warn = TRUE,
+                          returnX = TRUE,
+                          ...){
 
   # error checking ------------------------------------------------------------
   if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
@@ -90,7 +90,7 @@ fit_within_cv <- function(prep,
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
 
   if(prep$trace){cat("\nBeginning rotation ('preconditioning').")}
-# browser()
+
   # rotate data ----------------------------------------------------------------
   if(!fbm_flag) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
@@ -190,12 +190,12 @@ fit_within_cv <- function(prep,
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
     }
-
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1,
                              ncol = ncol(stdrot_scale_beta))
-    bb <-  stdrot_scale_beta/stdrot_X_details$scale
+
+    bb <- stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
     std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
 
@@ -216,7 +216,7 @@ fit_within_cv <- function(prep,
       ...)
 
     stdrot_scale_beta <- res$beta
-    # linear.predictors <- stdrot_X %*% stdrot_scale_beta
+    linear.predictors <- stdrot_X %*% stdrot_scale_beta
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
     loss <- res$loss
@@ -237,7 +237,7 @@ fit_within_cv <- function(prep,
   if (prep$trace) {
     cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '\n')
   }
-# browser()
+  # browser()
   # eliminate saturated lambda values, if any
   ind <- !is.na(iter)
   iter <- iter[ind]

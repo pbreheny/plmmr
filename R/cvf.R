@@ -26,7 +26,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
                            cv.args$prep$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
-    singular <- train_data_sd$sd_vals < 1e-6
+    singular <- train_data_sd$sd_vals < 1e-3
 
     # do not fit a model on these singular features!
     if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
@@ -35,9 +35,23 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
-    singular <- apply(cv.args$prep$std_X, 2, sd) < 1e-6
 
-    # do not fit a model on these singular features!
+    # check 1
+    singular <- apply(cv.args$prep$std_X, 2, sd) < 1e-3
+
+    # check 2
+    # balance_ratios <- apply(cv.args$prep$std_X, 2, balance_ratio)
+    # singular <- balance_ratios > 19 # per Krstajic et al. 2014
+
+    # check 3
+    # bm_std_X <- bigstatsr::as_FBM(cv.args$prep$std_X) |> fbm2bm()
+    # train_data_sd <- .Call("big_sd",
+    #                        bm_std_X@address,
+    #                        as.integer(bigstatsr::nb_cores()),
+    #                        PACKAGE = "plmmr")
+    # singular <- train_data_sd$sd_vals < 1e-3
+    #
+    # # do not fit a model on these singular features!
     if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
   }
   cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
@@ -62,10 +76,9 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  cat("fit.i", i, "args:", str(cv.args))
+  # cat("fit.i", i, "args:", str(cv.args))
   fit.i <- do.call("fit_within_cv", cv.args)
-
-  cat("summary(fit.i$lambda):", summary(fit.i$lambda), "\n")
+  # cat("summary(fit.i$lambda):", summary(fit.i$lambda), "\n")
   # checks
   # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
   # if (any(abs(stdrot_beta_max_check) > 10)) browser()
