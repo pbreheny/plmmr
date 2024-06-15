@@ -190,8 +190,8 @@ cv_plmm <- function(X,
   }
 
   # initialize objects to hold CV results
-  n <- length(fit$y)
-  E <- Y <- matrix(NA, nrow=checked_data$std_X_n, ncol=length(fit$lambda))
+  n <- checked_data$std_X_n
+  E <- Y <- matrix(NA, nrow=n, ncol=length(fit$lambda))
 
 
   # set up folds for cross validation
@@ -243,6 +243,7 @@ cv_plmm <- function(X,
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
+    close(pb)
 
     # update E and Y
     E[fold==i, 1:res$nl] <- res$loss

@@ -3,6 +3,13 @@
 RcppExport SEXP big_std(SEXP X_,
                         SEXP ncore_){
 
+
+  // *********************** NOTE ***********************
+  // This function modifies the X that is currently being
+  // used in the corresponding R session.
+  //*****************************************************
+
+
   // declarations
   // Rprintf("\nDeclarations in big_std()");
   XPtr<BigMatrix> X(X_); // points to the filebacked matrix of rotated data

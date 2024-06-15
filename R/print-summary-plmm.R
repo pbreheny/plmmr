@@ -17,7 +17,7 @@
 #' print(summary(fit, idx = 12))
 #' print(summary(fit2, lambda = 0.11))
 print.summary.plmm <- function(x, ...){
-  cat(x$penalty, "-penalized regression model with n=", x$std_X_n, ", p=", x$p, sep="")
+  cat(x$penalty, "-penalized regression model with n=", x$n, ", p=", x$p, sep="")
   cat(" at lambda=", x$lambda_char, "\n", sep="")
   cat("-------------------------------------------------\n")
 

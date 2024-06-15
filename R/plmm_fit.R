@@ -188,6 +188,7 @@ plmm_fit <- function(prep,
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
     }
+    close(pb)
 
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
@@ -234,6 +235,7 @@ plmm_fit <- function(prep,
     std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
   }
+
   if (prep$trace) {
     cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '\n')
   }

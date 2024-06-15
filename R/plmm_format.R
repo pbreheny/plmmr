@@ -48,17 +48,18 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, n
   # SNPs (or covariates) on the rows, lambda values on the columns
 
   if (is.null(feature_names)) {
-    feature_names <- paste("Var", 1:(fit$p + length(non_genomic)), sep="")
+    feature_names <- paste("Var", 1:(p + length(non_genomic)), sep="")
   }
 
   varnames <- c("(Intercept)", feature_names) # add intercept label
   dimnames(og_scale_beta) <- list(varnames, lam_names(fit$lambda))
   colnames(fit$linear.predictors) <- lam_names(fit$lambda)
 
+
   # output
   structure(list(
     beta_vals = og_scale_beta,
-    rotated_scale_beta_vals = fit$std_scale_beta,
+    # rotated_scale_beta_vals = fit$std_scale_beta,
     lambda = fit$lambda,
     eta = fit$eta,
     # rot_y = fit$rot_y,
