@@ -69,7 +69,7 @@ plmm_fit <- function(prep,
                      penalty.factor,
                      fbm_flag,
                      penalty,
-                     gamma,
+                     gamma = 3,
                      alpha = 1,
                      lambda.min,
                      nlambda = 100,
@@ -84,8 +84,8 @@ plmm_fit <- function(prep,
                      ...){
 
   # error checking ------------------------------------------------------------
-  if (gamma <= 1 & penalty=="MCP") stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
-  if (gamma <= 2 & penalty=="SCAD") stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
+  if (penalty=="MCP" && gamma <= 1) stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
+  if (penalty=="SCAD" && gamma <= 2) stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
 

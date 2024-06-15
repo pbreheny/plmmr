@@ -5,8 +5,8 @@
 #' @param i Fold number to be excluded from fit.
 #' @param fold n-length vector of fold-assignments.
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
-#' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
 #' @param cv.args List of additional arguments to be passed to plmm.
+#' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
@@ -54,9 +54,9 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     # # do not fit a model on these singular features!
     if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
   }
-  cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
 
-  cv.args$prep$y <- full_cv_prep$y[fold!=i]
+  cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
+  cv.args$prep$y <- full_cv_prep$y[fold!=i]# |> scale(scale=FALSE)
 
   # extract test set (comes from cv prep on full data)
   if (cv.args$fbm_flag){
@@ -76,9 +76,7 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  # cat("fit.i", i, "args:", str(cv.args))
   fit.i <- do.call("fit_within_cv", cv.args)
-  # cat("summary(fit.i$lambda):", summary(fit.i$lambda), "\n")
   # checks
   # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
   # if (any(abs(stdrot_beta_max_check) > 10)) browser()

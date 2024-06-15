@@ -165,9 +165,7 @@ cv_plmm <- function(X,
   if (!missing(lambda.min)){
     fit.args$lambda.min <- lambda.min
   }
-cat("full fit args:", str(fit.args))
   fit <- do.call('plmm_fit', fit.args)
-  cat("summary(lambda):", summary(fit$lambda), "\n")
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
       col_names <- checked_data$dat$map$marker.ID
@@ -186,7 +184,7 @@ cat("full fit args:", str(fit.args))
 
   estimated_V <- NULL
   if (type == 'blup') {
-   estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
+    estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
   }
 
   # initialize objects to hold CV results
@@ -203,8 +201,8 @@ cat("full fit args:", str(fit.args))
 
   sde <- sqrt(.Machine$double.eps)
 
-  if(is.null(fold)) {
-    if(trace){
+  if (is.null(fold)) {
+    if (trace) {
       cat("'Fold' argument is either NULL or missing; assigning folds randomly (by default).
           \nTo specify folds for each observation, supply a vector with fold assignments.\n")
     }
@@ -213,7 +211,6 @@ cat("full fit args:", str(fit.args))
   } else {
     nfolds <- max(fold)
   }
-
 
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
