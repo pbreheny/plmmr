@@ -1,6 +1,7 @@
 #' PLMM format: a function to format the output of a model constructed with \code{plmm_fit}
 #'
 #' @param fit A list of parameters describing the output of a model constructed with \code{plmm_fit}
+#' @param p The number of features in the original data (including constant features)
 #' @param std_X_details A list with 3 items:
 #'  * 'center': the centering values for the columns of `X`
 #'  * 'scale': the scaling values for the non-singular columns of `X`
@@ -33,12 +34,12 @@
 #'
 #' @keywords internal
 
-plmm_format <- function(fit, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL){
+plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL){
 
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
   og_scale_beta <- untransform(
     std_scale_beta = fit$std_scale_beta,
-    p = fit$p,
+    p = p,
     std_X_details = std_X_details,
     fbm_flag = fbm_flag,
     non_genomic = non_genomic)
@@ -60,7 +61,7 @@ plmm_format <- function(fit, std_X_details, fbm_flag, feature_names = NULL, non_
     rotated_scale_beta_vals = fit$std_scale_beta,
     lambda = fit$lambda,
     eta = fit$eta,
-    rot_y = fit$rot_y,
+    # rot_y = fit$rot_y,
     linear.predictors = fit$linear.predictors,
     penalty = fit$penalty,
     gamma = fit$gamma,
@@ -68,10 +69,10 @@ plmm_format <- function(fit, std_X_details, fbm_flag, feature_names = NULL, non_
     loss = fit$loss,
     penalty.factor = fit$penalty.factor,
     ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
-    p = fit$p,
-    n = fit$n,
-    std_X_n = fit$std_X_n,
-    std_X_p = fit$std_X_p,
+    # p = fit$p,
+    # n = fit$n,
+    # std_X_n = fit$std_X_n,
+    # std_X_p = fit$std_X_p,
     iter = fit$iter,
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U)),

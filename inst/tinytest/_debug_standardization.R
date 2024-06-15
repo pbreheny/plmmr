@@ -1,4 +1,4 @@
-l <- readRDS('~/lss/cleft/debug/problem-data.rds')
+l <- readRDS('/mnt/cleft/debug/problem-data.rds')
 fit <- plmm_fit(l$prep,
                 l$std_X_details,
                 l$eta_star,

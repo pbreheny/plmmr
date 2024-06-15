@@ -83,14 +83,18 @@ get_data <- function(path, returnX, trace = TRUE){
       ret$map <-  obj$map
       ret$complete_phen <- obj$complete_phen
     }
+  if (trace){
+    cat("Reminder: the X that is returned here is column-standardized, with constant features removed.\n")
+  }
 
-    cat("\nReminder: the X that is returned here is column-standardized, with constant features removed.")
     return(ret)
 
   } else {
-    cat("Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.")
+    if (trace){
+      cat("Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.\n")
 
-    cat("\nReminder: the X that is returned here is column-standardized")
+      cat("Reminder: the X that is returned here is column-standardized\n")
+    }
 
     ret <- list(n = obj$n,
                 p = obj$p,

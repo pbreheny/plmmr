@@ -152,7 +152,7 @@ plmm <- function(X,
                       max.iter = max.iter,
                       warn = warn,
                       convex = convex,
-                      dfmax = dfmax)
+                      dfmax = checked_data$p + 1)
     if (trace) cat("Beta values are estimated -- almost done!\n")
 
     # format results ---------------------------------------------------
@@ -166,6 +166,7 @@ plmm <- function(X,
       col_names <- checked_data$col_names
     }
     the_final_product <- plmm_format(fit = the_fit,
+                                     p = checked_data$p,
                                      std_X_details = checked_data$std_X_details,
                                      feature_names = col_names,
                                      fbm_flag = checked_data$fbm_flag,

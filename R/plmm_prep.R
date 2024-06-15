@@ -76,21 +76,21 @@ plmm_prep <- function(std_X,
   # case 1: K is the identity matrix
   flag1 <- diag_K & is.null(K)
   if(flag1){
-    if (trace) {(cat("\nUsing identity matrix for K."))}
+    if (trace) {(cat("Using identity matrix for K.\n"))}
     s <- rep(1, n)
     U <- diag(nrow = n)
   }
   # case 2: K is user-supplied diagonal matrix (like a weighted lm())
   flag2 <- diag_K & !is.null(K) & ('matrix' %in% class(K))
   if(flag2){
-    if (trace) {(cat("\nUsing supplied diagonal matrix for K, similar to a lm() with weights."))}
+    if (trace) {(cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n"))}
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = n)[,order(diag(K), decreasing = TRUE)]
   }
   # case 3: K is a user-supplied list
   flag3 <- !is.null(K) & ('list' %in% class(K))
   if( flag3) {
-    if (trace) {cat("\nK is a list; will pass U,s components from list to model fitting.")}
+    if (trace) {cat("K is a list; will pass U,s components from list to model fitting.\n")}
     s <- K$s # no need to adjust singular values by p
     if ('FBM' %in% class(K$U)){
       U <- K$U[,]
@@ -100,12 +100,12 @@ plmm_prep <- function(std_X,
   }
   # otherwise, need to do eigendecomposition:
   if (sum(c(flag1, flag2, flag3)) == 0) {
-    if (trace) {cat("\nStarting decomposition.")}
+    if (trace) {cat("Starting decomposition.\n")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     if (is.null(K) & is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
-      if (trace) cat("\nCalculating the eigendecomposition of K")
+      if (trace) cat("Calculating the eigendecomposition of K\n")
 
       if (identical(genomic,1:std_X_p)) {
         # if all columns are genomic, no need to filter
@@ -149,10 +149,10 @@ plmm_prep <- function(std_X,
 
   # return values to be passed into plmm_fit():
   ret <- structure(list(
-    n = n,
-    p = p,
-    std_X_n = std_X_n,
-    std_X_p = std_X_p,
+   # n = n,
+   #  p = p,
+    # std_X_n = std_X_n,
+    # std_X_p = std_X_p,
     std_X = std_X,
     y = y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())

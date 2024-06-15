@@ -118,11 +118,11 @@ plmm_checks <- function(X,
       std_X <- X
 
       if (trace) {
-        cat("\nYou have left std_needed = FALSE; this means you are assuming that
+        cat("You have left std_needed = FALSE; this means you are assuming that
             all columns in X have mean 0 and variance 1. This also means
-            you are assuming that none of the columns in X are constant features.
-            \n If you have supplied X via a filepath to an RDS object created by `process_plink()`,
-            \n ignore this message -- `process_plink()` standardized X for you.")
+            you are assuming that none of the columns in X are constant features.\n
+            If you have supplied X via a filepath to an RDS object created by `process_plink()`,
+            ignore this message -- `process_plink()` standardized X for you.\n")
       }
 
       std_X_details <- list(center = rep(0, ncol(X)),
@@ -151,8 +151,8 @@ plmm_checks <- function(X,
       }
 
     } else {
-      stop("\nIf the data did not come from process_plink(), you must specify a
-           'y' argument")
+      stop("If the data did not come from process_plink(), you must specify a
+           'y' argument\n")
     }
 
   }
@@ -161,7 +161,7 @@ plmm_checks <- function(X,
     op <- options(warn=2)
     on.exit(options(op))
     y <- tryCatch(
-      error = function(cond) stop("\ny must be numeric or able to be coerced to numeric", call.=FALSE),
+      error = function(cond) stop("y must be numeric or able to be coerced to numeric\n", call.=FALSE),
       as.double(y))
     options(op)
   }
@@ -196,11 +196,11 @@ plmm_checks <- function(X,
     if (any(penalty.factor < 1e-8)){
       pf <- which(penalty.factor < 1e-8)
       if (!identical(pf, 1:length(pf))) {
-        stop("\nIt looks like you are trying to make some covariates *not* be penalized, as
-           you have some penalty.factor values set to 0.
-           \nIf this is your intention, you must make all 'n' unpenalized covariates appear
-           as the first 'n' columns in your design matrix. This is needed for subsetting later
-             \n(for now, subsetting filebacked matrices requires a contiguous submatrix).")
+        stop("It looks like you are trying to make some covariates *not* be penalized, as
+           you have some penalty.factor values set to 0.\n
+           If this is your intention, you must make all 'n' unpenalized covariates appear
+           as the first 'n' columns in your design matrix.\n This is needed for subsetting later
+             (for now, subsetting filebacked matrices requires a contiguous submatrix).\n")
       }
     }
 
@@ -260,7 +260,7 @@ plmm_checks <- function(X,
     ret$non_genomic <- non_genomic
   }
 
-  if (trace & !is.null(save_rds)){cat("\nYour results will be saved to ", save_rds)}
+  if (trace & !is.null(save_rds)){cat("Your results will be saved to ", save_rds, "\n")}
 
   return(ret)
 

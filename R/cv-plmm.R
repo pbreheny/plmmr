@@ -189,7 +189,7 @@ cv_plmm <- function(X,
 
   # initialize objects to hold CV results
   n <- length(fit$y)
-  E <- Y <- matrix(NA, nrow=fit$std_X_n, ncol=length(fit$lambda))
+  E <- Y <- matrix(NA, nrow=nrow(fit$std_X), ncol=length(fit$lambda))
 
 
   # set up folds for cross validation

@@ -77,7 +77,7 @@ plmm_fit <- function(prep,
                      eps = 1e-04,
                      max.iter = 10000,
                      convex = TRUE,
-                     dfmax = prep$p + 1,
+                     dfmax = NULL,
                      init = NULL,
                      warn = TRUE,
                      returnX = TRUE,
@@ -89,7 +89,7 @@ plmm_fit <- function(prep,
   if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
   if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
 
-  if(prep$trace){cat("\nBeginning rotation ('preconditioning').")}
+  if(prep$trace){cat("Beginning rotation ('preconditioning').\n")}
 
   # rotate data ----------------------------------------------------------------
   if(!fbm_flag) {
@@ -111,11 +111,11 @@ plmm_fit <- function(prep,
   }
 
 
-  if (prep$trace)(cat("\nRotation (preconditiong) finished at ",
-                      format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+  if (prep$trace)(cat("Rotation (preconditiong) finished at ",
+                      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
 
   # set up lambda -------------------------------------------------------
-  if (prep$trace) cat("\nSetting up lambda/preparing for model fitting.")
+  if (prep$trace) cat("Setting up lambda/preparing for model fitting.\n")
   if (missing(lambda)) {
     lambda <- setup_lambda(X = stdrot_X,
                            y = rot_y,
@@ -245,36 +245,35 @@ plmm_fit <- function(prep,
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
-    n = prep$n,
-    p = prep$p,
-    std_X_n = prep$std_X_n,
-    std_X_p = prep$std_X_p,
+    # n = prep$n,
+    # p = prep$p,
+    # std_X_n = prep$std_X_n,
+    # std_X_p = prep$std_X_p,
+    std_scale_beta = std_scale_beta,
     y = prep$y,
     s = prep$s,
     U = prep$U,
     # rot_X = rot_X,
-    rot_y = rot_y,
-    stdrot_X = stdrot_X,
-    stdrot_X_details = stdrot_X_details,
+    # rot_y = rot_y,
+    # stdrot_X = stdrot_X,
+    # stdrot_X_details = stdrot_X_details,
     lambda = lambda,
-    stdrot_scale_beta = stdrot_scale_beta,
-    std_scale_beta = std_scale_beta,
+    # stdrot_scale_beta = stdrot_scale_beta,
     linear.predictors = linear.predictors,
-    eta = prep$eta,
+    penalty = penalty,
     penalty.factor = penalty.factor,
     iter = iter,
     converged = converged,
     loss = loss,
-    penalty = penalty,
+    eta = prep$eta,
     gamma = gamma,
     alpha = alpha,
     ns = prep$ns,
-    penalty = penalty,
     nlambda = nlambda,
     eps = eps,
     max.iter = max.iter,
     warn = warn,
-    init = init,
+    # init = init,
     trace = prep$trace))
 
   if (exists("rot_X")){
