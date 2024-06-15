@@ -65,7 +65,7 @@ predict_within_cv <- function(fit,
     # test1 <- V21 %*% chol2inv(chol(V11)) # true
     # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
     Xb_train <- sweep(oldX %*% b, 2, a, "+")
-    resid_train <- (fit$y - Xb_train)
+    resid_train <- (drop(fit$centered_y) - Xb_train)
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
     blup <- Xb + ranef
 

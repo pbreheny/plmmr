@@ -15,18 +15,20 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
+  y <- cv_args$y
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
     cv_args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
 
-    # check for singularity
-    train_data_sd <- .Call("big_sd",
+    # re-scale data & check for singularity
+    train_data <- .Call("big_std",
                            cv_args$prep$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
-    singular <- train_data_sd$sd_vals < 1e-3
+    cv_args$prep$std_X@address <- train_data$std_X
+    singular <- train_data$std_X_scale < 1e-3
 
     # do not fit a model on these singular features!
     if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
@@ -36,27 +38,21 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
 
-    # check 1
-    singular <- apply(cv_args$prep$std_X, 2, sd) < 1e-3
+    # re-scale data & check for singularity
+    cv_args$prep$std_X <- ncvreg::std(cv_args$prep$std_X)
+    cv_args$std_X_details$center <- attr(cv_args$prep$std_X, "center")
+    cv_args$std_X_details$scale <- attr(cv_args$prep$std_X, "scale")
+    cv_args$std_X_details$ns <- attr(cv_args$prep$std_X, "nonsingular")
+    # singular <- attr(cv_args$prep$std_X, "scale") < 1e-3
 
-    # check 2
-    # balance_ratios <- apply(cv_args$prep$std_X, 2, balance_ratio)
-    # singular <- balance_ratios > 19 # per Krstajic et al. 2014
-
-    # check 3
-    # bm_std_X <- bigstatsr::as_FBM(cv_args$prep$std_X) |> fbm2bm()
-    # train_data_sd <- .Call("big_sd",
-    #                        bm_std_X@address,
-    #                        as.integer(bigstatsr::nb_cores()),
-    #                        PACKAGE = "plmmr")
-    # singular <- train_data_sd$sd_vals < 1e-3
-    #
-    # # do not fit a model on these singular features!
-    if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
+    # do not fit a model on these singular features!
+    # if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
+    cv_args$penalty.factor <- cv_args$penalty.factor[cv_args$std_X_details$ns]
   }
 
   cv_args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
-  cv_args$prep$y <- full_cv_prep$y[fold!=i]# |> scale(scale=FALSE)
+  cv_args$prep$centered_y <- full_cv_prep$centered_y[fold!=i] |> scale(scale=FALSE)
+  cv_args$y <- y[fold!=i]
 
   # extract test set (comes from cv prep on full data)
   if (cv_args$fbm_flag){
@@ -64,9 +60,15 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                                   ind.row = which(fold==i)) |> fbm2bm()
 
   } else {
-    test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
+    test_X <- full_cv_prep$std_X[fold==i, cv_args$std_X_details$ns, drop=FALSE]
+    # std_test_X <- ncvreg::std(test_X)
+    # std_test_X_details <- list(
+    #   center = attr(std_test_X, "center"),
+    #   scale = attr(std_test_X, "scale"),
+    #   ns = attr(std_test_X, "nonsingular")
+    # )
   }
-  test_y <- full_cv_prep$y[fold==i]
+  test_y <- y[fold==i]
 
   # NB: we are assuming that the eta is the same across the training and testing data.
 
@@ -76,7 +78,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  fit.i <- do.call("fit_within_cv", cv_args)
+  fit.i <- do.call("plmm_fit", cv_args)
   # checks
   # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
   # if (any(abs(stdrot_beta_max_check) > 10)) browser()

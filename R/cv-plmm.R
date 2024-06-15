@@ -148,7 +148,7 @@ cv_plmm <- function(X,
   # full model fit ----------------------------------
   fit_args <- c(list(
     prep = prep,
-    y = y,
+    y = checked_data$y,
     std_X_details = checked_data$std_X_details,
     eta_star = eta_star,
     penalty.factor = checked_data$penalty.factor,
@@ -173,6 +173,7 @@ cv_plmm <- function(X,
     }
   }
   fit_to_return <- plmm_format(fit = fit,
+                               p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
                                feature_names = col_names,
                                fbm_flag = checked_data$fbm_flag,
@@ -190,7 +191,7 @@ cv_plmm <- function(X,
 
   # initialize objects to hold CV results
   n <- length(fit$y)
-  E <- Y <- matrix(NA, nrow=nrow(fit$std_X), ncol=length(fit$lambda))
+  E <- Y <- matrix(NA, nrow=checked_data$std_X_n, ncol=length(fit$lambda))
 
 
   # set up folds for cross validation
@@ -261,7 +262,7 @@ cv_plmm <- function(X,
 
   # return min lambda idx
   cve <- apply(E, 2, mean)
-  cvse <- apply(E, 2, stats::sd) / sqrt(n)
+  cvse <- apply(E, 2, stats::sd) / sqrt(nrow(Y))
   min <- which.min(cve)
 
   # return lambda 1se idx

@@ -278,9 +278,9 @@ plmm_fit <- function(prep,
     # init = init,
     trace = prep$trace))
 
-  if (exists("rot_X")){
-    ret$rot_X <- rot_X
-  }
+  # if (exists("rot_X")){
+  #   ret$rot_X <- rot_X
+  # }
 
   return(ret)
 }
