@@ -21,13 +21,15 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   if (cv_args$fbm_flag) {
     cv_args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
-
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
                            cv_args$prep$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
     cv_args$prep$std_X@address <- train_data$std_X
+    cv_args$std_X_details$center <- train_data$std_X_center
+    cv_args$std_X_details$scale <- train_data$std_X_scale
+    cv_args$std_X_details$ns <- which(train_data$std_X_scale > 1e-3)
     singular <- train_data$std_X_scale < 1e-3
 
     # do not fit a model on these singular features!
@@ -43,11 +45,10 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     cv_args$std_X_details$center <- attr(cv_args$prep$std_X, "center")
     cv_args$std_X_details$scale <- attr(cv_args$prep$std_X, "scale")
     cv_args$std_X_details$ns <- attr(cv_args$prep$std_X, "nonsingular")
-    # singular <- attr(cv_args$prep$std_X, "scale") < 1e-3
 
     # do not fit a model on these singular features!
-    # if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
     cv_args$penalty.factor <- cv_args$penalty.factor[cv_args$std_X_details$ns]
+
   }
 
   cv_args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
@@ -79,19 +80,6 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   }
 
   fit.i <- do.call("plmm_fit", cv_args)
-  # checks
-  # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
-  # if (any(abs(stdrot_beta_max_check) > 10)) browser()
-  #
-  # stdrot_beta_min_check <- apply(fit.i$stdrot_scale_beta, 1, min)
-  # if (any(abs(stdrot_beta_min_check) > 10)) browser()
-  #
-  # std_beta_max_check <- apply(fit.i$std_scale_beta, 1, max)
-  # if (any(abs(std_beta_max_check) > 10)) browser()
-  #
-  # std_beta_min_check <- apply(fit.i$std_scale_beta, 1, min)
-  # if (any(abs(std_beta_min_check) > 10)) browser()
-
 
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
