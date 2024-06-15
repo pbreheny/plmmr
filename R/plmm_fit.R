@@ -1,6 +1,7 @@
 #' PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
 #'
 #' @param prep A list as returned from \code{plmm_prep}
+#' @param y    The original (not centered) outcome vector. Need this for intercept estimate
 #' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)
 #' @param eta_star The ratio of variances (passed from plmm())
 #' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
@@ -64,6 +65,7 @@
 #'
 
 plmm_fit <- function(prep,
+                     y,
                      std_X_details,
                      eta_star,
                      penalty.factor,
@@ -96,7 +98,7 @@ plmm_fit <- function(prep,
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- wUt %*% prep$std_X
-    rot_y <- wUt %*% prep$y
+    rot_y <- wUt %*% prep$centered_y # remember: prep$y is the centered outcome vector
 
     # re-standardize rot_X
     stdrot_X <- ncvreg::std(rot_X)
@@ -193,7 +195,7 @@ plmm_fit <- function(prep,
                                ncol = ncol(stdrot_scale_beta))
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
-    std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
+    std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
   } else {
     res <- biglasso::biglasso_path(
@@ -223,13 +225,13 @@ plmm_fit <- function(prep,
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
     std_scale_beta <- Matrix::sparseMatrix(i = rep(1,ncol(stdrot_scale_beta)),
                                              j = 1:ncol(stdrot_scale_beta),
-                                             x = mean(prep$y),
+                                             x = mean(y),
                                              dims = c(nrow(stdrot_scale_beta) + 1,
                                                       ncol = ncol(stdrot_scale_beta)))
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
     # browser()
-    std_scale_beta[1,] <- mean(prep$y) - crossprod(stdrot_X_details$center, bb)
+    std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
   }
   if (prep$trace) {
@@ -250,7 +252,7 @@ plmm_fit <- function(prep,
     # std_X_n = prep$std_X_n,
     # std_X_p = prep$std_X_p,
     std_scale_beta = std_scale_beta,
-    y = prep$y,
+    centered_y = prep$centered_y, # note: this is the centered outcome vector
     s = prep$s,
     U = prep$U,
     # rot_X = rot_X,

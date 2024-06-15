@@ -7,7 +7,7 @@
 #' @param genomic A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
-#' @param y Continuous outcome vector.
+#' @param centered_y Continuous outcome vector, centered.
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
@@ -19,7 +19,7 @@
 #' @returns List with these components:
 #' * n: the number of rows in the original design matrix
 #' * p: the number of columns in the original design matrix
-#' * y: The vector of outcomes
+#' * centered_y: The vector of centered outcomes
 #' * std_X: standardized design matrix
 #' * std_X_details: a list with 2 vectors:
 #'    * 'center' (values used to center X)
@@ -38,7 +38,7 @@ plmm_prep <- function(std_X,
                       genomic = 1:std_X_p,
                       n,
                       p,
-                      y,
+                      centered_y,
                       k = NULL,
                       K = NULL,
                       diag_K = NULL,
@@ -141,7 +141,7 @@ plmm_prep <- function(std_X,
 
   # estimate eta if needed
   if (is.null(eta_star)) {
-    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = y)
+    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y)
   } else {
     # otherwise, use the user-supplied value (this option is mainly for simulation)
     eta <- eta_star
@@ -154,7 +154,7 @@ plmm_prep <- function(std_X,
     # std_X_n = std_X_n,
     # std_X_p = std_X_p,
     std_X = std_X,
-    y = y,
+    centered_y = centered_y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())
     s = s,
     U = U,

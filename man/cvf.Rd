@@ -4,7 +4,7 @@
 \alias{cvf}
 \title{Cross-validation internal function for cv_plmm}
 \usage{
-cvf(i, fold, type, cv.args, estimated_V, ...)
+cvf(i, fold, type, cv_args, estimated_V, ...)
 }
 \arguments{
 \item{i}{Fold number to be excluded from fit.}
@@ -13,7 +13,7 @@ cvf(i, fold, type, cv.args, estimated_V, ...)
 
 \item{type}{A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).}
 
-\item{cv.args}{List of additional arguments to be passed to plmm.}
+\item{cv_args}{List of additional arguments to be passed to plmm.}
 
 \item{estimated_V}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.}
 

@@ -5,46 +5,46 @@
 #' @param i Fold number to be excluded from fit.
 #' @param fold n-length vector of fold-assignments.
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
-#' @param cv.args List of additional arguments to be passed to plmm.
+#' @param cv_args List of additional arguments to be passed to plmm.
 #' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
 
-cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
+cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
-  full_cv_prep <- cv.args$prep
+  full_cv_prep <- cv_args$prep
   # subset std_X, U, and y to match fold indices
   #   (and in so doing, leave out the ith fold)
-  if (cv.args$fbm_flag) {
-    cv.args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+  if (cv_args$fbm_flag) {
+    cv_args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
 
     # check for singularity
     train_data_sd <- .Call("big_sd",
-                           cv.args$prep$std_X@address,
+                           cv_args$prep$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
     singular <- train_data_sd$sd_vals < 1e-3
 
     # do not fit a model on these singular features!
-    if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
+    if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
 
   } else {
-    cv.args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    cv_args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
 
     # check 1
-    singular <- apply(cv.args$prep$std_X, 2, sd) < 1e-3
+    singular <- apply(cv_args$prep$std_X, 2, sd) < 1e-3
 
     # check 2
-    # balance_ratios <- apply(cv.args$prep$std_X, 2, balance_ratio)
+    # balance_ratios <- apply(cv_args$prep$std_X, 2, balance_ratio)
     # singular <- balance_ratios > 19 # per Krstajic et al. 2014
 
     # check 3
-    # bm_std_X <- bigstatsr::as_FBM(cv.args$prep$std_X) |> fbm2bm()
+    # bm_std_X <- bigstatsr::as_FBM(cv_args$prep$std_X) |> fbm2bm()
     # train_data_sd <- .Call("big_sd",
     #                        bm_std_X@address,
     #                        as.integer(bigstatsr::nb_cores()),
@@ -52,14 +52,14 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     # singular <- train_data_sd$sd_vals < 1e-3
     #
     # # do not fit a model on these singular features!
-    if (sum(singular) >= 1) cv.args$penalty.factor[singular] <- Inf
+    if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
   }
 
-  cv.args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
-  cv.args$prep$y <- full_cv_prep$y[fold!=i]# |> scale(scale=FALSE)
+  cv_args$prep$U <- full_cv_prep$U[fold!=i, , drop=FALSE]
+  cv_args$prep$y <- full_cv_prep$y[fold!=i]# |> scale(scale=FALSE)
 
   # extract test set (comes from cv prep on full data)
-  if (cv.args$fbm_flag){
+  if (cv_args$fbm_flag){
     test_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                   ind.row = which(fold==i)) |> fbm2bm()
 
@@ -72,11 +72,11 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
-  if (cv.args$prep$trace) {
+  if (cv_args$prep$trace) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  fit.i <- do.call("fit_within_cv", cv.args)
+  fit.i <- do.call("fit_within_cv", cv_args)
   # checks
   # stdrot_beta_max_check <- apply(fit.i$stdrot_scale_beta, 1, max)
   # if (any(abs(stdrot_beta_max_check) > 10)) browser()
@@ -93,10 +93,10 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
 
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
-                              oldX = cv.args$prep$std_X,
+                              oldX = cv_args$prep$std_X,
                               newX = test_X,
                               type = 'lp',
-                              fbm = cv.args$fbm_flag)
+                              fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
@@ -105,10 +105,10 @@ cvf <- function(i, fold, type, cv.args, estimated_V, ...) {
     V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE]
 
     yhat <- predict_within_cv(fit = fit.i,
-                              oldX = cv.args$prep$std_X,
+                              oldX = cv_args$prep$std_X,
                               newX = test_X,
                               type = 'blup',
-                              fbm = cv.args$fbm_flag,
+                              fbm = cv_args$fbm_flag,
                               V11 = V11,
                               V21 = V21, ...)
 

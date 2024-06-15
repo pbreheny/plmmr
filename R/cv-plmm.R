@@ -130,24 +130,25 @@ cv_plmm <- function(X,
                               ...)
 
   # prep  ------------------------
-  prep.args <- c(list(std_X = checked_data$std_X,
+  prep_args <- c(list(std_X = checked_data$std_X,
                       std_X_n = checked_data$std_X_n,
                       std_X_p = checked_data$std_X_p,
                       genomic = checked_data$genomic,
                       n = checked_data$n,
                       p = checked_data$p,
-                      y = checked_data$y,
+                      centered_y = checked_data$centered_y,
                       K = checked_data$K,
                       diag_K = checked_data$diag_K,
                       eta_star = eta_star,
                       fbm_flag = checked_data$fbm_flag,
                       trace = trace))
 
-  prep <- do.call('plmm_prep', prep.args)
+  prep <- do.call('plmm_prep', prep_args)
 
   # full model fit ----------------------------------
-  fit.args <- c(list(
+  fit_args <- c(list(
     prep = prep,
+    y = y,
     std_X_details = checked_data$std_X_details,
     eta_star = eta_star,
     penalty.factor = checked_data$penalty.factor,
@@ -163,9 +164,9 @@ cv_plmm <- function(X,
     dfmax = dfmax))
 
   if (!missing(lambda.min)){
-    fit.args$lambda.min <- lambda.min
+    fit_args$lambda.min <- lambda.min
   }
-  fit <- do.call('plmm_fit', fit.args)
+  fit <- do.call('plmm_fit', fit_args)
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
       col_names <- checked_data$dat$map$marker.ID
@@ -178,9 +179,9 @@ cv_plmm <- function(X,
                                non_genomic = checked_data$non_genomic)
 
   # set up arguments for cv ---------------------------
-  cv.args <- fit.args
-  cv.args$warn <- FALSE
-  cv.args$lambda <- fit$lambda
+  cv_args <- fit_args
+  cv_args$warn <- FALSE
+  cv_args$lambda <- fit$lambda
 
   estimated_V <- NULL
   if (type == 'blup') {
@@ -215,10 +216,10 @@ cv_plmm <- function(X,
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv.args", "estimated_V"), envir=environment())
+    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv_args", "estimated_V"), envir=environment())
     parallel::clusterCall(cluster, function() library(plmmr))
     fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf, X=X, y=y,
-                                        fold=fold, type=type, cv.args=cv.args,
+                                        fold=fold, type=type, cv_args=cv_args,
                                         estimated_V = estimated_V)
   }
 
@@ -236,7 +237,7 @@ cv_plmm <- function(X,
       res <- cvf(i = i,
                  fold = fold,
                  type = type,
-                 cv.args = cv.args,
+                 cv_args = cv_args,
                  estimated_V = estimated_V)
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
