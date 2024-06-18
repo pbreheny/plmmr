@@ -161,9 +161,9 @@ R <- residuals(object = plmm(admix$X, admix$y, penalty = "lasso",
                                   diag_K = TRUE, lambda = lambda0))
 
 ncv_fit <- ncvreg::ncvreg(X = admix$X, y = admix$y, penalty = "lasso", lambda = lambda0)
-ncv_R <- matrix(nrow = nrow(ncv_fit$linear.predictors), ncol = ncol(ncv_fit$linear.predictors))
+ncv_R <- matrix(nrow = nrow(ncv_fit$linear_predictors), ncol = ncol(ncv_fit$linear_predictors))
 for(j in 1:ncol(ncv_R)){
-  ncv_R[,j] <- ncv_fit$y - ncv_fit$linear.predictors[j]
+  ncv_R[,j] <- ncv_fit$y - ncv_fit$linear_predictors[j]
 }
 
 tinytest::expect_equivalent(R, ncv_R)

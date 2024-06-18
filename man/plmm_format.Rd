@@ -40,7 +40,7 @@ A list with the components:
 \item \code{s}: a vectof of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
 \item \code{U}: a matrix of the eigenvalues of relatedness matrix \code{K}
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear.predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
+\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.

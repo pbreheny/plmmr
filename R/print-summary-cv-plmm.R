@@ -17,7 +17,7 @@
 #' print(summary(cv_fit))
 #'
 print.summary.cv_plmm <- function(x, digits, ...){
-  n <- nrow(x$fit$linear.predictors)
+  n <- nrow(x$fit$linear_predictors)
   p <- nrow(x$fit$beta_vals)
   digits <- if (missing(digits)) digits <- c(2, 4, 2, 2, 3) else rep(digits, length.out=5)
   cat(x$fit$penalty, "-penalized model with n=", n, " and p=", p,"\n", sep="")

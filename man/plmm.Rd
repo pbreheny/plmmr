@@ -99,7 +99,7 @@ A list which includes:
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear.predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
+\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.

@@ -20,7 +20,7 @@
 #'  * `s`: a vectof of the eigenvalues of relatedness matrix `K`; see `relatedness_mat()` for details.
 #'  * `U`: a matrix of the eigenvalues of relatedness matrix `K`
 #'  * `rot_y`: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-#'  * `linear.predictors`: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
+#'  * `linear_predictors`: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
 #'  * `penalty`: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 #'  * `gamma`: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 #'  * `alpha`: numeric value indicating the elastic net tuning parameter.
@@ -53,7 +53,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, n
 
   varnames <- c("(Intercept)", feature_names) # add intercept label
   dimnames(og_scale_beta) <- list(varnames, lam_names(fit$lambda))
-  colnames(fit$linear.predictors) <- lam_names(fit$lambda)
+  colnames(fit$linear_predictors) <- lam_names(fit$lambda)
 
 
   # output
@@ -63,7 +63,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, n
     lambda = fit$lambda,
     eta = fit$eta,
     # rot_y = fit$rot_y,
-    linear.predictors = fit$linear.predictors,
+    linear_predictors = fit$linear_predictors,
     penalty = fit$penalty,
     gamma = fit$gamma,
     alpha = fit$alpha,

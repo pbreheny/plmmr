@@ -34,7 +34,7 @@
 #'   * lambda: vector of tuning parameter values
 #'   * stdrot_scale_beta: the coefficients estimated on the scale of `stdrot_X`
 #'   * std_scale_beta: the coefficients estimated on the scale of `std_X`
-#'   * linear.predictors: the product of `stdrot_X` and `b`
+#'   * linear_predictors: the product of `stdrot_X` and `b`
 #'    (linear predictors on the transformed and restandardized scale)
 #'   * eta: a number (double) between 0 and 1 representing the estimated
 #'    proportion of the variance in the outcome attributable to population/correlation
@@ -103,7 +103,7 @@ plmm_fit <- function(prep,
     # re-standardize rot_X
     stdrot_X <- ncvreg::std(rot_X)
     stdrot_X_details <- list(center = attr(stdrot_X, "center"),
-                            scale = attr(stdrot_X, "scale"))
+                             scale = attr(stdrot_X, "scale"))
   } else {
     rot_res <- rotate_filebacked(prep)
     stdrot_X <- rot_res$stdrot_X
@@ -144,14 +144,10 @@ plmm_fit <- function(prep,
 
   if(!fbm_flag){
     r <- drop(rot_y - stdrot_X %*% init)
-    # cat("\nhead(residuals, 10):", head(r, 10))
-    # cat("\ntail(residuals, 10):", tail(r, 10))
-    linear.predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
+    linear_predictors <- matrix(NA, nrow = nrow(stdrot_X), ncol=nlambda)
     stdrot_scale_beta <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
   } else {
     r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
-    # cat("\nhead(residuals, 10):", head(r, 10))
-    # cat("\ntail(residuals, 10):", tail(r, 10))
   }
 
   iter <- integer(nlambda)
@@ -181,19 +177,19 @@ plmm_fit <- function(prep,
                             penalty.factor = penalty.factor,
                             warn = warn)
       stdrot_scale_beta[, ll] <- init <- res$beta
-      linear.predictors[,ll] <- stdrot_X%*%(res$beta)
+      linear_predictors[,ll] <- stdrot_X%*%(res$beta)
       iter[ll] <- res$iter
       converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
       loss[ll] <- res$loss
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
     }
-    close(pb)
+    if(prep$trace) close(pb)
 
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
-                               nrow = nrow(stdrot_scale_beta) + 1,
-                               ncol = ncol(stdrot_scale_beta))
+                             nrow = nrow(stdrot_scale_beta) + 1,
+                             ncol = ncol(stdrot_scale_beta))
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
     std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
@@ -215,7 +211,7 @@ plmm_fit <- function(prep,
       ...)
 
     stdrot_scale_beta <- res$beta
-    linear.predictors <- stdrot_X %*% stdrot_scale_beta
+    linear_predictors <- stdrot_X %*% stdrot_scale_beta
 
     iter <- res$iter
     converged <- ifelse(iter < max.iter, TRUE, FALSE)
@@ -225,13 +221,12 @@ plmm_fit <- function(prep,
     # reverse the POST-ROTATION standardization on estimated betas
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
     std_scale_beta <- Matrix::sparseMatrix(i = rep(1,ncol(stdrot_scale_beta)),
-                                             j = 1:ncol(stdrot_scale_beta),
-                                             x = mean(y),
-                                             dims = c(nrow(stdrot_scale_beta) + 1,
-                                                      ncol = ncol(stdrot_scale_beta)))
+                                           j = 1:ncol(stdrot_scale_beta),
+                                           x = mean(y),
+                                           dims = c(nrow(stdrot_scale_beta) + 1,
+                                                    ncol = ncol(stdrot_scale_beta)))
     bb <-  stdrot_scale_beta/stdrot_X_details$scale
     std_scale_beta[-1,] <- bb
-    # browser()
     std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
   }
@@ -249,21 +244,12 @@ plmm_fit <- function(prep,
   if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
-    # n = prep$n,
-    # p = prep$p,
-    # std_X_n = prep$std_X_n,
-    # std_X_p = prep$std_X_p,
     std_scale_beta = std_scale_beta,
     centered_y = prep$centered_y, # note: this is the centered outcome vector
     s = prep$s,
     U = prep$U,
-    # rot_X = rot_X,
-    # rot_y = rot_y,
-    # stdrot_X = stdrot_X,
-    # stdrot_X_details = stdrot_X_details,
     lambda = lambda,
-    # stdrot_scale_beta = stdrot_scale_beta,
-    linear.predictors = linear.predictors,
+    linear_predictors = linear_predictors,
     penalty = penalty,
     penalty.factor = penalty.factor,
     iter = iter,
@@ -277,12 +263,7 @@ plmm_fit <- function(prep,
     eps = eps,
     max.iter = max.iter,
     warn = warn,
-    # init = init,
     trace = prep$trace))
-
-  # if (exists("rot_X")){
-  #   ret$rot_X <- rot_X
-  # }
 
   return(ret)
 }

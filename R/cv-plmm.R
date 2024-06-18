@@ -71,8 +71,7 @@
 #'
 #' @examples
 #' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
-#' cv_s <- summary(cv_fit)
-#' print(cv_s)
+#' print(summary(cv_fit))
 #' plot(cv_fit)
 #'
 #' # Note: for examples with filebacked data, see the filebacking vignette
@@ -243,7 +242,7 @@ cv_plmm <- function(X,
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
-    close(pb)
+    if(trace) close(pb)
 
     # update E and Y
     E[fold==i, 1:res$nl] <- res$loss

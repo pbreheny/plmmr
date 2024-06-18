@@ -32,7 +32,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     cv_args$std_X_details$ns <- which(train_data$std_X_scale > 1e-3)
     singular <- train_data$std_X_scale < 1e-3
 
-    # do not fit a model on these singular features!
+    # do not fit a model on singular features!
     if (sum(singular) >= 1) cv_args$penalty.factor[singular] <- Inf
 
   } else {
@@ -62,12 +62,6 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, cv_args$std_X_details$ns, drop=FALSE]
-    # std_test_X <- ncvreg::std(test_X)
-    # std_test_X_details <- list(
-    #   center = attr(std_test_X, "center"),
-    #   scale = attr(std_test_X, "scale"),
-    #   ns = attr(std_test_X, "nonsingular")
-    # )
   }
   test_y <- y[fold==i]
 

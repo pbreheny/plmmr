@@ -116,7 +116,7 @@ In the code, we denote the objects above in this way:
 
 -   $\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}$ is `Xb`
 
--   $\ddot{\tilde{\mathbf{X}}} \hat{\ddot{\boldsymbol{\beta}}}$ is `linear.predictors`. Note: in words, this means the `linear.predictors` in the code are on the scale of the rotated and re-standardized data!
+-   $\ddot{\tilde{\mathbf{X}}} \hat{\ddot{\boldsymbol{\beta}}}$ is `linear_predictors`. Note: in words, this means the `linear_predictors` in the code are on the scale of the rotated and re-standardized data!
 
 
 

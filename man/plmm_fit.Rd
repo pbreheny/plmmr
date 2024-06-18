@@ -81,7 +81,7 @@ Note that the dimensions of \code{rot_X} are likely to be different than those o
 \item lambda: vector of tuning parameter values
 \item stdrot_scale_beta: the coefficients estimated on the scale of \code{stdrot_X}
 \item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
-\item linear.predictors: the product of \code{stdrot_X} and \code{b}
+\item linear_predictors: the product of \code{stdrot_X} and \code{b}
 (linear predictors on the transformed and restandardized scale)
 \item eta: a number (double) between 0 and 1 representing the estimated
 proportion of the variance in the outcome attributable to population/correlation
