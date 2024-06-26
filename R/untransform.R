@@ -14,7 +14,7 @@
 
 
 untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic) {
-
+browser()
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- std_scale_beta[1, , drop = FALSE] # this is the intercept

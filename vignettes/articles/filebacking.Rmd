@@ -133,7 +133,7 @@ cv_fb_fit <- cv_plmm(X = my_fb_data,
                      returnX = FALSE,
                      nfolds = 3, # for sake of testing, I made this small. 
                      # In practice, 3 folds is usually not enough for robust 
-                     # cross validation - hence, the default is nfolds = 10
+                     # cross validation - hence, the default is nfolds = 5
                      returnBiasDetails = TRUE,
                      trace = TRUE,
                      seed = 123)

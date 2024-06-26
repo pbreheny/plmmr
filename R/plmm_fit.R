@@ -117,8 +117,8 @@ plmm_fit <- function(prep,
                       format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
 
   # set up lambda -------------------------------------------------------
-  if (prep$trace) cat("Setting up lambda/preparing for model fitting.\n")
   if (missing(lambda)) {
+    if (prep$trace) cat("Setting up lambda/preparing for model fitting.\n")
     lambda <- setup_lambda(X = stdrot_X,
                            y = rot_y,
                            alpha = alpha,

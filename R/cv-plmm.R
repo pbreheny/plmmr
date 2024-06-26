@@ -37,7 +37,7 @@
 #'                        in many applications.
 #' @param cluster         cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
 #'                        advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
-#' @param nfolds          The number of cross-validation folds. Default is 10.
+#' @param nfolds          The number of cross-validation folds. Default is 5.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
 #' @param returnY         Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE,
@@ -101,7 +101,7 @@ cv_plmm <- function(X,
                     warn = TRUE,
                     init = NULL,
                     cluster,
-                    nfolds=10,
+                    nfolds=5,
                     seed,
                     fold = NULL,
                     returnY=FALSE,

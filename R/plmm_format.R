@@ -34,8 +34,8 @@
 #'
 #' @keywords internal
 
-plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL){
-
+plmm_format <- function(fit, p, cv = FALSE, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL){
+if (cv) browser()
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
   og_scale_beta <- untransform(
     std_scale_beta = fit$std_scale_beta,

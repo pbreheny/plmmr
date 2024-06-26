@@ -24,6 +24,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                     gamma = cv_args$gamma,
                     alpha = cv_args$alpha,
                     nlambda = cv_args$nlambda,
+                    lambda.min = cv_args$lambda.min,
                     max.iter = cv_args$max.iter,
                     eps = cv_args$eps,
                     warn = cv_args$warn,
@@ -33,11 +34,12 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   # subset std_X, U, and y to match fold indices ------------------------
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
-    fold_args$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+
+    fold_args$std_X <- train_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
-                           cv_args$std_X@address,
+                           fold_args$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
     fold_args$std_X@address <- train_data$std_X
@@ -50,12 +52,12 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     if (sum(singular) >= 1) fold_args$penalty.factor[singular] <- Inf
 
   } else {
-    fold_args$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    fold_args$std_X <- train_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
 
     # re-scale data & check for singularity
-    fold_args$std_X <- ncvreg::std(fold_args$std_X)
+    fold_args$std_X <- ncvreg::std(fold_args$std_X) # notice: singular columns are *removed* here
     fold_args$std_X_details$center <- attr(fold_args$std_X, "center")
     fold_args$std_X_details$scale <- attr(fold_args$std_X, "scale")
     fold_args$std_X_details$ns <- attr(fold_args$std_X, "nonsingular")
@@ -79,6 +81,9 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   test_y <- y[fold==i]
 
   # decomposition for current fold ------------------------------
+  if (cv_args$prep$trace) {
+    cat("Beginning eigendecomposition in fold ", i, ":\n")
+  }
   fold_prep <- plmm_prep(std_X = fold_args$std_X,
                          std_X_n = nrow(fold_args$std_X),
                          std_X_p = ncol(fold_args$std_X),
@@ -97,10 +102,26 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  fit.i <- do.call("plmm_fit", fold_args)
+  fit.i <- plmm_fit(prep = fold_prep,
+                    y = fold_args$y,
+                    std_X_details = fold_args$std_X_details,
+                    penalty.factor = fold_args$penalty.factor,
+                    fbm_flag = fold_args$fbm_flag,
+                    penalty = fold_args$penalty,
+                    gamma = fold_args$gamma,
+                    alpha = fold_args$alpha,
+                    lambda.min = fold_args$lambda.min,
+                    nlambda = fold_args$nlambda,
+                    lambda = fold_args$lambda,
+                    eps = fold_args$eps,
+                    max.iter = fold_args$max.iter,
+                    warn = fold_args$warn,
+                    convex = fold_args$convex,
+                    dfmax = ncol(train_X) + 1)
 
   format.i <- plmm_format(fit = fit.i,
-              p =  ncol(full_cv_prep$std_X),
+                          cv = TRUE,
+              p =  ncol(train_X),
               std_X_details = fold_args$std_X_details,
               # TODO: figure out how to track non_genomic features in CV
               # non_genomic = NULL,
@@ -108,9 +129,10 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
 
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
-                              trainX = fold_args$prep$std_X,
+                              trainX = train_X,
                               testX = test_X,
                               og_scale_beta = format.i$beta_vals,
+                              # std_X_details = fold_args$std_X_details,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
@@ -121,9 +143,11 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE]
 
     yhat <- predict_within_cv(fit = fit.i,
-                              trainX = fold_args$prep$std_X,
+                              trainX = train_X,
+                              trainY = fold_args$y,
                               testX = test_X,
                               og_scale_beta = format.i$beta_vals,
+                              std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
                               V11 = V11,

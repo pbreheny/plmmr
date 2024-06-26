@@ -1,10 +1,15 @@
 #' Predict method to use in cross-validation (within \code{cvf})
 #'
 #' @param fit  A list with the components returned by `plmm_fit`.
-#' @param trainX The standardized design matrix of training data, *pre-rotation*.
+#' @param trainX The training data, *pre-standardization* and *pre-rotation*
+#' @param trainY The training outcome, *not centered*. Only needed if `type = 'blup'`
 #' @param testX A design matrix used for computing predicted values (i.e, the test data).
 #' @param og_scale_beta testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
 #'       See `plmm_fit()` and `untransform()` for details.
+#' @param std_X_details A list with 3 items:
+#'  * 'center': the centering values for the columns of `X`
+#'  * 'scale': the scaling values for the non-singular columns of `X`
+#'  * 'ns': indicies of nonsingular columns in `std_X`
 #' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
@@ -30,8 +35,10 @@
 
 predict_within_cv <- function(fit,
                               trainX,
+                              trainY = NULL,
                               testX,
                               og_scale_beta,
+                              std_X_details,
                               type,
                               fbm = FALSE,
                               idx=1:length(fit$lambda),
@@ -43,20 +50,23 @@ predict_within_cv <- function(fit,
   fbm_flag <- inherits(testX,"big.matrix")
 
   # get beta values (for nonsingular features) from fit
-  std_scale_beta <- fit$std_scale_beta[,idx,drop = FALSE]
+  og_scale_beta <- og_scale_beta[,idx,drop = FALSE]
 
   # format dim. names
-  if(is.null(dim(std_scale_beta))) {
-    # case 1: std_scale_beta is a vector
-    names(std_scale_beta) <- lam_names(fit$lambda)
+  if(is.null(dim(og_scale_beta))) {
+    # case 1: og_scale_beta is a vector
+    names(og_scale_beta) <- lam_names(fit$lambda)
   } else {
-    # case 2: std_scale_beta is a matrix
-    colnames(std_scale_beta) <- lam_names(fit$lambda)
+    # case 2: og_scale_beta is a matrix
+    colnames(og_scale_beta) <- lam_names(fit$lambda)
   }
 
   # calculate the estimated mean values for test data
   a <- og_scale_beta[1,]
   b <- og_scale_beta[-1,,drop=FALSE]
+  if (nrow(b) != ncol(testX)) {
+    b <- b[std_X_details$ns,]
+  }
   Xb <- sweep(testX %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
 
   # for linear predictor, return mean values
@@ -67,10 +77,9 @@ predict_within_cv <- function(fit,
     # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
     # test1 <- V21 %*% chol2inv(chol(V11)) # true
     # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
-    a_train <- std_scale_beta[1,]
-    b_train <- std_scale_beta[-1,,drop=FALSE]
-    Xb_train <- sweep(trainX %*% b_train, 2, a_train, "+")
-    resid_train <- (drop(fit$centered_y) - Xb_train)
+    b_train <- og_scale_beta[-1,,drop=FALSE] # this may or may not be equal to b...
+    Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
+    resid_train <- (drop(trainY) - Xb_train)
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
     blup <- Xb + ranef
 
