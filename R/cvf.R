@@ -17,8 +17,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   full_cv_prep <- cv_args$prep
   y <- cv_args$y
   # make list to hold the data for this particular fold:
-  fold_args <- list(prep = list(),
-                    std_X_details = list(),
+  fold_args <- list(std_X_details = list(),
                     fbm_flag = cv_args$fbm_flag,
                     penalty = cv_args$penalty,
                     penalty.factor = cv_args$penalty.factor,
@@ -34,14 +33,14 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   # subset std_X, U, and y to match fold indices ------------------------
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
-    fold_args$prep$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+    fold_args$std_X <- bigstatsr::big_copy(full_cv_prep$std_X,
                                               ind.row = which(fold!=i)) |> fbm2bm()
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
-                           cv_args$prep$std_X@address,
+                           cv_args$std_X@address,
                            as.integer(bigstatsr::nb_cores()),
                            PACKAGE = "plmmr")
-    fold_args$prep$std_X@address <- train_data$std_X
+    fold_args$std_X@address <- train_data$std_X
     fold_args$std_X_details$center <- train_data$std_X_center
     fold_args$std_X_details$scale <- train_data$std_X_scale
     fold_args$std_X_details$ns <- which(train_data$std_X_scale > 1e-3)
@@ -51,21 +50,21 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     if (sum(singular) >= 1) fold_args$penalty.factor[singular] <- Inf
 
   } else {
-    fold_args$prep$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    fold_args$std_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
 
     # re-scale data & check for singularity
-    fold_args$prep$std_X <- ncvreg::std(fold_args$prep$std_X)
-    fold_args$std_X_details$center <- attr(fold_args$prep$std_X, "center")
-    fold_args$std_X_details$scale <- attr(fold_args$prep$std_X, "scale")
-    fold_args$std_X_details$ns <- attr(fold_args$prep$std_X, "nonsingular")
+    fold_args$std_X <- ncvreg::std(fold_args$std_X)
+    fold_args$std_X_details$center <- attr(fold_args$std_X, "center")
+    fold_args$std_X_details$scale <- attr(fold_args$std_X, "scale")
+    fold_args$std_X_details$ns <- attr(fold_args$std_X, "nonsingular")
 
     # do not fit a model on these singular features!
     fold_args$penalty.factor <- fold_args$penalty.factor[fold_args$std_X_details$ns]
 
   }
-  fold_args$prep$centered_y <- full_cv_prep$centered_y[fold!=i] |> scale(scale=FALSE)
+  fold_args$centered_y <- full_cv_prep$centered_y[fold!=i] |> scale(scale=FALSE) |> drop()
   fold_args$y <- y[fold!=i]
 
   # extract test set --------------------------------------
@@ -80,10 +79,17 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   test_y <- y[fold==i]
 
   # decomposition for current fold ------------------------------
-  browser()
+  fold_prep <- plmm_prep(std_X = fold_args$std_X,
+                         std_X_n = nrow(fold_args$std_X),
+                         std_X_p = ncol(fold_args$std_X),
+                         n = nrow(full_cv_prep$std_X),
+                         p = ncol(full_cv_prep$std_X),
+                         centered_y = fold_args$centered_y,
+                         fbm_flag = fold_args$fbm_flag,
+                         penalty.factor = fold_args$penalty.factor,
+                         trace = cv_args$prep$trace)
 
-
-
+  fold_args$prep <- fold_prep
 
   # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
@@ -91,8 +97,8 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     cat("Fitting model in fold ", i, ":\n")
   }
 
-  fit.i <- do.call("plmm_fit", cv_args)
-
+  fit.i <- do.call("plmm_fit", fold_args)
+  browser()
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
                               oldX = cv_args$prep$std_X,
