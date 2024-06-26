@@ -98,11 +98,19 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   }
 
   fit.i <- do.call("plmm_fit", fold_args)
-  browser()
+
+  format.i <- plmm_format(fit = fit.i,
+              p =  ncol(full_cv_prep$std_X),
+              std_X_details = fold_args$std_X_details,
+              # TODO: figure out how to track non_genomic features in CV
+              # non_genomic = NULL,
+              fbm_flag = fold_args$fbm_flag)
+
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
-                              oldX = cv_args$prep$std_X,
-                              newX = test_X,
+                              trainX = fold_args$prep$std_X,
+                              testX = test_X,
+                              og_scale_beta = format.i$beta_vals,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
@@ -113,8 +121,9 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE]
 
     yhat <- predict_within_cv(fit = fit.i,
-                              oldX = cv_args$prep$std_X,
-                              newX = test_X,
+                              trainX = fold_args$prep$std_X,
+                              testX = test_X,
+                              og_scale_beta = format.i$beta_vals,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
                               V11 = V11,
