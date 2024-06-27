@@ -6,14 +6,18 @@
 \usage{
 plmm_format(
   fit,
+  p,
   std_X_details,
   fbm_flag,
+  use_feature_names = TRUE,
   feature_names = NULL,
   non_genomic = NULL
 )
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
+
+\item{p}{The number of features in the original data (including constant features)}
 
 \item{std_X_details}{A list with 3 items:
 \itemize{
@@ -23,6 +27,8 @@ plmm_format(
 }}
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
+
+\item{use_feature_names}{Logical: should features be named (e.g., should the returned matrix of coefficients have rows/columns named?). Defaults to TRUE.}
 
 \item{feature_names}{A vector of names for features, passed internally if such names are included with the data \code{X} passed to \code{plmm()}}
 

@@ -6,12 +6,13 @@
 \usage{
 plmm_fit(
   prep,
+  y,
   std_X_details,
   eta_star,
   penalty.factor,
   fbm_flag,
   penalty,
-  gamma,
+  gamma = 3,
   alpha = 1,
   lambda.min,
   nlambda = 100,
@@ -19,7 +20,7 @@ plmm_fit(
   eps = 1e-04,
   max.iter = 10000,
   convex = TRUE,
-  dfmax = prep$p + 1,
+  dfmax = NULL,
   init = NULL,
   warn = TRUE,
   returnX = TRUE,
@@ -28,6 +29,8 @@ plmm_fit(
 }
 \arguments{
 \item{prep}{A list as returned from \code{plmm_prep}}
+
+\item{y}{The original (not centered) outcome vector. Need this for intercept estimate}
 
 \item{std_X_details}{A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)}
 

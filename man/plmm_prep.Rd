@@ -12,7 +12,7 @@ plmm_prep(
   genomic = 1:std_X_p,
   n,
   p,
-  y,
+  centered_y,
   k = NULL,
   K = NULL,
   diag_K = NULL,
@@ -36,7 +36,7 @@ plmm_prep(
 
 \item{p}{The number of features in the \emph{original} design matrix X, including constant features}
 
-\item{y}{Continuous outcome vector.}
+\item{centered_y}{Continuous outcome vector, centered.}
 
 \item{k}{An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to \code{RSpectra::svds()}. Defaults to \code{min(n, p) - 1}, where n and p are the dimensions of the \emph{standardized} design matrix.}
 
@@ -57,7 +57,7 @@ List with these components:
 \itemize{
 \item n: the number of rows in the original design matrix
 \item p: the number of columns in the original design matrix
-\item y: The vector of outcomes
+\item centered_y: The vector of centered outcomes
 \item std_X: standardized design matrix
 \item std_X_details: a list with 2 vectors:
 \itemize{

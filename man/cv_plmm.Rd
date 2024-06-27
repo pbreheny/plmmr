@@ -28,7 +28,7 @@ cv_plmm(
   warn = TRUE,
   init = NULL,
   cluster,
-  nfolds = 10,
+  nfolds = 5,
   seed,
   fold = NULL,
   returnY = FALSE,
@@ -97,7 +97,7 @@ in many applications.}
 \item{cluster}{cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
 advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().}
 
-\item{nfolds}{The number of cross-validation folds. Default is 10.}
+\item{nfolds}{The number of cross-validation folds. Default is 5.}
 
 \item{seed}{You may set the seed of the random number generator in order to obtain reproducible results.}
 
@@ -143,8 +143,7 @@ linear mixed models over a grid of values for the regularization parameter \code
 }
 \examples{
 cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
-cv_s <- summary(cv_fit)
-print(cv_s)
+print(summary(cv_fit))
 plot(cv_fit)
 
 # Note: for examples with filebacked data, see the filebacking vignette
