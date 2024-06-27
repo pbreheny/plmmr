@@ -120,7 +120,6 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                     dfmax = ncol(train_X) + 1)
 
   format.i <- plmm_format(fit = fit.i,
-                          cv = TRUE,
               p =  ncol(train_X),
               std_X_details = fold_args$std_X_details,
               # TODO: figure out how to track non_genomic features in CV
