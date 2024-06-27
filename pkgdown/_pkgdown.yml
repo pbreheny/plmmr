@@ -61,10 +61,10 @@ reference:
     contents:
     - summary.plmm
     - print.summary.plmm
+    - plot.plmm
     - summary.cv_plmm
     - print.summary.cv_plmm
     - plot.cv_plmm
-    - plot.plmm
 
   - title: Prediction
     contents:
@@ -81,7 +81,6 @@ reference:
     - add_predictors_to_bigsnp
     - align_ids
     - align_famfile_ids
-    - big_std
     - count_constant_features
     - cvf
     - delta
