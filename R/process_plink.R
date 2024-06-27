@@ -3,6 +3,8 @@
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
 #' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
+#' @param bk_filename           Optional string to name the backingfile that will be created for the output data. Defaults to `paste0(std_`. `prefix`).
+#'                              **Note**: Do NOT include a `.bk` extension in the filename.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
 #'                                * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -32,8 +34,6 @@
 #'
 #'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
 #'                           The names will be used to subset and align this external covariate with the supplied PLINK data.
-#'
-#' @param keep_bigSNP         Logical: should the intermediate steps of data processing be saved as a `bigSNP` object? Defaults to FALSE.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return Nothing is returned by this function, but (at least) two files are created in
@@ -45,11 +45,6 @@
 #'
 #' * 'std_prefix.bk': Created by the call to `standardize_fbm()`, this is the
 #' backingfile that stores the numeric data of the standardized design matrix `std_X`
-#'
-#'  Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
-#'  if `keep_bigSNP = TRUE`, these are not deleted at the end of the `process_plink()`
-#'  procedure. Note that these files could potentially be quite large - that's the
-#'  main reason that keeping these files is not the default setting.
 #'
 #'  Note that `process_plink()` need only be run once for a given set of PLINK
 #'  files; in subsequent data analysis/scripts, `get_data()` will access the '.rds' file.
@@ -76,7 +71,7 @@
 #' @examples
 #' \donttest{
 #' temp_dir <- paste0(tempdir()) # using a temporary directory here
-#' process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
+#' process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
 #'               rds_dir = temp_dir,
 #'               prefix = "penncath_lite",
 #'               outfile = "process_penncath",
@@ -90,6 +85,7 @@
 process_plink <- function(data_dir,
                           prefix,
                           rds_dir = data_dir,
+                          bk_filename,
                           impute = TRUE,
                           impute_method = 'mode',
                           na_phenotype_vals = c(-9),
@@ -103,18 +99,21 @@ process_plink <- function(data_dir,
                           overwrite = FALSE,
                           add_predictor_fam = NULL,
                           add_predictor_ext = NULL,
-                          keep_bigSNP = FALSE,
                           ...){
 
   # start log ------------------------------------------
+  if(missing(bk_filename)){
+    bk_filename <- paste0("std_", prefix)
+  }
+
   if(missing(outfile)){
-    outfile = paste0(data_dir, "/process_plink.log")
+    outfile = file.path(rds_dir, "process_plink.log")
   } else {
     outfile = paste0(outfile, ".log")
   }
   log_con <- file(outfile)
   cat("### Processing PLINK files for PLMM ###", file = log_con)
-  cat("\nLogging to ", outfile, file = outfile, append = TRUE)
+  cat("\nLogging to", outfile, file = outfile, append = TRUE)
   cat("\nPreprocessing", prefix, "data:", file = outfile, append = TRUE)
 
   if(!quiet){
@@ -164,53 +163,47 @@ process_plink <- function(data_dir,
                               outfile = outfile, quiet = quiet)
 
   # imputation ------------------------------------------------------------------
-  step4_obj <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
+  step4 <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
                                outfile, quiet,...)
 
   # add predictors from external files -----------------------------
-  step5 <- add_predictors_to_bigsnp(step4_obj, add_predictor_fam, add_predictor_ext,
+  step5 <- add_predictors_to_bigsnp(step4, add_predictor_fam, add_predictor_ext,
                           id_var, step2$og_plink_ids, quiet)
 
-  # subsetting -----------------------------------------------------------------
-  step6_obj <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
-                      step3$complete_phen, step5$non_gen, data_dir, prefix,
-                      outfile, quiet)
-
-  # standardization ------------------------------------------------------------
-  step7 <- standardize_bigsnp(step6_obj, prefix, rds_dir, step5$non_gen, step3$complete_phen,
-                  id_var, outfile, quiet)
-
-  # cleanup --------------------------------------------------------------------
-  if (!keep_bigSNP) {
-    ret <- list(
-      std_X = step7$std_X,
-      fam = step7$fam,
-      map = step7$map,
-      colnames = step7$colnames,
-      rownames = step7$rownames,
-      n = step7$n,
-      p = step7$p,
-      ns = step7$ns,
-      non_gen = step5$non_gen,
-      std_X_center = step7$std_X_center,
-      std_X_scale = step7$std_X_scale,
-      std_X_colnames = step7$std_X_colnames,
-      std_X_rownames = step7$std_X_rownames,
-      complete_phen = step7$complete_phen,
-      id_var = step7$id_var
-    )
-    # This needs some work
-    list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
-      file.remove()
-    list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
-      file.remove()
-    rm(step1)
+  # check for files to be overwritten---------------------------------
+  if (overwrite){
     gc()
-    saveRDS(ret, paste0(rds_dir, "/std_", prefix, ".rds"))
+    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
+      file.remove()
+    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
+      file.remove()
+    gc()
   }
 
+  # subsetting -----------------------------------------------------------------
+  step6 <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
+                      step3$complete_phen, step5$non_gen, data_dir, rds_dir,
+                      prefix, bk_filename, outfile, quiet)
 
-  if(!quiet){cat("\nDone with standardization.
-                 Processed files now saved as .rds object.")}
+  # standardization ------------------------------------------------------------
+  step7 <- standardize_bigsnp(step6, prefix, rds_dir, step5$non_gen, step3$complete_phen,
+                  id_var, outfile, quiet, overwrite)
+
+  # cleanup --------------------------------------------------------------------
+  # These steps remove intermediate rds/bk files created by the steps of the data management process
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
+    file.remove()
+  gc() # this is important!
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
+    file.remove()
+  gc() # this is important!
+  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+    file.remove()
+  rm(step1)
+  gc() # this is important!
+
+  saveRDS(step7, file.path(rds_dir, paste0("std_", prefix, ".rds")))
+
+  if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
   close(log_con)
 }

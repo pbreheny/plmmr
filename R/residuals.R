@@ -31,9 +31,9 @@ residuals.plmm <- function(object,
   cat("\nNote: Residuals are returned on the transformed scale 
       \n(i.e., the scale on which the model was fit)")
   # Calculate matrix of residuals
-  R <- matrix(nrow = nrow(object$linear.predictors), ncol = ncol(object$linear.predictors))
+  R <- matrix(nrow = nrow(object$linear_predictors), ncol = ncol(object$linear_predictors))
   for(j in 1:ncol(R)){
-    R[,j] <- object$rot_y - object$linear.predictors[j]
+    R[,j] <- object$rot_y - object$linear_predictors[j]
   }
   if(unrotate){
     stop("\nThis option is still underdevelopment. Don't try to unrotate residuals yet.")

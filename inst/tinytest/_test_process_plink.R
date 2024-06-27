@@ -6,13 +6,13 @@ library(tidyr)
 library(bigsnpr)
 
 ## read in phenotype data --------------------------
-pen_clinic <- read.csv(paste0(get_example_data(parent = TRUE), "/penncath_clinical.csv"))
+pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
 extdata <- pen_clinic[,3:4]
 rownames(extdata) <- pen_clinic$FamID # This is important! 
 
 ## process PLINK data ------------------------------
 temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
-process_plink(data_dir = get_example_data(parent = TRUE),
+process_plink(data_dir = find_example_data(parent = TRUE),
               rds_dir = temp_dir, # using a temporary directory
               prefix = "penncath_lite",
               id_var = "FID", # this is KEY!

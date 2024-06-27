@@ -8,6 +8,7 @@ process_delim(
   file,
   data_dir,
   rds_dir = data_dir,
+  bk_filename,
   ind.col,
   non_gen = NULL,
   outfile,
@@ -24,6 +25,9 @@ Example: use \code{file = "myfile.txt"}, not \code{file = "~/mydirectory/myfile.
 
 \item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files
 Defaults to \code{data_dir}}
+
+\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
+\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
 
 \item{ind.col}{Numeric vector of the columns to read in. Don't use negative indicies.
 If you're not sure how many columns are in your file,
@@ -58,10 +62,10 @@ A function to read in large data files as an FBM
 \examples{
 temp_dir <- tempdir()
 process_delim(file = "colon2.txt",
- data_dir = get_example_data(parent = TRUE),
+ data_dir = find_example_data(parent = TRUE),
  rds_dir = temp_dir,
   ind.col = 2:2002)
-  
+
 # colon2_rds <- readRDS(paste0(temp_dir, "std_colon2.rds"))
 # str(colon2_rds)
 

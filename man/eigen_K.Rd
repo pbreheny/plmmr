@@ -5,12 +5,10 @@
 \title{A function to take the eigendecomposition of K
 Note: This is faster than taking SVD of X when p >> n}
 \usage{
-eigen_K(std_X, p, fbm_flag, ...)
+eigen_K(std_X, fbm_flag, ...)
 }
 \arguments{
 \item{std_X}{The \emph{standardized} design matrix, stored as FBM.}
-
-\item{p}{The number of columns in the \emph{unstandardized} design matrix.}
 
 \item{fbm_flag}{Logical: is std_X an FBM obejct? Passed from \code{plmm()}.}
 

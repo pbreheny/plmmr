@@ -4,10 +4,12 @@
 \alias{scale_varp}
 \title{Calculate scale by the population standard deviation, without centering}
 \usage{
-scale_varp(X)
+scale_varp(X, center = FALSE)
 }
 \arguments{
 \item{X}{numeric matrix}
+
+\item{center}{Logical: should X be centered? Defaults to FALSE.}
 }
 \description{
 This function allows you to scale vectors of a matrix by their population standard deviation without centering; we assume our sample is the population.

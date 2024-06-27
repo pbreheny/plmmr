@@ -9,10 +9,7 @@
 #'                        For data processed from PLINK files, standardization happens in `process_plink()`.
 #'                        For data supplied as a matrix, standardization happens here in `plmm()`.
 #'                        If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case.
-#'                        **Note**: failing to standardize data will lead to incorrect analyses.
-#'                        By default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`.
-#'                        For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case.
-#'                        **Note**: failing to standardize data will lead to incorrect analyses.
+#'                        **Note**: failing to correctly standardize data will lead to incorrect analyses.
 #' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
 #' @param non_genomic     Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #'                        For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -40,7 +37,7 @@
 #'                        in many applications.
 #' @param cluster         cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
 #'                        advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
-#' @param nfolds          The number of cross-validation folds. Default is 10.
+#' @param nfolds          The number of cross-validation folds. Default is 5.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
 #' @param returnY         Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE,
@@ -51,7 +48,6 @@
 #' @param save_rds        Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ...             Additional arguments to `plmm_fit`
-
 #'
 #' @returns a list with 11 items:
 #'
@@ -73,9 +69,8 @@
 #' @export
 #'
 #' @examples
-#' cv_fit <- cv_plmm(X = admix$X, y = admix$y, seed = 321)
-#' cv_s <- summary(cv_fit)
-#' print(cv_s)
+#' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
+#' print(summary(cv_fit))
 #' plot(cv_fit)
 #'
 #' # Note: for examples with filebacked data, see the filebacking vignette
@@ -105,7 +100,7 @@ cv_plmm <- function(X,
                     warn = TRUE,
                     init = NULL,
                     cluster,
-                    nfolds=10,
+                    nfolds=5,
                     seed,
                     fold = NULL,
                     returnY=FALSE,
@@ -115,74 +110,89 @@ cv_plmm <- function(X,
                     return_fit = TRUE,
                     ...) {
   # run checks ------------------------------
-  checked_data <- plmm_checks(X = X,
-                              y = y,
-                              penalty = penalty,
-                              non_genomic = non_genomic,
+  checked_data <- plmm_checks(X,
                               std_needed = std_needed,
+                              col_names = col_names,
+                              non_genomic = non_genomic,
+                              y = y,
+                              K = K,
+                              diag_K = diag_K,
+                              eta_star = eta_star,
+                              penalty = penalty,
+                              penalty.factor = penalty.factor,
+                              init = init,
+                              dfmax = dfmax,
+                              gamma = gamma,
+                              alpha = alpha,
                               trace = trace,
                               ...)
 
   # prep  ------------------------
-  prep.args <- c(list(std_X = checked_data$std_X,
+  prep_args <- c(list(std_X = checked_data$std_X,
                       std_X_n = checked_data$std_X_n,
                       std_X_p = checked_data$std_X_p,
+                      genomic = checked_data$genomic,
                       n = checked_data$n,
                       p = checked_data$p,
-                      y = checked_data$y,
+                      centered_y = checked_data$centered_y,
                       K = checked_data$K,
                       diag_K = checked_data$diag_K,
+                      eta_star = eta_star,
                       fbm_flag = checked_data$fbm_flag,
-                      trace = trace,
-                      ...)) # ... additional arguments to plmm_prep()
+                      trace = trace))
 
-  prep <- do.call('plmm_prep', prep.args)
+  prep <- do.call('plmm_prep', prep_args)
 
   # full model fit ----------------------------------
-  fit.args <- c(list(prep = prep,
-                     penalty = penalty,
-                     std_X_details = checked_data$std_X_details,
-                     eta_star = eta_star,
-                     penalty.factor = checked_data$penalty.factor,
-                     fbm_flag = checked_data$fbm_flag,
-                     gamma = checked_data$gamma,
-                     alpha = alpha,
-                     nlambda = nlambda,
-                     eps = eps,
-                     max.iter = max.iter,
-                     warn = warn,
-                     convex = convex,
-                     # TODO: figure out if/when to include dfmax... (for now, it is not used)
-                     dfmax = checked_data$dfmax,
-                     init = checked_data$init),
-                list(...))
+  fit_args <- c(list(
+    prep = prep,
+    y = checked_data$y,
+    std_X_details = checked_data$std_X_details,
+    eta_star = eta_star,
+    penalty.factor = checked_data$penalty.factor,
+    fbm_flag = checked_data$fbm_flag,
+    penalty = checked_data$penalty,
+    gamma = checked_data$gamma,
+    alpha = alpha,
+    nlambda = nlambda,
+    max.iter = max.iter,
+    eps = eps,
+    warn = warn,
+    convex = convex,
+    dfmax = dfmax))
 
-  fit <- do.call('plmm_fit', fit.args)
+  if (!missing(lambda.min)){
+    fit_args$lambda.min <- lambda.min
+  }
+  fit <- do.call('plmm_fit', fit_args)
 
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$map$marker.ID
+      col_names <- checked_data$dat$X_colnames
     }
   }
+
   fit_to_return <- plmm_format(fit = fit,
+                               p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
-                               snp_names = col_names,
+                               feature_names = col_names,
                                fbm_flag = checked_data$fbm_flag,
                                non_genomic = checked_data$non_genomic)
 
   # set up arguments for cv ---------------------------
-  cv.args <- fit.args
-  cv.args$warn <- FALSE
-  cv.args$lambda <- fit$lambda
+  cv_args <- fit_args
+  cv_args$warn <- FALSE
+  cv_args$lambda <- fit$lambda
+  cv_args$non_genomic <- checked_data$non_genomic
 
   estimated_V <- NULL
   if (type == 'blup') {
-   estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
+    estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
   }
 
   # initialize objects to hold CV results
-  n <- length(fit$y)
-  E <- Y <- matrix(NA, nrow=fit$std_X_n, ncol=length(fit$lambda))
+  n <- checked_data$std_X_n
+  E <- Y <- matrix(NA, nrow=n, ncol=length(fit$lambda))
 
 
   # set up folds for cross validation
@@ -194,10 +204,10 @@ cv_plmm <- function(X,
 
   sde <- sqrt(.Machine$double.eps)
 
-  if(is.null(fold)) {
-    if(trace){
+  if (is.null(fold)) {
+    if (trace) {
       cat("'Fold' argument is either NULL or missing; assigning folds randomly (by default).
-          \nTo specify folds for each observation, supply a vector with fold assignments.")
+          \nTo specify folds for each observation, supply a vector with fold assignments.\n")
     }
     fold <- sample(1:n %% nfolds)
     fold[fold==0] <- nfolds
@@ -205,14 +215,13 @@ cv_plmm <- function(X,
     nfolds <- max(fold)
   }
 
-
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv.args", "estimated_V"), envir=environment())
+    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv_args", "estimated_V"), envir=environment())
     parallel::clusterCall(cluster, function() library(plmmr))
     fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf, X=X, y=y,
-                                        fold=fold, type=type, cv.args=cv.args,
+                                        fold=fold, type=type, cv_args=cv_args,
                                         estimated_V = estimated_V)
   }
 
@@ -230,11 +239,13 @@ cv_plmm <- function(X,
       res <- cvf(i = i,
                  fold = fold,
                  type = type,
-                 cv.args = cv.args,
+                 cv_args = cv_args,
                  estimated_V = estimated_V)
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
+
+    if(trace) close(pb)
 
     # update E and Y
     E[fold==i, 1:res$nl] <- res$loss
@@ -254,7 +265,7 @@ cv_plmm <- function(X,
 
   # return min lambda idx
   cve <- apply(E, 2, mean)
-  cvse <- apply(E, 2, stats::sd) / sqrt(n)
+  cvse <- apply(E, 2, stats::sd) / sqrt(nrow(Y))
   min <- which.min(cve)
 
   # return lambda 1se idx
@@ -262,7 +273,6 @@ cv_plmm <- function(X,
   u.se <- cve[min] + cvse[min]
   within1se <- which(cve >= l.se & cve <= u.se)
   min1se <- which.max(lambda %in% lambda[within1se])
-
   # bias correction
   e <- sapply(1:nfolds, function(i) apply(E[fold==i, , drop=FALSE], 2, mean))
   Bias <- mean(e[min,] - apply(e, 2, min))

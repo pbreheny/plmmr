@@ -6,9 +6,12 @@
 \usage{
 predict_within_cv(
   fit,
-  oldX,
-  newX,
-  type = c("lp", "blup"),
+  trainX,
+  trainY = NULL,
+  testX,
+  og_scale_beta,
+  std_X_details,
+  type,
   fbm = FALSE,
   idx = 1:length(fit$lambda),
   V11 = NULL,
@@ -19,13 +22,26 @@ predict_within_cv(
 \arguments{
 \item{fit}{A list with the components returned by \code{plmm_fit}.}
 
-\item{oldX}{The standardized design matrix of training data, \emph{pre-rotation}.}
+\item{trainX}{The training data, \emph{pre-standardization} and \emph{pre-rotation}}
 
-\item{newX}{A design matrix used for computing predicted values (i.e, the test data).}
+\item{trainY}{The training outcome, \emph{not centered}. Only needed if \code{type = 'blup'}}
 
-\item{type}{A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
+\item{testX}{A design matrix used for computing predicted values (i.e, the test data).}
 
-\item{fbm}{Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.}
+\item{og_scale_beta}{testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
+See \code{plmm_fit()} and \code{untransform()} for details.}
+
+\item{std_X_details}{A list with 3 items:
+\itemize{
+\item 'center': the centering values for the columns of \code{X}
+\item 'scale': the scaling values for the non-singular columns of \code{X}
+\item 'ns': indicies of nonsingular columns in \code{std_X}
+}}
+
+\item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
+Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
+
+\item{fbm}{Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.}
 
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 
@@ -41,10 +57,15 @@ Predict method to use in cross-validation (within \code{cvf})
 \details{
 Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for \code{type} are as follows:
 \itemize{
-\item 'lp' (default): uses the linear predictor (i.e., product of new data and estimated coefficients) to predict new values of the outcome.
+\item 'lp' (default): uses the linear predictor (i.e., product of test data and estimated coefficients) to predict test values of the outcome.
 Note that this approach does not incorporate the correlation structure of the data.
 \item 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
 This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.
 }
+
+Note: the main difference between this function and the \code{predict.plmm()} method is that
+here in CV, predictions are made on the \emph{standardized} scale (i.e., both
+the trainX and testX data come from std_X). The \code{predict.plmm()} method
+makes predictions on the scale of X (the original scale)
 }
 \keyword{internal}

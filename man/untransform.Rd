@@ -4,10 +4,10 @@
 \alias{untransform}
 \title{Untransform coefficient values back to the original scale}
 \usage{
-untransform(untransformed_b1, p, std_X_details, fbm_flag, non_genomic)
+untransform(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
 }
 \arguments{
-\item{untransformed_b1}{The estimated coefficients on the standardized scale}
+\item{std_scale_beta}{The estimated coefficients on the standardized scale}
 
 \item{p}{The number of columns in the original design matrix}
 

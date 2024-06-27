@@ -6,12 +6,13 @@
 \usage{
 plmm_fit(
   prep,
+  y,
   std_X_details,
   eta_star,
   penalty.factor,
   fbm_flag,
-  penalty = "MCP",
-  gamma,
+  penalty,
+  gamma = 3,
   alpha = 1,
   lambda.min,
   nlambda = 100,
@@ -19,7 +20,7 @@ plmm_fit(
   eps = 1e-04,
   max.iter = 10000,
   convex = TRUE,
-  dfmax = prep$p + 1,
+  dfmax = NULL,
   init = NULL,
   warn = TRUE,
   returnX = TRUE,
@@ -28,6 +29,8 @@ plmm_fit(
 }
 \arguments{
 \item{prep}{A list as returned from \code{plmm_prep}}
+
+\item{y}{The original (not centered) outcome vector. Need this for intercept estimate}
 
 \item{std_X_details}{A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)}
 
@@ -79,9 +82,9 @@ Note that the dimensions of \code{rot_X} are likely to be different than those o
 \item rot_y: y on the rotated scale
 \item stdrot_X: X on the rotated scale once it has been re-standardized.
 \item lambda: vector of tuning parameter values
-\item b: the coefficients estimated on the scale of \code{stdrot_X}
-\item untransformed_b1: the coefficients estimated on the scale of \code{std_X}
-\item linear.predictors: the product of \code{stdrot_X} and \code{b}
+\item stdrot_scale_beta: the coefficients estimated on the scale of \code{stdrot_X}
+\item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
+\item linear_predictors: the product of \code{stdrot_X} and \code{b}
 (linear predictors on the transformed and restandardized scale)
 \item eta: a number (double) between 0 and 1 representing the estimated
 proportion of the variance in the outcome attributable to population/correlation
@@ -100,7 +103,7 @@ where 1 = predictor was penalized.
 lasso penalties was used. Not relevant for lasso models.
 \item alpha: numeric value indicating the elastic net tuning parameter.
 \item ns: the indices for the nonsingular values of X
-\item snp_names: formatted column names of the design matrix
+\item feature_names: formatted column names of the design matrix
 \item nlambda: number of lambda values used in model fitting
 \item eps: tolerance ('epsilon') used for model fitting
 \item max.iter: max. number of iterations per model fit

@@ -81,7 +81,7 @@ admix_fit2 <- plmm(X = X_plus_ancestry, y = admix$y,
                    # make the penalty factor 0 to keep the corresponding covariate unpenalized
                    penalty.factor = c(0, rep(1, ncol(admix$X))))
 
-summary(admix_fit2, idx = 95)
+summary(admix_fit2, idx = 25)
 plot(admix_fit2)
 ```
 
@@ -114,8 +114,8 @@ y_hat <- predict(object = admix_fit,
                        newX = admix$X,
                        type = "blup",
                        X = admix$X,
-                       y = admix$y,
-                       lambda = admix_cv$lambda.min)
+                       y = admix$y)
+
 ```
 
 We can compare these predictions with the predictions we would get from an intercept-only model using mean squared prediction error (MSPE) -- lower is better:
@@ -124,8 +124,10 @@ We can compare these predictions with the predictions we would get from an inter
 # intercept-only (or 'null') model
 crossprod(admix$y - mean(admix$y))/length(admix$y)
 
-# our model
-crossprod(admix$y - y_hat)/length(admix$y)
+# our model at its best value of lambda
+apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
+min(mse)
+# ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 
 We see our model has better predictions than the null

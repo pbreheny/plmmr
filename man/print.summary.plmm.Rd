@@ -19,12 +19,9 @@ summarizing the results of the model fit.
 A function to print the summary of a \code{plmm} model
 }
 \examples{
-fit <- plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
-fit2 <- plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X), penalty = "SCAD")
-s1 <- summary(fit, idx = 97)
-s2 <- summary(fit, lambda = fit$lambda[97])
-s3 <- summary(fit2, idx = 25)
-print(s1)
-print(s2)
-print(s3)
+lam <- rev(seq(0.01, 1, length.out=20)) |> round(2) # for sake of example
+fit <- plmm(X = admix$X, y = admix$y, lambda = lam)
+fit2 <- plmm(X = admix$X, y = admix$y, penalty = "SCAD", lambda = lam)
+print(summary(fit, idx = 12))
+print(summary(fit2, lambda = 0.11))
 }

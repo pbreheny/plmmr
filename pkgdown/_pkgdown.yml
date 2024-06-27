@@ -52,7 +52,7 @@ reference:
   - title: Data (pre)processing and wrangling
     contents:
     - get_data
-    - get_example_data 
+    - find_example_data 
     - get_bm_from_plink
     - process_plink
     - process_delim

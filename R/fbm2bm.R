@@ -1,4 +1,4 @@
-#' Functions to convert between FBM and big.matrix type objects 
+#' Functions to convert between FBM and big.matrix type objects
 #'
 #' @param fbm An FBM object; see `bigstatsr::FBM()` for details
 #' @param desc Logical: is the descriptor file desired (as opposed to the filebacked big matrix)? Defaults to FALSE.
@@ -8,33 +8,20 @@
 #' @export
 #'
 #' @examples
-#' colon2 <- read.delim(get_example_data("colon2.txt"), header = TRUE)
+#' colon2 <- read.delim(find_example_data("colon2.txt"), header = TRUE)
 #' class(colon2)
 #' bigstatsr::as_FBM(colon2) -> colon2_fbm
 #' fbm2bm(colon2_fbm) -> colon2_bm
 #' class(colon2_bm)
-#' 
+#'
 fbm2bm <- function(fbm, desc = FALSE){
   if(desc){
     desc <- fbm$bm.desc()
     return(bigmemory::attach.big.matrix(desc))
-    
+
   } else {
     return(fbm$bm())
   }
 
 }
 
-
-# bm2fbm <- function(bm, type = "integer"){
-#   warning("\nThis function is under construction")
-#   # Credit to Florian Prive for this function - see https://privefl.github.io/bigstatsr/articles/bigstatsr-and-bigmemory.html
-#   fbm <- bigstatsr::FBM(nrow = nrow(bm),
-#                         ncol = ncol(bm), 
-#                         type = type,
-#                         backingfile = file.path(dir.name(bm),
-#                                                 bigstatsr::sub_bk(file.name(bm))),
-#                         create_bk = F)
-#   
-#   return(fbm)
-# }

@@ -28,7 +28,7 @@ cv_plmm(
   warn = TRUE,
   init = NULL,
   cluster,
-  nfolds = 10,
+  nfolds = 5,
   seed,
   fold = NULL,
   returnY = FALSE,
@@ -48,10 +48,7 @@ cv_plmm(
 For data processed from PLINK files, standardization happens in \code{process_plink()}.
 For data supplied as a matrix, standardization happens here in \code{plmm()}.
 If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
-\strong{Note}: failing to standardize data will lead to incorrect analyses.
-By default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}.
-For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
-\strong{Note}: failing to standardize data will lead to incorrect analyses.}
+\strong{Note}: failing to correctly standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 
@@ -100,7 +97,7 @@ in many applications.}
 \item{cluster}{cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
 advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().}
 
-\item{nfolds}{The number of cross-validation folds. Default is 10.}
+\item{nfolds}{The number of cross-validation folds. Default is 5.}
 
 \item{seed}{You may set the seed of the random number generator in order to obtain reproducible results.}
 
@@ -145,9 +142,8 @@ Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 linear mixed models over a grid of values for the regularization parameter \code{lambda}.
 }
 \examples{
-cv_fit <- cv_plmm(X = admix$X, y = admix$y, seed = 321)
-cv_s <- summary(cv_fit)
-print(cv_s)
+cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
+print(summary(cv_fit))
 plot(cv_fit)
 
 # Note: for examples with filebacked data, see the filebacking vignette

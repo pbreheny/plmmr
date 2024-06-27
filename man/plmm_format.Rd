@@ -4,10 +4,20 @@
 \alias{plmm_format}
 \title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
 \usage{
-plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL, non_genomic = NULL)
+plmm_format(
+  fit,
+  p,
+  std_X_details,
+  fbm_flag,
+  use_feature_names = TRUE,
+  feature_names = NULL,
+  non_genomic = NULL
+)
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
+
+\item{p}{The number of features in the original data (including constant features)}
 
 \item{std_X_details}{A list with 3 items:
 \itemize{
@@ -18,7 +28,9 @@ plmm_format(fit, std_X_details, fbm_flag, snp_names = NULL, non_genomic = NULL)
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
 
-\item{snp_names}{A vector of names for features, passed internally if such names are included with the data \code{X} passed to \code{plmm()}}
+\item{use_feature_names}{Logical: should features be named (e.g., should the returned matrix of coefficients have rows/columns named?). Defaults to TRUE.}
+
+\item{feature_names}{A vector of names for features, passed internally if such names are included with the data \code{X} passed to \code{plmm()}}
 
 \item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
@@ -34,7 +46,7 @@ A list with the components:
 \item \code{s}: a vectof of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
 \item \code{U}: a matrix of the eigenvalues of relatedness matrix \code{K}
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear.predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
+\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.

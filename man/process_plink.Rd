@@ -8,6 +8,7 @@ process_plink(
   data_dir,
   prefix,
   rds_dir = data_dir,
+  bk_filename,
   impute = TRUE,
   impute_method = "mode",
   na_phenotype_vals = c(-9),
@@ -21,7 +22,6 @@ process_plink(
   overwrite = FALSE,
   add_predictor_fam = NULL,
   add_predictor_ext = NULL,
-  keep_bigSNP = FALSE,
   ...
 )
 }
@@ -31,6 +31,9 @@ process_plink(
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+
+\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
+\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -75,8 +78,6 @@ The names will be used to subset and align this external covariate with the supp
                       The names will be used to subset and align this external covariate with the supplied PLINK data.
 }\if{html}{\out{</div>}}}
 
-\item{keep_bigSNP}{Logical: should the intermediate steps of data processing be saved as a \code{bigSNP} object? Defaults to FALSE.}
-
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
 \value{
@@ -89,11 +90,6 @@ is included in this meta-data
 \item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
 backingfile that stores the numeric data of the standardized design matrix \code{std_X}
 }
-
-Intermediate files 'prefix.rds' and 'prefix.bk' are also created along the way;
-if \code{keep_bigSNP = TRUE}, these are not deleted at the end of the \code{process_plink()}
-procedure. Note that these files could potentially be quite large - that's the
-main reason that keeping these files is not the default setting.
 
 Note that \code{process_plink()} need only be run once for a given set of PLINK
 files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
@@ -123,7 +119,11 @@ The '.rds' object created by this function has the following elements:
 \examples{
 \donttest{
 temp_dir <- paste0(tempdir()) # using a temporary directory here
+<<<<<<< HEAD
 process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
+=======
+process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
+>>>>>>> scale_up
               rds_dir = temp_dir,
               prefix = "penncath_lite",
               outfile = "process_penncath",

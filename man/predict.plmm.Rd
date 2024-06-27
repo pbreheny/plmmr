@@ -12,18 +12,16 @@
   idx = 1:length(object$lambda),
   X,
   y,
-  K = NULL,
   ...
 )
 }
 \arguments{
 \item{object}{An object of class \code{plmm}.}
 
-\item{newX}{Design matrix used for computing predicted values if requested. This
-can be either a FBM object or a matrix object. \strong{If you supply an FBM object here,
-this function assumes that this matrix has been done.} If you need to do standardization,
-see \code{big_std()} and \code{process_plink()}.
-\strong{Columns must be named!}}
+\item{newX}{Matrix of values at which predictions are to be made (not used for
+\code{type="coefficients"} or for some of the \code{type} settings in \code{predict}).
+This can be either a FBM object or a 'matrix' object.
+\strong{Note}: Columns of this argument must be named!}
 
 \item{type}{A character argument indicating what type of prediction should be
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
@@ -40,8 +38,6 @@ returned in \code{plmm} object. Again, \strong{columns must be named!}}
 
 \item{y}{Original continuous outcome vector from object.
 Required if \code{type == 'blup'}.}
-
-\item{K}{An optional list or matrix as returned by \code{choose_K()}.}
 
 \item{...}{Additional optional arguments}
 }
@@ -65,13 +61,13 @@ the estimated correlation structure of data into our prediction of the outcome.
 }
 \examples{
 set.seed(123)
-train_idx <- sample(1:nrow(admix$X), 100) 
+train_idx <- sample(1:nrow(admix$X), 100)
 # Note: ^ shuffling is important here! Keeps test and train groups comparable.
 train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
-fit <- plmm(X = train$X, y = train$y, K = relatedness_mat(train$X))
+fit <- plmm(X = train$X, y = train$y)
 
-# make predictions for all lambda values 
+# make predictions for all lambda values
  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
 
 # look at mean squared prediction error
@@ -82,5 +78,5 @@ min(mspe)
 # null model = intercept only -> y_hat is always mean(y)
 crossprod(mean(test$y) - test$y)/length(test$y)
 
- 
+
 }

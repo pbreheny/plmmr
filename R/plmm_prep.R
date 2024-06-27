@@ -4,10 +4,10 @@
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
 #' @param std_X_n The number of observations in std_X (integer)
 #' @param std_X_p The number of features in std_X (integer)
-#' @param genomic A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
+#' @param genomic A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
-#' @param y Continuous outcome vector.
+#' @param centered_y Continuous outcome vector, centered.
 #' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
@@ -19,7 +19,7 @@
 #' @returns List with these components:
 #' * n: the number of rows in the original design matrix
 #' * p: the number of columns in the original design matrix
-#' * y: The vector of outcomes
+#' * centered_y: The vector of centered outcomes
 #' * std_X: standardized design matrix
 #' * std_X_details: a list with 2 vectors:
 #'    * 'center' (values used to center X)
@@ -28,7 +28,7 @@
 #' * U: the eigenvectors of K (same as left singular values of X).
 #' * ns: the indices for the nonsingular values of X
 #' * penalty.factor: the penalty factors for the penalized non-singular values
-#' * snp_names: formatted column names of the design matrix
+#' * feature_names: formatted column names of the design matrix
 #'
 #' @keywords internal
 
@@ -38,7 +38,7 @@ plmm_prep <- function(std_X,
                       genomic = 1:std_X_p,
                       n,
                       p,
-                      y,
+                      centered_y,
                       k = NULL,
                       K = NULL,
                       diag_K = NULL,
@@ -76,21 +76,21 @@ plmm_prep <- function(std_X,
   # case 1: K is the identity matrix
   flag1 <- diag_K & is.null(K)
   if(flag1){
-    if (trace) {(cat("\nUsing identity matrix for K."))}
+    if (trace) {(cat("Using identity matrix for K.\n"))}
     s <- rep(1, n)
     U <- diag(nrow = n)
   }
   # case 2: K is user-supplied diagonal matrix (like a weighted lm())
   flag2 <- diag_K & !is.null(K) & ('matrix' %in% class(K))
   if(flag2){
-    if (trace) {(cat("\nUsing supplied diagonal matrix for K, similar to a lm() with weights."))}
+    if (trace) {(cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n"))}
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = n)[,order(diag(K), decreasing = TRUE)]
   }
   # case 3: K is a user-supplied list
   flag3 <- !is.null(K) & ('list' %in% class(K))
   if( flag3) {
-    if (trace) {cat("\nK is a list; will pass U,s components from list to model fitting.")}
+    if (trace) {cat("K is a list; will pass U,s components from list to model fitting.\n")}
     s <- K$s # no need to adjust singular values by p
     if ('FBM' %in% class(K$U)){
       U <- K$U[,]
@@ -100,18 +100,18 @@ plmm_prep <- function(std_X,
   }
   # otherwise, need to do eigendecomposition:
   if (sum(c(flag1, flag2, flag3)) == 0) {
-    if (trace) {cat("\nStarting decomposition.")}
+    if (trace) {cat("Starting decomposition.\n")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     if (is.null(K) & is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
-      if (trace) cat("\nCalculating the eigendecomposition of K")
+      if (trace) cat("Calculating the eigendecomposition of K\n")
 
       if (identical(genomic,1:std_X_p)) {
         # if all columns are genomic, no need to filter
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag)
+        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
       } else {
-        eigen_res <- eigen_K(std_X, p, fbm_flag = fbm_flag, ind.col = genomic)
+        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag, ind.col = genomic)
       }
       K <- eigen_res$K
       s <- eigen_res$s
@@ -120,7 +120,8 @@ plmm_prep <- function(std_X,
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K)
-      s <- eigen_res$values*(1/p) # note: our definition of the RRM averages over the number of features
+      s <- eigen_res$values*(1/std_X_p)
+      # note: our definition of the RRM averages over the number of features used to calculate K
       U <- eigen_res$vectors
     }
 
@@ -140,7 +141,7 @@ plmm_prep <- function(std_X,
 
   # estimate eta if needed
   if (is.null(eta_star)) {
-    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = y)
+    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y)
   } else {
     # otherwise, use the user-supplied value (this option is mainly for simulation)
     eta <- eta_star
@@ -148,13 +149,12 @@ plmm_prep <- function(std_X,
 
   # return values to be passed into plmm_fit():
   ret <- structure(list(
-    n = n,
-    p = p,
-    std_X_n = std_X_n,
-    std_X_p = std_X_p,
-    y = y,
+   # n = n,
+   #  p = p,
+    # std_X_n = std_X_n,
+    # std_X_p = std_X_p,
     std_X = std_X,
-    y = y,
+    centered_y = centered_y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())
     s = s,
     U = U,

@@ -36,7 +36,7 @@ plmm(
 \item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
 * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
-\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
+\item{y}{Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
 
 \item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
@@ -99,7 +99,7 @@ A list which includes:
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear.predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
+\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
@@ -113,7 +113,7 @@ A list which includes:
 \item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
 \itemize{
 \item \code{s}: a vector of the eigenvalues of the genomic relatedness matrix; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvalues of the genomic relatedness matrix
+\item \code{U}: a matrix of the eigenvectors of the genomic relatedness matrix
 }
 }
 }
@@ -122,8 +122,8 @@ This function allows you to fit a linear mixed model via non-convex penalized ma
 NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
-# using admix data 
-fit_admix1 <- plmm(X = admix$X, y = admix$y, std_needed = TRUE)
+# using admix data
+fit_admix1 <- plmm(X = admix$X, y = admix$y)
 s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
@@ -134,7 +134,7 @@ s2 <- summary(fit_admix2, idx = 99)
 print(s2)
 plot(fit_admix2) # notice: the default penalty is MCP
 
-# Note: for examples with large data that are too big to fit in memory, 
+# Note: for examples with large data that are too big to fit in memory,
 # see the article "PLINK files/file-backed matrices" on our website
 # https://pbreheny.github.io/plmmr/articles/filebacking.html
 

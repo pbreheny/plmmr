@@ -48,8 +48,8 @@ colnames(a2_alleles) <- paste0(colnames(admix$X), "_A2")
 alleles <- bind_cols(a1_alleles, a2_alleles) 
 
 # PLINK expects that these columns are ordered like Snp1_A1, Snp1_A2, Snp2_A1, Snp2_A2, etc
-snp_names <- sub("_A1", "", names(a1_alleles))
-ordered_columns <- sapply(snp_names, function(snp) {
+feature_names <- sub("_A1", "", names(a1_alleles))
+ordered_columns <- sapply(feature_names, function(snp) {
   paste0(snp, c("_A1", "_A2")) 
 }) |> as.vector()
 allele_data <- alleles |> dplyr::select(all_of(ordered_columns))

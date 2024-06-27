@@ -13,7 +13,9 @@
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X.
+#' The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
+#' In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
@@ -33,7 +35,7 @@ plmm_checks <- function(X,
                         K = NULL,
                         diag_K = NULL,
                         eta_star = NULL,
-                        penalty,
+                        penalty = "lasso",
                         penalty.factor = NULL,
                         init = NULL,
                         gamma,
@@ -43,6 +45,7 @@ plmm_checks <- function(X,
                         save_rds = NULL,
                         return_fit = TRUE,
                         ...){
+
   # check X types -------------------------------------------------
   if (!any(class(X) %in% c("character", "matrix"))) {
     stop("\nThe X argument must be either (1) a numeric matrix or (2) a character
@@ -61,24 +64,24 @@ plmm_checks <- function(X,
     std_X_p <- std_indices$std_X_p
     col_names <- dat$X_colnames
 
-    # create a list that captures the centering/scaling for std_X; will need this
-    # later, see `untransform()`
-      std_X_details <- list(
-        center = dat$std_X_center,
-        scale = dat$std_X_scale,
-        ns = dat$ns)
+    # create a list that captures the centering/scaling for std_X;
+    # will need this later, see `untransform()`
+    std_X_details <- list(
+      center = dat$std_X_center,
+      scale = dat$std_X_scale,
+      ns = dat$ns)
 
-      if ('colnames' %in% names(dat) | 'std_X_colnames' %in% names(dat)){
-        std_X_details$X_colnames <- dat$colnames
-        std_X_details$X_rownames <-  dat$rownames
-        std_X_details$std_X_rownames <- dat$std_X_rownames
-        std_X_details$std_X_colnames <-  dat$std_X_colnames
-      } else if (!missing(col_names)){
-        std_X_details$X_colnames <- col_names
-        std_X_details$std_X_colnames <- col_names[std_X_details$ns]
-      }
+    if ('colnames' %in% names(dat) | 'std_X_colnames' %in% names(dat)){
+      std_X_details$X_colnames <- dat$colnames
+      std_X_details$X_rownames <-  dat$rownames
+      std_X_details$std_X_rownames <- dat$std_X_rownames
+      std_X_details$std_X_colnames <-  dat$std_X_colnames
+    } else if (!missing(col_names)){
+      std_X_details$X_colnames <- col_names
+      std_X_details$std_X_colnames <- col_names[std_X_details$ns]
+    }
 
-    if("FBM.code256" %in% class(std_X) | "FBM" %in% class(std_X)){
+    if(inherits(std_X, "big.matrix")){
       fbm_flag <- TRUE
     } else {
       fbm_flag <- FALSE
@@ -105,7 +108,7 @@ plmm_checks <- function(X,
       col_names <- attr(X, "dimnames")[[2]]
     }
 
-    # handle standardization (still in matrix case)
+    # handle standardization (for in-memory matrix case)
     if (std_needed){
       std_res <- standardize_matrix(X, penalty.factor)
       std_X <- std_res$std_X
@@ -115,11 +118,11 @@ plmm_checks <- function(X,
       std_X <- X
 
       if (trace) {
-        cat("\nYou have left std_needed = FALSE; this means you are assuming that
+        cat("You have left std_needed = FALSE; this means you are assuming that
             all columns in X have mean 0 and variance 1. This also means
-            you are assuming that none of the columns in X are constant features.
-            \n If you have supplied X via a filepath to an RDS object created by `process_plink()`,
-            \n ignore this message -- `process_plink()` standardized X for you.")
+            you are assuming that none of the columns in X are constant features.\n
+            If you have supplied X via a filepath to an RDS object created by `process_plink()`,
+            ignore this message -- `process_plink()` standardized X for you.\n")
       }
 
       std_X_details <- list(center = rep(0, ncol(X)),
@@ -148,8 +151,8 @@ plmm_checks <- function(X,
       }
 
     } else {
-      stop("\nIf the data did not come from process_plink(), you must specify a
-           'y' argument")
+      stop("If the data did not come from process_plink(), you must specify a
+           'y' argument\n")
     }
 
   }
@@ -158,7 +161,7 @@ plmm_checks <- function(X,
     op <- options(warn=2)
     on.exit(options(op))
     y <- tryCatch(
-      error = function(cond) stop("\ny must be numeric or able to be coerced to numeric", call.=FALSE),
+      error = function(cond) stop("y must be numeric or able to be coerced to numeric\n", call.=FALSE),
       as.double(y))
     options(op)
   }
@@ -172,21 +175,38 @@ plmm_checks <- function(X,
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
 
-  # set default gamma
-  if (missing(gamma)) gamma <- switch(c(penalty), SCAD = 3.7, 3)
+
+  # set default gamma (gamma not used in 'lasso' option)
+  if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
   # error checking ------------------------------------------------------------
   if(!fbm_flag){
     # error check for matrix X
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
-    if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected.
+
+    if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected in outcome, 'y'.
                                             \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
   } else {
-    #  error checking for FBM X
+    #  error checking for filebacked X
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
     if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
     if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
+
+    # if penalty factor has 0s, these must be contiguous
+    # (necessary for subsetting later -- see setup_lambda(), for example)
+    if (any(penalty.factor < 1e-8)){
+      pf <- which(penalty.factor < 1e-8)
+      if (!identical(pf, 1:length(pf))) {
+        stop("It looks like you are trying to make some covariates *not* be penalized, as
+           you have some penalty.factor values set to 0.\n
+           If this is your intention, you must make all 'n' unpenalized covariates appear
+           as the first 'n' columns in your design matrix.\n This is needed for subsetting later
+             (for now, subsetting filebacked matrices requires a contiguous submatrix).\n")
+      }
+    }
+
+
   }
 
   # check K types -------------------------------------------------------
@@ -222,6 +242,7 @@ plmm_checks <- function(X,
     std_X_p = std_X_p,
     col_names = col_names,
     y = y,
+    centered_y = y - mean(y),
     K = K,
     diag_K = diag_K,
     fbm_flag = fbm_flag,
@@ -242,7 +263,7 @@ plmm_checks <- function(X,
     ret$non_genomic <- non_genomic
   }
 
-  if (trace & !is.null(save_rds)){cat("\nYour results will be saved to ", save_rds)}
+  if (trace & !is.null(save_rds)){cat("Your results will be saved to ", save_rds, "\n")}
 
   return(ret)
 
