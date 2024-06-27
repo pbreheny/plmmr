@@ -246,7 +246,7 @@ fit_plus_newvars <- plmm(X = dat_plus_newvars,
                          K = fb_fit$K, 
                          returnX = FALSE,
                          trace = TRUE)
-# TODO: work through the example below
+
 cv_plus_newvars <- cv_plmm(X = dat_plus_newvars,
                          penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
                          K = fb_fit$K,

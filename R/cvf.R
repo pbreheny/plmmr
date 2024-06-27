@@ -121,7 +121,6 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
               p =  ncol(train_X),
               std_X_details = fold_args$std_X_details,
               use_feature_names = FALSE, # no need for names in internal CV fits
-              # TODO: figure out how to track non_genomic features in CV
               non_genomic = NULL,
               # Note: must keep non_genomic length 0 for untransform() to work correctly within each fold
               fbm_flag = fold_args$fbm_flag)
