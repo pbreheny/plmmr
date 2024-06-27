@@ -1,7 +1,7 @@
 # plmmr 3.0.0
 
 ## Most recent changes
-  - **Bug fix**: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated $\hat\eta$ in each CV fold -- but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions.[^news-1] As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecompsition step faster -- this is a question we are actively studying. 
+  - **Bug fix**: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated $\hat\eta$ in each CV fold -- but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions.[^news-1] As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster -- this is a question we are actively studying. 
     
   - **Computational speedup**: The standardization and rotation of filebacked data are now much faster; we have moved toward using methods from `bigalgebra` and `bigmemory` for these computations. 
     

@@ -234,6 +234,7 @@ cv_plmm <- function(X,
     if (!missing(cluster)) {
       res <- fold.results[[i]] # refers to lines from above
       if (trace) {utils::setTxtProgressBar(pb, i)}
+
     } else {
       # case 2: cluster NOT user specified (this is the typical use case)
       res <- cvf(i = i,
