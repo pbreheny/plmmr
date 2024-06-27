@@ -76,13 +76,13 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  genomic <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">std_X_p</span>,</span>
 <span>  <span class="va">n</span>,</span>
 <span>  <span class="va">p</span>,</span>
-<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">centered_y</span>,</span>
 <span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
-<span>  penalty.factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">std_X</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">std_X</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -103,7 +103,7 @@ This is an internal function for <code>cv_plmm</code></p>
 
 
 <dt>genomic</dt>
-<dd><p>A numeric vector of indicies indicating which columns in the standardized X are genomic covariates. Defaults to all columns.</p></dd>
+<dd><p>A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.</p></dd>
 
 
 <dt>n</dt>
@@ -114,8 +114,8 @@ This is an internal function for <code>cv_plmm</code></p>
 <dd><p>The number of features in the <em>original</em> design matrix X, including constant features</p></dd>
 
 
-<dt>y</dt>
-<dd><p>Continuous outcome vector.</p></dd>
+<dt>centered_y</dt>
+<dd><p>Continuous outcome vector, centered.</p></dd>
 
 
 <dt>k</dt>
@@ -152,7 +152,7 @@ This is an internal function for <code>cv_plmm</code></p>
 
 <p>List with these components:</p><ul><li><p>n: the number of rows in the original design matrix</p></li>
 <li><p>p: the number of columns in the original design matrix</p></li>
-<li><p>y: The vector of outcomes</p></li>
+<li><p>centered_y: The vector of centered outcomes</p></li>
 <li><p>std_X: standardized design matrix</p></li>
 <li><p>std_X_details: a list with 2 vectors:</p><ul><li><p>'center' (values used to center X)</p></li>
 <li><p>'scale' (values used to scale X)</p></li>
@@ -160,8 +160,8 @@ This is an internal function for <code>cv_plmm</code></p>
 <li><p>s: vector with the eigenvalues of K</p></li>
 <li><p>U: the eigenvectors of K (same as left singular values of X).</p></li>
 <li><p>ns: the indices for the nonsingular values of X</p></li>
-<li><p>penalty.factor: the penalty factors for the penalized non-singular values</p></li>
-<li><p>snp_names: formatted column names of the design matrix</p></li>
+<li><p>penalty_factor: the penalty factors for the penalized non-singular values</p></li>
+<li><p>feature_names: formatted column names of the design matrix</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

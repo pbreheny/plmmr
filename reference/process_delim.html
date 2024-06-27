@@ -70,6 +70,7 @@
 <span>  <span class="va">file</span>,</span>
 <span>  <span class="va">data_dir</span>,</span>
 <span>  rds_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
+<span>  <span class="va">bk_filename</span>,</span>
 <span>  <span class="va">ind.col</span>,</span>
 <span>  non_gen <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
@@ -93,6 +94,11 @@ Example: use <code>file = "myfile.txt"</code>, not <code>file = "~/mydirectory/m
 <dt>rds_dir</dt>
 <dd><p>The directory where the user wants to create the '.rds' and '.bk' files
 Defaults to <code>data_dir</code></p></dd>
+
+
+<dt>bk_filename</dt>
+<dd><p>Optional string to name the backingfile that will be created for the output data. Defaults to <code>paste0(std_</code>. <code>prefix</code>).
+<strong>Note</strong>: Do NOT include a <code>.bk</code> extension in the filename.</p></dd>
 
 
 <dt>ind.col</dt>
@@ -137,21 +143,22 @@ backingfile that stores the numeric data of the standardized design matrix <code
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">process_delim</span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span></span>
-<span class="r-in"><span> data_dir <span class="op">=</span> <span class="fu"><a href="get_example_data.html">get_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> data_dir <span class="op">=</span> <span class="fu"><a href="find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span> rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span></span>
 <span class="r-in"><span>  ind.col <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">2002</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Logging to /tmp/Rtmp5Ahfri/process_data.log</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Logging to /tmp/RtmpIgl8jw/process_data.log</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Preprocessing colon2 data:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> There are a total of  20 features with missing values. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> There are a total of  20 features with missing values.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> At this time, plmmr::process_delim() does not impute missing values. We </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       are working to develop this feature. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At this time, plmmr::process_delim() does not impute missing values. We</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       are working to develop this feature.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> For now, plmmr::process_delim() will drop all columns of X with NA values.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Column-standardizing the design matrix...</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Two levels of parallelism are used. See `?assert_cores`.</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> For now, plmmr::process_delim() will drop all columns of X with NA values.Column-standardizing the design matrix...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done with standardization.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  Processed files now saved as .rds object.</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># colon2_rds &lt;- readRDS(paste0(temp_dir, "std_colon2.rds"))</span></span></span>
 <span class="r-in"><span><span class="co"># str(colon2_rds)</span></span></span>
 <span class="r-in"><span></span></span>

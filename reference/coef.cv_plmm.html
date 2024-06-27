@@ -102,7 +102,7 @@ values of <code>lambda</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, K <span class="op">=</span> <span class="fu"><a href="relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)        Var1        Var2        Var3        Var4        Var5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    4.140887    0.000000    0.000000    0.000000    0.000000    0.000000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5.69945122 -0.22484261  0.00000000  3.24422663 -0.02824771  0.00000000 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

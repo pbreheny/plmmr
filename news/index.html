@@ -61,12 +61,14 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.0" id="plmmr-300">plmmr 3.0.0<a class="anchor" aria-label="anchor" href="#plmmr-300"></a></h2>
-<ul><li>
-<p><strong>Notable changes</strong></p>
-<ul><li><p>Soon-to-be our initial CRAN submission!</p></li>
-<li><p>This is the first version of <code>plmmr</code> that incorporates support for file-backed data, allowing the user to analyze data files too large to fit into memory.</p></li>
-</ul></li>
+<div class="section level3">
+<h3 id="most-recent-changes-3-0-0">Most recent changes<a class="anchor" aria-label="anchor" href="#most-recent-changes-3-0-0"></a></h3>
+<ul><li><p><strong>Bug fix</strong>: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated <span class="math inline"><em>η̂</em></span> in each CV fold – but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster – this is a question we are actively studying.</p></li>
+<li><p><strong>Computational speedup</strong>: The standardization and rotation of filebacked data are now much faster; we have moved toward using methods from <code>bigalgebra</code> and <code>bigmemory</code> for these computations.</p></li>
+<li><p><strong>Methods developement</strong> (for the nerds): We have derived that on the standardized scale, the intercept of our PLMM is the mean of the outcome. With this in mind, we have updated the way we handle the intercept in model fitting – which has made our code in internal functions more ‘readable’.</p></li>
+<li><p><strong>CRAN</strong>. This is soon-to-be our initial CRAN submission!</p></li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.2.1" id="plmmr-221">plmmr 2.2.1<a class="anchor" aria-label="anchor" href="#plmmr-221"></a></h2>
 <ul><li>

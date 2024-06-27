@@ -68,9 +68,12 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict_within_cv</span><span class="op">(</span></span>
 <span>  <span class="va">fit</span>,</span>
-<span>  <span class="va">oldX</span>,</span>
-<span>  <span class="va">newX</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lp"</span>, <span class="st">"blup"</span><span class="op">)</span>,</span>
+<span>  <span class="va">trainX</span>,</span>
+<span>  trainY <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">testX</span>,</span>
+<span>  <span class="va">og_scale_beta</span>,</span>
+<span>  <span class="va">std_X_details</span>,</span>
+<span>  <span class="va">type</span>,</span>
 <span>  fbm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  idx <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>,</span>
 <span>  V11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -85,20 +88,37 @@
 <dd><p>A list with the components returned by <code>plmm_fit</code>.</p></dd>
 
 
-<dt>oldX</dt>
-<dd><p>The standardized design matrix of training data, <em>pre-rotation</em>.</p></dd>
+<dt>trainX</dt>
+<dd><p>The training data, <em>pre-standardization</em> and <em>pre-rotation</em></p></dd>
 
 
-<dt>newX</dt>
+<dt>trainY</dt>
+<dd><p>The training outcome, <em>not centered</em>. Only needed if <code>type = 'blup'</code></p></dd>
+
+
+<dt>testX</dt>
 <dd><p>A design matrix used for computing predicted values (i.e, the test data).</p></dd>
 
 
+<dt>og_scale_beta</dt>
+<dd><p>testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
+See <code><a href="plmm_fit.html">plmm_fit()</a></code> and <code><a href="untransform.html">untransform()</a></code> for details.</p></dd>
+
+
+<dt>std_X_details</dt>
+<dd><p>A list with 3 items:</p><ul><li><p>'center': the centering values for the columns of <code>X</code></p></li>
+<li><p>'scale': the scaling values for the non-singular columns of <code>X</code></p></li>
+<li><p>'ns': indicies of nonsingular columns in <code>std_X</code></p></li>
+</ul></dd>
+
+
 <dt>type</dt>
-<dd><p>A character argument indicating what type of prediction should be returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p></dd>
+<dd><p>A character argument indicating what type of prediction should be returned. Passed from <code><a href="cvf.html">cvf()</a></code>,
+Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p></dd>
 
 
 <dt>fbm</dt>
-<dd><p>Logical: is oldX an FBM object? If so, this function expects that newX is also an FBM. The two X matrices must be stored the same way.</p></dd>
+<dd><p>Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.</p></dd>
 
 
 <dt>idx</dt>
@@ -119,11 +139,15 @@
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for <code>type</code> are as follows:</p><ul><li><p>'lp' (default): uses the linear predictor (i.e., product of new data and estimated coefficients) to predict new values of the outcome.
+    <p>Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for <code>type</code> are as follows:</p><ul><li><p>'lp' (default): uses the linear predictor (i.e., product of test data and estimated coefficients) to predict test values of the outcome.
 Note that this approach does not incorporate the correlation structure of the data.</p></li>
 <li><p>'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
 This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.</p></li>
-</ul></div>
+</ul><p>Note: the main difference between this function and the <code><a href="predict.plmm.html">predict.plmm()</a></code> method is that
+here in CV, predictions are made on the <em>standardized</em> scale (i.e., both
+the trainX and testX data come from std_X). The <code><a href="predict.plmm.html">predict.plmm()</a></code> method
+makes predictions on the scale of X (the original scale)</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

@@ -180,19 +180,16 @@ etc.)</li>
 <h3 id="decomposition-and-rotation-prep-and-first-part-of-fit">Decomposition and rotation (prep and first part of fit)<a class="anchor" aria-label="anchor" href="#decomposition-and-rotation-prep-and-first-part-of-fit"></a>
 </h3>
 <ul>
-<li><p>Beginning with an eigendecomposition, we have <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{d}\)</span> are the eigenvectors and
+<li><p>Beginning with an eigendecomposition, we have <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{s}\)</span> are the eigenvectors and
 eigenvalues of <span class="math inline">\(\mathbf{K}\)</span>, as one
 would obtain from <span class="math inline">\(\text{eigen}(\mathbf{K)}
-\equiv \mathbf{U}\mathbf{D}\mathbf{U}^\top\)</span>. The elements of
-<span class="math inline">\(\mathbf{d}\)</span> are the diagonal values
-of <span class="math inline">\(\mathbf{D}\)</span>. Note, random effect
+\equiv \mathbf{U}\mathbf{S}\mathbf{U}^\top\)</span>. The elements of
+<span class="math inline">\(\mathbf{s}\)</span> are the diagonal values
+of <span class="math inline">\(\mathbf{S}\)</span>. Note, random effect
 <span class="math inline">\(\mathbf{u}\)</span> is distinct from the
 columns of matrix <span class="math inline">\(\mathbf{U}\)</span>.</p></li>
 <li><p><span class="math inline">\(k\)</span> represents the number of
 nonzero eigenvalues represented in <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{d}\)</span>, so <span class="math inline">\(k \leq \text{min}(n,p)\)</span>.</p></li>
-<li><p><span class="math inline">\(\mathbf{S} \equiv
-\frac{1}{p}\mathbf{D}^2\)</span> is the <span class="math inline">\(k
-\times k\)</span> diagonal matrix whose diagonal values are <span class="math inline">\(\frac{d_k^2}{p}\)</span>.</p></li>
 <li><p>Again, <span class="math inline">\(\mathbf{K} \equiv
 \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}\)</span> is often
 referred to in the literature as the realized relatedness matrix (RRM)
@@ -259,8 +256,23 @@ written <span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}
 <code>rot_X</code></p></li>
 <li><p><span class="math inline">\(\ddot{\tilde{\mathbf{X}}}\)</span> is
 <code>stdrot_X</code></p></li>
-<li><p><span class="math inline">\(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}\)</span>
+<li><p><span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> is
+named <code>og_scale_beta</code> in helper functions (for clarity) and
+returned in <code>plmm</code> objects as <code>beta_vals</code>.
+<code>beta_vals</code> and <code>og_scale_beta</code> are equivalent;
+both represent the estimated coefficients on the original
+scale.</p></li>
+<li><p><span class="math inline">\(\hat{\dot{\boldsymbol{\beta}}}\)</span> is
+<code>std_scale_beta</code></p></li>
+<li><p><span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}\)</span> is
+<code>stdrot_scale_beta</code></p></li>
+<li><p><span class="math inline">\(\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}\)</span>
 is <code>Xb</code></p></li>
+<li><p><span class="math inline">\(\ddot{\tilde{\mathbf{X}}}
+\hat{\ddot{\boldsymbol{\beta}}}\)</span> is
+<code>linear_predictors</code>. Note: in words, this means the
+<code>linear_predictors</code> in the code are on the scale of the
+rotated and re-standardized data!</p></li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

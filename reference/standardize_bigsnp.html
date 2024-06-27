@@ -74,7 +74,8 @@
 <span>  <span class="va">complete_phen</span>,</span>
 <span>  <span class="va">id_var</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
-<span>  <span class="va">quiet</span></span>
+<span>  <span class="va">quiet</span>,</span>
+<span>  <span class="va">overwrite</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,6 +112,10 @@ Note: this is typically passed from the result of <code>add_predictors()</code><
 
 <dt>quiet</dt>
 <dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
+
+
+<dt>overwrite</dt>
+<dd><p>Logical: if existing <code>.bk</code>/<code>.rds</code> files exist for the specified directory/prefix, should these be overwritten?</p></dd>
 
 </dl></div>
     <div class="section level2">

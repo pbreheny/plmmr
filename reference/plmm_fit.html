@@ -68,20 +68,21 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_fit</span><span class="op">(</span></span>
 <span>  <span class="va">prep</span>,</span>
+<span>  <span class="va">y</span>,</span>
 <span>  <span class="va">std_X_details</span>,</span>
 <span>  <span class="va">eta_star</span>,</span>
-<span>  <span class="va">penalty.factor</span>,</span>
+<span>  <span class="va">penalty_factor</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
-<span>  penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
-<span>  <span class="va">gamma</span>,</span>
+<span>  <span class="va">penalty</span>,</span>
+<span>  gamma <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  <span class="va">lambda.min</span>,</span>
+<span>  <span class="va">lambda_min</span>,</span>
 <span>  nlambda <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  <span class="va">lambda</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
-<span>  max.iter <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  max_iter <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  convex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  dfmax <span class="op">=</span> <span class="va">prep</span><span class="op">$</span><span class="va">p</span> <span class="op">+</span> <span class="fl">1</span>,</span>
+<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  returnX <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -95,6 +96,10 @@
 <dd><p>A list as returned from <code>plmm_prep</code></p></dd>
 
 
+<dt>y</dt>
+<dd><p>The original (not centered) outcome vector. Need this for intercept estimate</p></dd>
+
+
 <dt>std_X_details</dt>
 <dd><p>A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)</p></dd>
 
@@ -103,8 +108,8 @@
 <dd><p>The ratio of variances (passed from plmm())</p></dd>
 
 
-<dt>penalty.factor</dt>
-<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.</p></dd>
+<dt>penalty_factor</dt>
+<dd><p>A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.</p></dd>
 
 
 <dt>fbm_flag</dt>
@@ -123,7 +128,7 @@
 <dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
 
 
-<dt>lambda.min</dt>
+<dt>lambda_min</dt>
 <dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.</p></dd>
 
 
@@ -139,7 +144,7 @@
 <dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is <code>1e-4</code>.</p></dd>
 
 
-<dt>max.iter</dt>
+<dt>max_iter</dt>
 <dd><p>Maximum number of iterations (total across entire path). Default is 10000.</p></dd>
 
 
@@ -182,9 +187,9 @@ Note that the dimensions of <code>rot_X</code> are likely to be different than t
 <li><p>rot_y: y on the rotated scale</p></li>
 <li><p>stdrot_X: X on the rotated scale once it has been re-standardized.</p></li>
 <li><p>lambda: vector of tuning parameter values</p></li>
-<li><p>b: the coefficients estimated on the scale of <code>stdrot_X</code></p></li>
-<li><p>untransformed_b1: the coefficients estimated on the scale of <code>std_X</code></p></li>
-<li><p>linear.predictors: the product of <code>stdrot_X</code> and <code>b</code>
+<li><p>stdrot_scale_beta: the coefficients estimated on the scale of <code>stdrot_X</code></p></li>
+<li><p>std_scale_beta: the coefficients estimated on the scale of <code>std_X</code></p></li>
+<li><p>linear_predictors: the product of <code>stdrot_X</code> and <code>b</code>
 (linear predictors on the transformed and restandardized scale)</p></li>
 <li><p>eta: a number (double) between 0 and 1 representing the estimated
 proportion of the variance in the outcome attributable to population/correlation
@@ -197,16 +202,16 @@ converged at each value of <code>lambda</code></p></li>
 (calculated on the ~rotated~ scale)</p></li>
 <li><p>penalty: character string indicating the penalty with which the model was
 fit (e.g., 'MCP')</p></li>
-<li><p>penalty.factor: vector of indicators corresponding to each predictor,
+<li><p>penalty_factor: vector of indicators corresponding to each predictor,
 where 1 = predictor was penalized.</p></li>
 <li><p>gamma: numeric value indicating the tuning parameter used for the SCAD or
 lasso penalties was used. Not relevant for lasso models.</p></li>
 <li><p>alpha: numeric value indicating the elastic net tuning parameter.</p></li>
 <li><p>ns: the indices for the nonsingular values of X</p></li>
-<li><p>snp_names: formatted column names of the design matrix</p></li>
+<li><p>feature_names: formatted column names of the design matrix</p></li>
 <li><p>nlambda: number of lambda values used in model fitting</p></li>
 <li><p>eps: tolerance ('epsilon') used for model fitting</p></li>
-<li><p>max.iter: max. number of iterations per model fit</p></li>
+<li><p>max_iter: max. number of iterations per model fit</p></li>
 <li><p>warn: logical - should warnings be given if model fit does not converge?</p></li>
 <li><p>init: initial values for model fitting</p></li>
 <li><p>trace: logical - should messages be printed to the console while models are fit?</p></li>

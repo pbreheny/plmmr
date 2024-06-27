@@ -75,7 +75,6 @@
 <span>  idx <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>,</span>
 <span>  <span class="va">X</span>,</span>
 <span>  <span class="va">y</span>,</span>
-<span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -87,11 +86,10 @@
 
 
 <dt>newX</dt>
-<dd><p>Design matrix used for computing predicted values if requested. This
-can be either a FBM object or a matrix object. <strong>If you supply an FBM object here,
-this function assumes that this matrix has been done.</strong> If you need to do standardization,
-see <code><a href="big_std.html">big_std()</a></code> and <code><a href="process_plink.html">process_plink()</a></code>.
-<strong>Columns must be named!</strong></p></dd>
+<dd><p>Matrix of values at which predictions are to be made (not used for
+<code>type="coefficients"</code> or for some of the <code>type</code> settings in <code>predict</code>).
+This can be either a FBM object or a 'matrix' object.
+<strong>Note</strong>: Columns of this argument must be named!</p></dd>
 
 
 <dt>type</dt>
@@ -120,10 +118,6 @@ returned in <code>plmm</code> object. Again, <strong>columns must be named!</str
 Required if <code>type == 'blup'</code>.</p></dd>
 
 
-<dt>K</dt>
-<dd><p>An optional list or matrix as returned by <code>choose_K()</code>.</p></dd>
-
-
 <dt>...</dt>
 <dd><p>Additional optional arguments</p></dd>
 
@@ -148,19 +142,19 @@ the estimated correlation structure of data into our prediction of the outcome.<
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">train_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, <span class="fl">100</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="va">train_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Note: ^ shuffling is important here! Keeps test and train groups comparable.</span></span></span>
 <span class="r-in"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="va">train_idx</span>,<span class="op">]</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">train_idx</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="op">-</span><span class="va">train_idx</span>,<span class="op">]</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="op">-</span><span class="va">train_idx</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span>, K <span class="op">=</span> <span class="fu"><a href="relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">train</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># make predictions for all lambda values </span></span></span>
+<span class="r-in"><span><span class="co"># make predictions for all lambda values</span></span></span>
 <span class="r-in"><span> <span class="va">pred1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"blup"</span>, X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># look at mean squared prediction error</span></span></span>
 <span class="r-in"><span><span class="va">mspe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">pred1</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.442657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.409887</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare the MSPE of our model to a null model, for reference</span></span></span>
 <span class="r-in"><span><span class="co"># null model = intercept only -&gt; y_hat is always mean(y)</span></span></span>
@@ -168,7 +162,7 @@ the estimated correlation structure of data into our prediction of the outcome.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 6.381748</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span> </span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

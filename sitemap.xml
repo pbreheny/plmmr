@@ -19,6 +19,9 @@
     <loc>/articles/notation.html</loc>
   </url>
   <url>
+    <loc>/articles/types_of_pointers.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -47,9 +50,6 @@
   </url>
   <url>
     <loc>/reference/align_ids.html</loc>
-  </url>
-  <url>
-    <loc>/reference/big_std.html</loc>
   </url>
   <url>
     <loc>/reference/coef.cv_plmm.html</loc>
@@ -82,13 +82,16 @@
     <loc>/reference/fbm2bm.html</loc>
   </url>
   <url>
+    <loc>/reference/file_sans_ext.html</loc>
+  </url>
+  <url>
+    <loc>/reference/find_example_data.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_bm_from_plink.html</loc>
   </url>
   <url>
     <loc>/reference/get_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_example_data.html</loc>
   </url>
   <url>
     <loc>/reference/handle_missingness.html</loc>
@@ -172,13 +175,7 @@
     <loc>/reference/relatedness_mat.html</loc>
   </url>
   <url>
-    <loc>/reference/residuals.plmm.html</loc>
-  </url>
-  <url>
     <loc>/reference/rotate_filebacked.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scale_varp.html</loc>
   </url>
   <url>
     <loc>/reference/setup_lambda.html</loc>
@@ -203,6 +200,9 @@
   </url>
   <url>
     <loc>/reference/untransform.html</loc>
+  </url>
+  <url>
+    <loc>/reference/unzip_example_data.html</loc>
   </url>
   <url>
     <loc>/reference/varp.html</loc>

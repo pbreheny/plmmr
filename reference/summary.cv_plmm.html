@@ -88,7 +88,7 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>The return value is an object with S3 class <code>summary.cv_plmm</code>. The class has its own print method and contains the following list elements:</p><ul><li><p><code>lambda.min</code>: The lambda value at the minimum cross validation error</p></li>
+<p>The return value is an object with S3 class <code>summary.cv_plmm</code>. The class has its own print method and contains the following list elements:</p><ul><li><p><code>lambda_min</code>: The lambda value at the minimum cross validation error</p></li>
 <li><p><code>lambda.1se</code>: The maximum lambda value within 1 standard error of the minimum cross validation error</p></li>
 <li><p><code>penalty</code>: The penalty applied to the fitted model</p></li>
 <li><p><code>nvars</code>: The number of non-zero coefficients at the selected lambda value</p></li>
@@ -104,12 +104,12 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span></span>
 <span class="r-in"><span> K <span class="op">=</span> <span class="fu"><a href="relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>, penalty <span class="op">=</span> <span class="st">'lasso'</span>, returnBiasDetails <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized model with n=197 and p=100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.2625):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized model with n=197 and p=101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At minimum cross-validation error (lambda=0.0655):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 1.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Nonzero coefficients: 46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Cross-validation error (deviance): 2.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Scale estimate (sigma): 1.532</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

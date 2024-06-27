@@ -6,5 +6,6 @@ articles:
   filebacking: filebacking.html
   getting-started: getting-started.html
   notation: notation.html
-last_built: 2024-06-20T19:09Z
+  types_of_pointers: types_of_pointers.html
+last_built: 2024-06-27T20:06Z
 

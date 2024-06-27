@@ -73,7 +73,9 @@
 <span>  <span class="va">complete_phen</span>,</span>
 <span>  <span class="va">non_gen</span>,</span>
 <span>  <span class="va">data_dir</span>,</span>
+<span>  <span class="va">rds_dir</span>,</span>
 <span>  <span class="va">prefix</span>,</span>
+<span>  <span class="va">bk_filename</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
 <span>  <span class="va">quiet</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -103,15 +105,24 @@
 
 <dt>non_gen</dt>
 <dd><p>an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
-Note: this is typically passed from the result of <code>add_predictors()</code></p></dd>
+<strong>Note</strong>: this is typically passed from the result of <code>add_predictors()</code></p></dd>
 
 
 <dt>data_dir</dt>
 <dd><p>The path to the bed/bim/fam data files, <em>without</em> a trailing "/" (e.g., use <code>data_dir = '~/my_dir'</code>, <strong>not</strong> <code>data_dir = '~/my_dir/'</code>)</p></dd>
 
 
+<dt>rds_dir</dt>
+<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
+
+
 <dt>prefix</dt>
 <dd><p>The prefix (as a character string) of the bed/fam data files (e.g., <code>prefix = 'mydata'</code>)</p></dd>
+
+
+<dt>bk_filename</dt>
+<dd><p>Optional string to name the backingfile that will be created for the output data. Defaults to <code>paste0(std_</code>. <code>prefix</code>).
+<strong>Note</strong>: Do NOT include a <code>.bk</code> extension in the filename.</p></dd>
 
 
 <dt>outfile</dt>
