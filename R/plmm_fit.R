@@ -173,8 +173,8 @@ plmm_fit <- function(prep,
                             alpha = alpha,
                             lambda= lam,
                             eps = eps,
-                            max_iter = max_iter,
-                            penalty_factor = penalty_factor,
+                            max.iter = max_iter,
+                            penalty.factor = penalty_factor,
                             warn = warn)
       stdrot_scale_beta[, ll] <- init <- res$beta
       linear_predictors[,ll] <- stdrot_X%*%(res$beta)
@@ -206,8 +206,8 @@ plmm_fit <- function(prep,
       alpha = alpha,
       gamma = gamma,
       eps = eps,
-      max_iter = max_iter,
-      penalty_factor = penalty_factor,
+      max.iter = max_iter,
+      penalty.factor = penalty_factor,
       ...)
 
     stdrot_scale_beta <- res$beta
