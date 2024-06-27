@@ -4,16 +4,16 @@
 #' @param y    The original (not centered) outcome vector. Need this for intercept estimate
 #' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)
 #' @param eta_star The ratio of variances (passed from plmm())
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda.min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param lambda_min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda Length of the sequence of lambda. Default is 100.
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max.iter Maximum number of iterations (total across entire path). Default is 10000.
+#' @param max_iter Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex (future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
@@ -47,7 +47,7 @@
 #'    (calculated on the ~rotated~ scale)
 #'   * penalty: character string indicating the penalty with which the model was
 #'    fit (e.g., 'MCP')
-#'   * penalty.factor: vector of indicators corresponding to each predictor,
+#'   * penalty_factor: vector of indicators corresponding to each predictor,
 #'    where 1 = predictor was penalized.
 #'   * gamma: numeric value indicating the tuning parameter used for the SCAD or
 #'    lasso penalties was used. Not relevant for lasso models.
@@ -56,7 +56,7 @@
 #'   * feature_names: formatted column names of the design matrix
 #'   * nlambda: number of lambda values used in model fitting
 #'   * eps: tolerance ('epsilon') used for model fitting
-#'   * max.iter: max. number of iterations per model fit
+#'   * max_iter: max. number of iterations per model fit
 #'   * warn: logical - should warnings be given if model fit does not converge?
 #'   * init: initial values for model fitting
 #'   * trace: logical - should messages be printed to the console while models are fit?
@@ -68,16 +68,16 @@ plmm_fit <- function(prep,
                      y,
                      std_X_details,
                      eta_star,
-                     penalty.factor,
+                     penalty_factor,
                      fbm_flag,
                      penalty,
                      gamma = 3,
                      alpha = 1,
-                     lambda.min,
+                     lambda_min,
                      nlambda = 100,
                      lambda,
                      eps = 1e-04,
-                     max.iter = 10000,
+                     max_iter = 10000,
                      convex = TRUE,
                      dfmax = NULL,
                      init = NULL,
@@ -123,8 +123,8 @@ plmm_fit <- function(prep,
                            y = rot_y,
                            alpha = alpha,
                            nlambda = nlambda,
-                           lambda.min = lambda.min,
-                           penalty.factor = penalty.factor)
+                           lambda_min = lambda_min,
+                           penalty_factor = penalty_factor)
     user.lambda <- FALSE
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
@@ -173,13 +173,13 @@ plmm_fit <- function(prep,
                             alpha = alpha,
                             lambda= lam,
                             eps = eps,
-                            max.iter = max.iter,
-                            penalty.factor = penalty.factor,
+                            max_iter = max_iter,
+                            penalty_factor = penalty_factor,
                             warn = warn)
       stdrot_scale_beta[, ll] <- init <- res$beta
       linear_predictors[,ll] <- stdrot_X%*%(res$beta)
       iter[ll] <- res$iter
-      converged[ll] <- ifelse(res$iter < max.iter, TRUE, FALSE)
+      converged[ll] <- ifelse(res$iter < max_iter, TRUE, FALSE)
       loss[ll] <- res$loss
       r <- res$resid
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
@@ -206,15 +206,15 @@ plmm_fit <- function(prep,
       alpha = alpha,
       gamma = gamma,
       eps = eps,
-      max.iter = max.iter,
-      penalty.factor = penalty.factor,
+      max_iter = max_iter,
+      penalty_factor = penalty_factor,
       ...)
 
     stdrot_scale_beta <- res$beta
     linear_predictors <- stdrot_X %*% stdrot_scale_beta
 
     iter <- res$iter
-    converged <- ifelse(iter < max.iter, TRUE, FALSE)
+    converged <- ifelse(iter < max_iter, TRUE, FALSE)
     loss <- res$loss
     r <- res$resid
 
@@ -241,7 +241,7 @@ plmm_fit <- function(prep,
   converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
-  if (warn & sum(iter) == max.iter) warning("Maximum number of iterations reached")
+  if (warn & sum(iter) == max_iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
     std_scale_beta = std_scale_beta,
@@ -251,7 +251,7 @@ plmm_fit <- function(prep,
     lambda = lambda,
     linear_predictors = linear_predictors,
     penalty = penalty,
-    penalty.factor = penalty.factor,
+    penalty_factor = penalty_factor,
     iter = iter,
     converged = converged,
     loss = loss,
@@ -261,7 +261,7 @@ plmm_fit <- function(prep,
     ns = prep$ns,
     nlambda = nlambda,
     eps = eps,
-    max.iter = max.iter,
+    max_iter = max_iter,
     warn = warn,
     trace = prep$trace))
 

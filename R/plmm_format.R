@@ -26,7 +26,7 @@
 #'  * `gamma`: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 #'  * `alpha`: numeric value indicating the elastic net tuning parameter.
 #'  * `loss`: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
-#'  * `penalty.factor`: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+#'  * `penalty_factor`: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
 #'  * `ns_idx`: vector with the indicies of predictors which were constant features (i.e., had no variation).
 #'  * `p`: the number of features
 #'  * `n`: the number of observations (instances)
@@ -71,7 +71,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag,
     gamma = fit$gamma,
     alpha = fit$alpha,
     loss = fit$loss,
-    penalty.factor = fit$penalty.factor,
+    penalty_factor = fit$penalty_factor,
     ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
     iter = fit$iter,
     converged = fit$converged,

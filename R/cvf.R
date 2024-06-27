@@ -18,12 +18,12 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   fold_args <- list(std_X_details = list(),
                     fbm_flag = cv_args$fbm_flag,
                     penalty = cv_args$penalty,
-                    penalty.factor = cv_args$penalty.factor,
+                    penalty_factor = cv_args$penalty_factor,
                     gamma = cv_args$gamma,
                     alpha = cv_args$alpha,
                     nlambda = cv_args$nlambda,
-                    lambda.min = cv_args$lambda.min,
-                    max.iter = cv_args$max.iter,
+                    lambda_min = cv_args$lambda_min,
+                    max_iter = cv_args$max_iter,
                     eps = cv_args$eps,
                     warn = cv_args$warn,
                     convex = cv_args$convex,
@@ -47,7 +47,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     singular <- train_data$std_X_scale < 1e-3
 
     # do not fit a model on singular features!
-    if (sum(singular) >= 1) fold_args$penalty.factor[singular] <- Inf
+    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
 
   } else {
     fold_args$std_X <- train_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
@@ -61,7 +61,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
     fold_args$std_X_details$ns <- attr(fold_args$std_X, "nonsingular")
 
     # do not fit a model on these singular features!
-    fold_args$penalty.factor <- fold_args$penalty.factor[fold_args$std_X_details$ns]
+    fold_args$penalty_factor <- fold_args$penalty_factor[fold_args$std_X_details$ns]
 
   }
   fold_args$centered_y <- full_cv_prep$centered_y[fold!=i] |> scale(scale=FALSE) |> drop()
@@ -89,7 +89,7 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                          p = ncol(full_cv_prep$std_X),
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
-                         penalty.factor = fold_args$penalty.factor,
+                         penalty_factor = fold_args$penalty_factor,
                          trace = cv_args$prep$trace)
 
   fold_args$prep <- fold_prep
@@ -103,16 +103,16 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   fit.i <- plmm_fit(prep = fold_prep,
                     y = fold_args$y,
                     std_X_details = fold_args$std_X_details,
-                    penalty.factor = fold_args$penalty.factor,
+                    penalty_factor = fold_args$penalty_factor,
                     fbm_flag = fold_args$fbm_flag,
                     penalty = fold_args$penalty,
                     gamma = fold_args$gamma,
                     alpha = fold_args$alpha,
-                    lambda.min = fold_args$lambda.min,
+                    lambda_min = fold_args$lambda_min,
                     nlambda = fold_args$nlambda,
                     lambda = fold_args$lambda,
                     eps = fold_args$eps,
-                    max.iter = fold_args$max.iter,
+                    max_iter = fold_args$max_iter,
                     warn = fold_args$warn,
                     convex = fold_args$convex,
                     dfmax = ncol(train_X) + 1)

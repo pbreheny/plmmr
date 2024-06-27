@@ -13,9 +13,9 @@
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
-#' @param penalty.factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X.
-#' The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
-#' In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
+#' The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
+#' In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
@@ -36,7 +36,7 @@ plmm_checks <- function(X,
                         diag_K = NULL,
                         eta_star = NULL,
                         penalty = "lasso",
-                        penalty.factor = NULL,
+                        penalty_factor = NULL,
                         init = NULL,
                         gamma,
                         alpha = 1,
@@ -110,10 +110,10 @@ plmm_checks <- function(X,
 
     # handle standardization (for in-memory matrix case)
     if (std_needed){
-      std_res <- standardize_matrix(X, penalty.factor)
+      std_res <- standardize_matrix(X, penalty_factor)
       std_X <- std_res$std_X
       std_X_details <- std_res$std_X_details
-      penalty.factor <- std_res$penalty.factor
+      penalty_factor <- std_res$penalty_factor
     } else {
       std_X <- X
 
@@ -170,7 +170,7 @@ plmm_checks <- function(X,
   if(is.null(dfmax)){dfmax <- std_X_p + 1}
 
   # default: penalize everything except the intercept, which we will add later
-  if(is.null(penalty.factor)){penalty.factor <- rep(1, std_X_p)}
+  if(is.null(penalty_factor)){penalty_factor <- rep(1, std_X_p)}
 
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
@@ -186,20 +186,20 @@ plmm_checks <- function(X,
 
     if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected in outcome, 'y'.
                                             \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
-    if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
+    if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match", call.=FALSE)
   } else {
     #  error checking for filebacked X
     if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
     if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
-    if (length(penalty.factor)!=std_X_p) stop("Dimensions of penalty.factor and X do not match", call.=FALSE)
+    if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match", call.=FALSE)
 
     # if penalty factor has 0s, these must be contiguous
     # (necessary for subsetting later -- see setup_lambda(), for example)
-    if (any(penalty.factor < 1e-8)){
-      pf <- which(penalty.factor < 1e-8)
+    if (any(penalty_factor < 1e-8)){
+      pf <- which(penalty_factor < 1e-8)
       if (!identical(pf, 1:length(pf))) {
         stop("It looks like you are trying to make some covariates *not* be penalized, as
-           you have some penalty.factor values set to 0.\n
+           you have some penalty_factor values set to 0.\n
            If this is your intention, you must make all 'n' unpenalized covariates appear
            as the first 'n' columns in your design matrix.\n This is needed for subsetting later
              (for now, subsetting filebacked matrices requires a contiguous submatrix).\n")
@@ -247,7 +247,7 @@ plmm_checks <- function(X,
     diag_K = diag_K,
     fbm_flag = fbm_flag,
     penalty = penalty,
-    penalty.factor = penalty.factor,
+    penalty_factor = penalty_factor,
     gamma = gamma,
     init = init
   )

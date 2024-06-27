@@ -4,12 +4,12 @@
 \alias{standardize_matrix}
 \title{A helper function to standardize matrices}
 \usage{
-standardize_matrix(X, penalty.factor)
+standardize_matrix(X, penalty_factor)
 }
 \arguments{
 \item{X}{a matrix}
 
-\item{penalty.factor}{a vector of 0s and 1s, passed from \code{plmm()}}
+\item{penalty_factor}{a vector of 0s and 1s, passed from \code{plmm()}}
 }
 \value{
 a list with the standardized matrix and its details

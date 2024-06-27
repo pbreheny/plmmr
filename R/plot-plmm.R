@@ -22,8 +22,8 @@
 ## from ncvreg
 plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   if (length(x$lambda) == 1) stop("Model was fit with only a single lambda value; there is no path to plot", call.=FALSE)
-  YY <- if (length(x$penalty.factor)==nrow(x$beta_vals)) coef(x) else coef(x)[-1, , drop=FALSE]
-  penalized <- which(x$penalty.factor!=0)
+  YY <- if (length(x$penalty_factor)==nrow(x$beta_vals)) coef(x) else coef(x)[-1, , drop=FALSE]
+  penalized <- which(x$penalty_factor!=0)
   nonzero <- which(apply(abs(YY), 1, sum)!=0)
   ind <- intersect(penalized, nonzero)
 

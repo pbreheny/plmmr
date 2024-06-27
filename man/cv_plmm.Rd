@@ -14,15 +14,15 @@ cv_plmm(
   diag_K = NULL,
   eta_star = NULL,
   penalty = "lasso",
-  penalty.factor = NULL,
+  penalty_factor = NULL,
   type = "blup",
   gamma,
   alpha = 1,
-  lambda.min,
+  lambda_min,
   nlambda = 100,
   lambda,
   eps = 1e-04,
-  max.iter = 10000,
+  max_iter = 10000,
   convex = TRUE,
   dfmax = NULL,
   warn = TRUE,
@@ -65,7 +65,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{type}{A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
 based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
@@ -76,7 +76,7 @@ in many applications.}
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
@@ -84,7 +84,7 @@ in many applications.}
 
 \item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
 
-\item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
+\item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
 \item{convex}{(future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
@@ -128,7 +128,7 @@ a list with 11 items:
 \item fit: the overall fit of the object, including all predictors; this is a
 list as returned by \code{plmm()}
 \item min: The index corresponding to the value of \code{lambda} that minimizes \code{cve}
-\item lambda.min: The \code{lambda} value at which \code{cve} is minmized
+\item lambda_min: The \code{lambda} value at which \code{cve} is minmized
 \item min1se: The index corresponding to the value of \code{lambda} within
 standard error of that which minimizes \code{cve}
 \item lambda1se: largest value of lambda such that error is within 1 standard error of the minimum.

@@ -51,7 +51,7 @@ A list with the components:
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
 \item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
-\item \code{penalty.factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+\item \code{penalty_factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
 \item \code{ns_idx}: vector with the indicies of predictors which were constant features (i.e., had no variation).
 \item \code{p}: the number of features
 \item \code{n}: the number of observations (instances)

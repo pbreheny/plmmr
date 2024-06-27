@@ -9,16 +9,16 @@ plmm_fit(
   y,
   std_X_details,
   eta_star,
-  penalty.factor,
+  penalty_factor,
   fbm_flag,
   penalty,
   gamma = 3,
   alpha = 1,
-  lambda.min,
+  lambda_min,
   nlambda = 100,
   lambda,
   eps = 1e-04,
-  max.iter = 10000,
+  max_iter = 10000,
   convex = TRUE,
   dfmax = NULL,
   init = NULL,
@@ -36,7 +36,7 @@ plmm_fit(
 
 \item{eta_star}{The ratio of variances (passed from plmm())}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
 
@@ -46,7 +46,7 @@ plmm_fit(
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
@@ -54,7 +54,7 @@ plmm_fit(
 
 \item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
 
-\item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
+\item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
 \item{convex}{(future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
@@ -97,7 +97,7 @@ converged at each value of \code{lambda}
 (calculated on the ~rotated~ scale)
 \item penalty: character string indicating the penalty with which the model was
 fit (e.g., 'MCP')
-\item penalty.factor: vector of indicators corresponding to each predictor,
+\item penalty_factor: vector of indicators corresponding to each predictor,
 where 1 = predictor was penalized.
 \item gamma: numeric value indicating the tuning parameter used for the SCAD or
 lasso penalties was used. Not relevant for lasso models.
@@ -106,7 +106,7 @@ lasso penalties was used. Not relevant for lasso models.
 \item feature_names: formatted column names of the design matrix
 \item nlambda: number of lambda values used in model fitting
 \item eps: tolerance ('epsilon') used for model fitting
-\item max.iter: max. number of iterations per model fit
+\item max_iter: max. number of iterations per model fit
 \item warn: logical - should warnings be given if model fit does not converge?
 \item init: initial values for model fitting
 \item trace: logical - should messages be printed to the console while models are fit?

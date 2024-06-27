@@ -237,18 +237,18 @@ pen2$std_X_colnames |> head() # std_X includes our non-genomic covariates
 pen2$std_X <- bigmemory::attach.big.matrix(pen2$std_X)
 ```
 
-We usually want these kinds of variables to always be in the model (i.e., they are not penalized). To make sure 'sex' and 'age' are always included in the chosen model, let's set `penalty.factor` to have 0 values corresponding to these predictors.
+We usually want these kinds of variables to always be in the model (i.e., they are not penalized). To make sure 'sex' and 'age' are always included in the chosen model, let's set `penalty_factor` to have 0 values corresponding to these predictors.
 
 ```{r}
 dat_plus_newvars <- paste0(temp_dir2, "/std_penncath_lite")
 fit_plus_newvars <- plmm(X = dat_plus_newvars,
-                         penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+                         penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
                          K = fb_fit$K, 
                          returnX = FALSE,
                          trace = TRUE)
 # TODO: work through the example below
 cv_plus_newvars <- cv_plmm(X = dat_plus_newvars,
-                         penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+                         penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
                          K = fb_fit$K,
                          returnX = FALSE,
                           trace = TRUE)

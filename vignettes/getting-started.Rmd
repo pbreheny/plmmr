@@ -79,7 +79,7 @@ admix_fit2 <- plmm(X = X_plus_ancestry, y = admix$y,
                    penalty = "lasso",
                    non_genomic = 1, # mark ancestry variable as non-genomic 
                    # make the penalty factor 0 to keep the corresponding covariate unpenalized
-                   penalty.factor = c(0, rep(1, ncol(admix$X))))
+                   penalty_factor = c(0, rep(1, ncol(admix$X))))
 
 summary(admix_fit2, idx = 95)
 plot(admix_fit2)
@@ -93,7 +93,7 @@ To select a $\lambda$ value, we often use cross validation. Below is an example 
 admix_cv <- cv_plmm(X = X_plus_ancestry, y = admix$y,
                     penalty = "lasso",
                     non_genomic = 1, # mark ancestry variable as non-genomic
-                    penalty.factor = c(0, rep(1, ncol(admix$X))))
+                    penalty_factor = c(0, rep(1, ncol(admix$X))))
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 ```

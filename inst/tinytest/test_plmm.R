@@ -191,7 +191,7 @@ if (interactive()) {
   dat_plus_newvars <- paste0(temp_dir, "/std_penncath_lite")
   pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
   foo <- plmm(X = dat_plus_newvars,
-                           penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
                            returnX = FALSE,
                            trace = TRUE)
 
@@ -201,7 +201,7 @@ if (interactive()) {
 
   # in memory
   foo2 <- plmm(X = dat_plus_newvars,
-                           penalty.factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
                            trace = TRUE)
   foo2_nz <- which(foo2$beta_vals[,4] != 0)
 

@@ -82,7 +82,7 @@ chr10_lite_prep <- readRDS(paste0(thesis_path, "plmm_tests/std_chr10_lite_prep.r
 
 chr10_lite_fit <- plmm(X = paste0(thesis_path, 
                              "plmm_tests/std_chr10_lite"),
-                  penalty.factor = c(0, rep(1, ncol(checked_data$std_X) - 1)),
+                  penalty_factor = c(0, rep(1, ncol(checked_data$std_X) - 1)),
                   # give 'sex' a penalty factor of 0 -- we always want this in the model.
                   # The 'intercept' will get a 0 penalty factor by default.
                   returnX = FALSE, # run filebacked,
