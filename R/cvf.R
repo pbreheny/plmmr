@@ -123,7 +123,8 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
               std_X_details = fold_args$std_X_details,
               use_feature_names = FALSE, # no need for names in internal CV fits
               # TODO: figure out how to track non_genomic features in CV
-              non_genomic = cv_args$non_genomic,
+              non_genomic = NULL,
+              # Note: must keep non_genomic length 0 for untransform() to work correctly within each fold
               fbm_flag = fold_args$fbm_flag)
 
   if(type == "lp"){
@@ -131,7 +132,6 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                               trainX = train_X,
                               testX = test_X,
                               og_scale_beta = format.i$beta_vals,
-                              # std_X_details = fold_args$std_X_details,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }

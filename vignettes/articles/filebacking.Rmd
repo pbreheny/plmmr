@@ -49,7 +49,7 @@ The most important step is where you begin -- for GWAS data, we have to tell `pl
 Here, we will create the files we want in a temporary directory just for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
 
 ```{r}
-temp_dir <- paste0(tempdir()) # using a temporary directory
+temp_dir <- paste0(tempdir()) # using a temporary directory (if you didn't already create on above)
 process_plink(data_dir = find_example_data(parent = TRUE), # reads data from inst/extdata
               rds_dir = temp_dir,
               prefix = "penncath_lite",
