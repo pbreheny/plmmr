@@ -119,11 +119,7 @@ The '.rds' object created by this function has the following elements:
 \examples{
 \donttest{
 temp_dir <- paste0(tempdir()) # using a temporary directory here
-<<<<<<< HEAD
-process_plink(data_dir = get_example_data(parent = TRUE), # reads data that ships with plmmr
-=======
 process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
->>>>>>> scale_up
               rds_dir = temp_dir,
               prefix = "penncath_lite",
               outfile = "process_penncath",

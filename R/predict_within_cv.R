@@ -60,7 +60,7 @@ predict_within_cv <- function(fit,
     # case 2: og_scale_beta is a matrix
     colnames(og_scale_beta) <- lam_names(fit$lambda)
   }
-browser()
+
   # calculate the estimated mean values for test data
   a <- og_scale_beta[1,]
   b <- og_scale_beta[-1,,drop=FALSE]

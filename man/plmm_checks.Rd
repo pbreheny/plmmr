@@ -13,11 +13,7 @@ plmm_checks(
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
-<<<<<<< HEAD
-  penalty,
-=======
   penalty = "lasso",
->>>>>>> scale_up
   penalty.factor = NULL,
   init = NULL,
   gamma,
