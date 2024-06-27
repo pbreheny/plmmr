@@ -7,6 +7,7 @@
 #'  * 'scale': the scaling values for the non-singular columns of `X`
 #'  * 'ns': indicies of nonsingular columns in `std_X`
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`.
+#' @param use_feature_names Logical: should features be named (e.g., should the returned matrix of coefficients have rows/columns named?). Defaults to TRUE.
 #' @param feature_names A vector of names for features, passed internally if such names are included with the data `X` passed to `plmm()`
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -34,7 +35,9 @@
 #'
 #' @keywords internal
 
-plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, non_genomic = NULL){
+plmm_format <- function(fit, p, std_X_details, fbm_flag,
+                        use_feature_names = TRUE,
+                        feature_names = NULL, non_genomic = NULL){
 
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
   og_scale_beta <- untransform(
@@ -47,22 +50,22 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, n
   # give the matrix of beta_values readable names
   # SNPs (or covariates) on the rows, lambda values on the columns
 
-  if (is.null(feature_names)) {
-    feature_names <- paste("Var", 1:(p + length(non_genomic)), sep="")
-  }
+  if (use_feature_names){
+    if (is.null(feature_names)) {
+      feature_names <- paste("Var", 1:(p + length(non_genomic)), sep="")
+    }
 
-  varnames <- c("(Intercept)", feature_names) # add intercept label
-  dimnames(og_scale_beta) <- list(varnames, lam_names(fit$lambda))
-  colnames(fit$linear_predictors) <- lam_names(fit$lambda)
+    varnames <- c("(Intercept)", feature_names) # add intercept label
+    dimnames(og_scale_beta) <- list(varnames, lam_names(fit$lambda))
+    colnames(fit$linear_predictors) <- lam_names(fit$lambda)
+  }
 
 
   # output
   structure(list(
     beta_vals = og_scale_beta,
-    # rotated_scale_beta_vals = fit$std_scale_beta,
     lambda = fit$lambda,
     eta = fit$eta,
-    # rot_y = fit$rot_y,
     linear_predictors = fit$linear_predictors,
     penalty = fit$penalty,
     gamma = fit$gamma,
@@ -70,10 +73,6 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, feature_names = NULL, n
     loss = fit$loss,
     penalty.factor = fit$penalty.factor,
     ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
-    # p = fit$p,
-    # n = fit$n,
-    # std_X_n = fit$std_X_n,
-    # std_X_p = fit$std_X_p,
     iter = fit$iter,
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U)),

@@ -44,7 +44,7 @@ predict_within_cv <- function(fit,
                               idx=1:length(fit$lambda),
                               V11 = NULL,
                               V21 = NULL, ...) {
-
+browser()
   # make sure X is in the correct format...
   # case 1: testX is filebacked
   fbm_flag <- inherits(testX,"big.matrix")
@@ -66,8 +66,16 @@ predict_within_cv <- function(fit,
   b <- og_scale_beta[-1,,drop=FALSE]
   if (nrow(b) != ncol(testX)) {
     b <- b[std_X_details$ns,]
+    if (fbm_flag){
+      # for file-backed matrix, standardization does not remove singular columns
+      Xb <- sweep(testX[,std_X_details$ns] %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
+    } else {
+      Xb <- sweep(testX %*% b, 2, a, "+")
+    }
+  } else {
+    Xb <- sweep(testX %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
   }
-  Xb <- sweep(testX %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
+
 
   # for linear predictor, return mean values
   if (type=="lp") return(drop(Xb))

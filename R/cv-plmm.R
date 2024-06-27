@@ -166,11 +166,13 @@ cv_plmm <- function(X,
     fit_args$lambda.min <- lambda.min
   }
   fit <- do.call('plmm_fit', fit_args)
+
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$map$marker.ID
+      col_names <- checked_data$dat$X_colnames
     }
   }
+
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
@@ -182,6 +184,7 @@ cv_plmm <- function(X,
   cv_args <- fit_args
   cv_args$warn <- FALSE
   cv_args$lambda <- fit$lambda
+  cv_args$non_genomic <- checked_data$non_genomic
 
   estimated_V <- NULL
   if (type == 'blup') {

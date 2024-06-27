@@ -21,7 +21,14 @@ construct_variance <- function(fit, K = NULL, eta = NULL){
       Sigma_hat <- (fit$eta * K) + ((1-fit$eta) * diag(nrow(K)))
     }
   } else if (!is.null(K) & !is.null(eta)) {
-    Sigma_hat <- (eta * K) + ((1-eta) * diag(nrow(K)))
+    if (is.matrix(K)){
+      Sigma_hat <- (eta * K) + ((1-eta) * diag(nrow(K)))
+    } else {
+      SUt <- sweep(t(K$U), MARGIN = 1, STATS = K$s, FUN = "*")
+      K_mat <- K$U%*%SUt
+      Sigma_hat <- (eta * K_mat) + ((1-eta) * diag(nrow(K$U)))
+    }
+
   } else {
     stop("\nOptions to construct_variance must be either: \n(1) supply a plmm object to
          fit or \n(2) supply both K and eta arguments.")

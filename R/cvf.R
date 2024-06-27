@@ -12,8 +12,7 @@
 #' @keywords internal
 
 cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
-
-  # save the 'prep' object from the plmm_prep() in cv_plmm
+# save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
   y <- cv_args$y
   # make list to hold the data for this particular fold:
@@ -122,8 +121,9 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   format.i <- plmm_format(fit = fit.i,
               p =  ncol(train_X),
               std_X_details = fold_args$std_X_details,
+              use_feature_names = FALSE, # no need for names in internal CV fits
               # TODO: figure out how to track non_genomic features in CV
-              # non_genomic = NULL,
+              non_genomic = cv_args$non_genomic,
               fbm_flag = fold_args$fbm_flag)
 
   if(type == "lp"){
