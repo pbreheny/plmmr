@@ -55,6 +55,7 @@ reference:
     - process_plink
     - process_delim
     - relatedness_mat
+    - unzip_example_data
 
 
   - title: Plotting, summarizing, and formatting
