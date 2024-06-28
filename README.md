@@ -26,8 +26,6 @@ The branches of this repo are organized in the following way:
 
   - `master` is the main branch with all the latest updates.
 
-  - `restd_in_cv` is a dev branch where we are re-working the CV implementation as it is in `master` -- in particular, we aim to re-standardize the training data in each CV fold. This is primarily for methods development -- the `scale_up` approach is much faster. 
-
   - `scale_up` is where we are working to improve `plmm()`'s ability to scale up to larger datasets. In particular, I am in the process of converting more functions to `C++`/adjusting how `plmmr` interacts with [file-backed data](https://pbreheny.github.io/plmmr/articles/filebacking.html). Stay tuned for more on this.
     
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
