@@ -7,11 +7,11 @@
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param cv_args List of additional arguments to be passed to plmm.
 #' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
+#' @param save_intermed Optional: should fit.i be returned prior to end of function? defaults to NULL; opther option is a filepath to an RDS file.
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
-
-cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
+cvf <- function(i, fold, type, cv_args, estimated_V, save_intermed = NULL, ...) {
 # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
   y <- cv_args$y
@@ -118,6 +118,13 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                     convex = fold_args$convex,
                     dfmax = ncol(train_X) + 1)
 
+  # for debugging: save intermediate results
+  if (!is.null(save_intermed)) {
+    intermed_res <- list(fold = i, fold_args, fold_prep, fit.i)
+
+    saveRDS(intermed_res, save_intermed)
+  }
+
   format.i <- plmm_format(fit = fit.i,
               p =  ncol(train_X),
               std_X_details = fold_args$std_X_details,
@@ -154,6 +161,8 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
 
   }
 
-  loss <- sapply(1:ncol(yhat), function(ll) plmm_loss(test_y, yhat[,ll]))
-  list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
+loss <- sapply(1:ncol(yhat), function(ll) plmm_loss(test_y, yhat[,ll]))
+ res <- list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
+
+ return(res)
 }

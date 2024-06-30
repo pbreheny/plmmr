@@ -46,6 +46,7 @@
 #' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
 #' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
 #' @param save_rds        Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.
+#' @param save_intermed   Optional: if a filepath and name is specified (e.g., `save_intermed = "~/dir/my_results.rds"`), then the model results are saved to the provided location after the model is fit in each fold. Defaults to NULL, which does not save the intermediate results.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ...             Additional arguments to `plmm_fit`
 
@@ -108,6 +109,7 @@ cv_plmm <- function(X,
                     returnBiasDetails = FALSE,
                     trace=FALSE,
                     save_rds = NULL,
+                    save_intermed = NULL,
                     return_fit = TRUE,
                     ...) {
   # run checks ------------------------------
@@ -254,6 +256,16 @@ cv_plmm <- function(X,
       res$yhat <- as.matrix(res$yhat)
     }
     Y[fold==i, 1:res$nl] <- res$yhat
+
+    # save results along the way
+    if (!is.null(save_intermed)){
+      val_intermed <- list(type=type,
+                  res = res,
+                  loss = E,
+                  yhat = Y,
+                  current_fold = i)
+      saveRDS(val_intermed, save_intermed)
+    }
   }
 
   # post-process results -----------------------------------------

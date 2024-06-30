@@ -55,6 +55,13 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
       # case 2: ns and center/scale values **do not** have same length
       # (this will often be the case in cross-validation, where features can
       # become constant in a given fold)
+      if (nrow(b[std_X_details$ns,]) != length(std_X_details$scale[std_X_details$ns])) {
+        warning("\nIn untransform(), the dimensions of untransform_b2 don't match the length of the
+             scale values for nonsingular columns (that is,
+             \nnrow(b[std_X_details$ns,]) != length(std_X_details$scale[std_X_details$ns]).
+             \nThis issue must be resolved before the model fit can be backtransformed.")
+        browser()
+      }
       untransformed_b2 <- sweep(x = b[std_X_details$ns,],
                                 MARGIN = 1,
                                 STATS = std_X_details$scale[std_X_details$ns],
@@ -81,6 +88,14 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
                                               untransformed_b2)
     } else {
       # case 2: ns and center/scale values **do not** have same length
+      if (nrow(b) != length(std_X_details$scale[std_X_details$ns])) {
+        warning("\nIn untransform(), the dimensions of untransform_b2 don't match the length of the
+             scale values for nonsingular columns (that is,
+             \nnrow(b) != length(std_X_details$scale[std_X_details$ns]).
+             \nThis issue must be resolved before the model fit can be backtransformed.")
+
+        browser()
+      }
       untransformed_b2 <- sweep(x = b,
                                 MARGIN = 1,
                                 STATS = std_X_details$scale[std_X_details$ns],

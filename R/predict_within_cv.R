@@ -68,6 +68,15 @@ browser()
     # Note: this can only happen in the in-memory case;
     # filebacked big_std() function does not remove singular features
     b <- b[std_X_details$ns,]
+
+    if (ncol(testX) != nrow(b)) {
+      warning("\nInside predict_within_cv(), the dimension of the test data does not
+           align with the dimension of the coefficients, i.e.,
+           \nncol(testX) != nrow(og_scale_beta[-1,,drop=FALSE])")
+
+      browser()
+    }
+
     Xb <- sweep(testX %*% b, 2, a, "+")
   } else {
     Xb <- sweep(testX %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
@@ -83,6 +92,10 @@ browser()
     # test1 <- V21 %*% chol2inv(chol(V11)) # true
     # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
     b_train <- og_scale_beta[-1,,drop=FALSE] # this may or may not be equal to b...
+    if (ncol(trainX) != nrow(b_train)) {
+      warning("\nIn predict_within_cv(), ncol(trainX) != nrow(b_train)")
+      browser()
+    }
     Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
