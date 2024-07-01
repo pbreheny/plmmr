@@ -4,7 +4,7 @@
 #' @param lambda The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min.'
 #' @param ...  Not used 
 #' @return The return value is an object with S3 class `summary.cv_plmm`. The class has its own print method and contains the following list elements: 
-#' * `lambda.min`: The lambda value at the minimum cross validation error 
+#' * `lambda_min`: The lambda value at the minimum cross validation error 
 #' * `lambda.1se`: The maximum lambda value within 1 standard error of the minimum cross validation error 
 #' * `penalty`: The penalty applied to the fitted model
 #' * `nvars`: The number of non-zero coefficients at the selected lambda value 
@@ -32,7 +32,7 @@ summary.cv_plmm <- function(object, lambda = "min", ...){
   
   if(lambda == "min"){
     # nvars (tells number of non-zero coefficients)
-    nvars <- predict(object$fit, type="nvars", lambda=object$lambda.min)
+    nvars <- predict(object$fit, type="nvars", lambda=object$lambda_min)
   }
   
   if(lambda == "1se"){
@@ -47,7 +47,7 @@ summary.cv_plmm <- function(object, lambda = "min", ...){
   }
   
   # TODO: think about what else should go here 
-  out <- structure(list(lambda.min = object$lambda.min,
+  out <- structure(list(lambda_min = object$lambda_min,
                         lambda.1se = object$lambda.1se,
                         penalty = object$fit$penalty,
                         nvars = nvars,

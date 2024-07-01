@@ -39,5 +39,5 @@ A summary method for the plmm objects
 \examples{
 fit <- cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
 summary(fit$fit, idx = 97)
-summary(fit, lambda = fit$lambda.min)
+summary(fit, lambda = fit$lambda_min)
 }

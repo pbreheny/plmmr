@@ -18,7 +18,7 @@ plmm_prep(
   diag_K = NULL,
   eta_star = NULL,
   fbm_flag,
-  penalty.factor = rep(1, ncol(std_X)),
+  penalty_factor = rep(1, ncol(std_X)),
   trace = NULL,
   ...
 )
@@ -67,7 +67,7 @@ List with these components:
 \item s: vector with the eigenvalues of K
 \item U: the eigenvectors of K (same as left singular values of X).
 \item ns: the indices for the nonsingular values of X
-\item penalty.factor: the penalty factors for the penalized non-singular values
+\item penalty_factor: the penalty factors for the penalized non-singular values
 \item feature_names: formatted column names of the design matrix
 }
 }

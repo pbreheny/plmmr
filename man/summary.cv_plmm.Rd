@@ -16,7 +16,7 @@
 \value{
 The return value is an object with S3 class \code{summary.cv_plmm}. The class has its own print method and contains the following list elements:
 \itemize{
-\item \code{lambda.min}: The lambda value at the minimum cross validation error
+\item \code{lambda_min}: The lambda value at the minimum cross validation error
 \item \code{lambda.1se}: The maximum lambda value within 1 standard error of the minimum cross validation error
 \item \code{penalty}: The penalty applied to the fitted model
 \item \code{nvars}: The number of non-zero coefficients at the selected lambda value

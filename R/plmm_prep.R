@@ -27,7 +27,7 @@
 #' * s: vector with the eigenvalues of K
 #' * U: the eigenvectors of K (same as left singular values of X).
 #' * ns: the indices for the nonsingular values of X
-#' * penalty.factor: the penalty factors for the penalized non-singular values
+#' * penalty_factor: the penalty factors for the penalized non-singular values
 #' * feature_names: formatted column names of the design matrix
 #'
 #' @keywords internal
@@ -44,7 +44,7 @@ plmm_prep <- function(std_X,
                       diag_K = NULL,
                       eta_star = NULL,
                       fbm_flag,
-                      penalty.factor = rep(1, ncol(std_X)),
+                      penalty_factor = rep(1, ncol(std_X)),
                       trace = NULL,
                       ...){
 

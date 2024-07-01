@@ -21,14 +21,14 @@
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda.min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param lambda_min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda         Length of the sequence of lambda. Default is 100.
 #' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max.iter        Maximum number of iterations (total across entire path). Default is 10000.
+#' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty.factor  A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty_factor  A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
@@ -49,7 +49,6 @@
 #' @param save_intermed   Optional: if a filepath and name is specified (e.g., `save_intermed = "~/dir/my_results.rds"`), then the model results are saved to the provided location after the model is fit in each fold. Defaults to NULL, which does not save the intermediate results.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ...             Additional arguments to `plmm_fit`
-
 #'
 #' @returns a list with 11 items:
 #'
@@ -61,7 +60,7 @@
 #' * fit: the overall fit of the object, including all predictors; this is a
 #'  list as returned by `plmm()`
 #' * min: The index corresponding to the value of `lambda` that minimizes `cve`
-#' * lambda.min: The `lambda` value at which `cve` is minmized
+#' * lambda_min: The `lambda` value at which `cve` is minmized
 #' * min1se: The index corresponding to the value of `lambda` within
 #' standard error of that which minimizes `cve`
 #' * lambda1se: largest value of lambda such that error is within 1 standard error of the minimum.
@@ -88,15 +87,15 @@ cv_plmm <- function(X,
                     diag_K = NULL,
                     eta_star = NULL,
                     penalty = "lasso",
-                    penalty.factor = NULL,
+                    penalty_factor = NULL,
                     type = 'blup',
                     gamma,
                     alpha = 1,
-                    lambda.min, # passed to internal function setup_lambda()
+                    lambda_min, # passed to internal function setup_lambda()
                     nlambda = 100,
                     lambda,
                     eps = 1e-04,
-                    max.iter = 10000,
+                    max_iter = 10000,
                     convex = TRUE,
                     dfmax = NULL,
                     warn = TRUE,
@@ -122,7 +121,7 @@ cv_plmm <- function(X,
                               diag_K = diag_K,
                               eta_star = eta_star,
                               penalty = penalty,
-                              penalty.factor = penalty.factor,
+                              penalty_factor = penalty_factor,
                               init = init,
                               dfmax = dfmax,
                               gamma = gamma,
@@ -152,20 +151,20 @@ cv_plmm <- function(X,
     y = checked_data$y,
     std_X_details = checked_data$std_X_details,
     eta_star = eta_star,
-    penalty.factor = checked_data$penalty.factor,
+    penalty_factor = checked_data$penalty_factor,
     fbm_flag = checked_data$fbm_flag,
     penalty = checked_data$penalty,
     gamma = checked_data$gamma,
     alpha = alpha,
     nlambda = nlambda,
-    max.iter = max.iter,
+    max_iter = max_iter,
     eps = eps,
     warn = warn,
     convex = convex,
     dfmax = dfmax))
 
-  if (!missing(lambda.min)){
-    fit_args$lambda.min <- lambda.min
+  if (!missing(lambda_min)){
+    fit_args$lambda_min <- lambda_min
   }
   fit <- do.call('plmm_fit', fit_args)
 
@@ -237,6 +236,7 @@ cv_plmm <- function(X,
     if (!missing(cluster)) {
       res <- fold.results[[i]] # refers to lines from above
       if (trace) {utils::setTxtProgressBar(pb, i)}
+
     } else {
       # case 2: cluster NOT user specified (this is the typical use case)
       res <- cvf(i = i,
@@ -247,6 +247,7 @@ cv_plmm <- function(X,
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
+
     if(trace) close(pb)
 
     # update E and Y
@@ -296,7 +297,7 @@ cv_plmm <- function(X,
               lambda=lambda,
               fit=fit_to_return,
               min=min,
-              lambda.min=lambda[min],
+              lambda_min=lambda[min],
               min1se = min1se,
               lambda.1se = lambda[min1se],
               null.dev=mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))))

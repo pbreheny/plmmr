@@ -21,7 +21,7 @@ print.summary.cv_plmm <- function(x, digits, ...){
   p <- nrow(x$fit$beta_vals)
   digits <- if (missing(digits)) digits <- c(2, 4, 2, 2, 3) else rep(digits, length.out=5)
   cat(x$fit$penalty, "-penalized model with n=", n, " and p=", p,"\n", sep="")
-  cat("At minimum cross-validation error (lambda=", formatC(x$lambda.min, digits[2], format="f"), "):\n", sep="")
+  cat("At minimum cross-validation error (lambda=", formatC(x$lambda_min, digits[2], format="f"), "):\n", sep="")
   cat("-------------------------------------------------\n")
   cat("  Nonzero coefficients: ", x$nvars, "\n", sep="")
   cat("  Cross-validation error (deviance): ", formatC(min(x$cve), digits[1], format="f"), "\n", sep="")

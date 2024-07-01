@@ -14,16 +14,16 @@ plmm(
   diag_K = NULL,
   eta_star = NULL,
   penalty = "lasso",
-  penalty.factor = NULL,
+  penalty_factor = NULL,
   init = NULL,
   gamma,
   alpha = 1,
   dfmax = NULL,
-  lambda.min,
+  lambda_min,
   nlambda = 100,
   lambda,
   eps = 1e-04,
-  max.iter = 10000,
+  max_iter = 10000,
   convex = TRUE,
   warn = TRUE,
   trace = FALSE,
@@ -59,7 +59,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 
-\item{penalty.factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty.factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty.factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty.factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
@@ -69,7 +69,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
-\item{lambda.min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
@@ -77,7 +77,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
 
-\item{max.iter}{Maximum number of iterations (total across entire path). Default is 10000.}
+\item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
 \item{convex}{(future idea; not yet incorporated)Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
@@ -104,7 +104,7 @@ A list which includes:
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
 \item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
-\item \code{penalty.factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+\item \code{penalty_factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
 \item \code{ns_idx}: vector with the indices of predictors which were constant features (i.e., had no variation).
 \item \code{p}: the number of features
 \item \code{n}: the number of observations (instances)
