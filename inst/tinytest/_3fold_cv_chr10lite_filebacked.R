@@ -3,7 +3,7 @@
 #  somewhere in cvf() that made the session crash when I tried this the first time.
 
 # read in data from previous full model fit -----------------------------------
-data_dir <- "/mnt/cleft"
+data_dir <- "/mnt/cleft"  # adjust to fit specific machine
 pheno <- readRDS(file.path(data_dir, "data/phs000774/pheno/whole/pheno_complete.rds"))
 str(pheno) # see what's here
 
