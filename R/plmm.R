@@ -100,7 +100,13 @@ plmm <- function(X,
                  return_fit = TRUE,
                  ...) {
 
-# run checks ------------------------------
+  # start the log -----------------------
+  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
+                                         unlist(strsplit(save_rds, split = ".rds", fixed = TRUE)),
+                                         "./plmm"),
+                        list(...))
+
+  # run checks ------------------------------
   checked_data <- plmm_checks(X,
                               std_needed = std_needed,
                               col_names = col_names,
@@ -122,19 +128,28 @@ plmm <- function(X,
   if(trace){cat("Input data passed all checks at ",
                 format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"))}
 
-    the_prep <- plmm_prep(std_X = checked_data$std_X,
-                          std_X_n = checked_data$std_X_n,
-                          std_X_p = checked_data$std_X_p,
-                          n = checked_data$n,
-                          p = checked_data$p,
-                          genomic = checked_data$genomic,
-                          centered_y = checked_data$centered_y,
-                          K = checked_data$K,
-                          diag_K = checked_data$diag_K,
-                          fbm_flag = checked_data$fbm_flag,
-                          trace = trace)
+  cat("Input data passed all checks at ",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      "\n", file = logfile, append = TRUE)
+
+  the_prep <- plmm_prep(std_X = checked_data$std_X,
+                        std_X_n = checked_data$std_X_n,
+                        std_X_p = checked_data$std_X_p,
+                        n = checked_data$n,
+                        p = checked_data$p,
+                        genomic = checked_data$genomic,
+                        centered_y = checked_data$centered_y,
+                        K = checked_data$K,
+                        diag_K = checked_data$diag_K,
+                        fbm_flag = checked_data$fbm_flag,
+                        trace = trace)
+
   if (trace)(cat("Eigendecomposition finished at ",
                  format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+
+  cat("Eigendecomposition finished at ",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      "\n", file = logfile, append = TRUE)
 
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
@@ -154,44 +169,52 @@ plmm <- function(X,
                       warn = warn,
                       convex = convex,
                       dfmax = checked_data$p + 1)
-    if (trace) cat("Beta values are estimated -- almost done!\n")
+  if (trace) cat("Beta values are estimated -- almost done!\n")
 
-    # format results ---------------------------------------------------
-    if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
+  # format results ---------------------------------------------------
+  if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
 
-    if (is.null(checked_data$col_names)){
-      if (!is.null(checked_data$dat)) {
-        col_names <- checked_data$dat$map$marker.ID
-      }
-    } else {
-      col_names <- checked_data$col_names
+  if (is.null(checked_data$col_names)){
+    if (!is.null(checked_data$dat)) {
+      col_names <- checked_data$dat$map$marker.ID
     }
-    the_final_product <- plmm_format(fit = the_fit,
-                                     p = checked_data$p,
-                                     std_X_details = checked_data$std_X_details,
-                                     feature_names = col_names,
-                                     fbm_flag = checked_data$fbm_flag,
-                                     non_genomic = checked_data$non_genomic)
+  } else {
+    col_names <- checked_data$col_names
+  }
+  the_final_product <- plmm_format(fit = the_fit,
+                                   p = checked_data$p,
+                                   std_X_details = checked_data$std_X_details,
+                                   feature_names = col_names,
+                                   fbm_flag = checked_data$fbm_flag,
+                                   non_genomic = checked_data$non_genomic)
 
-    if (trace)(cat("Model ready at ",
-                   format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
-    # handle output
-    if (!is.null(save_rds)){
-      saveRDS(the_final_product, save_rds)
-    }
+  if (trace)(cat("Model ready at ",
+                 format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+  cat("Model ready at ",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      file = logfile, append = TRUE)
 
-    if (is.null(save_rds) & !return_fit){
-      cat("You accidentally left save_rds NULL while setting return_fit = FALSE;
+  # handle output
+  if (!is.null(save_rds)){
+    saveRDS(the_final_product, save_rds)
+    cat("Results saved to:", save_rds, "at",
+        format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+        file = logfile, append = TRUE)
+  }
+
+  if (is.null(save_rds) & !return_fit){
+    cat("You accidentally left save_rds NULL while setting return_fit = FALSE;
         to prevent you from losing your work, I am saving the output as plmm_results.rds
         in your current working directory (current folder).\n
         Next time, make sure to specify your own filepath to the save_rds argument.\n")
 
-      rdsfile <- paste0(getwd(),"/plmm_results.rds")
-      saveRDS(the_final_product, rdsfile)
-    }
+    rdsfile <- paste0(getwd(),"/plmm_results.rds")
+    saveRDS(the_final_product, rdsfile)
+    cat("Results saved to:", rdsfile, file = logfile, append = TRUE)
+  }
 
-    if (return_fit){
-      return(the_final_product)
-    }
+  if (return_fit){
+    return(the_final_product)
+  }
 
 }

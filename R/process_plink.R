@@ -113,9 +113,9 @@ process_plink <- function(data_dir,
   }
   log_con <- file(outfile)
   cat("### Processing PLINK files for PLMM ###", file = log_con)
-  cat("\nLogging to", outfile, file = outfile, append = TRUE)
-  cat("\nPreprocessing", prefix, "data:", file = outfile, append = TRUE)
-  cat("")
+  cat("Logging to", outfile, "\n", file = outfile, append = TRUE)
+  cat("Preprocessing", prefix, "data:", file = outfile, "\n", append = TRUE)
+  cat("data_dir:", data_dir, "\n", file = outfile, append = TRUE)
 
   if(!quiet){
     cat("\nLogging to", outfile)

@@ -72,7 +72,8 @@
 #' @export
 #'
 #' @examples
-#' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
+#' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y,
+#'  non_genomic = 1, penalty_factor = c(0, rep(1, ncol(admix$X))))
 #' print(summary(cv_fit))
 #' plot(cv_fit)
 #'
@@ -112,6 +113,11 @@ cv_plmm <- function(X,
                     save_rds = NULL,
                     return_fit = TRUE,
                     ...) {
+  # start the log -----------------------
+  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
+                                         unlist(strsplit(save_rds, split = ".rds", fixed = TRUE)),
+                                         "./plmm"))
+
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
                               std_needed = std_needed,
@@ -130,6 +136,9 @@ cv_plmm <- function(X,
                               trace = trace,
                               ...)
 
+  cat("\nInput data passed all checks at ",
+      pretty_time(),
+      file = logfile, append = TRUE)
   # prep  ------------------------
   prep_args <- c(list(std_X = checked_data$std_X,
                       std_X_n = checked_data$std_X_n,
@@ -145,6 +154,9 @@ cv_plmm <- function(X,
                       trace = trace))
 
   prep <- do.call('plmm_prep', prep_args)
+  cat("\nEigendecomposition finished at ",
+      pretty_time(),
+      file = logfile, append = TRUE)
 
   # full model fit ----------------------------------
   fit_args <- c(list(
@@ -169,6 +181,10 @@ cv_plmm <- function(X,
   }
   fit <- do.call('plmm_fit', fit_args)
 
+  cat("\nFull model fit finished at",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      file = logfile, append = TRUE)
+
   if (is.null(col_names)){
     if (!is.null(checked_data$dat)) {
       col_names <- checked_data$dat$X_colnames
@@ -181,6 +197,10 @@ cv_plmm <- function(X,
                                feature_names = col_names,
                                fbm_flag = checked_data$fbm_flag,
                                non_genomic = checked_data$non_genomic)
+
+  cat("\nFormatting for full model finished at",
+      pretty_time(),
+      file = logfile, append = TRUE)
 
   # set up arguments for cv ---------------------------
   cv_args <- fit_args
@@ -203,6 +223,12 @@ cv_plmm <- function(X,
     original_seed <- .GlobalEnv$.Random.seed
     on.exit(.GlobalEnv$.Random.seed <- original_seed)
     set.seed(seed)
+  } else {
+    cat("Random seed:",
+        .GlobalEnv$.Random.seed[1],
+        "\n",
+        file = logfile,
+        append = TRUE)
   }
 
   sde <- sqrt(.Machine$double.eps)
@@ -230,6 +256,11 @@ cv_plmm <- function(X,
 
   # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")
+  cat("\nCross validation started at: ",
+      pretty_time(),
+      file = logfile,
+      append = TRUE)
+
   # set up progress bar -- this can take a while
   if(trace){pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)}
   for (i in 1:nfolds) {
@@ -240,6 +271,8 @@ cv_plmm <- function(X,
 
     } else {
       # case 2: cluster NOT user specified (this is the typical use case)
+      cat("Started fold", i, "at", pretty_time(),
+          file = logfile, append = TRUE)
       res <- cvf(i = i,
                  fold = fold,
                  type = type,
@@ -302,6 +335,8 @@ cv_plmm <- function(X,
   # handle output
   if (!is.null(save_rds)){
     saveRDS(val, save_rds)
+    cat("Results saved in", save_rds, "at", pretty_time(),
+        file = logfile, append = TRUE)
   }
 
   if (is.null(save_rds) & !return_fit){
@@ -312,6 +347,8 @@ cv_plmm <- function(X,
 
     rdsfile <- paste0(getwd(),"/cv_plmm_results.rds")
     saveRDS(val, rdsfile)
+    cat("Results saved in", rdsfile, "at", pretty_time(),
+        file = logfile, append = TRUE)
   }
 
   if (return_fit){
