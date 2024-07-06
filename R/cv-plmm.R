@@ -48,8 +48,11 @@
 #'                        the fold in which observation i was excluded from the fit, at the jth value of lambda.
 #' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
 #' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
-#' @param save_rds        Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.
+#' @param save_rds        Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+#'                        Defaults to NULL, which does not save the result.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
+#' @param compact_save    Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+#'                        Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...             Additional arguments to `plmm_fit`
 #'
 #' @returns a list with 11 items:
@@ -112,10 +115,11 @@ cv_plmm <- function(X,
                     trace=FALSE,
                     save_rds = NULL,
                     return_fit = TRUE,
+                    compact_save = FALSE,
                     ...) {
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                         unlist(strsplit(save_rds, split = ".rds", fixed = TRUE)),
+                                         save_rds,
                                          "./cv-plmm"))
 
   # run checks ------------------------------
@@ -182,7 +186,7 @@ cv_plmm <- function(X,
   fit <- do.call('plmm_fit', fit_args)
 
   cat("\nFull model fit finished at",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      pretty_time(),
       file = logfile, append = TRUE)
 
   if (is.null(col_names)){
@@ -224,11 +228,12 @@ cv_plmm <- function(X,
     on.exit(.GlobalEnv$.Random.seed <- original_seed)
     set.seed(seed)
   } else {
-    cat("Random seed:",
-        .GlobalEnv$.Random.seed[1],
-        "\n",
-        file = logfile,
-        append = TRUE)
+    # TODO: determine how, if at all, the random seed should be documented
+    # cat("Random seed:",
+    #     .GlobalEnv$.Random.seed[1],
+    #     "\n",
+    #     file = logfile,
+    #     append = TRUE)
   }
 
   sde <- sqrt(.Machine$double.eps)
@@ -334,9 +339,44 @@ cv_plmm <- function(X,
 
   # handle output
   if (!is.null(save_rds)){
-    saveRDS(val, save_rds)
-    cat("Results saved in", save_rds, "at", pretty_time(),
-        file = logfile, append = TRUE)
+    if (compact_save) {
+      # save output across multiple files
+      saveRDS(val[c(1:5, 7:11)], paste0(save_rds, "_cv_details.rds"))
+      cat("CV details (CVE, fold assignments, etc) saved to:",
+          paste0(save_rds, "_cv_details.rds"),
+          "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(fit_to_return$beta_vals, paste0(save_rds, "_coefficients.rds"))
+      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(fit_to_return$K, paste0(save_rds, "_K.rds"))
+      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
+      cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(fit_to_return[c(2:3, 5:12)], paste0(save_rds, "_full_fit_details.rds"))
+      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_full_fit_details.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+    } else {
+      # save all output in one file (default)
+      saveRDS(the_final_product, paste0(save_rds, ".rds"))
+      cat("Results saved to:", paste0(save_rds, ".rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+    }
+
+
   }
 
   if (is.null(save_rds) & !return_fit){

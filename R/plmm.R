@@ -36,7 +36,7 @@
 #'                                Defaults to NULL, which does not save the result.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
-#'                                Defaults to FALSE.
+#'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #' @returns A list which includes:
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
@@ -107,8 +107,7 @@ plmm <- function(X,
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
                                          save_rds,
-                                         "./plmm"),
-                        list(...))
+                                         "./plmm"))
 
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
@@ -130,10 +129,10 @@ plmm <- function(X,
 
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",
-                format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"))}
+                pretty_time())}
 
   cat("Input data passed all checks at ",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      pretty_time(),
       "\n", file = logfile, append = TRUE)
 
   the_prep <- plmm_prep(std_X = checked_data$std_X,
@@ -149,10 +148,10 @@ plmm <- function(X,
                         trace = trace)
 
   if (trace)(cat("Eigendecomposition finished at ",
-                 format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+                 pretty_time()))
 
   cat("Eigendecomposition finished at ",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      pretty_time(),
       "\n", file = logfile, append = TRUE)
 
   # rotate & fit -------------------------------------------------------------
@@ -193,9 +192,9 @@ plmm <- function(X,
                                    non_genomic = checked_data$non_genomic)
 
   if (trace)(cat("Model ready at ",
-                 format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+                 pretty_time()))
   cat("Model ready at ",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      pretty_time(),
       file = logfile, append = TRUE)
 
   # handle output
@@ -204,29 +203,29 @@ plmm <- function(X,
       # save output across multiple files
       saveRDS(the_final_product$beta_vals, paste0(save_rds, "_coefficients.rds"))
       cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
-          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          pretty_time(),
           file = logfile, append = TRUE)
 
       saveRDS(the_final_product$K, paste0(save_rds, "_K.rds"))
       cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
-          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          pretty_time(),
           file = logfile, append = TRUE)
 
       saveRDS(the_final_product$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
       cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
-          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(the_final_product[c(2:3, 5:12)], paste0(save_rds, "_results.rds"))
-      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_results.rds"), "at",
-          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+      saveRDS(the_final_product[c(2:3, 5:12)], paste0(save_rds, "_details.rds"))
+      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
+          pretty_time(),
           file = logfile, append = TRUE)
 
     } else {
       # save all output in one file (default)
       saveRDS(the_final_product, paste0(save_rds, ".rds"))
       cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          pretty_time(),
           file = logfile, append = TRUE)
     }
 
@@ -237,7 +236,8 @@ plmm <- function(X,
     cat("You accidentally left save_rds NULL while setting return_fit = FALSE;
         to prevent you from losing your work, I am saving the output as plmm_results.rds
         in your current working directory (current folder).\n
-        Next time, make sure to specify your own filepath to the save_rds argument.\n")
+        Next time, make sure to specify your own filepath to the save_rds argument.\n",
+        file = logfile, append = TRUE)
 
     rdsfile <- paste0(getwd(),"/plmm_results.rds")
     saveRDS(the_final_product, rdsfile)

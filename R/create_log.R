@@ -19,7 +19,7 @@ create_log <- function(outfile, ...) {
 
 
   # write header to the log file
-  cat("### PLMM log file ###\n", file = logfile)
+  cat("### plmmr log file ###\n", file = logfile)
   cat("Logging to", logfile, "\n", file = logfile, append = TRUE)
   cat("Host:", get_hostname(), "\n", file = logfile, append = TRUE)
   cat("Current working directory:", getwd(), "\n", file = logfile, append = TRUE)
@@ -28,7 +28,7 @@ create_log <- function(outfile, ...) {
 
   # get the name of the calling function
   calling_function <- deparse(sys.call(-1))
-  cat("Call:", calling_function, "\n", file = logfile, append = TRUE)
+  cat("Call:", trimws(calling_function), "\n", file = logfile, append = TRUE)
 
   # close the log file
   close(log_con)
