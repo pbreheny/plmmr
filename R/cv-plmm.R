@@ -5,11 +5,6 @@
 #'
 #' @param X               Design matrix for model fitting. May include clinical covariates and other non-SNP data.
 #' @param y               Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param std_needed      Logical: does the supplied X need to be standardized? Defaults to TRUE.
-#'                        For data processed from PLINK files, standardization happens in `process_plink()`.
-#'                        For data supplied as a matrix, standardization happens here in `plmm()`.
-#'                        If you know your data are already standardized, set `std_needed = FALSE` -- this would be an atypical case.
-#'                        **Note**: failing to correctly standardize data will lead to incorrect analyses.
 #' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
 #' @param non_genomic     Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #'                        For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -86,7 +81,6 @@
 #'
 cv_plmm <- function(X,
                     y = NULL,
-                    std_needed = TRUE,
                     col_names = NULL,
                     non_genomic = NULL,
                     K = NULL,
@@ -124,7 +118,6 @@ cv_plmm <- function(X,
 
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
-                              std_needed = std_needed,
                               col_names = col_names,
                               non_genomic = non_genomic,
                               y = y,
@@ -370,7 +363,7 @@ cv_plmm <- function(X,
 
     } else {
       # save all output in one file (default)
-      saveRDS(the_final_product, paste0(save_rds, ".rds"))
+      saveRDS(val, paste0(save_rds, ".rds"))
       cat("Results saved to:", paste0(save_rds, ".rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)

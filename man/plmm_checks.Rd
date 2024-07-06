@@ -7,7 +7,6 @@
 plmm_checks(
   X,
   y = NULL,
-  std_needed = NULL,
   col_names = NULL,
   non_genomic = NULL,
   K = NULL,
@@ -32,8 +31,6 @@ plmm_checks(
 }}
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
-
-\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to NULL, since by default, X will be standardized internally. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, leave \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 

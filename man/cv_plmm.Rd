@@ -7,7 +7,6 @@
 cv_plmm(
   X,
   y = NULL,
-  std_needed = TRUE,
   col_names = NULL,
   non_genomic = NULL,
   K = NULL,
@@ -36,6 +35,7 @@ cv_plmm(
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
+  compact_save = FALSE,
   ...
 )
 }
@@ -43,12 +43,6 @@ cv_plmm(
 \item{X}{Design matrix for model fitting. May include clinical covariates and other non-SNP data.}
 
 \item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
-
-\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE.
-For data processed from PLINK files, standardization happens in \code{process_plink()}.
-For data supplied as a matrix, standardization happens here in \code{plmm()}.
-If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case.
-\strong{Note}: failing to correctly standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
 
@@ -65,7 +59,10 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient.
+If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
+The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
+In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{type}{A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
 based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
@@ -111,9 +108,13 @@ the fold in which observation i was excluded from the fit, at the jth value of l
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.}
 
-\item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
+\item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+Defaults to NULL, which does not save the result.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
+
+\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
 \item{...}{Additional arguments to \code{plmm_fit}}
 }
@@ -142,7 +143,8 @@ Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 linear mixed models over a grid of values for the regularization parameter \code{lambda}.
 }
 \examples{
-cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y, non_genomic = 1)
+cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y,
+ non_genomic = 1, penalty_factor = c(0, rep(1, ncol(admix$X))))
 print(summary(cv_fit))
 plot(cv_fit)
 

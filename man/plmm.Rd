@@ -7,7 +7,6 @@
 plmm(
   X,
   y = NULL,
-  std_needed = TRUE,
   col_names = NULL,
   non_genomic = NULL,
   K = NULL,
@@ -28,6 +27,7 @@ plmm(
   warn = TRUE,
   trace = FALSE,
   save_rds = NULL,
+  compact_save = FALSE,
   return_fit = TRUE,
   ...
 )
@@ -37,8 +37,6 @@ plmm(
 * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
 \item{y}{Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
-
-\item{std_needed}{Logical: does the supplied X need to be standardized? Defaults to TRUE. For data processed from PLINK files, standardization happens in \code{process_plink()}. For data supplied as a matrix, standardization happens here in \code{plmm()}. If you know your data are already standardized, set \code{std_needed = FALSE} -- this would be an atypical case. \strong{Note}: failing to standardize data will lead to incorrect analyses.}
 
 \item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.
 For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.}
@@ -85,7 +83,11 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
-\item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
+\item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+Defaults to NULL, which does not save the result.}
+
+\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 

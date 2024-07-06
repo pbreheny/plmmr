@@ -3,7 +3,6 @@
 #' @param X Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
 #' * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 #' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param std_needed Logical: does the supplied X need to be standardized? Defaults to NULL, since by default, X will be standardized internally. For data processed from PLINK files, standardization happens in `process_plink()`. For data supplied as a matrix, standardization happens here in `plmm()`. If you know your data are already standardized, leave `std_needed = FALSE` -- this would be an atypical case. **Note**: failing to standardize data will lead to incorrect analyses.
 #' @param col_names Optional vector of column names for design matrix. Defaults to NULL.
 #' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
@@ -29,7 +28,6 @@
 #'
 plmm_checks <- function(X,
                         y = NULL,
-                        std_needed = NULL,
                         col_names = NULL,
                         non_genomic = NULL,
                         K = NULL,
@@ -57,7 +55,6 @@ plmm_checks <- function(X,
     # case 1: X is a filebacked matrix from process_delim() or process_plink()
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
-    std_needed <- FALSE
     std_indices <- index_std_X(std_X = std_X, non_genomic = dat$non_gen)
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
@@ -109,32 +106,17 @@ plmm_checks <- function(X,
     }
 
     # handle standardization (for in-memory matrix case)
-    if (std_needed){
       std_res <- standardize_matrix(X, penalty_factor)
       std_X <- std_res$std_X
       std_X_details <- std_res$std_X_details
       penalty_factor <- std_res$penalty_factor
-    } else {
-      std_X <- X
-
-      if (trace) {
-        cat("You have left std_needed = FALSE; this means you are assuming that
-            all columns in X have mean 0 and variance 1. This also means
-            you are assuming that none of the columns in X are constant features.\n
-            If you have supplied X via a filepath to an RDS object created by `process_plink()`,
-            ignore this message -- `process_plink()` standardized X for you.\n")
-      }
-
-      std_X_details <- list(center = rep(0, ncol(X)),
-                            scale = rep(1, ncol(X)),
-                            ns = 1:ncol(X))
-    }
 
     # designate dimensions of the standardized data
     std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
     genomic <- std_indices$genomic
     std_X_n <- std_indices$std_X_n
     std_X_p <- std_indices$std_X_p
+
   } # this bracket closes case 2 (the matrix case )
 
   #  check y types & read y -------------------------------

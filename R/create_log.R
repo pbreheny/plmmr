@@ -1,12 +1,9 @@
 # Define the function to create the .log file
 #' create_log_file
-#' @param outfile
-#' @param ...
+#' @param outfile   String specifying the name of the to-be-created file, *without* extension
+#' @param ...       Not used
+#' @keywords internal
 #'
-#' @return
-#' @export
-#'
-#' @examples
 create_log <- function(outfile, ...) {
   if (missing(outfile)) {
     stop("You must specify a name for the output file(s) via the outfile argument.")

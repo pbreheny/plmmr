@@ -4,7 +4,7 @@
 \alias{name_and_count_bigsnp}
 \title{A helper function to label and summarize the contents of a \code{bigSNP}}
 \usage{
-name_and_count_bigsnp(obj, id_var, quiet)
+name_and_count_bigsnp(obj, id_var, quiet, outfile)
 }
 \arguments{
 \item{obj}{a \code{bigSNP} object, possibly subset by \code{add_external_phenotype()}}
@@ -12,6 +12,8 @@ name_and_count_bigsnp(obj, id_var, quiet)
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+
+\item{outfile}{The string with the name of the .log file}
 }
 \value{
 a list with components:

@@ -12,4 +12,4 @@ str(admix_rds)
 plmm(X = "data-raw/admix", trace = TRUE)
 
 # compare with in-memory model 
-plmm(X = admix$X, y = admix$y, std_needed = TRUE)
+plmm(X = admix$X, y = admix$y, standardize = TRUE)
