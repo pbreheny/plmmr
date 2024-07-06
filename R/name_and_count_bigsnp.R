@@ -3,7 +3,7 @@
 #' @param obj a `bigSNP` object, possibly subset by `add_external_phenotype()`
 #' @param id_var String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param quiet Logical: should messages be printed to the console? Defaults to TRUE
-#'
+#' @param outfile The string with the name of the .log file
 #' @return a list with components:
 #' * counts: column-wise summary of the minor allele counts in 'genotypes'
 #' * obj: a modified `bigSNP` list with additional components
@@ -11,7 +11,7 @@
 #' * pos: the `obj$map$physical.pos` vector
 #' @keywords internal
 
-name_and_count_bigsnp <- function(obj, id_var, quiet){
+name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
 
   X <- obj$genotypes
 
@@ -34,6 +34,10 @@ name_and_count_bigsnp <- function(obj, id_var, quiet){
         obj$p, "genomic features in the specified data files, representing chromosomes",
         chr_range[1], "-", chr_range[2])
   }
+  cat("\nThere are", obj$n, "observations and",
+      obj$p, "genomic features in the specified data files, representing chromosomes",
+      chr_range[1], "-", chr_range[2],
+      file = outfile, append = TRUE)
 
   # save these counts
   counts <- bigstatsr::big_counts(X) # NB: this is a matrix

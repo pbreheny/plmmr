@@ -29,7 +29,7 @@ impute_snp_data <- function(obj, X, impute, impute_method,
   }
 
   if(impute){
-    cat("\nImputing the missing values using", impute_method, "method",
+    cat("Imputing the missing values using", impute_method, "method\n",
         file = outfile, append = TRUE)
 
     if(impute_method %in% c('mode', 'random', 'mean0', 'mean2')){
@@ -65,7 +65,7 @@ impute_snp_data <- function(obj, X, impute, impute_method,
     # save the imputed object
     obj <- bigsnpr::snp_save(obj)
 
-    cat("\nDone with imputation.",
+    cat("Done with imputation.\n",
         file = outfile, append = TRUE)
   }
 

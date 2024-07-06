@@ -44,16 +44,23 @@ handle_missingness <- function(obj, X, counts, na_phenotype_vals,
       cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data.")
       # Note: the actual pruning happens in the 'subset' step
     }
+    cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data\n",
+        file = outfile, append = TRUE)
 
   } else if (handle_missing_phen == 'asis'){
     if(!quiet){
       cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data.")
     }
+    cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data\n",
+        file = outfile, append = TRUE)
+
     obj$fam$affection[na_phen] <- NA_integer_
   } else {
     if(!quiet){
       cat("\nImputing phenotype data for ", length(na_phen), " samples/observations.")
     }
+    cat("\nImputing phenotype data for ", length(na_phen), " samples/observations\n",
+        file = outfile, append = TRUE)
     obj$fam$affection[na_phen] <- switch(handle_missing_phen,
                                          median = median(obj$fam$affection[complete_phen]),
                                          mean = mean(obj$fam$affection[complete_phen]))

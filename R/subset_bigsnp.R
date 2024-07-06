@@ -32,7 +32,7 @@ subset_bigsnp <- function(obj, counts, handle_missing_phen, complete_phen, non_g
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
 
   if (!quiet){
-    cat("\nSubsetting data to exclude constant features (e.g., monomorphic SNPs)",
+    cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
         file = outfile, append = TRUE)
 
     if (handle_missing_phen == "prune"){

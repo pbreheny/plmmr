@@ -107,23 +107,25 @@ process_plink <- function(data_dir,
   }
 
   if(missing(outfile)){
-    outfile = file.path(rds_dir, "process_plink.log")
-  } else {
-    outfile = paste0(outfile, ".log")
+    outfile = file.path(rds_dir, "process_plink")
   }
-  log_con <- file(outfile)
-  cat("### Processing PLINK files for PLMM ###", file = log_con)
-  cat("Logging to", outfile, "\n", file = outfile, append = TRUE)
-  cat("Preprocessing", prefix, "data:", file = outfile, "\n", append = TRUE)
-  cat("data_dir:", data_dir, "\n", file = outfile, append = TRUE)
+
+  logfile <- create_log(outfile = outfile)
 
   if(!quiet){
-    cat("\nLogging to", outfile)
+    cat("\nLogging to", logfile)
     cat("\nPreprocessing", prefix, "data:")
   }
+  cat("\nPreprocessing", prefix, "data\n", file = logfile, append = TRUE)
+
 
   # read in PLINK files --------------------------------
-  plink_obj <- read_plink_files(data_dir, prefix, rds_dir, outfile, overwrite, quiet)
+  plink_obj <- read_plink_files(data_dir = data_dir,
+                                prefix = prefix,
+                                rds_dir = rds_dir,
+                                outfile = logfile,
+                                overwrite = overwrite,
+                                quiet = quiet)
 
   # add external phenotype, if needed -----------------
   if (id_var == "IID"){
@@ -135,8 +137,10 @@ process_plink <- function(data_dir,
   }
 
   if (!is.null(add_phen)){
-    step1 <- add_external_phenotype(geno = plink_obj, geno_id = geno_id,
-                                    pheno = add_phen, pheno_id = pheno_id,
+    step1 <- add_external_phenotype(geno = plink_obj,
+                                    geno_id = geno_id,
+                                    pheno = add_phen,
+                                    pheno_id = pheno_id,
                                     pheno_col = pheno_name)
 
   } else {
@@ -145,31 +149,44 @@ process_plink <- function(data_dir,
   }
 
   # name and count ------------------------------------
-  step2 <- name_and_count_bigsnp(step1, id_var, quiet)
+  step2 <- name_and_count_bigsnp(obj = step1,
+                                 id_var = id_var,
+                                 quiet = quiet,
+                                 outfile = logfile)
 
   # chromosome check ---------------------------------
   # only consider SNPs on chromosomes 1-22
   if(step2$chr_range[1] < 1 | step2$chr_range[2] > 22){
-    stop("\nplmmr only analyzes autosomes -- please remove variants on
+    stop("plmmr only analyzes autosomes -- please remove variants on
          chromosomes outside 1-22.
          This can be done in PLINK 1.9; see the documentation in
-         https://www.cog-genomics.org/plink/1.9/filter#chr")
+         https://www.cog-genomics.org/plink/1.9/filter#chr \n")
   }
 
   # notify about missing genotypes & phenotypes ---------------------------------
-  step3 <- handle_missingness(obj = step2$obj, counts = step2$counts,
+  step3 <- handle_missingness(obj = step2$obj,
+                              counts = step2$counts,
                               X = step2$X,
                               na_phenotype_vals = na_phenotype_vals,
                               handle_missing_phen = handle_missing_phen,
-                              outfile = outfile, quiet = quiet)
+                              outfile = logfile,
+                              quiet = quiet)
 
   # imputation ------------------------------------------------------------------
-  step4 <- impute_snp_data(step2$obj, step2$X, impute, impute_method,
-                               outfile, quiet,...)
+  step4 <- impute_snp_data(step2$obj,
+                           step2$X,
+                           impute = impute,
+                           impute_method = impute_method,
+                           outfile = logfile,
+                           quiet = quiet, ...)
 
   # add predictors from external files -----------------------------
-  step5 <- add_predictors_to_bigsnp(step4, add_predictor_fam, add_predictor_ext,
-                          id_var, step2$og_plink_ids, quiet)
+  step5 <- add_predictors_to_bigsnp(obj = step4,
+                                    add_predictor_fam = add_predictor_fam,
+                                    add_predictor_ext = add_predictor_ext,
+                                    id_var = id_var,
+                                    og_plink_ids = step2$og_plink_ids,
+                                    quiet = quiet)
 
   # check for files to be overwritten---------------------------------
   if (overwrite){
@@ -182,13 +199,28 @@ process_plink <- function(data_dir,
   }
 
   # subsetting -----------------------------------------------------------------
-  step6 <- subset_bigsnp(step5$obj, step2$counts, handle_missing_phen,
-                      step3$complete_phen, step5$non_gen, data_dir, rds_dir,
-                      prefix, bk_filename, outfile, quiet)
+  step6 <- subset_bigsnp(obj = step5$obj,
+                         counts = step2$counts,
+                         handle_missing_phen = handle_missing_phen,
+                         complete_phen = step3$complete_phen,
+                         non_gen = step5$non_gen,
+                         data_dir = data_dir,
+                         rds_dir = rds_dir,
+                         prefix = prefix,
+                         bk_filename = bk_filename,
+                         outfile = logfile,
+                         quiet = quiet)
 
   # standardization ------------------------------------------------------------
-  step7 <- standardize_bigsnp(step6, prefix, rds_dir, step5$non_gen, step3$complete_phen,
-                  id_var, outfile, quiet, overwrite)
+  step7 <- standardize_bigsnp(obj = step6,
+                              prefix = prefix,
+                              rds_dir = rds_dir,
+                              non_gen = step5$non_gen,
+                              complete_phen = step3$complete_phen,
+                              id_var = id_var,
+                              outfile = logfile,
+                              quiet = quiet,
+                              overwrite = overwrite)
 
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
@@ -206,7 +238,11 @@ process_plink <- function(data_dir,
   saveRDS(step7, file.path(rds_dir, paste0("std_", prefix, ".rds")))
 
   if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
-  close(log_con)
+
+  cat("\nDone with standardization. \nProcessed files now saved as",
+      file.path(rds_dir, paste0("std_", prefix, ".rds")),
+      "at", pretty_time(),
+      file = logfile, append = TRUE)
 
 
   return(file.path(rds_dir, paste0("std_", prefix, ".rds")))

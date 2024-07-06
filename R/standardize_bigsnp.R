@@ -65,8 +65,7 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
 
 
   if (!quiet){
-    cat("\nDone with standardization. File formatting in progress.",
-        file = outfile, append = TRUE)
+    cat("Done with standardization. File formatting in progress\n")
   }
 
   return(ret)
