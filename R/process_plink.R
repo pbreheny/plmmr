@@ -115,6 +115,7 @@ process_plink <- function(data_dir,
   cat("### Processing PLINK files for PLMM ###", file = log_con)
   cat("\nLogging to", outfile, file = outfile, append = TRUE)
   cat("\nPreprocessing", prefix, "data:", file = outfile, append = TRUE)
+  cat("")
 
   if(!quiet){
     cat("\nLogging to", outfile)
@@ -206,4 +207,11 @@ process_plink <- function(data_dir,
 
   if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
   close(log_con)
+
+
+  return(file.path(rds_dir, paste0("std_", prefix, ".rds")))
+
 }
+
+
+

@@ -28,7 +28,10 @@
 #' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty_factor  A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param penalty_factor  A multiplicative factor for the penalty applied to each coefficient.
+#'                        If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
+#'                        The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
+#'                        In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
