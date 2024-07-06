@@ -32,8 +32,11 @@
 #' @param convex                  (future idea; not yet incorporated)Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param warn                    Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
-#' @param save_rds                Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.
+#' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+#'                                Defaults to NULL, which does not save the result.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
+#' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+#'                                Defaults to FALSE.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #' @returns A list which includes:
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
@@ -97,12 +100,13 @@ plmm <- function(X,
                  warn = TRUE,
                  trace = FALSE,
                  save_rds = NULL,
+                 compact_save = FALSE,
                  return_fit = TRUE,
                  ...) {
 
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                         unlist(strsplit(save_rds, split = ".rds", fixed = TRUE)),
+                                         save_rds,
                                          "./plmm"),
                         list(...))
 
@@ -196,10 +200,37 @@ plmm <- function(X,
 
   # handle output
   if (!is.null(save_rds)){
-    saveRDS(the_final_product, save_rds)
-    cat("Results saved to:", save_rds, "at",
-        format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
-        file = logfile, append = TRUE)
+    if (compact_save) {
+      # save output across multiple files
+      saveRDS(the_final_product$beta_vals, paste0(save_rds, "_coefficients.rds"))
+      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          file = logfile, append = TRUE)
+
+      saveRDS(the_final_product$K, paste0(save_rds, "_K.rds"))
+      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          file = logfile, append = TRUE)
+
+      saveRDS(the_final_product$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
+      cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          file = logfile, append = TRUE)
+
+      saveRDS(the_final_product[c(2:3, 5:12)], paste0(save_rds, "_results.rds"))
+      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_results.rds"), "at",
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          file = logfile, append = TRUE)
+
+    } else {
+      # save all output in one file (default)
+      saveRDS(the_final_product, paste0(save_rds, ".rds"))
+      cat("Results saved to:", paste0(save_rds, ".rds"), "at",
+          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
+          file = logfile, append = TRUE)
+    }
+
+
   }
 
   if (is.null(save_rds) & !return_fit){
