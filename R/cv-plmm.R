@@ -116,7 +116,7 @@ cv_plmm <- function(X,
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
                                          unlist(strsplit(save_rds, split = ".rds", fixed = TRUE)),
-                                         "./plmm"))
+                                         "./cv-plmm"))
 
   # run checks ------------------------------
   checked_data <- plmm_checks(X,
