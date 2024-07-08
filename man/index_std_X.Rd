@@ -4,10 +4,10 @@
 \alias{index_std_X}
 \title{Helper function to index standardized data}
 \usage{
-index_std_X(std_X, non_genomic)
+index_std_X(std_X_p, non_genomic)
 }
 \arguments{
-\item{std_X}{The standardized matrix of data (which may be filebacked)}
+\item{std_X_p}{The number of features in the \emph{standardized} matrix of data (which may be filebacked)}
 
 \item{non_genomic}{Integer vector of columns in \code{std_X} representing non-genomic data.}
 }

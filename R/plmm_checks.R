@@ -55,11 +55,10 @@ plmm_checks <- function(X,
     # case 1: X is a filebacked matrix from process_delim() or process_plink()
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
-    std_indices <- index_std_X(std_X = std_X, non_genomic = dat$non_gen)
-    genomic <- std_indices$genomic
-    std_X_n <- std_indices$std_X_n
-    std_X_p <- std_indices$std_X_p
+    std_X_n <- dat$std_X_n
+    std_X_p <- dat$std_X_p
     col_names <- dat$X_colnames
+    genomic <- index_std_X(std_X_p = std_X_p, non_genomic = dat$non_gen)
 
     # create a list that captures the centering/scaling for std_X;
     # will need this later, see `untransform()`
@@ -112,10 +111,10 @@ plmm_checks <- function(X,
       penalty_factor <- std_res$penalty_factor
 
     # designate dimensions of the standardized data
-    std_indices <- index_std_X(std_X = std_X, non_genomic = non_genomic)
-    genomic <- std_indices$genomic
-    std_X_n <- std_indices$std_X_n
-    std_X_p <- std_indices$std_X_p
+      std_X_n <- nrow(std_X)
+      std_X_p <- ncol(std_X)
+      genomic <- index_std_X(std_X_p = std_X_p, non_genomic = non_genomic)
+
 
   } # this bracket closes case 2 (the matrix case )
 
