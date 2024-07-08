@@ -82,12 +82,14 @@ reference:
     - add_predictors_to_bigsnp
     - align_ids
     - align_famfile_ids
+    - create_log
     - count_constant_features
     - cvf
     - delta
     - eigen_K
     - estimate_eta
     - fbm2bm
+    - get_hostname
     - handle_missingness
     - impute_snp_data
     - index_std_X
@@ -100,6 +102,7 @@ reference:
     - plmm_format
     - plmm_prep
     - predict_within_cv
+    - pretty_time
     - read_data_files
     - read_plink_files
     - rotate_filebacked
