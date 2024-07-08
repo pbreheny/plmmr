@@ -14,8 +14,8 @@ predict_within_cv(
   type,
   fbm = FALSE,
   idx = 1:length(fit$lambda),
-  V11 = NULL,
-  V21 = NULL,
+  Sigma_11 = NULL,
+  Sigma_21 = NULL,
   ...
 )
 }
@@ -45,9 +45,9 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 
-\item{V11}{Variance-covariance matrix of the training data. Extracted from \code{estimated_V} that is generated using all observations. Required if \code{type == 'blup'}.}
+\item{Sigma_11}{Variance-covariance matrix of the training data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
 
-\item{V21}{Covariance matrix between the training and the testing data. Extracted from \code{estimated_V} that is generated using all observations. Required if \code{type == 'blup'}.}
+\item{Sigma_21}{Covariance matrix between the training and the testing data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
 
 \item{...}{Additional optional arguments}
 }

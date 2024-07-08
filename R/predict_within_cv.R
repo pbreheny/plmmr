@@ -14,8 +14,8 @@
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
 #' @param idx Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.
-#' @param V11 Variance-covariance matrix of the training data. Extracted from `estimated_V` that is generated using all observations. Required if \code{type == 'blup'}.
-#' @param V21 Covariance matrix between the training and the testing data. Extracted from `estimated_V` that is generated using all observations. Required if \code{type == 'blup'}.
+#' @param Sigma_11 Variance-covariance matrix of the training data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
+#' @param Sigma_21 Covariance matrix between the training and the testing data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
 #' @param ... Additional optional arguments
 #'
 #' @details
@@ -42,8 +42,8 @@ predict_within_cv <- function(fit,
                               type,
                               fbm = FALSE,
                               idx=1:length(fit$lambda),
-                              V11 = NULL,
-                              V21 = NULL, ...) {
+                              Sigma_11 = NULL,
+                              Sigma_21 = NULL, ...) {
 
   # make sure X is in the correct format...
   # case 1: testX is filebacked
@@ -79,13 +79,13 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
-    # covariance comes from selected rows and columns from estimated_V that is generated in the overall fit (V11, V21)
-    # test1 <- V21 %*% chol2inv(chol(V11)) # true
-    # TODO: to find the inverse of V11 using Woodbury's formula? think on this...
+    # covariance comes from selected rows and columns from estimated_Sigma that is generated in the overall fit (Sigma_11, Sigma_21)
+    # test1 <- Sigma_21 %*% chol2inv(chol(Sigma_11)) # true
+    # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
     b_train <- og_scale_beta[-1,,drop=FALSE] # this may or may not be equal to b...
     Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
     resid_train <- (drop(trainY) - Xb_train)
-    ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_train)
+    ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_train)
     blup <- Xb + ranef
 
     return(blup)

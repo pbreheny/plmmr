@@ -238,9 +238,9 @@ cv_plmm <- function(X,
   cv_args$lambda <- fit$lambda
   cv_args$non_genomic <- checked_data$non_genomic
 
-  estimated_V <- NULL
+  estimated_Sigma <- NULL
   if (type == 'blup') {
-    estimated_V <- construct_variance(eta = fit$eta, K = prep$K)
+    estimated_Sigma <- construct_variance(eta = fit$eta, K = prep$K)
   }
 
   # initialize objects to hold CV results
@@ -278,11 +278,11 @@ cv_plmm <- function(X,
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv_args", "estimated_V"), envir=environment())
+    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv_args", "estimated_Sigma"), envir=environment())
     parallel::clusterCall(cluster, function() library(plmmr))
     fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf, X=X, y=y,
                                         fold=fold, type=type, cv_args=cv_args,
-                                        estimated_V = estimated_V)
+                                        estimated_Sigma = estimated_Sigma)
   }
 
   # carry out CV -------------------------------------
@@ -308,7 +308,7 @@ cv_plmm <- function(X,
                  fold = fold,
                  type = type,
                  cv_args = cv_args,
-                 estimated_V = estimated_V)
+                 estimated_Sigma = estimated_Sigma)
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }
@@ -375,7 +375,7 @@ cv_plmm <- function(X,
   }
 
   if (type == "blup"){
-    val$estimated_V = estimated_V
+    val$estimated_Sigma = estimated_Sigma
   }
 
   # handle output
@@ -389,8 +389,8 @@ cv_plmm <- function(X,
           pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(estimated_V, paste0(save_rds, "_estimated_variance.rds"))
-      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_variance.rds"),
+      saveRDS(estimated_Sigma, paste0(save_rds, "_estimated_Sigmaariance.rds"))
+      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_Sigmaariance.rds"),
           "at", pretty_time(), file = logfile, append = TRUE)
 
       saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))

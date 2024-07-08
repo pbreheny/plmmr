@@ -130,12 +130,12 @@ predict.plmm <- function(object,
     if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
     if (!is.null(object$y)) y <- object$y
 
-    V11 <- construct_variance(fit = object)
-    V21 <- object$eta * (1/p) * tcrossprod(newX,X) # same as V21_check
+    Sigma_11 <- construct_variance(fit = object)
+    Sigma_21 <- object$eta * (1/p) * tcrossprod(newX,X) # same as Sigma_21_check
     Xb_old <- sweep(X %*% b, 2, a, "+")
     resid_old <- drop(y) - Xb_old
 
-    ranef <- V21 %*% (chol2inv(chol(V11)) %*% resid_old)
+    ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
     blup <- drop(Xb + ranef)
 
     return(blup)

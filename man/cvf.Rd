@@ -4,7 +4,7 @@
 \alias{cvf}
 \title{Cross-validation internal function for cv_plmm}
 \usage{
-cvf(i, fold, type, cv_args, estimated_V, ...)
+cvf(i, fold, type, cv_args, estimated_Sigma, ...)
 }
 \arguments{
 \item{i}{Fold number to be excluded from fit.}
@@ -15,7 +15,7 @@ cvf(i, fold, type, cv_args, estimated_V, ...)
 
 \item{cv_args}{List of additional arguments to be passed to plmm.}
 
-\item{estimated_V}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.}
+\item{estimated_Sigma}{Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.}
 
 \item{...}{Optional arguments to \code{predict_within_cv}}
 }

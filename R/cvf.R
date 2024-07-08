@@ -6,11 +6,11 @@
 #' @param fold n-length vector of fold-assignments.
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param cv_args List of additional arguments to be passed to plmm.
-#' @param estimated_V Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
+#' @param estimated_Sigma Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
-cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
+cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
   y <- cv_args$y
@@ -135,9 +135,9 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
   }
 
   if (type == 'blup'){
-    # estimated_V here comes from the overall fit in cv_plmm.R, an n*n matrix
-    V21 <- estimated_V[fold==i, fold!=i, drop = FALSE]
-    V11 <- estimated_V[fold!=i, fold!=i, drop = FALSE]
+    # estimated_Sigma here comes from the overall fit in cv_plmm.R, an n*n matrix
+    Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
+    Sigma_11 <- estimated_Sigma[fold!=i, fold!=i, drop = FALSE]
 
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = train_X,
@@ -147,8 +147,8 @@ cvf <- function(i, fold, type, cv_args, estimated_V, ...) {
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
-                              V11 = V11,
-                              V21 = V21, ...)
+                              Sigma_11 = Sigma_11,
+                              Sigma_21 = Sigma_21, ...)
 
   }
 

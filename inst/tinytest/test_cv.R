@@ -27,10 +27,10 @@ if(identical(cv1$cve, cv2$cve))stop("BLUP and response types give same result")
 # assuming newX has the same eta as X
 # eta_all <- object$eta
 # Vhat_all <- eta_all * tcrossprod(U_all %*% diag(S_all), U_all) + (1-eta_all)*diag(nrow(U_all))
-# V21_check <- Vhat_all[-c(1:n), 1:n, drop = FALSE]
-# V11_check <- Vhat_all[1:n, 1:n, drop = FALSE]
+# Sigma_21_check <- Vhat_all[-c(1:n), 1:n, drop = FALSE]
+# Sigma_11_check <- Vhat_all[1:n, 1:n, drop = FALSE]
 
-# ranef_check <- V21_check %*% chol2inv(chol(V11_check)) %*% (drop(y) - cbind(1, std_X) %*% beta_vals)
+# ranef_check <- Sigma_21_check %*% chol2inv(chol(Sigma_11_check)) %*% (drop(y) - cbind(1, std_X) %*% beta_vals)
 # print(eta)
 
 # blup_check <- Xb + ranef_check
