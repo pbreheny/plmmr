@@ -1,11 +1,11 @@
 ### plmmr log file ###
 Logging to ./plmm.log 
-Host: fv-az1393-813 
+Host: fv-az1109-197 
 Current working directory: /home/runner/work/plmmr/plmmr/docs/reference 
-Start log at: 2024-07-08 01:42:32
+Start log at: 2024-07-08 01:45:26
 Call: plmm(X = admix$X, y = admix$y, penalty = "SCAD", lambda = lam) 
-Input data passed all checks at  2024-07-08 01:42:32
+Input data passed all checks at  2024-07-08 01:45:26
  
-Eigendecomposition finished at  2024-07-08 01:42:32
+Eigendecomposition finished at  2024-07-08 01:45:26
  
-Model ready at  2024-07-08 01:42:32
+Model ready at  2024-07-08 01:45:26
