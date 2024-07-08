@@ -116,12 +116,8 @@ cv_plmm <- function(X,
                     return_fit = TRUE,
                     compact_save = FALSE,
                     ...) {
-  # start the log -----------------------
-  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                         save_rds,
-                                         "./cv-plmm"))
 
-  # check for argument inconsistency ------------------------------
+  # check filepaths for saving results ------------------------------
   if (save_fold_res & is.null(save_rds)) {
     stop("You have set 'save_fold_res = TRUE', but no argument was supplied to 'save_rds'.
          \nPlease specify a filepath (as a string) to 'save_rds'")
@@ -131,6 +127,14 @@ cv_plmm <- function(X,
     stop("You have set 'compact_save = TRUE', but no argument was supplied to 'save_rds'.
           \nPlease specify a filepath (as a string) to 'save_rds'")
   }
+
+  save_rds <- check_for_file_extension(save_rds)
+  # ^^ internally, we need to take off the extension from the file name
+
+  # start the log -----------------------
+  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
+                                         save_rds,
+                                         "./cv-plmm"))
 
   # run data checks ------------------------------
   checked_data <- plmm_checks(X,
@@ -389,8 +393,8 @@ cv_plmm <- function(X,
           pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(estimated_Sigma, paste0(save_rds, "_estimated_Sigmaariance.rds"))
-      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_Sigmaariance.rds"),
+      saveRDS(estimated_Sigma, paste0(save_rds, "_estimated_Sigma.rds"))
+      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_Sigma.rds"),
           "at", pretty_time(), file = logfile, append = TRUE)
 
       saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))

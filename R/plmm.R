@@ -102,6 +102,20 @@ plmm <- function(X,
                  return_fit = TRUE,
                  ...) {
 
+  # check filepaths for saving results ------------------------------
+  if (save_fold_res & is.null(save_rds)) {
+    stop("You have set 'save_fold_res = TRUE', but no argument was supplied to 'save_rds'.
+         \nPlease specify a filepath (as a string) to 'save_rds'")
+  }
+
+  if (compact_save & is.null(save_rds)) {
+    stop("You have set 'compact_save = TRUE', but no argument was supplied to 'save_rds'.
+          \nPlease specify a filepath (as a string) to 'save_rds'")
+  }
+
+  save_rds <- check_for_file_extension(save_rds)
+  # ^^ internally, we need to take off the extension from the file name
+
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
                                          save_rds,

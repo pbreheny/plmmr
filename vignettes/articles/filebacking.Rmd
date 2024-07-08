@@ -49,21 +49,21 @@ The most important step is where you begin -- for GWAS data, we have to tell `pl
 Here, we will create the files we want in a temporary directory just for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
 
 ```{r}
-temp_dir <- paste0(tempdir()) # using a temporary directory (if you didn't already create on above)
-process_plink(data_dir = find_example_data(parent = TRUE), # reads data from inst/extdata
+temp_dir <- paste0(tempdir()) # using a temporary directory (if you didn't already create one above)
+
+plink_data <- process_plink(data_dir = find_example_data(parent = TRUE), # reads data from inst/extdata
               rds_dir = temp_dir,
               prefix = "penncath_lite",
-              outfile = "process_penncath",
               overwrite = TRUE,
               impute_method = "mode")
 ```
 
-You'll see a lot of messages printed to the console here ... the result of all this is the creation of 2 files (these will show up in the folder where the PLINK data is): `std_penncath_lite.rds` and `std_penncath_lite.bk.`
+You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files: `std_penncath_lite.rds` and `std_penncath_lite.bk` contain the data, and `process_plink.log` is a text file documenting the steps that were just done. These will show up in the folder where the PLINK data is; the file path to the .rds object is returned here to `plink_data`
 
 We can examine what's in `std_penncath_lite.rds` using the `snp_attach()` function from the `bigsnpr` package:
 
 ```{r}
-pen <- readRDS(file.path(temp_dir, "std_penncath_lite.rds"))
+pen <- readRDS(plink_data)
 str(pen) # note: genotypes and std_X are *not* in memory
 # 
 # we can check to see that our data have been standardized 
@@ -91,8 +91,7 @@ str(std_colon2) # notice that the columns with NA values were dropped
 Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defaults to using the 6th column from the '.fam' file as the phenotype/outcome (this is the same as what PLINK does).
 
 ```{r}
-my_fb_data <- paste0(temp_dir, "/std_penncath_lite")
-fb_fit <- plmm(X = my_fb_data,
+fb_fit <- plmm(X = plink_data,
                returnX = FALSE, 
                # this datset is small enough to fit in memory
                # by setting returnX = FALSE, I force plmm() to run on the filebacked data
@@ -128,7 +127,7 @@ plot(colon2_fit)
 In most applications, we will want to fit a model using cross validation
 
 ```{r}
-cv_fb_fit <- cv_plmm(X = my_fb_data,
+cv_fb_fit <- cv_plmm(X = plink_data,
                      type = 'blup',
                      returnX = FALSE,
                      nfolds = 3, # for sake of testing, I made this small. 
@@ -136,6 +135,9 @@ cv_fb_fit <- cv_plmm(X = my_fb_data,
                      # cross validation - hence, the default is nfolds = 5
                      returnBiasDetails = TRUE,
                      trace = TRUE,
+                     save_rds = plink_data, # save_results to save folder as data 
+                     save_fold_res = TRUE,
+                     compact_save = TRUE,
                      seed = 123)
 
 ```

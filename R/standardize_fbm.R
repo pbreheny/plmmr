@@ -43,7 +43,7 @@ standardize_fbm <- function(subset_X, prefix, rds_dir, ns, non_gen,
     non_gen = non_gen) # save indices for non-genomic covariates
 
   if (!quiet){
-    cat("\nDone with standardization. File formatting in progress.",
+    cat("Done with standardization. File formatting in progress.\n",
         file = outfile, append = TRUE)
   }
 

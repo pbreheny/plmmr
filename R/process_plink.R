@@ -24,7 +24,7 @@
 #'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
 #'                            (2) prune missing values, or (3) impute missing values.
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
-#' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
 #' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
@@ -107,7 +107,7 @@ process_plink <- function(data_dir,
   }
 
   if(missing(outfile)){
-    outfile = file.path(rds_dir, "process_plink")
+    outfile = file.path(data_dir, "process_plink")
   }
 
   logfile <- create_log(outfile = outfile)

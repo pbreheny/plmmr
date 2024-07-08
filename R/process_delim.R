@@ -43,14 +43,14 @@
 #' # str(colon2_rds)
 #'
 process_delim <- function(file,
-                      data_dir,
-                      rds_dir = data_dir,
-                      bk_filename,
-                      ind.col,
-                      non_gen = NULL,
-                      outfile,
-                      overwrite = FALSE,
-                      quiet = FALSE){
+                          data_dir,
+                          rds_dir = data_dir,
+                          bk_filename,
+                          ind.col,
+                          non_gen = NULL,
+                          outfile,
+                          overwrite = FALSE,
+                          quiet = FALSE){
 
   prefix <- unlist(strsplit(file, split = "\\."))[1]
 
@@ -60,41 +60,54 @@ process_delim <- function(file,
 
   # start log ------------------------------------------
   if(missing(outfile)){
-    outfile = paste0(rds_dir, "/process_data.log")
-  } else {
-    outfile = paste0(outfile, ".log")
+    outfile = file.path(data_dir, "process_data")
   }
 
-  log_con <- file(outfile)
-  cat("### Processing files for PLMM ###", file = log_con)
-  cat("\nLogging to ", outfile, file = outfile, append = TRUE)
-  cat("\nPreprocessing", prefix, "data:", file = outfile, append = TRUE)
+  logfile <- create_log(outfile = outfile)
 
   if(!quiet){
-    cat("\nLogging to", outfile)
-    cat("\nPreprocessing", prefix, "data:")
+    cat("Logging to", logfile, "\n")
+    cat("Preprocessing", prefix, "data:\n")
   }
 
+  cat("Preprocessing", prefix, "data\n", file = logfile, append = TRUE)
+
   # read in data files --------------------------------
- X <- read_data_files(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet)
+  X <- read_data_files(file = file,
+                       data_dir = data_dir,
+                       rds_dir = rds_dir,
+                       ind.col = ind.col,
+                       outfile = logfile,
+                       overwrite = overwrite,
+                       quiet = quiet)
+
   # note the original dimensions
   n <- nrow(X)
   p <- ncol(X)
+
+  cat("There are", n, "observations and", p, "features in the specified data files.\n",
+      file = logfile, append = TRUE)
+
+  if (!quiet){
+    cat("There are", n, "observations and", p,
+        "features in the specified data files.\n")
+
+  }
 
   # notify about missing values ---------------------------------
   colstats <- bigstatsr::big_colstats(X)
   na_idx <- is.na(colstats$sum) # logical index
 
-  cat("\nThere are a total of ", sum(na_idx), "features with missing values.
-      \nAt this time, plmmr::process_delim() does not impute missing values. We
+  cat("There are a total of ", sum(na_idx), "features with missing values.
+      At this time, plmmr::process_delim() does not impute missing values. We
       are working to develop this feature.
-      \nFor now, plmmr::process_delim() will drop all columns of X with NA values.",
-      file = outfile, append = TRUE)
+      For now, plmmr::process_delim() will drop all columns of X with NA values.\n",
+      file = logfile, append = TRUE)
   if(!quiet){
-    cat("\nThere are a total of ", sum(na_idx), "features with missing values.
-      \nAt this time, plmmr::process_delim() does not impute missing values. We
-      are working to develop this feature.
-      \nFor now, plmmr::process_delim() will drop all columns of X with NA values.")
+    cat("There are a total of ", sum(na_idx), "features with missing values.\n
+      At this time, plmmr::process_delim() does not impute missing values. We
+      are working to develop this feature.\n
+      For now, plmmr::process_delim() will drop all columns of X with NA values.\n")
   }
 
   # subsetting -----------------------------------------------------------------
@@ -110,22 +123,52 @@ process_delim <- function(file,
   }
 
   # standardization ------------------------------------------------------------
-  std_X_list <- standardize_fbm(subset_X, prefix, rds_dir, ns, non_gen,
-                           outfile, quiet)
+  std_X_list <- standardize_fbm(subset_X = subset_X,
+                                prefix = prefix,
+                                rds_dir = rds_dir,
+                                ns = ns,
+                                non_gen = non_gen,
+                                outfile = logfile,
+                                quiet = quiet)
   std_X_list$n <- n
   std_X_list$p <- p
 
-  saveRDS(std_X_list, file.path(rds_dir, paste0("std_", prefix, ".rds")))
+  # check for files to be overwritten---------------------------------
+  if (overwrite){
+    gc()
+    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
+      file.remove()
+    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
+      file.remove()
+    gc()  # this is important!
+  }
+
+
 
   # cleanup --------------------------------------------------------------------
-    file.remove(paste0(rds_dir, "/", prefix, ".rds"))
-    file.remove(paste0(rds_dir, "/", prefix, ".bk"))
-    gc() # this is important!
+  # These steps remove intermediate rds/bk files created by the steps of the data management process
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
+    file.remove()
+  gc() # this is important!
+  list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
+    file.remove()
+  gc() # this is important!
+  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+    file.remove()
+  gc()
 
-  if(!quiet){cat("\nDone with standardization.
-                 Processed files now saved as .rds object.")}
-  close(log_con)
+  cat("Processed files now saved to:",
+      file.path(rds_dir, paste0("std_", prefix, ".rds")),
+      "at",
+      pretty_time(),
+      file = logfile,
+      append = TRUE)
 
+  if(!quiet){cat("Processed files now saved to:",
+                 file.path(rds_dir, paste0("std_", prefix, ".rds")),
+                 "at",
+                 pretty_time())}
 
+  saveRDS(std_X_list, file.path(rds_dir, paste0("std_", prefix, ".rds")))
   return(file.path(rds_dir, paste0("std_", prefix, ".rds")))
 }
