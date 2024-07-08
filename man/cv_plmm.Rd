@@ -34,6 +34,7 @@ cv_plmm(
   returnBiasDetails = FALSE,
   trace = FALSE,
   save_rds = NULL,
+  save_fold_res = FALSE,
   return_fit = TRUE,
   compact_save = FALSE,
   ...
@@ -110,6 +111,11 @@ the fold in which observation i was excluded from the fit, at the jth value of l
 
 \item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Defaults to NULL, which does not save the result.}
+
+\item{save_fold_res}{Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
+If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+Both files will be updated after each fold is done.
+Defaults to FALSE.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 

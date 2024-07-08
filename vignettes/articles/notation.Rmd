@@ -118,7 +118,7 @@ In the code, we denote the objects above in this way:
 
 -   $\ddot{\tilde{\mathbf{X}}} \hat{\ddot{\boldsymbol{\beta}}}$ is `linear_predictors`. Note: in words, this means the `linear_predictors` in the code are on the scale of the rotated and re-standardized data!
 
-
+-   $\hat{\boldsymbol{\Sigma}} \equiv \hat{\eta}\mathbf{K} + (1 - \hat{\eta})\mathbf{I}$ is `estimated_Sigma`. Similarly, $\hat{\boldsymbol{\Sigma}}_{11}$ is `Sigma_11`, etc. 
 
 
 
