@@ -1,210 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/deconfounding.html</loc>
-  </url>
-  <url>
-    <loc>/articles/filebacking.html</loc>
-  </url>
-  <url>
-    <loc>/articles/getting-started.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/notation.html</loc>
-  </url>
-  <url>
-    <loc>/articles/types_of_pointers.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/MCP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SCAD.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_external_phenotype.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_predictors_to_bigsnp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/admix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/align_famfile_ids.html</loc>
-  </url>
-  <url>
-    <loc>/reference/align_ids.html</loc>
-  </url>
-  <url>
-    <loc>/reference/coef.cv_plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/coef.plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/construct_variance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/count_constant_features.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cv_plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cvf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/delta.html</loc>
-  </url>
-  <url>
-    <loc>/reference/eigen_K.html</loc>
-  </url>
-  <url>
-    <loc>/reference/estimate_eta.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fbm2bm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/file_sans_ext.html</loc>
-  </url>
-  <url>
-    <loc>/reference/find_example_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_bm_from_plink.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/handle_missingness.html</loc>
-  </url>
-  <url>
-    <loc>/reference/impute_snp_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index_std_X.html</loc>
-  </url>
-  <url>
-    <loc>/reference/lam_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/lasso.html</loc>
-  </url>
-  <url>
-    <loc>/reference/log_lik.html</loc>
-  </url>
-  <url>
-    <loc>/reference/name_and_count_bigsnp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pedigree.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm_checks.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm_format.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm_loss.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmm_prep.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plmmr-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.cv_plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/predict.plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/predict_within_cv.html</loc>
-  </url>
-  <url>
-    <loc>/reference/print.summary.cv_plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/print.summary.plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/process_delim.html</loc>
-  </url>
-  <url>
-    <loc>/reference/process_plink.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_data_files.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_plink_files.html</loc>
-  </url>
-  <url>
-    <loc>/reference/relatedness_mat.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rotate_filebacked.html</loc>
-  </url>
-  <url>
-    <loc>/reference/setup_lambda.html</loc>
-  </url>
-  <url>
-    <loc>/reference/standardize_bigsnp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/standardize_fbm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/standardize_matrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/subset_bigsnp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary.cv_plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary.plmm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/untransform.html</loc>
-  </url>
-  <url>
-    <loc>/reference/unzip_example_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/varp.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/deconfounding.html</loc></url>
+<url><loc>/articles/filebacking.html</loc></url>
+<url><loc>/articles/getting-started.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/notation.html</loc></url>
+<url><loc>/articles/types_of_pointers.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/MCP.html</loc></url>
+<url><loc>/reference/SCAD.html</loc></url>
+<url><loc>/reference/add_external_phenotype.html</loc></url>
+<url><loc>/reference/add_predictors_to_bigsnp.html</loc></url>
+<url><loc>/reference/admix.html</loc></url>
+<url><loc>/reference/align_famfile_ids.html</loc></url>
+<url><loc>/reference/align_ids.html</loc></url>
+<url><loc>/reference/coef.cv_plmm.html</loc></url>
+<url><loc>/reference/coef.plmm.html</loc></url>
+<url><loc>/reference/construct_variance.html</loc></url>
+<url><loc>/reference/count_constant_features.html</loc></url>
+<url><loc>/reference/create_log.html</loc></url>
+<url><loc>/reference/cv_plmm.html</loc></url>
+<url><loc>/reference/cvf.html</loc></url>
+<url><loc>/reference/delta.html</loc></url>
+<url><loc>/reference/eigen_K.html</loc></url>
+<url><loc>/reference/estimate_eta.html</loc></url>
+<url><loc>/reference/fbm2bm.html</loc></url>
+<url><loc>/reference/file_sans_ext.html</loc></url>
+<url><loc>/reference/find_example_data.html</loc></url>
+<url><loc>/reference/get_bm_from_plink.html</loc></url>
+<url><loc>/reference/get_data.html</loc></url>
+<url><loc>/reference/get_hostname.html</loc></url>
+<url><loc>/reference/handle_missingness.html</loc></url>
+<url><loc>/reference/impute_snp_data.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/index_std_X.html</loc></url>
+<url><loc>/reference/lam_names.html</loc></url>
+<url><loc>/reference/lasso.html</loc></url>
+<url><loc>/reference/log_lik.html</loc></url>
+<url><loc>/reference/name_and_count_bigsnp.html</loc></url>
+<url><loc>/reference/pedigree.html</loc></url>
+<url><loc>/reference/plmm.html</loc></url>
+<url><loc>/reference/plmm_checks.html</loc></url>
+<url><loc>/reference/plmm_fit.html</loc></url>
+<url><loc>/reference/plmm_format.html</loc></url>
+<url><loc>/reference/plmm_loss.html</loc></url>
+<url><loc>/reference/plmm_prep.html</loc></url>
+<url><loc>/reference/plmmr-package.html</loc></url>
+<url><loc>/reference/plot.cv_plmm.html</loc></url>
+<url><loc>/reference/plot.plmm.html</loc></url>
+<url><loc>/reference/predict.plmm.html</loc></url>
+<url><loc>/reference/predict_within_cv.html</loc></url>
+<url><loc>/reference/pretty_time.html</loc></url>
+<url><loc>/reference/print.summary.cv_plmm.html</loc></url>
+<url><loc>/reference/print.summary.plmm.html</loc></url>
+<url><loc>/reference/process_delim.html</loc></url>
+<url><loc>/reference/process_plink.html</loc></url>
+<url><loc>/reference/read_data_files.html</loc></url>
+<url><loc>/reference/read_plink_files.html</loc></url>
+<url><loc>/reference/relatedness_mat.html</loc></url>
+<url><loc>/reference/rotate_filebacked.html</loc></url>
+<url><loc>/reference/setup_lambda.html</loc></url>
+<url><loc>/reference/standardize_bigsnp.html</loc></url>
+<url><loc>/reference/standardize_fbm.html</loc></url>
+<url><loc>/reference/standardize_matrix.html</loc></url>
+<url><loc>/reference/subset_bigsnp.html</loc></url>
+<url><loc>/reference/summary.cv_plmm.html</loc></url>
+<url><loc>/reference/summary.plmm.html</loc></url>
+<url><loc>/reference/untransform.html</loc></url>
+<url><loc>/reference/unzip_example_data.html</loc></url>
+<url><loc>/reference/varp.html</loc></url>
 </urlset>
+

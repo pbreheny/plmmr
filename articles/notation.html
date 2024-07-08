@@ -5,74 +5,50 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="plmmr">
 <title>Notes on notation • plmmr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Notes on notation">
-<meta property="og:description" content="plmmr">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary" data-bs-theme="dark"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../index.html">
-    <span class="fa fa-home"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span></a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
-    <a class="dropdown-item" href="../articles/notation.html">Notes on notation</a>
-    <a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a>
-    <a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
+    <li><a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">News</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/pbreheny/plmmr">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/pbreheny/plmmr"><span class="fa fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -81,10 +57,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Notes on notation</h1>
+
+      <h1>Notes on notation</h1>
             
       
-      
+
       <div class="d-none name"><code>notation.Rmd</code></div>
     </div>
 
@@ -102,10 +79,12 @@ letters</li>
 <li>Vectors are denoted with <strong>boldface</strong> lowercase
 letters</li>
 <li>Scalar values and indices are denoted with lowercase letters</li>
-<li>the <span class="math inline">\(\dot{}\)</span> modifier indicates
-(column) standardization</li>
-<li>the <span class="math inline">\(\tilde{}\)</span> modifier indicates
-rotation</li>
+<li>the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mrow></mrow><mo accent="true">̇</mo></mover><annotation encoding="application/x-tex">\dot{}</annotation></semantics></math>
+modifier indicates (column) standardization</li>
+<li>the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mrow></mrow><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{}</annotation></semantics></math>
+modifier indicates rotation</li>
 </ul>
 <div class="section level2">
 <h2 id="math-notation">Math notation<a class="anchor" aria-label="anchor" href="#math-notation"></a>
@@ -117,119 +96,151 @@ steps of the model fitting process.</p>
 <h3 id="statistical-model-the-overall-framework">Statistical model (the overall framework)<a class="anchor" aria-label="anchor" href="#statistical-model-the-overall-framework"></a>
 </h3>
 <p>The overall model can be written as</p>
-<p><span class="math display">\[
-\mathbf{y} = \mathbf{X}\boldsymbol{\beta} +
-\mathbf{Z}\boldsymbol{\gamma} + \boldsymbol{\epsilon}
-\]</span></p>
-<p>or equivalently as <span class="math display">\[
-\mathbf{y} = \dot{\mathbf{X}}\dot{\boldsymbol{\beta}} + \mathbf{u} +
-\boldsymbol{\epsilon}
-\]</span> where:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>=</mo><mi>𝐗</mi><mi>𝛃</mi><mo>+</mo><mi>𝐙</mi><mi>𝛄</mi><mo>+</mo><mi>𝛜</mi></mrow><annotation encoding="application/x-tex">
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{\gamma} + \boldsymbol{\epsilon}
+</annotation></semantics></math></p>
+<p>or equivalently as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>=</mo><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><mo>+</mo><mi>𝐮</mi><mo>+</mo><mi>𝛜</mi></mrow><annotation encoding="application/x-tex">
+\mathbf{y} = \dot{\mathbf{X}}\dot{\boldsymbol{\beta}} + \mathbf{u} + \boldsymbol{\epsilon}
+</annotation></semantics></math> where:</p>
 <ul>
-<li><p><span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{y}\)</span> are the <span class="math inline">\(n \times p\)</span> design matrix of our data and
-the <span class="math inline">\(n \times 1\)</span> vector of outcomes,
-respectively. Here, <span class="math inline">\(n\)</span> is the number
-of <em>observations</em> (e.g., number of patients, number of samples,
-etc.) and <span class="math inline">\(p\)</span> is the number of
-<em>features</em> (e.g., number of SNPs, number of variables, number of
-covariates, etc.).</p></li>
-<li><p><span class="math inline">\(\dot{\mathbf{X}}\)</span> is the
-column-standardized <span class="math inline">\(\mathbf{X}\)</span>, in
-which each of the <span class="math inline">\(p\)</span> columns has
-mean 0 and standard deviation 1. Note: <span class="math inline">\(\dot{\mathbf{X}}\)</span> excludes any singular
-features (columns of constants) in the original <span class="math inline">\(\mathbf{X}\)</span>.</p></li>
-<li><p><span class="math inline">\(\dot{\boldsymbol{\beta}}\)</span>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐗</mi><annotation encoding="application/x-tex">\mathbf{X}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\mathbf{y}</annotation></semantics></math>
+are the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n \times p</annotation></semantics></math>
+design matrix of our data and the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n \times 1</annotation></semantics></math>
+vector of outcomes, respectively. Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+is the number of <em>observations</em> (e.g., number of patients, number
+of samples, etc.) and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+is the number of <em>features</em> (e.g., number of SNPs, number of
+variables, number of covariates, etc.).</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><annotation encoding="application/x-tex">\dot{\mathbf{X}}</annotation></semantics></math>
+is the column-standardized
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐗</mi><annotation encoding="application/x-tex">\mathbf{X}</annotation></semantics></math>,
+in which each of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+columns has mean 0 and standard deviation 1. Note:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><annotation encoding="application/x-tex">\dot{\mathbf{X}}</annotation></semantics></math>
+excludes any singular features (columns of constants) in the original
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐗</mi><annotation encoding="application/x-tex">\mathbf{X}</annotation></semantics></math>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><annotation encoding="application/x-tex">\dot{\boldsymbol{\beta}}</annotation></semantics></math>
 represents the coefficients on the standardized scale.</p></li>
-<li><p><span class="math inline">\(\mathbf{Z}\)</span> is a <span class="math inline">\(n \times b\)</span> matrix of indicators
-corresponding to a grouping structure, and <span class="math inline">\(\boldsymbol{\gamma}\)</span> is the vector of
-values describing how each grouping is associated with <span class="math inline">\(\mathbf{y}\)</span>. In real data, these values
-typically unknown.</p></li>
-<li><p><span class="math inline">\(\boldsymbol{\epsilon}\)</span> is the
-<span class="math inline">\(n \times 1\)</span> vector of
-noise.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐙</mi><annotation encoding="application/x-tex">\mathbf{Z}</annotation></semantics></math>
+is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">n \times b</annotation></semantics></math>
+matrix of indicators corresponding to a grouping structure, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛄</mi><annotation encoding="application/x-tex">\boldsymbol{\gamma}</annotation></semantics></math>
+is the vector of values describing how each grouping is associated with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\mathbf{y}</annotation></semantics></math>.
+In real data, these values typically unknown.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛜</mi><annotation encoding="application/x-tex">\boldsymbol{\epsilon}</annotation></semantics></math>
+is the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n \times 1</annotation></semantics></math>
+vector of noise.</p></li>
 </ul>
-<p>We define the realized (or empirical) relatedness matrix as <span class="math inline">\(\mathbf{K} \equiv
-\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top\)</span></p>
+<p>We define the realized (or empirical) relatedness matrix as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐊</mi><mo>≡</mo><mfrac><mn>1</mn><mi>p</mi></mfrac><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><msup><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{K} \equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top</annotation></semantics></math></p>
 <p>This model assumes:</p>
 <ul>
-<li><span class="math inline">\(\boldsymbol{\epsilon} \perp
-\mathbf{u}\)</span></li>
-<li><span class="math inline">\(\boldsymbol{\epsilon} \sim N(0,
-\sigma^2_{\epsilon}\mathbf{I})\)</span></li>
-<li><span class="math inline">\(\mathbf{u} \sim N(0,
-\sigma^2_{s}\mathbf{K})\)</span></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛜</mi><mo>⊥</mo><mi>𝐮</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{\epsilon} \perp \mathbf{u}</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛜</mi><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mi>ϵ</mi><mn>2</mn></msubsup><mi>𝐈</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{\epsilon} \sim N(0, \sigma^2_{\epsilon}\mathbf{I})</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐮</mi><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msubsup><mi>σ</mi><mi>s</mi><mn>2</mn></msubsup><mi>𝐊</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{u} \sim N(0, \sigma^2_{s}\mathbf{K})</annotation></semantics></math></li>
 </ul>
-<p>Under these assumptions, we may write <span class="math inline">\(\mathbf{y} \sim
-N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}},
-\boldsymbol{\Sigma})\)</span></p>
+<p>Under these assumptions, we may write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐲</mi><mo>∼</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><mo>,</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathbf{y} \sim N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})</annotation></semantics></math></p>
 <p><strong>Indices</strong>:</p>
 <ul>
 <li>
-<span class="math inline">\(i \in 1,..., n\)</span> indexes
-observations</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">i \in 1,..., n</annotation></semantics></math>
+indexes observations</li>
 <li>
-<span class="math inline">\(j \in 1,..., p\)</span> indexes
-features</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>∈</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">j \in 1,..., p</annotation></semantics></math>
+indexes features</li>
 <li>
-<span class="math inline">\(h \in 1,..., b\)</span> indexes the
-batches (e.g., different family groups, different data collection sites,
-etc.)</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>∈</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">h \in 1,..., b</annotation></semantics></math>
+indexes the batches (e.g., different family groups, different data
+collection sites, etc.)</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="decomposition-and-rotation-prep-and-first-part-of-fit">Decomposition and rotation (prep and first part of fit)<a class="anchor" aria-label="anchor" href="#decomposition-and-rotation-prep-and-first-part-of-fit"></a>
 </h3>
 <ul>
-<li><p>Beginning with an eigendecomposition, we have <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{s}\)</span> are the eigenvectors and
-eigenvalues of <span class="math inline">\(\mathbf{K}\)</span>, as one
-would obtain from <span class="math inline">\(\text{eigen}(\mathbf{K)}
-\equiv \mathbf{U}\mathbf{S}\mathbf{U}^\top\)</span>. The elements of
-<span class="math inline">\(\mathbf{s}\)</span> are the diagonal values
-of <span class="math inline">\(\mathbf{S}\)</span>. Note, random effect
-<span class="math inline">\(\mathbf{u}\)</span> is distinct from the
-columns of matrix <span class="math inline">\(\mathbf{U}\)</span>.</p></li>
-<li><p><span class="math inline">\(k\)</span> represents the number of
-nonzero eigenvalues represented in <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{d}\)</span>, so <span class="math inline">\(k \leq \text{min}(n,p)\)</span>.</p></li>
-<li><p>Again, <span class="math inline">\(\mathbf{K} \equiv
-\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}\)</span> is often
-referred to in the literature as the realized relatedness matrix (RRM)
-or genomic relatedness matrix (GRM). <span class="math inline">\(\mathbf{K}\)</span> has dimension <span class="math inline">\(n \times n\)</span>.</p></li>
-<li><p><span class="math inline">\(\eta\)</span> is the ratio <span class="math inline">\(\frac{\sigma^2_s}{\sigma^2_e +
-\sigma^2_s}\)</span>. We estimate <span class="math inline">\(\hat{\eta}\)</span> from a null model (more
-details to come).</p></li>
-<li><p><span class="math inline">\(\mathbf{\Sigma}\)</span> is the
-variance of the outcome, where <span class="math inline">\(\mathbb{V}({\mathbf{y}}) = \eta \mathbf{K} + (1 -
-\eta)\mathbf{I}_n\)</span>.</p></li>
-<li><p><span class="math inline">\(\mathbf{w}\)</span> is the vector of
-weights defined as <span class="math inline">\((\eta\mathbf{\mathbf{s}}
-+ (1-\eta))^{-1/2}\)</span>. The values in <span class="math inline">\(\mathbf{w}\)</span> are the nonzero values of the
-diagonal matrix <span class="math inline">\(\mathbf{W} \equiv
-(\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}\)</span>.</p></li>
+<li><p>Beginning with an eigendecomposition, we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐔</mi><annotation encoding="application/x-tex">\mathbf{U}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐬</mi><annotation encoding="application/x-tex">\mathbf{s}</annotation></semantics></math>
+are the eigenvectors and eigenvalues of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐊</mi><annotation encoding="application/x-tex">\mathbf{K}</annotation></semantics></math>,
+as one would obtain from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">eigen</mtext><mo stretchy="false" form="prefix">(</mo><mrow><mi>𝐊</mi><mo stretchy="false" form="postfix" mathvariant="bold">)</mo></mrow><mo>≡</mo><mi>𝐔</mi><mi>𝐒</mi><msup><mi>𝐔</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\text{eigen}(\mathbf{K)} \equiv \mathbf{U}\mathbf{S}\mathbf{U}^\top</annotation></semantics></math>.
+The elements of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐬</mi><annotation encoding="application/x-tex">\mathbf{s}</annotation></semantics></math>
+are the diagonal values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐒</mi><annotation encoding="application/x-tex">\mathbf{S}</annotation></semantics></math>.
+Note, random effect
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐮</mi><annotation encoding="application/x-tex">\mathbf{u}</annotation></semantics></math>
+is distinct from the columns of matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐔</mi><annotation encoding="application/x-tex">\mathbf{U}</annotation></semantics></math>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+represents the number of nonzero eigenvalues represented in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐔</mi><annotation encoding="application/x-tex">\mathbf{U}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐝</mi><annotation encoding="application/x-tex">\mathbf{d}</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mtext mathvariant="normal">min</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>,</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">k \leq \text{min}(n,p)</annotation></semantics></math>.</p></li>
+<li><p>Again,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐊</mi><mo>≡</mo><mfrac><mn>1</mn><mi>p</mi></mfrac><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><msup><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{K} \equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}</annotation></semantics></math>
+is often referred to in the literature as the realized relatedness
+matrix (RRM) or genomic relatedness matrix (GRM).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐊</mi><annotation encoding="application/x-tex">\mathbf{K}</annotation></semantics></math>
+has dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">n \times n</annotation></semantics></math>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+is the ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><msubsup><mi>σ</mi><mi>s</mi><mn>2</mn></msubsup><mrow><msubsup><mi>σ</mi><mi>e</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>σ</mi><mi>s</mi><mn>2</mn></msubsup></mrow></mfrac><annotation encoding="application/x-tex">\frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}</annotation></semantics></math>.
+We estimate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>η</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\eta}</annotation></semantics></math>
+from a null model (more details to come).</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\mathbf{\Sigma}</annotation></semantics></math>
+is the variance of the outcome, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝕍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>η</mi><mi>𝐊</mi><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>𝐈</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\mathbb{V}({\mathbf{y}}) = \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n</annotation></semantics></math>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math>
+is the vector of weights defined as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mi>𝐬</mi><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><annotation encoding="application/x-tex">(\eta\mathbf{\mathbf{s}} + (1-\eta))^{-1/2}</annotation></semantics></math>.
+The values in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math>
+are the nonzero values of the diagonal matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐖</mi><mo>≡</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mi>𝐒</mi><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>𝐈</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf{W} \equiv (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}</annotation></semantics></math>.</p></li>
 <li><p>The matrix to be used in rotating (or <em>preconditioning</em>)
-the data is <span class="math inline">\(\mathbf{\Sigma}^{-1/2} \equiv
-\mathbf{W}\mathbf{U}^\top\)</span>.</p></li>
-<li><p><span class="math inline">\(\tilde{\dot{\mathbf{X}}} \equiv
-\mathbf{W}\mathbf{U}^\top\dot{\mathbf{X}}\)</span> is the rotated data,
-or the data on the transformed scale.</p></li>
-<li><p><span class="math inline">\(\tilde{\mathbf{y}} \equiv
-\mathbf{\Sigma}^{-1/2}\mathbf{y}\)</span> is the outcome on the rotated
-scale.</p></li>
-<li><p><span class="math inline">\(\ddot{\tilde{\mathbf{X}}}\)</span> is
-the <strong>standardized</strong> rotated data. Note: This
+the data is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo>≡</mo><mi>𝐖</mi><msup><mi>𝐔</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{\Sigma}^{-1/2} \equiv \mathbf{W}\mathbf{U}^\top</annotation></semantics></math>.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mo accent="true">̃</mo></mover><mo>≡</mo><mi>𝐖</mi><msup><mi>𝐔</mi><mi>⊤</mi></msup><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover></mrow><annotation encoding="application/x-tex">\tilde{\dot{\mathbf{X}}} \equiv \mathbf{W}\mathbf{U}^\top\dot{\mathbf{X}}</annotation></semantics></math>
+is the rotated data, or the data on the transformed scale.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐲</mi><mo accent="true">̃</mo></mover><mo>≡</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mi>𝐲</mi></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{y}} \equiv \mathbf{\Sigma}^{-1/2}\mathbf{y}</annotation></semantics></math>
+is the outcome on the rotated scale.</p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝐗</mi><mo accent="true">̃</mo></mover><mo accent="true">̈</mo></mover><annotation encoding="application/x-tex">\ddot{\tilde{\mathbf{X}}}</annotation></semantics></math>
+is the <strong>standardized</strong> rotated data. Note: This
 standardization involves scaling, but not centering. This post-rotation
 standardization impacts the estimated coefficients as well; we define
-<span class="math inline">\({\ddot{\boldsymbol{\beta}}}\)</span> as the
-estimated coefficients on this scale.</p></li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛃</mi><mo accent="true">̈</mo></mover><annotation encoding="application/x-tex">{\ddot{\boldsymbol{\beta}}}</annotation></semantics></math>
+as the estimated coefficients on this scale.</p></li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="model-fitting-with-penalization">Model fitting with penalization<a class="anchor" aria-label="anchor" href="#model-fitting-with-penalization"></a>
 </h3>
-<p>We fit <span class="math inline">\(\tilde{\mathbf{y}} \sim
-\ddot{\tilde{\mathbf{X}}}\)</span> using a penalized linear mixed model,
-and obtain <span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}\)</span> as our
-estimated coefficients. The penalty parameter values (e.g., values of
-the lasso tuning parameter) are indexed by <span class="math inline">\(\lambda_l \in 1,..., t\)</span>.</p>
+<p>We fit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐲</mi><mo accent="true">̃</mo></mover><mo>∼</mo><mover><mover><mi>𝐗</mi><mo accent="true">̃</mo></mover><mo accent="true">̈</mo></mover></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{y}} \sim \ddot{\tilde{\mathbf{X}}}</annotation></semantics></math>
+using a penalized linear mixed model, and obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝛃</mi><mo accent="true">̈</mo></mover><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\ddot{\boldsymbol{\beta}}}</annotation></semantics></math>
+as our estimated coefficients. The penalty parameter values (e.g.,
+values of the lasso tuning parameter) are indexed by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>λ</mi><mi>l</mi></msub><mo>∈</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">\lambda_l \in 1,..., t</annotation></semantics></math>.</p>
 </div>
 <div class="section level3">
 <h3 id="rescaling-results-format">Rescaling results (format)<a class="anchor" aria-label="anchor" href="#rescaling-results-format"></a>
@@ -238,9 +249,8 @@ the lasso tuning parameter) are indexed by <span class="math inline">\(\lambda_l
 values estimated by the model must be unscaled (or ‘untransformed’)
 twice: once to adjust for the post-rotation standardization, and again
 to adjust for the pre-rotation standardization. This process could be
-written <span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}
-\rightarrow \hat{\dot{\boldsymbol{\beta}}} \rightarrow
-\hat{\boldsymbol{\beta}}\)</span>.</p>
+written
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mover><mi>𝛃</mi><mo accent="true">̈</mo></mover><mo accent="true">̂</mo></mover><mo>→</mo><mover><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><mo accent="true">̂</mo></mover><mo>→</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover></mrow><annotation encoding="application/x-tex">\hat{\ddot{\boldsymbol{\beta}}} \rightarrow \hat{\dot{\boldsymbol{\beta}}} \rightarrow \hat{\boldsymbol{\beta}}</annotation></semantics></math>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -248,34 +258,35 @@ written <span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}
 </h2>
 <p>In the code, we denote the objects above in this way:</p>
 <ul>
-<li><p><span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{y}\)</span> are <code>X</code> and
-<code>y</code></p></li>
-<li><p><span class="math inline">\(\dot{\mathbf{X}}\)</span> is
-<code>std_X</code></p></li>
-<li><p><span class="math inline">\(\tilde{\dot{\mathbf{X}}}\)</span> is
-<code>rot_X</code></p></li>
-<li><p><span class="math inline">\(\ddot{\tilde{\mathbf{X}}}\)</span> is
-<code>stdrot_X</code></p></li>
-<li><p><span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> is
-named <code>og_scale_beta</code> in helper functions (for clarity) and
-returned in <code>plmm</code> objects as <code>beta_vals</code>.
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐗</mi><annotation encoding="application/x-tex">\mathbf{X}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\mathbf{y}</annotation></semantics></math>
+are <code>X</code> and <code>y</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><annotation encoding="application/x-tex">\dot{\mathbf{X}}</annotation></semantics></math>
+is <code>std_X</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\dot{\mathbf{X}}}</annotation></semantics></math>
+is <code>rot_X</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝐗</mi><mo accent="true">̃</mo></mover><mo accent="true">̈</mo></mover><annotation encoding="application/x-tex">\ddot{\tilde{\mathbf{X}}}</annotation></semantics></math>
+is <code>stdrot_X</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\beta}}</annotation></semantics></math>
+is named <code>og_scale_beta</code> in helper functions (for clarity)
+and returned in <code>plmm</code> objects as <code>beta_vals</code>.
 <code>beta_vals</code> and <code>og_scale_beta</code> are equivalent;
 both represent the estimated coefficients on the original
 scale.</p></li>
-<li><p><span class="math inline">\(\hat{\dot{\boldsymbol{\beta}}}\)</span> is
-<code>std_scale_beta</code></p></li>
-<li><p><span class="math inline">\(\hat{\ddot{\boldsymbol{\beta}}}\)</span> is
-<code>stdrot_scale_beta</code></p></li>
-<li><p><span class="math inline">\(\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}\)</span>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\dot{\boldsymbol{\beta}}}</annotation></semantics></math>
+is <code>std_scale_beta</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mover><mi>𝛃</mi><mo accent="true">̈</mo></mover><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\ddot{\boldsymbol{\beta}}}</annotation></semantics></math>
+is <code>stdrot_scale_beta</code></p></li>
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐗</mi><mo accent="true">̇</mo></mover><mover><mover><mi>𝛃</mi><mo accent="true">̇</mo></mover><mo accent="true">̂</mo></mover></mrow><annotation encoding="application/x-tex">\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}</annotation></semantics></math>
 is <code>Xb</code></p></li>
-<li><p><span class="math inline">\(\ddot{\tilde{\mathbf{X}}}
-\hat{\ddot{\boldsymbol{\beta}}}\)</span> is
-<code>linear_predictors</code>. Note: in words, this means the
+<li><p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mover><mi>𝐗</mi><mo accent="true">̃</mo></mover><mo accent="true">̈</mo></mover><mover><mover><mi>𝛃</mi><mo accent="true">̈</mo></mover><mo accent="true">̂</mo></mover></mrow><annotation encoding="application/x-tex">\ddot{\tilde{\mathbf{X}}} \hat{\ddot{\boldsymbol{\beta}}}</annotation></semantics></math>
+is <code>linear_predictors</code>. Note: in words, this means the
 <code>linear_predictors</code> in the code are on the scale of the
 rotated and re-standardized data!</p></li>
 </ul>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -286,15 +297,15 @@ rotated and re-standardized data!</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
