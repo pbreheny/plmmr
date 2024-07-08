@@ -45,6 +45,10 @@
 #' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
 #' @param save_rds        Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                        Defaults to NULL, which does not save the result.
+#' @param save_fold_res   Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
+#'                        If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+#'                        Both files will be updated after each fold is done.
+#'                        Defaults to FALSE.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param compact_save    Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 #'                        Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
@@ -108,6 +112,7 @@ cv_plmm <- function(X,
                     returnBiasDetails = FALSE,
                     trace=FALSE,
                     save_rds = NULL,
+                    save_fold_res = FALSE,
                     return_fit = TRUE,
                     compact_save = FALSE,
                     ...) {
@@ -116,7 +121,18 @@ cv_plmm <- function(X,
                                          save_rds,
                                          "./cv-plmm"))
 
-  # run checks ------------------------------
+  # check for argument inconsistency ------------------------------
+  if (save_fold_res & is.null(save_rds)) {
+    stop("You have set 'save_fold_res = TRUE', but no argument was supplied to 'save_rds'.
+         \nPlease specify a filepath (as a string) to 'save_rds'")
+  }
+
+  if (compact_save & is.null(save_rds)) {
+    stop("You have set 'compact_save = TRUE', but no argument was supplied to 'save_rds'.
+          \nPlease specify a filepath (as a string) to 'save_rds'")
+  }
+
+  # run data checks ------------------------------
   checked_data <- plmm_checks(X,
                               col_names = col_names,
                               non_genomic = non_genomic,
@@ -198,6 +214,23 @@ cv_plmm <- function(X,
   cat("\nFormatting for full model finished at",
       pretty_time(),
       file = logfile, append = TRUE)
+
+  if (!is.null(save_rds)) {
+    if (compact_save) {
+      # go ahead and save the most important results from the full model fit
+
+      saveRDS(fit_to_return$beta_vals, paste0(save_rds, "_coefficients.rds"))
+      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(fit_to_return$K, paste0(save_rds, "_K.rds"))
+      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
+    }
+  }
+
 
   # set up arguments for cv ---------------------------
   cv_args <- fit_args
@@ -289,6 +322,17 @@ cv_plmm <- function(X,
       res$yhat <- as.matrix(res$yhat)
     }
     Y[fold==i, 1:res$nl] <- res$yhat
+
+    if (save_fold_res) {
+      saveRDS(E, paste0(save_rds, "_loss.rds"))
+      cat("Loss saved to:", paste0(save_rds, "_loss.rds"), "at", pretty_time(),
+          file = logfile, append = TRUE)
+
+      saveRDS(Y, paste0(save_rds, "_yhat.rds"))
+      cat("Predicted outcomes saved to:", paste0(save_rds, "_yhat.rds"), "at", pretty_time(),
+          file = logfile, append = TRUE)
+    }
+
   }
 
   # post-process results -----------------------------------------
@@ -330,10 +374,14 @@ cv_plmm <- function(X,
     val$Loss <- E
   }
 
+  if (type == "blup"){
+    val$estimated_V = estimated_V
+  }
+
   # handle output
   if (!is.null(save_rds)){
     if (compact_save) {
-      # save output across multiple files
+      # save the rest of the output across multiple files
       saveRDS(val[c(1:5, 7:11)], paste0(save_rds, "_cv_details.rds"))
       cat("CV details (CVE, fold assignments, etc) saved to:",
           paste0(save_rds, "_cv_details.rds"),
@@ -341,15 +389,9 @@ cv_plmm <- function(X,
           pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(fit_to_return$beta_vals, paste0(save_rds, "_coefficients.rds"))
-      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(fit_to_return$K, paste0(save_rds, "_K.rds"))
-      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
+      saveRDS(estimated_V, paste0(save_rds, "_estimated_variance.rds"))
+      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_variance.rds"),
+          "at", pretty_time(), file = logfile, append = TRUE)
 
       saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
       cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
