@@ -11,7 +11,7 @@ check_for_file_extension <- function(path){
 
   }
 
-  if (grepl('.bk', string_path)) {
+  if (grepl('.bk', path)) {
     path <- unlist(strsplit(path, split = ".bk", fixed = TRUE))
   }
 

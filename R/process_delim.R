@@ -18,6 +18,8 @@
 #'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
 #' @param overwrite     Optional: the name (character string) of the prefix of the logfile to be written.
 #'                      Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#'                      **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
+#'                      To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param quiet         Logical: should the messages printed to the console be silenced? Defaults to FALSE.
 #'
 #' @return Nothing is returned by this function, but (at least) two files are created in
@@ -110,6 +112,27 @@ process_delim <- function(file,
       For now, plmmr::process_delim() will drop all columns of X with NA values.\n")
   }
 
+  # check for files to be overwritten---------------------------------
+  if (overwrite){
+    gc()
+
+    # double check how much this will erase
+    rds_to_remove <-  list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE)
+    if (length(rds_to_remove) > 1) {
+      stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
+      that have the 'std_prefix' pattern.
+           To save you from overwriting anything important, I will not erase anything yet.
+           Please move any .rds files with this file name pattern to another directory.")
+    }
+    file.remove(rds_to_remove)
+    gc()
+
+    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
+      file.remove()
+
+    gc()  # this is important!
+  }
+
   # subsetting -----------------------------------------------------------------
   # goal: subset columns to remove constant features
   ns <- which(colstats$var > 1e-8)
@@ -132,17 +155,6 @@ process_delim <- function(file,
                                 quiet = quiet)
   std_X_list$n <- n
   std_X_list$p <- p
-
-  # check for files to be overwritten---------------------------------
-  if (overwrite){
-    gc()
-    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
-      file.remove()
-    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
-      file.remove()
-    gc()  # this is important!
-  }
-
 
 
   # cleanup --------------------------------------------------------------------

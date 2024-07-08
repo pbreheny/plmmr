@@ -128,8 +128,10 @@ cv_plmm <- function(X,
           \nPlease specify a filepath (as a string) to 'save_rds'")
   }
 
-  save_rds <- check_for_file_extension(save_rds)
-  # ^^ internally, we need to take off the extension from the file name
+  if (!is.null(save_rds)) {
+    save_rds <- check_for_file_extension(save_rds)
+    # ^^ internally, we need to take off the extension from the file name
+  }
 
   # start the log -----------------------
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),

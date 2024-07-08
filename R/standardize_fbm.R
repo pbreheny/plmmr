@@ -37,6 +37,8 @@ standardize_fbm <- function(subset_X, prefix, rds_dir, ns, non_gen,
   # in plmm_fit().
   ret <- list(
     std_X = bigmemory::describe(std_X),
+    std_X_n = nrow(subset_X),
+    std_X_p = ncol(subset_X),
     std_X_center = std_res$std_X_center,
     std_X_scale = std_res$std_X_scale,
     ns = ns,

@@ -26,6 +26,8 @@
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
+#'                            **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
+#'                            To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
 #' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                            This argument takes one of two kinds of arguments:
@@ -191,8 +193,16 @@ process_plink <- function(data_dir,
   # check for files to be overwritten---------------------------------
   if (overwrite){
     gc()
-    list.files(rds_dir, pattern=paste0('^std_.*.bk'), full.names=TRUE) |>
-      file.remove()
+    # double check how much this will erase
+    rds_to_remove <-  list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE)
+    if (length(rds_to_remove) > 1) {
+      stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
+      that have the 'std_prefix' pattern.
+           To save you from overwriting anything important, I will not erase anything yet.
+           Please move any .rds files with this file name pattern to another directory.")
+    }
+    file.remove(rds_to_remove)
+    gc()
     list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
       file.remove()
     gc()
