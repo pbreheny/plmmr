@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,8 +55,8 @@
 <span>  <span class="va">type</span>,</span>
 <span>  fbm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  idx <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>,</span>
-<span>  V11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  V21 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Sigma_11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Sigma_21 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -106,12 +106,12 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p><
 <dd><p>Vector of indices of the penalty parameter <code>lambda</code> at which predictions are required. By default, all indices are returned.</p></dd>
 
 
-<dt id="arg-v-">V11<a class="anchor" aria-label="anchor" href="#arg-v-"></a></dt>
-<dd><p>Variance-covariance matrix of the training data. Extracted from <code>estimated_V</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
+<dt id="arg-sigma-">Sigma_11<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
+<dd><p>Variance-covariance matrix of the training data. Extracted from <code>estimated_Sigma</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
 
 
-<dt id="arg-v-">V21<a class="anchor" aria-label="anchor" href="#arg-v-"></a></dt>
-<dd><p>Covariance matrix between the training and the testing data. Extracted from <code>estimated_V</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
+<dt id="arg-sigma-">Sigma_21<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
+<dd><p>Covariance matrix between the training and the testing data. Extracted from <code>estimated_Sigma</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

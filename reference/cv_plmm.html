@@ -9,7 +9,7 @@ linear mixed models over a grid of values for the regularization parameter lambd
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,7 @@ linear mixed models over a grid of values for the regularization parameter <code
 <span>  returnBiasDetails <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  save_fold_res <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compact_save <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -215,6 +216,13 @@ the fold in which observation i was excluded from the fit, at the jth value of l
 <dt id="arg-save-rds">save_rds<a class="anchor" aria-label="anchor" href="#arg-save-rds"></a></dt>
 <dd><p>Optional: if a filepath and name <em>without</em> the '.rds' suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Defaults to NULL, which does not save the result.</p></dd>
+
+
+<dt id="arg-save-fold-res">save_fold_res<a class="anchor" aria-label="anchor" href="#arg-save-fold-res"></a></dt>
+<dd><p>Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
+If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+Both files will be updated after each fold is done.
+Defaults to FALSE.</p></dd>
 
 
 <dt id="arg-return-fit">return_fit<a class="anchor" aria-label="anchor" href="#arg-return-fit"></a></dt>

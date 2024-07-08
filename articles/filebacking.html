@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,22 +139,26 @@ PLINK files (the <code>.bed</code>, <code>.bim</code>, and
 for the sake of example. Users can specify the folder of their choice
 for <code>rds_dir</code>, as shown below:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># using a temporary directory (if you didn't already create on above)</span></span>
-<span><span class="fu"><a href="../reference/process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="co"># reads data from inst/extdata</span></span>
+<code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># using a temporary directory (if you didn't already create one above)</span></span>
+<span></span>
+<span><span class="va">plink_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>                            <span class="co"># ^ reads data from inst/extdata; change this to match where your data files are</span></span>
 <span>              rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span>
 <span>              prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span>
-<span>              outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span>
 <span>              overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>              impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span></span></code></pre></div>
 <p>You’ll see a lot of messages printed to the console here … the result
-of all this is the creation of 2 files (these will show up in the folder
-where the PLINK data is): <code>std_penncath_lite.rds</code> and
-<code>std_penncath_lite.bk.</code></p>
+of all this is the creation of 3 files:
+<code>std_penncath_lite.rds</code> and <code>std_penncath_lite.bk</code>
+contain the data, and <code>process_plink.log</code> is a text file
+documenting the steps that were just done. These will show up in the
+folder where the PLINK data is; the file path to the .rds object is
+returned here to <code>plink_data</code></p>
 <p>We can examine what’s in <code>std_penncath_lite.rds</code> using the
 <code><a href="https://privefl.github.io/bigsnpr/reference/snp_attach.html" class="external-link">snp_attach()</a></code> function from the <code>bigsnpr</code>
 package:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_penncath_lite.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">plink_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pen</span><span class="op">)</span> <span class="co"># note: genotypes and std_X are *not* in memory</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># we can check to see that our data have been standardized </span></span>
@@ -171,12 +175,12 @@ this is like the <code>colon</code> data that ships with the
 <code>biglasso</code> package, only here I’ve inserted some NA values
 just for didactic purposes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/process_delim.html">process_delim</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span>
+<code class="sourceCode R"><span><span class="va">colon_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_delim.html">process_delim</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"colon2.txt"</span>,</span>
 <span>          data_dir <span class="op">=</span> <span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>          rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span>
 <span>          ind.col <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">2002</span><span class="op">)</span> <span class="co"># don't use the 1st column; it has IDs in it</span></span>
 <span></span>
-<span><span class="va">std_colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_colon2.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">std_colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">colon_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">std_colon2</span><span class="op">)</span> <span class="co"># notice that the columns with NA values were dropped </span></span></code></pre></div>
 </div>
 </div>
@@ -185,20 +189,22 @@ just for didactic purposes.</p>
 </h3>
 <p>Note: for data coming from <code><a href="../reference/process_plink.html">process_plink()</a></code>, the
 <code>y</code> argument in <code><a href="../reference/plmm.html">plmm()</a></code> defaults to using the 6th
-column from the ‘.fam’ file as the phenotype/outcome (this is the same
-as what PLINK does).</p>
+column from the ‘.fam’ file as the phenotype/outcome (this behavior is
+the same as what PLINK does).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_fb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"/std_penncath_lite"</span><span class="op">)</span></span>
-<span><span class="va">fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
-<span>               returnX <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<code class="sourceCode R"><span><span class="va">fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">plink_data</span>,</span>
+<span>               returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>               <span class="co"># this datset is small enough to fit in memory</span></span>
 <span>               <span class="co"># by setting returnX = FALSE, I force plmm() to run on the filebacked data</span></span>
+<span>               save_rds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"fb_fit"</span><span class="op">)</span>,</span>
+<span>               <span class="co"># save results to my temp directory, and name files 'fb_fit'</span></span>
 <span>               trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>We can confirm that our filebacked methods and in-memory methods give
 the same results:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>, <span class="co"># will run in-memory by default, since data will fit</span></span>
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">plink_data</span>, <span class="co"># will run in-memory by default, since data will fit</span></span>
 <span>            trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">b1</span> <span class="op">&lt;-</span> <span class="va">fb_fit</span><span class="op">$</span><span class="va">beta_vals</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">fit</span><span class="op">$</span><span class="va">beta_vals</span></span>
 <span><span class="fu">tinytest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tinytest/man/expect_equal.html" class="external-link">expect_equivalent</a></span><span class="op">(</span><span class="va">b1</span>, <span class="va">b2</span>, <span class="fl">0.01</span><span class="op">)</span> </span></code></pre></div>
@@ -211,18 +217,38 @@ make sense. For our purposes, we will make up a ‘dummy’ K matrix.</p>
 <code class="sourceCode R"><span><span class="co"># pretend genomic data from 500 SNPs</span></span>
 <span><span class="va">genomic_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">62</span><span class="op">*</span><span class="fl">500</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">62</span>, ncol <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">genomic_dat</span><span class="op">)</span></span>
-<span></span>
+<span><span class="va">pretend_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">62</span><span class="op">)</span> <span class="co"># notice: this is a completely made-up outcome</span></span>
+<span><span class="co"># depending on the seed used for this rnorm() call, results may look aberrant/'weird'</span></span>
 <span><span class="va">colon2_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_colon2"</span><span class="op">)</span>,</span>
-<span>                   y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">62</span><span class="op">)</span>,</span>
+<span>                   y <span class="op">=</span> <span class="va">pretend_outcome</span>,</span>
 <span>                   K <span class="op">=</span> <span class="va">K</span>,</span>
 <span>                   returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                   trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">colon2_fit</span><span class="op">)</span></span></code></pre></div>
-<p>In most applications, we will want to fit a model using cross
-validation</p>
+</div>
+<div class="section level3">
+<h3 id="step-3-plotsummarize-results">Step 3: Plot/summarize results<a class="anchor" aria-label="anchor" href="#step-3-plotsummarize-results"></a>
+</h3>
+<p>To summarize a single model (no CV), we can look at a plot of the
+coefficient paths:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cv_fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fb_fit</span><span class="op">)</span></span></code></pre></div>
+<p>We can also examine the number of selected variables at a particular
+index of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fb_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-4-cross-validation-tuning-parameter-selection">Step 4: Cross-validation (tuning parameter selection)<a class="anchor" aria-label="anchor" href="#step-4-cross-validation-tuning-parameter-selection"></a>
+</h3>
+<p>In most applications, we will want to fit a model using cross
+validation in order to choose an appropriate value of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>,
+the tuning parameter for our penalized model.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cv_fb_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">plink_data</span>,</span>
 <span>                     type <span class="op">=</span> <span class="st">'blup'</span>,</span>
 <span>                     returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                     nfolds <span class="op">=</span> <span class="fl">3</span>, <span class="co"># for sake of testing, I made this small. </span></span>
@@ -230,11 +256,15 @@ validation</p>
 <span>                     <span class="co"># cross validation - hence, the default is nfolds = 5</span></span>
 <span>                     returnBiasDetails <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                     trace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                     save_rds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">plink_data</span>,</span>
+<span>                                          <span class="st">"cv"</span><span class="op">)</span>, <span class="co"># save_results to save folder as data </span></span>
+<span>                     save_fold_res <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># saves loss and predictions in each fold</span></span>
+<span>                     compact_save <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># saves results in separate files</span></span>
 <span>                     seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>Fitting an equivalent model using the <code>penncath_lite</code> data
 that uses RAM could look like this:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">plink_data</span>,</span>
 <span>                  type <span class="op">=</span> <span class="st">'blup'</span>,</span>
 <span>                  nfolds <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                  returnBiasDetails <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -243,20 +273,7 @@ that uses RAM could look like this:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span></span>
-<span><span class="fu">tinytest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tinytest/man/expect_equal.html" class="external-link">expect_equivalent</a></span><span class="op">(</span><span class="va">cv_fb_fit</span><span class="op">$</span><span class="va">cve</span>, <span class="va">cv_fit</span><span class="op">$</span><span class="va">cve</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="step-3-plotsummarize-results">Step 3: Plot/summarize results<a class="anchor" aria-label="anchor" href="#step-3-plotsummarize-results"></a>
-</h3>
-<p>To summarize a single model (no CV), we can look at a plot of the
-coefficient paths:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fb_fit</span><span class="op">)</span></span></code></pre></div>
-<p>We can also examine the number of selected variables at a particular
-index of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fb_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">tinytest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tinytest/man/expect_equal.html" class="external-link">expect_equivalent</a></span><span class="op">(</span><span class="va">cv_fb_fit</span><span class="op">$</span><span class="va">cve</span>, <span class="va">cv_fit</span><span class="op">$</span><span class="va">cve</span>, tolerance <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></code></pre></div>
 <p>To summarize and plot a CV fit, we can look at a plot of cross
 validation error:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -270,32 +287,18 @@ parameter value, we can do this:</p>
 <div class="section level3">
 <h3 id="comparing-candidate-models">Comparing candidate models<a class="anchor" aria-label="anchor" href="#comparing-candidate-models"></a>
 </h3>
-<p>The default penalty in <code>plmmr</code> is the minimax-concave
-penalty (MCP)<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Zhang, Cun-Hui. “Nearly unbiased variable selection
-under minimax concave penalty.” (2010): 894-942.&lt;/p&gt;"><sup>1</sup></a>. Suppose we want to compare our
-MCP-penalized model results with a lasso-penalized model. We can fit a
-lasso model as shown:</p>
+<p>The default penalty in <code>plmmr</code> is the lasso. Another
+option would be the minimax-concave penalty (MCP)[^2]. Suppose we want
+to compare our lasso-penalized model results with a MCP-penalized model.
+We can fit a lasso model as shown:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fb_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
-<span>                 penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
+<code class="sourceCode R"><span><span class="va">fb_mcp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">plink_data</span>,</span>
+<span>                 penalty <span class="op">=</span> <span class="st">"MCP"</span>,</span>
 <span>                 returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                 trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fb_lasso</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fb_lasso</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># with CV </span></span>
-<span><span class="va">cv_fb_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">my_fb_data</span>,</span>
-<span>                       penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
-<span>                     type <span class="op">=</span> <span class="st">'blup'</span>,</span>
-<span>                     nfolds <span class="op">=</span> <span class="fl">3</span>, </span>
-<span>                     returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                     trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fb_lasso</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fb_lasso</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fb_mcp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fb_mcp</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="to-add-predictors-that-are-not-genomic">To add predictors that are not genomic<a class="anchor" aria-label="anchor" href="#to-add-predictors-that-are-not-genomic"></a>
@@ -307,23 +310,26 @@ like clinical or demographic information. Let’s suppose that in the
 as unpenalized covariates. We can do this by supplying an additional
 argument to <code><a href="../reference/process_plink.html">process_plink()</a></code>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pen_clinic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"/penncath_clinical.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># create a new temporary directory, to avoid over-writing saved results</span></span>
+<span><span class="va">temp_dir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/unzip_example_data.html">unzip_example_data</a></span><span class="op">(</span>outdir <span class="op">=</span> <span class="va">temp_dir2</span><span class="op">)</span> <span class="co"># change this line if you're working on Windows</span></span>
+<span></span>
+<span><span class="va">pen_clinic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"/penncath_clinical.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">extdata</span> <span class="op">&lt;-</span> <span class="va">pen_clinic</span><span class="op">[</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">extdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pen_clinic</span><span class="op">$</span><span class="va">FamID</span> <span class="co"># This is important! </span></span>
 <span></span>
 <span><span class="co"># create a new temporary directory</span></span>
-<span><span class="va">temp_dir2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span><span class="va">new_plink_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="va">temp_dir2</span>,</span>
+<span>              <span class="co"># again, adjust this to wherever you've got the unzipped PLINK data</span></span>
 <span>              rds_dir <span class="op">=</span> <span class="va">temp_dir2</span>, <span class="co"># using a temporary directory</span></span>
 <span>              prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span>
 <span>              id_var <span class="op">=</span> <span class="st">"FID"</span>, <span class="co"># this is KEY!</span></span>
-<span>              outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span>
+<span>              outfile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir2</span>,<span class="st">"process_penncath_addvar"</span><span class="op">)</span>,</span>
 <span>              impute_method <span class="op">=</span> <span class="st">"mode"</span>,</span>
 <span>              add_predictor_ext <span class="op">=</span> <span class="va">extdata</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># check this out: </span></span>
-<span><span class="va">pen2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">temp_dir2</span>, <span class="st">"/std_penncath_lite.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">pen2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">new_plink_data</span><span class="op">)</span></span>
 <span><span class="va">pen2</span><span class="op">$</span><span class="va">std_X_colnames</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># std_X includes our non-genomic covariates </span></span>
 <span><span class="va">pen2</span><span class="op">$</span><span class="va">std_X</span> <span class="op">&lt;-</span> <span class="fu">bigmemory</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">pen2</span><span class="op">$</span><span class="va">std_X</span><span class="op">)</span></span></code></pre></div>
 <p>We usually want these kinds of variables to always be in the model
@@ -331,18 +337,11 @@ argument to <code><a href="../reference/process_plink.html">process_plink()</a><
 included in the chosen model, let’s set <code>penalty_factor</code> to
 have 0 values corresponding to these predictors.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dat_plus_newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">temp_dir2</span>, <span class="st">"/std_penncath_lite"</span><span class="op">)</span></span>
-<span><span class="va">fit_plus_newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">dat_plus_newvars</span>,</span>
+<code class="sourceCode R"><span><span class="va">fit_plus_newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">new_plink_data</span>,</span>
 <span>                         penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pen2</span><span class="op">$</span><span class="va">std_X</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                         K <span class="op">=</span> <span class="va">fb_fit</span><span class="op">$</span><span class="va">K</span>, </span>
 <span>                         returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                         trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cv_plus_newvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">dat_plus_newvars</span>,</span>
-<span>                         penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">pen2</span><span class="op">$</span><span class="va">std_X</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                         K <span class="op">=</span> <span class="va">fb_fit</span><span class="op">$</span><span class="va">K</span>,</span>
-<span>                         returnX <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                          trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>                         trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>We can check out how these additional covariates impact model
 fit:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -356,7 +355,6 @@ fit:</p>
 <span><span class="va">fit_plus_newvars</span><span class="op">$</span><span class="va">beta_vals</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 </div>
 </div>
-
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
