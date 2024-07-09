@@ -135,7 +135,8 @@ process_plink <- function(data_dir,
   } else if (id_var == "FID"){
     geno_id <- "family.ID"
   } else {
-    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID'.")
+    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID', and
+         the corresponding variable *must* be of type 'char'.")
   }
 
   if (!is.null(add_phen)){
@@ -143,7 +144,9 @@ process_plink <- function(data_dir,
                                     geno_id = geno_id,
                                     pheno = add_phen,
                                     pheno_id = pheno_id,
-                                    pheno_col = pheno_name)
+                                    pheno_col = pheno_name,
+                                    outfile = logfile)
+    handle_missing_phen <- 'asis'
 
   } else {
     step1 <- plink_obj
