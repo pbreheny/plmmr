@@ -1,0 +1,37 @@
+---
+title: "Notes on analyzing data from PLINK files"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Notes on analyzing data from PLINK files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(plmmr)
+```
+
+A widely-used format for storing data from genome-wide association studies (GWAS) is the , based on the PLINK software. The `plmmr` package is equipped to analyze data from one of the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats): the triplet of '.bed', '.bed', and '.fam' files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html).
+
+When analyzing PLINK data, the approach `plmmr` takes involves these steps:
+
+-   Reading in all 3 PLINK data files and combining their information into a [bigSNP object](https://privefl.github.io/bigsnpr/reference/bigSNP-class.html).
+
+-   Integrate in the external phenotype information, if supplied. **Note: Any samples in the PLINK data that do not have a phenotype value in the specified additional phenotype file will be removed from the analysis.** If no external phenotype value is supplied, the outcome defaults to the 6th column of the '.fam' file (similar to PLINK's conventions).
+
+-   Identify missing values in both samples and SNPs/features.
+
+-   Impute missing values per user's specified method. See [R documentation for `bigsnpr::snp_fastImputeSimple()`](https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html) for more details. **Note: the plmmr package cannot fit models if datasets have missing values.** All missing values must be imputed or subset out before analysis.
+
+-   Integrate in the external predictor information, if supplied. This could be a matrix of meta-data (e.g., age, principal components, etc.). **Note:** If there are samples in the supplied file that are not included in the PLINK data, these will be removed. For example, if you have more phenotyped participants than genotyped participants in your study, `plmmr::process_plink()` will create a matrix of data representing all the *genotyped* samples that also have data in the supplied external phenotype file.
+
+-   Create a design matrix that represents the nonsingular features and the samples that have predictor and phenotype information available (in the case where external data are supplied).
+
+-   Standardize the design matrix so that all columns have mean of 0 and variance of 1. 

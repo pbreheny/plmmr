@@ -209,6 +209,8 @@ process_plink <- function(data_dir,
     list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
       file.remove()
     gc()
+  } else {
+    gc()
   }
 
   # subsetting -----------------------------------------------------------------
