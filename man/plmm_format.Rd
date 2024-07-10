@@ -23,7 +23,7 @@ plmm_format(
 \itemize{
 \item 'center': the centering values for the columns of \code{X}
 \item 'scale': the scaling values for the non-singular columns of \code{X}
-\item 'ns': indicies of nonsingular columns in \code{std_X}
+\item 'ns': indicesof nonsingular columns in \code{std_X}
 }}
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
@@ -52,7 +52,7 @@ A list with the components:
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
 \item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
 \item \code{penalty_factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-\item \code{ns_idx}: vector with the indicies of predictors which were constant features (i.e., had no variation).
+\item \code{ns_idx}: vector with the indicesof predictors which were constant features (i.e., had no variation).
 \item \code{p}: the number of features
 \item \code{n}: the number of observations (instances)
 \item \code{iter}: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}

@@ -7,7 +7,7 @@
 #'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
 #'  * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
 #'  * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-#' @param complete_phen         Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
+#' @param complete_phen         Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param non_gen               an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #'                              **Note**: this is typically passed from the result of `add_predictors()`
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
@@ -32,56 +32,61 @@ subset_bigsnp <- function(obj, counts, handle_missing_phen, complete_phen, non_g
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
 
   if (!quiet){
-    cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
-        file = outfile, append = TRUE)
+    cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n")
+  }
+  cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
+      file = outfile, append = TRUE)
 
-    if (handle_missing_phen == "prune"){
-      if ("geno_plus_predictors" %in% names(obj)) {
-        new_counts <- bigstatsr::big_counts(obj$genotypes,
-                                            ind.row = complete_phen)
-        ns_genotypes <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
-        ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
-        obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
-                                            ind.row = complete_phen, # filters out rows with missing phenotypes
-                                            ind.col = ns,
-                                            type = "double", # this is key...
-                                            backingfile = file.path(rds_dir, bk_filename))
-      } else {
-        new_counts <- bigstatsr::big_counts(obj$genotypes,
-                                            ind.row = complete_phen)
-        ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
-        obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
-                                            ind.row = complete_phen, # filters out rows with missing phenotypes
-                                            ind.col = ns,
-                                            type = "double", # this is key...
-                                            backingfile = file.path(rds_dir, bk_filename))
-      }
-
+  if (handle_missing_phen == "prune"){
+    if ("geno_plus_predictors" %in% names(obj)) {
+      ns_genotypes <- count_constant_features(fbm = obj$genotypes,
+                                              ind.row = complete_phen,
+                                              outfile = outfile,
+                                              quiet = quiet)
+      ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
+      obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
+                                          ind.row = complete_phen, # filters out rows with missing phenotypes
+                                          ind.col = ns,
+                                          type = "double", # this is key...
+                                          backingfile = file.path(rds_dir, bk_filename))
     } else {
-      if ("geno_plus_predictors" %in% names(obj)) {
-        new_counts <- bigstatsr::big_counts(obj$genotypes)
-        ns_genotypes <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
-        ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
-        obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
-                                            ind.col = ns,
-                                            type = "double", # this is key...
-                                            backingfile = file.path(rds_dir, bk_filename))
-      } else {
-        new_counts <- bigstatsr::big_counts(obj$genotypes)
-        ns <- count_constant_features(new_counts, outfile = outfile, quiet = quiet)
-        obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
-                                            ind.col = ns,
-                                            type = "double", # this is key...
-                                            backingfile = file.path(rds_dir, bk_filename))
-      }
-
+      ns <- count_constant_features(fbm = obj$genotypes,
+                                    ind.row = complete_phen,
+                                    outfile = outfile,
+                                    quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
+                                          ind.row = complete_phen, # filters out rows with missing phenotypes
+                                          ind.col = ns,
+                                          type = "double", # this is key...
+                                          backingfile = file.path(rds_dir, bk_filename))
     }
 
+  } else {
+    if ("geno_plus_predictors" %in% names(obj)) {
+      ns_genotypes <- count_constant_features(fbm = obj$genotypes,
+                                              outfile = outfile,
+                                              quiet = quiet)
+      ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
+      obj$subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
+                                          ind.col = ns,
+                                          type = "double", # this is key...
+                                          backingfile = file.path(rds_dir, bk_filename))
+    } else {
+      ns <- count_constant_features(fbm = obj$genotypes,
+                                    outfile = outfile,
+                                    quiet = quiet)
+      obj$subset_X <- bigstatsr::big_copy(obj$genotypes,
+                                          ind.col = ns,
+                                          type = "double", # this is key...
+                                          backingfile = file.path(rds_dir, bk_filename))
+    }
 
-    # save ns indices as part of our object
-    obj$ns <- ns
-
-    return(obj)
   }
+
+
+  # save ns indices as part of our object
+  obj$ns <- ns
+
+  return(obj)
 
 }

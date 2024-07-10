@@ -5,7 +5,7 @@
 #' @param std_X_details A list with 3 items:
 #'  * 'center': the centering values for the columns of `X`
 #'  * 'scale': the scaling values for the non-singular columns of `X`
-#'  * 'ns': indicies of nonsingular columns in `std_X`
+#'  * 'ns': indicesof nonsingular columns in `std_X`
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`.
 #' @param use_feature_names Logical: should features be named (e.g., should the returned matrix of coefficients have rows/columns named?). Defaults to TRUE.
 #' @param feature_names A vector of names for features, passed internally if such names are included with the data `X` passed to `plmm()`
@@ -27,7 +27,7 @@
 #'  * `alpha`: numeric value indicating the elastic net tuning parameter.
 #'  * `loss`: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
 #'  * `penalty_factor`: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-#'  * `ns_idx`: vector with the indicies of predictors which were constant features (i.e., had no variation).
+#'  * `ns_idx`: vector with the indicesof predictors which were constant features (i.e., had no variation).
 #'  * `p`: the number of features
 #'  * `n`: the number of observations (instances)
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`

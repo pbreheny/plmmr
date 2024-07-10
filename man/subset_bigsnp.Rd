@@ -31,7 +31,7 @@ subset_bigsnp(
 \item "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
 }}
 
-\item{complete_phen}{Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
+\item{complete_phen}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
 
 \item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 \strong{Note}: this is typically passed from the result of \code{add_predictors()}}

@@ -4,17 +4,24 @@
 \alias{count_constant_features}
 \title{A helper function to count constant features}
 \usage{
-count_constant_features(counts, outfile, quiet)
+count_constant_features(
+  fbm,
+  ind.row = bigstatsr::rows_along(fbm),
+  outfile,
+  quiet
+)
 }
 \arguments{
-\item{counts}{An object returned by \code{bigstatsr::big_counts()}}
+\item{fbm}{An FBM object, usually the 'genotypes' component from a bigSNP list}
+
+\item{ind.row}{Optional indicators for rows in fbm. Default includes all rows.}
 
 \item{outfile}{String specifying name of log file}
 
-\item{quiet}{Logical: should a message be printed to the console ?}
+\item{quiet}{Logical: should a message be printed to the console}
 }
 \value{
-ns A numeric vector with the indicies of the non-singular columns of the matrix associated with \code{counts}
+ns A numeric vector with the indicesof the non-singular columns of the matrix associated with \code{counts}
 }
 \description{
 A helper function to count constant features

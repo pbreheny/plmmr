@@ -35,7 +35,7 @@ See \code{plmm_fit()} and \code{untransform()} for details.}
 \itemize{
 \item 'center': the centering values for the columns of \code{X}
 \item 'scale': the scaling values for the non-singular columns of \code{X}
-\item 'ns': indicies of nonsingular columns in \code{std_X}
+\item 'ns': indicesof nonsingular columns in \code{std_X}
 }}
 
 \item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
