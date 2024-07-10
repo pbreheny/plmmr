@@ -1,8 +1,8 @@
 ### plmmr log file ###
 Logging to process_penncath.log 
-Host: fv-az570-939 
+Host: fv-az1114-140 
 Current working directory: /home/runner/work/plmmr/plmmr/docs/reference 
-Start log at: 2024-07-10 15:44:31
+Start log at: 2024-07-10 22:22:01
 Call: process_plink(data_dir = find_example_data(parent = TRUE), rds_dir = temp_dir, prefix = "penncath_lite", outfile = "process_penncath", overwrite = TRUE, impute_method = "mode") 
 
 Preprocessing penncath_lite data
