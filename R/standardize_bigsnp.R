@@ -5,7 +5,7 @@
 #' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param non_gen       An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #' Note: this is typically passed from the result of `add_predictors()`
-#' @param complete_phen Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
+#' @param complete_phen Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param outfile       Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet         Logical: should messages be printed to the console? Defaults to TRUE

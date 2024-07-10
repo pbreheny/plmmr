@@ -9,7 +9,7 @@
 #' @param std_X_details A list with 3 items:
 #'  * 'center': the centering values for the columns of `X`
 #'  * 'scale': the scaling values for the non-singular columns of `X`
-#'  * 'ns': indicies of nonsingular columns in `std_X`
+#'  * 'ns': indicesof nonsingular columns in `std_X`
 #' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.

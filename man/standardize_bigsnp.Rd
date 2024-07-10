@@ -26,7 +26,7 @@ standardize_bigsnp(
 \item{non_gen}{An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 Note: this is typically passed from the result of \code{add_predictors()}}
 
-\item{complete_phen}{Numeric vector with indicies marking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
+\item{complete_phen}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 
