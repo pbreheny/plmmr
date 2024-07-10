@@ -50,17 +50,18 @@ phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
   as.matrix()
 colnames(phen) <- c("FamID", "CAD")
 
-penncath_lite <- process_plink(data_dir = "inst/extdata/",
-                               prefix = "penncath_lite",
-                               id_var = "FID",
-                               add_phen = phen,
-                               pheno_id = "FamID",
-                               pheno_name = "CAD",
-                               add_predictor_ext = predictors,
-                               quiet = FALSE,
-                               overwrite = TRUE,
-                               outfile = "./test_process_plink")
-
+system.time(
+  penncath_lite <- process_plink(data_dir = "inst/extdata/",
+                                 prefix = "penncath_lite",
+                                 id_var = "FID",
+                                 add_phen = phen,
+                                 pheno_id = "FamID",
+                                 pheno_name = "CAD",
+                                 add_predictor_ext = predictors,
+                                 quiet = FALSE,
+                                 overwrite = TRUE,
+                                 outfile = "./test_process_plink")
+)
 
 }
 
