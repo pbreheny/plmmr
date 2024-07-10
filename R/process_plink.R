@@ -31,9 +31,8 @@
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
 #' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                            This argument takes one of two kinds of arguments:
-#'                              - a **named** numeric vector, where the names align with the sample IDs in the PLINK files.
-#'                            The names will be used to subset and align this external covariate with the supplied PLINK data.
-#'
+#'                              - a **named** numeric vector, where the names align with the sample IDs in the PLINK files. **No NA values** can be in this vector.
+#'                            The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
 #'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
 #'                           The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")

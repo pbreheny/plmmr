@@ -73,12 +73,10 @@ To protect users from accidentally deleting files with saved results, only one \
 
 \item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 This argument takes one of two kinds of arguments:
-- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{                         - a numeric matrix whose row names align with the sample IDs in the PLINK files.
-                      The names will be used to subset and align this external covariate with the supplied PLINK data.
-}\if{html}{\out{</div>}}}
+- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files. \strong{No NA values} can be in this vector.
+The names will be used to subset and align this external covariate with the supplied PLINK data. \strong{No NA values} can be in this matrix.
+- a numeric matrix whose row names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
