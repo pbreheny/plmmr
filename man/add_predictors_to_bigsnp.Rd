@@ -10,6 +10,7 @@ add_predictors_to_bigsnp(
   add_predictor_ext,
   id_var,
   og_plink_ids,
+  rds_dir,
   quiet
 )
 }
@@ -23,6 +24,8 @@ add_predictors_to_bigsnp(
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 
 \item{og_plink_ids}{Character vector passed from \code{name_and_count_bigsnp()}}
+
+\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}(from \code{process_plink()} call)}
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
 }

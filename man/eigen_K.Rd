@@ -8,7 +8,7 @@ Note: This is faster than taking SVD of X when p >> n}
 eigen_K(std_X, fbm_flag, ...)
 }
 \arguments{
-\item{std_X}{The \emph{standardized} design matrix, stored as FBM.}
+\item{std_X}{The \emph{standardized} design matrix, stored as big.matrix object.}
 
 \item{fbm_flag}{Logical: is std_X an FBM obejct? Passed from \code{plmm()}.}
 

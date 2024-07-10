@@ -25,12 +25,12 @@ fbm2bm <- function(fbm, desc = FALSE){
 
 }
 
-bm2fbm <- function(bm){
-  f <- paste0(bigmemory::dir.name(bm), bigmemory::file.name(bm))
-  bk_file_path_sans_extension <- bigstatsr::sub_bk(f)
-  fbm <- bigstatsr::FBM(nrow = nrow(bm), ncol = ncol(bm),
-                          create_bk = FALSE,
-                          backingfile = bk_file_path_sans_extension)
-  return(fbm)
-}
+# bm2fbm <- function(bm){
+#   f <- paste0(bigmemory::dir.name(bm), bigmemory::file.name(bm))
+#   bk_file_path_sans_extension <- bigstatsr::sub_bk(f)
+#   fbm <- bigstatsr::FBM(nrow = nrow(bm), ncol = ncol(bm),
+#                           create_bk = FALSE,
+#                           backingfile = bk_file_path_sans_extension)
+#   return(fbm)
+# }
 

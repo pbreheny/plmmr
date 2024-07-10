@@ -247,7 +247,6 @@ process_plink <- function(data_dir,
   gc() # this is important!
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
-  paste0(file.path(rds_dir, 'combined_data.bk')) |> file.remove() # this .bk was created in add_predictors_to_bigsnp
   gc()
   rm(step1)
   gc() # this is important!

@@ -16,6 +16,10 @@
 add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
                                      id_var, og_plink_ids,
                                      rds_dir, quiet){
+
+  # genotypes need to have type 'double' from now on, in order to merge
+  geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = "double"))
+
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
@@ -26,19 +30,16 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
       cat("\nAdding predictors from .fam file.")
     }
     if (add_predictor_fam == "sex"){
+
       # add space for extra column
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + 1)
       # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1] <- obj$fam[add_predictor_fam]
-                             res[,ind+1] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+      obj$geno_plus_predictors <- big_cbind(A = as.matrix(obj$fam[add_predictor_fam]),
+                                            B = geno_bm,
+                                            C = obj$geno_plus_predictors,
+                                            quiet = quiet)
 
       # adjust colnames
       obj$colnames <- c(add_predictor_fam, obj$colnames)
@@ -87,14 +88,10 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen))
       # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1:length(non_gen)] <- add_predictor_ext
-                             res[,ind+length(non_gen)] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+      obj$geno_plus_predictors <- big_cbind(A = as.matrix(add_predictor_ext),
+                                            B = geno_bm,
+                                            C = obj$geno_plus_predictors,
+                                            quiet = quiet)
 
       # adjust colnames
       obj$colnames <- c(deparse(substitute(add_predictor_ext)), obj$colnames)
@@ -126,17 +123,17 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
                                              og_plink_ids = og_plink_ids)
-browser()
+
       # save non_gen: an index marking added columns as non-genomic predictors
       non_gen <- 1:ncol(add_predictor_ext)
 
-      geno_bm <- fbm2bm(obj$genotypes)
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+                                                 type = "double",
+                                                 #backingfile = file.path(rds_dir, "combined_data"
                                                  nrow = nrow(obj$fam),
-                                                 ncol = obj$genotypes$ncol + length(non_gen),
-                                                 backingfile = file.path(rds_dir, "combined_data")) |> fbm2bm()
+                                                 ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
 
-    obj$geno_plus_predictors <- big_cbind(A = add_predictor_ext,
+      obj$geno_plus_predictors <- big_cbind(A = add_predictor_ext,
                                           B = geno_bm,
                                           C = obj$geno_plus_predictors,
                                           quiet = quiet)
