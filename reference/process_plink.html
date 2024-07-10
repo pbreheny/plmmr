@@ -20,8 +20,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -151,10 +152,10 @@ To protect users from accidentally deleting files with saved results, only one <
 <dt id="arg-add-predictor-ext">add_predictor_ext<a class="anchor" aria-label="anchor" href="#arg-add-predictor-ext"></a></dt>
 <dd><p>Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 This argument takes one of two kinds of arguments:
-- a <strong>named</strong> numeric vector, where the names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>                         <span class="sc">-</span> a numeric matrix whose row names align with the sample IDs <span class="cf">in</span> the PLINK files.</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                      The names will be used to subset and align this external covariate with the supplied PLINK data.</span></code></pre><p></p></div></dd>
+- a <strong>named</strong> numeric vector, where the names align with the sample IDs in the PLINK files. <strong>No NA values</strong> can be in this vector.
+The names will be used to subset and align this external covariate with the supplied PLINK data. <strong>No NA values</strong> can be in this matrix.
+- a numeric matrix whose row names align with the sample IDs in the PLINK files.
+The names will be used to subset and align this external covariate with the supplied PLINK data.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

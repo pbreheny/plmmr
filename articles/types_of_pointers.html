@@ -36,8 +36,9 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul>
 </li>
@@ -145,13 +146,13 @@ follow this demo as a guide for analysis.</p>
 <span><span class="co">#&gt; attr(,"package")</span></span>
 <span><span class="co">#&gt; [1] "bigstatsr"</span></span>
 <span><span class="va">admix</span><span class="op">$</span><span class="va">fbm_X</span><span class="op">$</span><span class="va">backingfile</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmprdZmXq/file1bb25ce977a5.bk"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpmes5w8/file1c5221eabb9c.bk"</span></span>
 <span></span>
 <span><span class="co"># now, to get ready for other plmm() computation, I switch to a big.matrix:</span></span>
 <span><span class="va">admix</span><span class="op">$</span><span class="va">bm_X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fbm2bm.html">fbm2bm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">fbm_X</span><span class="op">)</span></span>
 <span><span class="co"># notice: the backing file is the same. Both pointers are pointing to the same data:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">bigmemory</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/big.matrix.html" class="external-link">dir.name</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">bm_X</span><span class="op">)</span>, <span class="fu">bigmemory</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/big.matrix.html" class="external-link">file.name</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">bm_X</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmprdZmXq/file1bb25ce977a5.bk"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpmes5w8/file1c5221eabb9c.bk"</span></span>
 <span></span>
 <span><span class="co"># pretend we need to do cross-validation. Back to FBM for non-contiguous subsetting:</span></span>
 <span><span class="va">fold</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">bm_X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">10</span><span class="op">)</span> <span class="co"># choose 10 for 10 folds</span></span>
@@ -167,7 +168,7 @@ follow this demo as a guide for analysis.</p>
 <span><span class="co">#&gt; attr(,"package")</span></span>
 <span><span class="co">#&gt; [1] "bigstatsr"</span></span>
 <span><span class="va">training_data</span><span class="op">$</span><span class="va">backingfile</span> <span class="co"># subset data is copied with a new backing file</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmprdZmXq/file1bb2241cde82.bk"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmpmes5w8/file1c524bdbe50e.bk"</span></span>
 <span></span>
 <span><span class="co"># now within each fold, we need to rotate:</span></span>
 <span><span class="va">admix</span><span class="op">$</span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/relatedness_mat.html">relatedness_mat</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">fold</span><span class="op">!=</span><span class="fl">1</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span></span>

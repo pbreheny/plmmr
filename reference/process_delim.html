@@ -20,8 +20,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">PLINK files/file-backed matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -137,8 +138,8 @@ backingfile that stores the numeric data of the standardized design matrix <code
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       For now, plmmr::process_delim() will drop all columns of X with NA values.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Column-standardizing the design matrix...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved to: /tmp/RtmpVvBrij/std_colon2.rds at 2024-07-08 18:27:39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpVvBrij/std_colon2.rds"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved to: /tmp/RtmpTLdkua/std_colon2.rds at 2024-07-10 04:01:07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpTLdkua/std_colon2.rds"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># colon2_rds &lt;- readRDS(paste0(temp_dir, "std_colon2.rds"))</span></span></span>
 <span class="r-in"><span><span class="co"># str(colon2_rds)</span></span></span>
