@@ -15,9 +15,11 @@ navbar:
     menu:
     - text: Getting started
       href: articles/getting-started.html
+    - text: If your data is from PLINK...
+      href: articles/process_plink_files.html
     - text: Notes on notation
       href: articles/notation.html
-    - text: PLINK files/file-backed matrices
+    - text: File-backed data (how to work with big files)
       href: articles/filebacking.html
     - text: 'In progress: PLMMs & deconfounding'
       href: articles/deconfounding.html
