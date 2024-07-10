@@ -17,8 +17,14 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids){
 
   # check alignment between the geno/pheno data we've already merged in step 1
   #   and the supplied predictor file. Need to subset predictors to match pheno file
-  if (length(og_plink_ids) != nrow(add_predictor)) {
+  if (length(og_plink_ids) < nrow(add_predictor)) {
     add_predictor <- add_predictor[rownames(add_predictor) %in% og_plink_ids,]
+  } else if (length(og_plink_ids) > nrow(add_predictor)) {
+    stop("There are more rows (samples) in the supplied PLINK data than there are rows in the 'add_predictor_ext' data.
+         For now, this is not supported by plmmr. You need to subset your PLINK data to represent
+         only the rows represented in your 'add_predictor_ext' file.
+         There are at least two ways to do this: use the PLINK software directly, or use methods from the R package 'bigsnpr'.
+         If you don't have a lot of background in computing, I'd recommend the 'bigsnpr' approach.")
   }
 
   ordered_ids <- order(rownames(add_predictor), og_plink_ids)
