@@ -157,6 +157,7 @@ void fill_in(XPtr<BigMatrix> fill_into_,
              int rows_from,
              int cols_from){
   MatrixAccessor<double> fill_into(*fill_into_);
+  Rprintf("\nMade it past fill_in() declarations");
   for (int i = 0; i < rows_from; ++i) {
     for (int j = 0; j < cols_from; ++j) {
       fill_into[j][i] = fill_from[j * rows_from + i];
@@ -175,7 +176,7 @@ void fill_in_filebacked(XPtr<BigMatrix> fill_into_,
              int skip){
   MatrixAccessor<double> fill_into(*fill_into_);
   MatrixAccessor<double> fill_from(*fill_from_);
-
+Rprintf("\nMade it past fill_in_filebacked() declarations");
   for (int i=0;i<rows_from;i++){
     for (int j=0;j<cols_from;j++){
       fill_into[j + skip][i] = fill_from[j][i];
