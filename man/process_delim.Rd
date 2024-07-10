@@ -41,7 +41,9 @@ estimating the genomic relatedness among observations in your file, you
 logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.}
 
 \item{overwrite}{Optional: the name (character string) of the prefix of the logfile to be written.
-Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+\strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
+To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
 
 \item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
 }

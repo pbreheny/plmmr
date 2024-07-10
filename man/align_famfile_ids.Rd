@@ -2,7 +2,8 @@
 % Please edit documentation in R/align_famfile_ids.R
 \name{align_famfile_ids}
 \alias{align_famfile_ids}
-\title{A helper function to support \code{process_plink()}}
+\title{A helper function to support \code{process_plink()}
+This function is called by another helper, \code{add_predictors_to_bigsnp()}}
 \usage{
 align_famfile_ids(id_var, quiet, add_predictor, og_plink_ids)
 }
@@ -20,5 +21,6 @@ An object of the same type as add_predictor
 }
 \description{
 A helper function to support \code{process_plink()}
+This function is called by another helper, \code{add_predictors_to_bigsnp()}
 }
 \keyword{internal}

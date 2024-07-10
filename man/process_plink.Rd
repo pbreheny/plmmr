@@ -65,7 +65,9 @@ Note: for data coming from PLINK, no missing values of the phenotype are allowed
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.}
 
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
+\strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
+To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
 
 \item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
 

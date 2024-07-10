@@ -4,7 +4,14 @@
 \alias{add_external_phenotype}
 \title{A function to align genotype and phenotype data}
 \usage{
-add_external_phenotype(geno, geno_id = "sample.ID", pheno, pheno_id, pheno_col)
+add_external_phenotype(
+  geno,
+  geno_id = "sample.ID",
+  pheno,
+  pheno_id,
+  pheno_col,
+  outfile
+)
 }
 \arguments{
 \item{geno}{An object created by \code{name_and_count_bigsnp()}}
@@ -17,11 +24,13 @@ element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' 
 \item{pheno_id}{A string specifying the name of the ID column in \code{pheno}}
 
 \item{pheno_col}{A string specifying the name of the phenotype column in \code{pheno}. This column will be used as the default \code{y} argument to 'plmm()'.}
+
+\item{outfile}{A string with the name of the filepath for the log file}
 }
 \value{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    Nothing is returned; instead, the results are written to an RDS file. 
-             By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new 
-             filename to `rdsfile` 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    Nothing is returned; instead, the results are written to an RDS file.
+             By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new
+             filename to `rdsfile`
 }\if{html}{\out{</div>}}
 }
 \description{
