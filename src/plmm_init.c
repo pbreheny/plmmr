@@ -12,30 +12,16 @@ extern SEXP big_sd(SEXP X_, SEXP ncore_);
 // standardize a rotated matrix of data
 extern SEXP big_std(SEXP X_, SEXP ncore_);
 
-// rotate_filebacked
-extern SEXP rotate_filebacked(SEXP std_X_,
-                              SEXP WUt_,
-                              SEXP rot_X_,
-                              SEXP ncore_);
-
 // big_crossprod
 extern SEXP big_crossprod(SEXP X_,
                           SEXP y_,
                           SEXP ind_col_,
                           SEXP ncore_);
 
-// big_cbind
-extern SEXP big_cbind(SEXP A_, // in-memory data
-                                 SEXP B_, // file-backed data
-                                 SEXP C_, // file-backed placeholder for combined data
-                                 SEXP ncore_);
-
 static const R_CallMethodDef callMethods[] = {
-  {"rotate_filebacked", (DL_FUNC) &rotate_filebacked, 4},
   {"big_crossprod", (DL_FUNC) &big_crossprod, 4},
   {"big_std", (DL_FUNC) &big_std, 2},
   {"big_sd", (DL_FUNC) &big_sd, 2},
-  {"big_cbind", (DL_FUNC) &big_cbind, 4},
   {NULL, NULL, 0}
 };
 
