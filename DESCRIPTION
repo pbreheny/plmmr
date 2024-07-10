@@ -1,6 +1,6 @@
 Package: plmmr
 Title: Penalized Linear Mixed Models For Correlated Data
-Version: 3.1.0
+Version: 3.1.1
 Date: 2024-07-08
 Authors@R: c(
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
