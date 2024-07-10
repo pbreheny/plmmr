@@ -72,7 +72,7 @@
 <dt id="arg-std-x-details">std_X_details<a class="anchor" aria-label="anchor" href="#arg-std-x-details"></a></dt>
 <dd><p>A list with 3 items:</p><ul><li><p>'center': the centering values for the columns of <code>X</code></p></li>
 <li><p>'scale': the scaling values for the non-singular columns of <code>X</code></p></li>
-<li><p>'ns': indicies of nonsingular columns in <code>std_X</code></p></li>
+<li><p>'ns': indicesof nonsingular columns in <code>std_X</code></p></li>
 </ul></dd>
 
 
@@ -109,7 +109,7 @@ For all other cases, 'non_genomic' defaults to NULL (meaning <code><a href="plmm
 <li><p><code>alpha</code>: numeric value indicating the elastic net tuning parameter.</p></li>
 <li><p><code>loss</code>: vector with the numeric values of the loss at each value of <code>lambda</code> (calculated on the ~rotated~ scale)</p></li>
 <li><p><code>penalty_factor</code>: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.</p></li>
-<li><p><code>ns_idx</code>: vector with the indicies of predictors which were constant features (i.e., had no variation).</p></li>
+<li><p><code>ns_idx</code>: vector with the indicesof predictors which were constant features (i.e., had no variation).</p></li>
 <li><p><code>p</code>: the number of features</p></li>
 <li><p><code>n</code>: the number of observations (instances)</p></li>
 <li><p><code>iter</code>: numeric vector with the number of iterations needed in model fitting for each value of <code>lambda</code></p></li>
