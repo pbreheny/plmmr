@@ -1,7 +1,7 @@
 #' A function to take the eigendecomposition of K
 #' Note: This is faster than taking SVD of X when p >> n
 #'
-#' @param std_X The *standardized* design matrix, stored as FBM.
+#' @param std_X The *standardized* design matrix, stored as big.matrix object.
 #' @param fbm_flag Logical: is std_X an FBM obejct? Passed from `plmm()`.
 #' @param ... Optional additional arguments to `bigstatsr::big_tcrossprodSelf()`,
 #' Of note, one additional argument is `ind.col`, which is used to *exclude* the

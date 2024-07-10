@@ -190,6 +190,7 @@ process_plink <- function(data_dir,
                                     add_predictor_ext = add_predictor_ext,
                                     id_var = id_var,
                                     og_plink_ids = step2$og_plink_ids,
+                                    rds_dir = rds_dir,
                                     quiet = quiet)
 
   # check for files to be overwritten---------------------------------
@@ -246,6 +247,7 @@ process_plink <- function(data_dir,
   gc() # this is important!
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
+  gc()
   rm(step1)
   gc() # this is important!
 

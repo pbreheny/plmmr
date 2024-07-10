@@ -33,7 +33,8 @@ Imports:
     bigstatsr,
     data.table,
     Matrix,
-    ncvreg
+    ncvreg,
+    utils
 Suggests:
     graphics,
     grDevices,

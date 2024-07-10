@@ -5,6 +5,7 @@
 #' @param add_predictor_ext Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #' @param id_var            String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param og_plink_ids      Character vector passed from `name_and_count_bigsnp()`
+#' @param rds_dir           The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`(from `process_plink()` call)
 #' @param quiet             Logical: should messages be printed to the console? Defaults to TRUE
 #'
 #' @return A list of 2 components:
@@ -12,7 +13,13 @@
 #' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
 #' @keywords internal
 #'
-add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, id_var, og_plink_ids, quiet){
+add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
+                                     id_var, og_plink_ids,
+                                     rds_dir, quiet){
+
+  # genotypes need to have type 'double' from now on, in order to merge
+  geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = "double"))
+
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
@@ -23,19 +30,16 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
       cat("\nAdding predictors from .fam file.")
     }
     if (add_predictor_fam == "sex"){
+
       # add space for extra column
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + 1)
       # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1] <- obj$fam[add_predictor_fam]
-                             res[,ind+1] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+      obj$geno_plus_predictors <- big_cbind(A = as.matrix(obj$fam[add_predictor_fam]),
+                                            B = geno_bm,
+                                            C = obj$geno_plus_predictors,
+                                            quiet = quiet)
 
       # adjust colnames
       obj$colnames <- c(add_predictor_fam, obj$colnames)
@@ -84,14 +88,10 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen))
       # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1:length(non_gen)] <- add_predictor_ext
-                             res[,ind+length(non_gen)] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+      obj$geno_plus_predictors <- big_cbind(A = as.matrix(add_predictor_ext),
+                                            B = geno_bm,
+                                            C = obj$geno_plus_predictors,
+                                            quiet = quiet)
 
       # adjust colnames
       obj$colnames <- c(deparse(substitute(add_predictor_ext)), obj$colnames)
@@ -128,17 +128,16 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
       non_gen <- 1:ncol(add_predictor_ext)
 
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+                                                 type = "double",
+                                                 #backingfile = file.path(rds_dir, "combined_data"
                                                  nrow = nrow(obj$fam),
-                                                 ncol = obj$genotypes$ncol + length(non_gen))
-      # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1:length(non_gen)] <- add_predictor_ext
-                             res[,ind+length(non_gen)] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+                                                 ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
+
+      obj$geno_plus_predictors <- big_cbind(A = add_predictor_ext,
+                                          B = geno_bm,
+                                          C = obj$geno_plus_predictors,
+                                          quiet = quiet)
+
 
       # adjust colnames if applicable
       if (!is.null(colnames(add_predictor_ext))){
