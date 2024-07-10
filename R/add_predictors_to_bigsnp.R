@@ -123,22 +123,27 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext, 
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
                                              og_plink_ids = og_plink_ids)
-
+browser()
       # save non_gen: an index marking added columns as non-genomic predictors
       non_gen <- 1:ncol(add_predictor_ext)
 
+      geno_bm <- fbm2bm(obj$genotypes)
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
                                                  nrow = nrow(obj$fam),
-                                                 ncol = obj$genotypes$ncol + length(non_gen))
+                                                 ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
       # fill in new matrix
-      bigstatsr::big_apply(obj$genotypes,
-                           a.FUN = function(X, ind, res){
-                             res[,1:length(non_gen)] <- add_predictor_ext
-                             res[,ind+length(non_gen)] <- X[,ind]
-                           },
-                           a.combine = cbind,
-                           res = obj$geno_plus_predictors,
-                           ncores = bigstatsr::nb_cores())
+      # bigstatsr::big_apply(obj$genotypes,
+      #                      a.FUN = function(X, ind, res){
+      #                        res[,1:length(non_gen)] <- add_predictor_ext
+      #                        res[,ind+length(non_gen)] <- X[,ind]
+      #                      },
+      #                      a.combine = cbind,
+      #                      res = obj$geno_plus_predictors,
+      #                      ncores = bigstatsr::nb_cores())
+
+      .Call("big_cbind",
+            add_predictor_ext,
+            )
 
       # adjust colnames if applicable
       if (!is.null(colnames(add_predictor_ext))){

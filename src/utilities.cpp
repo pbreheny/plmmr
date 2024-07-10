@@ -147,3 +147,39 @@ void standardize_and_get_residual(NumericVector &center, NumericVector &scale,
   *p_keep_ptr = col_idx.size();
   *lambda_max_ptr = zmax / alpha;
 }
+
+
+// fill in the values of a filebacked matrix with values from a numeric matrix
+void fill_in(XPtr<BigMatrix> fill_into_,
+             int rows_into,
+             int cols_into,
+             NumericMatrix fill_from,
+             int rows_from,
+             int cols_from){
+  MatrixAccessor<double> fill_into(*fill_into_);
+  for (int i = 0; i < rows_from; ++i) {
+    for (int j = 0; j < cols_from; ++j) {
+      fill_into[j][i] = fill_from[j * rows_from + i];
+    }
+  }
+
+}
+
+// fill in the values of one filebacked matrix with values from another filebacked matrix
+void fill_in_filebacked(XPtr<BigMatrix> fill_into_,
+             int rows_into,
+             int cols_into,
+             XPtr<BigMatrix> fill_from_,
+             int rows_from,
+             int cols_from,
+             int skip){
+  MatrixAccessor<double> fill_into(*fill_into_);
+  MatrixAccessor<double> fill_from(*fill_from_);
+
+  for (int i=0;i<rows_from;i++){
+    for (int j=0;j<cols_from;j++){
+      fill_into[j + skip][i] = fill_from[j][i];
+    }
+  }
+
+}

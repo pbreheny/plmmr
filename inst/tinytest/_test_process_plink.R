@@ -34,6 +34,8 @@ pen2$std_X_colnames |> head() # std_X includes our non-genomic covariates
 # and it recognizes the -9 values as missing
 
 # test 2: use external pheno and predictor files ----------------------------
+unzip_example_data(outdir = 'inst/extdata')
+
 penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
 str(penncath_pheno)
 
