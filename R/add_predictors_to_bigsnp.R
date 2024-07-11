@@ -148,6 +148,9 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
 
   }
 
+  # save the object with the added & aligned external predictors
+  obj <- bigsnpr::snp_save(obj)
+
   return(list(obj = obj, non_gen = non_gen))
 
 }

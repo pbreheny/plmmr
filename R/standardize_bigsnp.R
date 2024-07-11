@@ -36,7 +36,7 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
 
   cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
 
-  # checks ---------------------------------------------------------
+  # checks (DO NOT RUN with large data) ---------------------------------------
   # std_X and obj$subset_X are two pointers, both pointing to the same backing file
   # obj$subset_X$backingfile; paste0(dir.name(std_X), file.name(std_X))
 
