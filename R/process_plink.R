@@ -184,6 +184,7 @@ process_plink <- function(data_dir,
                            outfile = logfile,
                            quiet = quiet, ...)
 
+  gc()
   # add predictors from external files -----------------------------
   step5 <- add_predictors_to_bigsnp(obj = step4,
                                     add_predictor_fam = add_predictor_fam,
@@ -192,7 +193,7 @@ process_plink <- function(data_dir,
                                     og_plink_ids = step2$og_plink_ids,
                                     rds_dir = rds_dir,
                                     quiet = quiet)
-
+  gc()
   # check for files to be overwritten---------------------------------
   if (overwrite){
     gc()
@@ -225,7 +226,7 @@ process_plink <- function(data_dir,
                          bk_filename = bk_filename,
                          outfile = logfile,
                          quiet = quiet)
-
+  gc()
   # standardization ------------------------------------------------------------
   step7 <- standardize_bigsnp(obj = step6,
                               prefix = prefix,
@@ -253,9 +254,9 @@ process_plink <- function(data_dir,
 
   saveRDS(step7, file.path(rds_dir, paste0("std_", prefix, ".rds")))
 
-  if(!quiet){cat("\nDone with standardization. \nProcessed files now saved as .rds object.")}
+  if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as .rds object.")}
 
-  cat("\nDone with standardization. \nProcessed files now saved as",
+  cat("\nprocess_plink() completed. \nProcessed files now saved as",
       file.path(rds_dir, paste0("std_", prefix, ".rds")),
       "at", pretty_time(),
       file = logfile, append = TRUE)

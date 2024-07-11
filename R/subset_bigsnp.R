@@ -87,6 +87,9 @@ subset_bigsnp <- function(obj, counts, handle_missing_phen, complete_phen, non_g
   # save ns indices as part of our object
   obj$ns <- ns
 
+  # save the imputed object
+  obj <- bigsnpr::snp_save(obj)
+
   return(obj)
 
 }
