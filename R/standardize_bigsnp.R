@@ -22,15 +22,19 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
   # convert FBM pointer into a big.matrix pointer
-  subset_X_bm <- obj$subset_X |> fbm2bm()
+  std_X <- obj$subset_X |> fbm2bm()
+
   # centering & scaling
+  # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call("big_std",
-                   subset_X_bm@address,
+                   std_X@address,
                    as.integer(bigstatsr::nb_cores()),
                    PACKAGE = "plmmr")
 
-  std_X <- bigmemory::big.matrix(nrow = nrow(obj$subset_X), ncol = ncol(obj$subset_X))
-  std_X@address <- std_res$std_X
+  # add timestamp to log -- the standardization step could take a while
+  if (!quiet) {cat("Standardization completed at", pretty_time())}
+
+  cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
 
   # checks ---------------------------------------------------------
   # std_X and obj$subset_X are two pointers, both pointing to the same backing file
