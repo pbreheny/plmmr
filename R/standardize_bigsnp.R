@@ -1,6 +1,8 @@
 #' A helper function to standardize a `bigSNP`
 #'
-#' @param obj           A `bigSNP` object
+#' @param obj           A list that includes:
+#'                       (1) subset_X: a `big.matrix` object that has been subset &/or had any additional predictors appended as columns
+#'                       (2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X
 #' @param prefix        The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
 #' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param non_gen       An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
@@ -17,7 +19,6 @@
 #'
 standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
                                outfile, quiet, overwrite){
-
 
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
@@ -36,37 +37,17 @@ standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_
 
   cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
 
-  # checks (DO NOT RUN with large data) ---------------------------------------
-  # std_X and obj$subset_X are two pointers, both pointing to the same backing file
-  # obj$subset_X$backingfile; paste0(dir.name(std_X), file.name(std_X))
-
-  # foo1 <- obj$subset_X[,]
-  # foo2 <- std_X[,]
-  # tinytest::expect_equivalent(foo1, foo2) #
-
   # label return object ------------------------------------------------
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
-
   ret <- list(
     std_X = bigmemory::describe(std_X),
     std_X_n = nrow(std_X),
     std_X_p = ncol(std_X),
     std_X_center = std_res$std_X_center,
     std_X_scale = std_res$std_X_scale,
-    ns = obj$ns,
-    std_X_colnames = obj$colnames[obj$ns],
-    std_X_rownames = obj$rownames[complete_phen],
-    X_colnames = obj$colnames,
-    X_rownames = obj$rownames,
-    n = nrow(obj$fam),
-    p = nrow(obj$map),
-    fam = obj$fam,
-    map = obj$map,
-    non_gen = non_gen, # save indices for non-genomic covariates
-    complete_phen = complete_phen, # save indices for which samples had complete phenotypes
-    id_var = id_var # save ID variable - will need this downstream for analysis
+    ns = obj$ns
   )
 
 

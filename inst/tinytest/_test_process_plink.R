@@ -54,17 +54,26 @@ if (interactive()){
 
 
 
-  penncath_lite <- process_plink(data_dir = "inst/extdata/",
+  penncath_lite <- process_plink(data_dir = "inst/extdata",
                                  prefix = "penncath_lite",
                                  id_var = "FID",
                                  add_phen = phen,
                                  pheno_id = "FamID",
                                  pheno_name = "CAD",
-                                 add_predictor_ext = predictors,
                                  quiet = FALSE,
                                  overwrite = TRUE)
 
+  X <- create_design_matrix(dat = penncath_lite,
+                            rds_dir = "inst/extdata",
+                            prefix = "std_penncath_lite",
+                            is_bigsnp = TRUE,
+                            add_predictor_ext = predictors,
+                            id_var = "FID",
+                            overwrite = TRUE,
+                            outfile = NULL)
 
+  res <- readRDS(X)
 
+  str(res)
 }
 

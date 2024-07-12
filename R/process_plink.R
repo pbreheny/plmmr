@@ -169,6 +169,9 @@ process_plink <- function(data_dir,
                            outfile = logfile,
                            quiet = quiet, ...)
 
+  step4$complete_phen <- step3$complete_phen
+  step4$handle_missing_phen <- handle_missing_phen
+  bigsnpr::snp_save(step4)
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
@@ -178,7 +181,7 @@ process_plink <- function(data_dir,
   if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as .rds object.")}
 
   cat("\nprocess_plink() completed. \nProcessed files now saved as",
-      file.path(rds_dir, paste0("std_", prefix, ".rds")),
+      file.path(rds_dir, paste0(prefix, ".rds")),
       "at", pretty_time(),
       file = logfile, append = TRUE)
 
