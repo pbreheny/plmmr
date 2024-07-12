@@ -33,9 +33,21 @@ if (interactive()){
   # file. The vignette uses the 6th column of the fam file as the outcome,
   # and it recognizes the -9 values as missing
 
-  # test 2: use external pheno and predictor files ----------------------------
+  # test 2: use external pheno and predictor files -----------------------------
   unzip_example_data(outdir = 'inst/extdata')
 
+  ## process plink -------------------------------------------------------------
+  penncath_lite <- process_plink(data_dir = "inst/extdata",
+                                 prefix = "penncath_lite",
+                                 id_var = "FID",
+                                 quiet = FALSE,
+                                 overwrite = TRUE)
+
+  imputed_dat <- readRDS(penncath_lite)
+  str(imputed_dat)
+  any(is.na(imputed_dat$genotypes[,]))
+
+  ## create design matrix-------------------------------------------------------
   penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
   str(penncath_pheno)
 
@@ -46,27 +58,21 @@ if (interactive()){
     as.matrix()
   colnames(predictors) <- c("age", "tg")
 
-  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
+  phen <- cbind(penncath_pheno$FamID, penncath_pheno$hdl) |>
     as.data.frame() |>
     tidyr::drop_na() |>
     as.matrix()
-  colnames(phen) <- c("FamID", "CAD")
+  colnames(phen) <- c("FamID", "hdl")
 
 
-
-  penncath_lite <- process_plink(data_dir = "inst/extdata",
-                                 prefix = "penncath_lite",
-                                 id_var = "FID",
-                                 add_phen = phen,
-                                 pheno_id = "FamID",
-                                 pheno_name = "CAD",
-                                 quiet = FALSE,
-                                 overwrite = TRUE)
-
-  X <- create_design_matrix(dat = penncath_lite,
+  X <- create_design(dat = penncath_lite,
                             rds_dir = "inst/extdata",
                             prefix = "std_penncath_lite",
                             is_bigsnp = TRUE,
+                            add_phen = phen,
+                            pheno_id = "FamID",
+                            pheno_name = "hdl",
+                            na_phenotype_vals = c(NA_integer_),
                             add_predictor_ext = predictors,
                             id_var = "FID",
                             overwrite = TRUE,

@@ -17,6 +17,8 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
                                      id_var, og_plink_ids,
                                      rds_dir, quiet){
 
+  browser()
+
   # genotypes need to have type 'double' from now on, in order to merge
   geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = "double"))
 

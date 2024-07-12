@@ -12,17 +12,8 @@
 #'                                * mean0: Imputes the rounded mean.
 #'                                * mean2: Imputes the mean rounded to 2 decimal places.
 #'                                * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
-#' @param na_phenotype_vals   A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
-#' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
-#' @param add_phen            Optional: A **data frame** with at least two columns: and ID column and a phenotype column
-#' @param pheno_id            Optional: A string specifying the name of the ID column in `pheno`. MUST be specified if `add_phen` is specified.
-#' @param pheno_name           Optional: A string specifying the name of the phenotype column in `pheno`.  MUST be specified if `add_phen` is specified. This column will be used as the default `y` argument to 'plmm()'.
-#' @param handle_missing_phen A string indicating how missing phenotypes should be handled:
-#'                                * "prune" (default): observations with missing phenotype are removed
-#'                                * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-#'                                * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-#'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-#'                            (2) prune missing values, or (3) impute missing values.
+
+#' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #'                            **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
@@ -81,12 +72,7 @@ process_plink <- function(data_dir,
                           outfile,
                           impute = TRUE,
                           impute_method = 'mode',
-                          na_phenotype_vals = c(-9),
                           id_var = "IID",
-                          handle_missing_phen = "prune",
-                          add_phen = NULL,
-                          pheno_id = NULL,
-                          pheno_name = NULL,
                           quiet = FALSE,
                           overwrite = FALSE,
                           ...){
@@ -106,36 +92,12 @@ process_plink <- function(data_dir,
 
 
   # read in PLINK files --------------------------------
-  plink_obj <- read_plink_files(data_dir = data_dir,
+  step1 <- read_plink_files(data_dir = data_dir,
                                 prefix = prefix,
                                 rds_dir = rds_dir,
                                 outfile = logfile,
                                 overwrite = overwrite,
                                 quiet = quiet)
-
-  # add external phenotype, if needed -----------------
-  if (id_var == "IID"){
-    geno_id <- "sample.ID"
-  } else if (id_var == "FID"){
-    geno_id <- "family.ID"
-  } else {
-    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID', and
-         the corresponding variable *must* be of type 'char'.")
-  }
-
-  if (!is.null(add_phen)){
-    step1 <- add_external_phenotype(geno = plink_obj,
-                                    geno_id = geno_id,
-                                    pheno = add_phen,
-                                    pheno_id = pheno_id,
-                                    pheno_col = pheno_name,
-                                    outfile = logfile)
-    handle_missing_phen <- 'asis'
-
-  } else {
-    step1 <- plink_obj
-
-  }
 
   # name and count ------------------------------------
   step2 <- name_and_count_bigsnp(obj = step1,
@@ -152,26 +114,30 @@ process_plink <- function(data_dir,
          https://www.cog-genomics.org/plink/1.9/filter#chr \n")
   }
 
-  # notify about missing genotypes & phenotypes ---------------------------------
-  step3 <- handle_missingness(obj = step2$obj,
-                              counts = step2$counts,
-                              X = step2$X,
-                              na_phenotype_vals = na_phenotype_vals,
-                              handle_missing_phen = handle_missing_phen,
-                              outfile = logfile,
-                              quiet = quiet)
+  # notify about missing (genotype) values ------------------------------
+  na_idx <- step2$na_counts > 0
+  prop_na <- step2$na_counts/nrow(step2$X)
+
+  cat("There are a total of", sum(na_idx), "SNPs with missing values\n",
+      file = logfile, append = TRUE)
+  cat("Of these,", sum(prop_na > 0.5),
+      "are missing in at least 50% of the samples\n",
+      file = logfile, append = TRUE)
+  if(!quiet){
+    cat("There are a total of", sum(na_idx), "SNPs with missing values\n")
+    cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples\n")
+  }
 
   # imputation ------------------------------------------------------------------
-  step4 <- impute_snp_data(step2$obj,
+  step3 <- impute_snp_data(step2$obj,
                            step2$X,
                            impute = impute,
                            impute_method = impute_method,
                            outfile = logfile,
                            quiet = quiet, ...)
 
-  step4$complete_phen <- step3$complete_phen
-  step4$handle_missing_phen <- handle_missing_phen
-  bigsnpr::snp_save(step4)
+  bigsnpr::snp_save(step3) # save imputed data
+
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>

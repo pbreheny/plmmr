@@ -19,9 +19,9 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
   obj$colnames <- obj$map$marker.ID
 
   if (id_var == "FID"){
-    obj$rownames <- og_plink_ids <- as.character(obj$fam$family.ID)
+    obj$rownames <- as.character(obj$fam$family.ID)
   } else if (id_var == "IID") {
-    obj$rownames <- og_plink_ids <- as.character(obj$fam$sample.ID)
+    obj$rownames <- as.character(obj$fam$sample.ID)
   }
 
   chr_range <- range(obj$map$chromosome)
@@ -42,9 +42,9 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
   # save these counts
   counts <- bigstatsr::big_counts(X) # NB: this is a matrix
 
-  return(list(counts = counts,
+  return(list(na_counts = counts[4,],
               obj = obj,
-              og_plink_ids = og_plink_ids,
+              og_plink_ids = obj$rownames,
               chr = obj$map$chromosome,
               X = X,
               pos = obj$map$physical.pos,

@@ -4,6 +4,16 @@
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param prefix              Optional user-specified prefix for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
 #' @param is_bigsnp
+#' @param na_phenotype_vals   A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
+#' @param add_phen            Optional: A **data frame** with at least two columns: and ID column and a phenotype column
+#' @param pheno_id            Optional: A string specifying the name of the ID column in `pheno`. MUST be specified if `add_phen` is specified.
+#' @param pheno_name           Optional: A string specifying the name of the phenotype column in `pheno`.  MUST be specified if `add_phen` is specified. This column will be used as the default `y` argument to 'plmm()'.
+#' @param handle_missing_phen A string indicating how missing phenotypes should be handled:
+#'                                * "prune" (default): observations with missing phenotype are removed
+#'                                * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
+#'                                * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
+#'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
+#'                            (2) prune missing values, or (3) impute missing values.
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
 #' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                            This argument takes one of two kinds of arguments:
@@ -20,10 +30,15 @@
 #' @export
 #'
 #' @examples
-create_design_matrix <- function(dat,
+create_design <- function(dat,
                                  rds_dir,
                                  prefix,
                                  is_bigsnp,
+                                 na_phenotype_vals = c(-9),
+                                 handle_missing_phen = "prune",
+                                 add_phen = NULL,
+                                 pheno_id = NULL,
+                                 pheno_name = NULL,
                                  add_predictor_fam = NULL,
                                  add_predictor_ext = NULL,
                                  id_var = "IID",
@@ -72,11 +87,32 @@ create_design_matrix <- function(dat,
          keep using process_delim()")
   }
 
-  if (id_var == "FID"){
-    obj$rownames <- og_plink_ids <- as.character(obj$fam$family.ID)
-  } else if (id_var == "IID") {
-    obj$rownames <- og_plink_ids <- as.character(obj$fam$sample.ID)
+  og_plink_ids <-obj$rownames # saved from process_plink()
+
+  # add phenotype from external files -----------------------------
+  if (id_var == "IID"){
+    geno_id <- "sample.ID"
+  } else if (id_var == "FID"){
+    geno_id <- "family.ID"
+  } else {
+    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID', and
+         the corresponding variable *must* be of type 'char'.")
   }
+
+  step1 <- add_external_phenotype(geno = obj,
+                                  geno_id = geno_id,
+                                  pheno = add_phen,
+                                  pheno_id = pheno_id,
+                                  pheno_col = pheno_name,
+                                  outfile = logfile)
+browser()
+  # address missingness in phenotype values -----------------------
+  step2 <- handle_missingness(obj = step1,
+                              na_phenotype_vals = na_phenotype_vals,
+                              handle_missing_phen = handle_missing_phen,
+                              outfile = logfile,
+                              quiet = quiet)
+browser()
   # add predictors from external files -----------------------------
   pred_X <- add_predictors_to_bigsnp(obj = obj,
                                      add_predictor_fam = add_predictor_fam,

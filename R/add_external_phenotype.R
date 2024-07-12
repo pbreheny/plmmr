@@ -16,7 +16,6 @@
 add_external_phenotype <- function(geno, geno_id = "sample.ID",
                                       pheno, pheno_id, pheno_col, outfile){
 
-
   # check to make sure IDs overlap
   if (inherits(pheno, 'matrix')) {
     overlap <- intersect(geno$fam[[geno_id]], pheno[,pheno_id])
@@ -35,6 +34,7 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
   }
 
   id_to_keep <- which(geno$fam[[geno_id]] %in% overlap) # indices of IDs
+
   # case 1: subset geno data to keep only IDs with corresponding rows in pheno data
   if (length(id_to_keep) < nrow(geno$fam)){
     geno_keep_file <- bigsnpr::snp_subset(geno, ind.row = id_to_keep)
@@ -50,11 +50,11 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
   # subset and order pheno data to match genotype data
   subset_pheno <- data.table::merge.data.table(x = data.table::as.data.table(geno_keep$fam),
                                                by.x = geno_id,
-                                               y = data.table::as.data.table( pheno),
+                                               y = data.table::as.data.table(pheno),
                                                by.y = pheno_id)
 
   # add new phenotype value to fam file
-  geno_keep$fam$affection <- subset_pheno[[pheno_col]]
+  geno_keep$fam[6] <- subset_pheno[[pheno_col]]
 
   return(geno_keep)
 

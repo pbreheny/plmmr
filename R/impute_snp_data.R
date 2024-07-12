@@ -19,6 +19,7 @@
 #'
 impute_snp_data <- function(obj, X, impute, impute_method,
                             outfile, quiet, seed = as.numeric(Sys.Date()),...){
+
   if(!quiet & impute){
     # catch for misspellings
     if(!(impute_method %in% c('mode', 'random', 'mean0', 'mean2', 'xgboost'))){
