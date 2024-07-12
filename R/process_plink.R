@@ -1,10 +1,10 @@
 #' Preprocess PLINK files using the `bigsnpr` package
 #'
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
-#' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param bk_filename           Optional string to name the backingfile that will be created for the output data. Defaults to `paste0(std_`. `prefix`).
-#'                              **Note**: Do NOT include a `.bk` extension in the filename.
+#' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
+#' @param outfile               Optional: the name (character string) of the prefix of the logfile to be written.
+#'                              Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
 #'                                * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -24,17 +24,9 @@
 #'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
 #'                            (2) prune missing values, or (3) impute missing values.
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
-#' @param outfile             Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #'                            **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
 #'                            To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
-#' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
-#' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-#'                            This argument takes one of two kinds of arguments:
-#'                              - a **named** numeric vector, where the names align with the sample IDs in the PLINK files. **No NA values** can be in this vector.
-#'                            The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
-#'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
-#'                           The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return Nothing is returned by this function, but (at least) two files are created in
@@ -84,9 +76,9 @@
 #'  }
 #'
 process_plink <- function(data_dir,
-                          prefix,
                           rds_dir = data_dir,
-                          bk_filename,
+                          prefix,
+                          outfile,
                           impute = TRUE,
                           impute_method = 'mode',
                           na_phenotype_vals = c(-9),
@@ -96,17 +88,10 @@ process_plink <- function(data_dir,
                           pheno_id = NULL,
                           pheno_name = NULL,
                           quiet = FALSE,
-                          outfile,
                           overwrite = FALSE,
-                          add_predictor_fam = NULL,
-                          add_predictor_ext = NULL,
                           ...){
 
-  # start log ------------------------------------------
-  if(missing(bk_filename)){
-    bk_filename <- paste0("std_", prefix)
-  }
-
+  # start log -----------------------------------------
   if(missing(outfile)){
     outfile = file.path(data_dir, "process_plink")
   }
@@ -184,75 +169,11 @@ process_plink <- function(data_dir,
                            outfile = logfile,
                            quiet = quiet, ...)
 
-  gc()
-  # add predictors from external files -----------------------------
-  step5 <- add_predictors_to_bigsnp(obj = step4,
-                                    add_predictor_fam = add_predictor_fam,
-                                    add_predictor_ext = add_predictor_ext,
-                                    id_var = id_var,
-                                    og_plink_ids = step2$og_plink_ids,
-                                    rds_dir = rds_dir,
-                                    quiet = quiet)
-  gc()
-  # check for files to be overwritten---------------------------------
-  if (overwrite){
-    gc()
-    # double check how much this will erase
-    rds_to_remove <-  list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE)
-    if (length(rds_to_remove) > 1) {
-      stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
-      that have the 'std_prefix' pattern.
-           To save you from overwriting anything important, I will not erase anything yet.
-           Please move any .rds files with this file name pattern to another directory.")
-    }
-    file.remove(rds_to_remove)
-    gc()
-    list.files(rds_dir, pattern=paste0('^std_.*.rds'), full.names=TRUE) |>
-      file.remove()
-    gc()
-  } else {
-    gc()
-  }
-
-  # subsetting -----------------------------------------------------------------
-  step6 <- subset_bigsnp(obj = step5$obj,
-                         counts = step2$counts,
-                         handle_missing_phen = handle_missing_phen,
-                         complete_phen = step3$complete_phen,
-                         non_gen = step5$non_gen,
-                         data_dir = data_dir,
-                         rds_dir = rds_dir,
-                         prefix = prefix,
-                         bk_filename = bk_filename,
-                         outfile = logfile,
-                         quiet = quiet)
-  gc()
-  # standardization ------------------------------------------------------------
-  step7 <- standardize_bigsnp(obj = step6,
-                              prefix = prefix,
-                              rds_dir = rds_dir,
-                              non_gen = step5$non_gen,
-                              complete_phen = step3$complete_phen,
-                              id_var = id_var,
-                              outfile = logfile,
-                              quiet = quiet,
-                              overwrite = overwrite)
-
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
-    file.remove()
-  gc() # this is important!
-  list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
-    file.remove()
-  gc() # this is important!
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
   gc()
-  rm(step1)
-  gc() # this is important!
-
-  saveRDS(step7, file.path(rds_dir, paste0("std_", prefix, ".rds")))
 
   if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as .rds object.")}
 
@@ -262,7 +183,7 @@ process_plink <- function(data_dir,
       file = logfile, append = TRUE)
 
 
-  return(file.path(rds_dir, paste0("std_", prefix, ".rds")))
+  return(file.path(data_dir, paste0(prefix, ".rds")))
 
 }
 

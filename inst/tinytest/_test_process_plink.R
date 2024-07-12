@@ -62,8 +62,7 @@ if (interactive()){
                                  pheno_name = "CAD",
                                  add_predictor_ext = predictors,
                                  quiet = FALSE,
-                                 overwrite = TRUE,
-                                 outfile = "./test_process_plink")
+                                 overwrite = TRUE)
 
 
 
