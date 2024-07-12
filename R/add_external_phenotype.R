@@ -37,7 +37,11 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
 
   # case 1: subset geno data to keep only IDs with corresponding rows in pheno data
   if (length(id_to_keep) < nrow(geno$fam)){
-    geno_keep_file <- bigsnpr::snp_subset(geno, ind.row = id_to_keep)
+    geno_keep_file <- bigsnpr::snp_subset(geno,
+                                          ind.row = id_to_keep)
+    # TODO: should the subset created in the lines above be given a .bk file in a
+    #   temporary directory instead?
+
     geno_keep <- bigsnpr::snp_attach(geno_keep_file)
     cat("\nMerging the genotype data and phenotype information; new RDS is ", geno_keep$genotypes$rds)
     X <- geno_keep$genotypes

@@ -79,7 +79,7 @@ if (interactive()){
                             outfile = NULL)
 
   res <- readRDS(X)
-
   str(res)
+
 }
 

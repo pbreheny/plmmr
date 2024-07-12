@@ -13,11 +13,14 @@
 #' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
 #' @keywords internal
 #'
-add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
-                                     id_var, og_plink_ids,
-                                     rds_dir, quiet){
-
-  browser()
+add_predictors_to_bigsnp <- function(obj,
+                                     add_predictor_fam,
+                                     add_predictor_ext,
+                                     id_var,
+                                     geno_id,
+                                     og_plink_ids,
+                                     rds_dir,
+                                     quiet){
 
   # genotypes need to have type 'double' from now on, in order to merge
   geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = "double"))
@@ -77,7 +80,7 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
          vector either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
          \nPlease create or align the names of this vector - alignment is essential for accurate analysis.")
       }
-
+browser()
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
@@ -131,7 +134,6 @@ add_predictors_to_bigsnp <- function(obj, add_predictor_fam, add_predictor_ext,
 
       obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
                                                  type = "double",
-                                                 #backingfile = file.path(rds_dir, "combined_data"
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
 
