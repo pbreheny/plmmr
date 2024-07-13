@@ -56,75 +56,22 @@ get_data <- function(path, returnX, trace = TRUE){
     }
   }
 
+  # attach std_X
+  std_X_bm <- attach.big.matrix(obj$std_X)
+
   if(returnX){
-    # get std_X as a matrix
-    std_X_bm <- attach.big.matrix(obj$std_X)
-    std_X <- std_X_bm[,]
-
-    ret <- list(n = obj$n,
-         p = obj$p,
-         std_X = std_X,
-         std_X_n = nrow(std_X),
-         std_X_p = ncol(std_X),
-         std_X_center = obj$std_X_center,
-         std_X_scale = obj$std_X_scale,
-         ns = obj$ns,
-         id_var = obj$id_var,
-         non_gen = obj$non_gen)
-
-    # if 'fam' exists, then do some extra steps for PLINK data...
-    if ('fam' %in% names(obj)){
-      # set row names
-      if(obj$id_var == "IID"){row_names <- as.character(obj$fam$sample.ID[obj$complete_phen])}
-      if(obj$id_var == "FID"){row_names <- as.character(obj$fam$family.ID[obj$complete_phen])}
-
-      dimnames(std_X) <- list(obj$std_X_rownames,
-                              obj$std_X_colnames)
-
-      ret$X_colnames <- obj$colnames
-      ret$X_rownames <- obj$rownames
-      ret$fam <- obj$fam
-      ret$map <-  obj$map
-      ret$complete_phen <- obj$complete_phen
-    }
+    obj$std_X <- std_X_bm[,]
   if (trace){
     cat("Reminder: the X that is returned here is column-standardized, with constant features removed.\n")
   }
-
-    return(ret)
-
   } else {
     if (trace){
       cat("Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.\n")
-
       cat("Reminder: the X that is returned here is column-standardized\n")
     }
-
-    ret <- list(n = obj$n,
-                p = obj$p,
-                std_X = attach.big.matrix(obj$std_X),
-                std_X_n = obj$std_X_n,
-                std_X_p = obj$std_X_p,
-                std_X_center = obj$std_X_center,
-                std_X_scale = obj$std_X_scale,
-                ns = obj$ns,
-                id_var = obj$id_var,
-                non_gen = obj$non_gen)
-
-    # if 'fam' exists, then do some extra steps for PLINK data...
-    if ('fam' %in% names(obj)){
-      # set row names
-      if(obj$id_var == "IID"){row_names <- as.character(obj$fam$sample.ID[obj$complete_phen])}
-      if(obj$id_var == "FID"){row_names <- as.character(obj$fam$family.ID[obj$complete_phen])}
-
-      ret$X_colnames <- obj$X_colnames
-      ret$X_rownames <- obj$X_rownames
-      ret$fam <- obj$fam
-      ret$map <-  obj$map
-      ret$complete_phen <- obj$complete_phen
-    }
-
-    return(ret)
+    obj$std_X <- std_X_bm
   }
+
+  return(obj)
 
 }

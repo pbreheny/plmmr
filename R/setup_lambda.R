@@ -54,7 +54,7 @@ setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor, inter
   zmax <- max(stats::na.exclude(decomp_backsolve))/n
   lambda.max <- zmax/alpha
 
-
+  browser()
   # error check
   if(!is.finite(log(lambda.max))){stop("log(lambda.max) is not finite")}
 

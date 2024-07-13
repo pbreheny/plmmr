@@ -171,51 +171,75 @@ tinytest::expect_equivalent(R, ncv_R)
 # Test 7: make sure plmm() runs in-memory and filebacked ---------------------
 
 if (interactive()) {
-  # process data
-  pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
-  extdata <- pen_clinic[,3:4]
-  rownames(extdata) <- pen_clinic$FamID # This is important!
-
   # create a new temporary directory
   temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
 
-  process_plink(data_dir = find_example_data(parent = TRUE),
-                rds_dir = temp_dir, # using a temporary directory
-                prefix = "penncath_lite",
-                id_var = "FID", # this is KEY!
-                outfile = "process_penncath",
-                impute_method = "mode",
-                add_predictor_ext = extdata)
+  # process data
+  penncath_lite <- process_plink(data_dir = "inst/extdata",
+                                 rds_dir = temp_dir,
+                                 prefix = "penncath_lite",
+                                 id_var = "FID",
+                                 quiet = FALSE,
+                                 overwrite = TRUE)
 
-  # filebacked
-  dat_plus_newvars <- paste0(temp_dir, "/std_penncath_lite")
-  pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
-  foo <- plmm(X = dat_plus_newvars,
-                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-                           returnX = FALSE,
-                           trace = TRUE)
+  # create design
+  penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
+  predictors <- penncath_pheno |>
+    dplyr::select(FamID, age, tg) |>
+    dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
+    tibble::column_to_rownames('FamID') |>
+    as.matrix()
+  colnames(predictors) <- c("age", "tg")
 
+  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
+    as.data.frame() |>
+    as.matrix()
+  colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
+
+  X <- create_design(dat = penncath_lite,
+                     rds_dir = "inst/extdata",
+                     prefix = "std_penncath_lite",
+                     is_bigsnp = TRUE,
+                     add_phen = phen,
+                     pheno_id = "FamID",
+                     pheno_name = "CAD",
+                     add_predictor_ext = predictors,
+                     id_var = "FID",
+                     overwrite = TRUE,
+                     outfile = "design")
+res <- readRDS(X)
+
+  # model 1: filebacked data
+  foo <- plmm(X = X, returnX = FALSE, trace = TRUE)
   # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this
   #   will run in-memory because of the small size of this test data set
-  foo_nz <- which(foo$beta_vals[,4] != 0)
+  foo_nz <- apply(foo$beta_vals, 2, function(x){which(abs(x) > 0)})
 
-  # in memory
-  foo2 <- plmm(X = dat_plus_newvars,
-                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-                           trace = TRUE)
-  foo2_nz <- which(foo2$beta_vals[,4] != 0)
+  # model 2: in memory
+  foo2 <- plmm(X = X, trace = TRUE,
+               lambda = foo$lambda)
+  # TODO: figure out why the lambda values chosen for in-memory data differ from those
+  #   chosen when data are read into memory
+  foo2_nz <- apply(foo2$beta_vals, 2, function(x){which(abs(x) > 0)})
 
   # look at head of values (checks SNP names)
-  foo$beta_vals[,4] |> head()
-  foo2$beta_vals[,4] |> head()
+  foo$beta_vals[,1:10] |> head()
+  foo2$beta_vals[,1:10] |> head()
 
   # look at just nonzero values
-  foo$beta_vals[foo_nz,4] |> head()
-  foo2$beta_vals[foo2_nz,4] |> head()
+  foo_nz[[1]] |> head(5)
+  foo_nz[[25]] |> head(25)
 
+  foo2_nz[[1]] |> head(5)
+  foo2_nz[[25]] |> head(25)
+
+  # check the first couple of penalized covariates
   tinytest::expect_equivalent(foo$beta_vals[,3], foo2$beta_vals[,3],
                               tolerance = 0.001)
   tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4],
                               tolerance = 0.001)
+
+  # look at how far off these two models are ...
+  apply(X = foo$beta_vals - foo2$beta_vals, 1, crossprod) |> summary()
 
 }

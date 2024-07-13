@@ -170,15 +170,15 @@ create_design <- function(dat,
 
   # cleanup -------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
-    file.remove()
-  gc()
-  list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
-    file.remove()
-  gc()
-  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
-    file.remove()
-  gc()
+  # list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
+  #   file.remove()
+  # gc()
+  # list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
+  #   file.remove()
+  # gc()
+  # list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+  #   file.remove()
+  # gc()
   rm(step1)
   gc()
 

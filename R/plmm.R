@@ -2,7 +2,7 @@
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
-#' @param X                       Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
+#' @param X                       Design matrix object (as created by `create_design()`) or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
 #'                                * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
 #' @param y                       Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
 #' @param col_names               Optional vector of column names for design matrix. Defaults to NULL.

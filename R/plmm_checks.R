@@ -48,11 +48,12 @@ plmm_checks <- function(X,
   if (!any(class(X) %in% c("character", "matrix"))) {
     stop("\nThe X argument must be either (1) a numeric matrix or (2) a character
          string specifying a filepath to an RDS object that you created using
-         process_delim() or process_plink().")
+         process_delim() or create_design().")
   }
+
   # read in X -----------------------------------------------------
   if("character" %in% class(X)){
-    # case 1: X is a filebacked matrix from process_delim() or process_plink()
+    # case 1: X is a filebacked matrix from process_delim() or create_design()
     dat <- get_data(path = X, trace = trace, ...)
     X <- std_X <- dat$std_X
     std_X_n <- dat$std_X_n
@@ -82,7 +83,13 @@ plmm_checks <- function(X,
     } else {
       fbm_flag <- FALSE
     }
+
+    y <- dat$y
+    penalty_factor <- dat$penalty_factor
+
   } else {
+    # TODO: work through this case now that process_plink() has been split into
+    # process_plink() and create_design()
     # case 2: X is a matrix in-memory
     if (!inherits(X, "matrix")) {
       tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
@@ -119,23 +126,10 @@ plmm_checks <- function(X,
   } # this bracket closes case 2 (the matrix case )
 
   #  check y types & read y -------------------------------
-  # if y is null, use .fam file
+  # if y is still null, notify
   if(is.null(y)){
-    # default: use data from 6th column of .fam file
-    if ("fam" %in% names(dat)){
-      # case 1: if handle_missing_phen was set to 'prune', use 'complete_phen' for subsetting
-      if (length(dat$complete_phen) > 1) {
-        y <- dat$fam$affection[dat$complete_phen]
-      } else {
-        # case 2: use all dat$fam$affection values
-        y <- dat$fam$affection
-      }
-
-    } else {
-      stop("If the data did not come from process_plink(), you must specify a
+      stop("If the data did not come from create_design(), you must specify a
            'y' argument\n")
-    }
-
   }
 
   if (!is.double(y)) {
