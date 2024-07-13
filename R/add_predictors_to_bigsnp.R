@@ -23,6 +23,7 @@ add_predictors_to_bigsnp <- function(obj,
                                      quiet){
 
   # genotypes need to have type 'double' from now on, in order to merge
+  if (!quiet) cat("")
   geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = 'float'))
 
   # add additional covariates -----------------------
@@ -58,29 +59,30 @@ add_predictors_to_bigsnp <- function(obj,
   ## covariates from external file   ----------------------------------
   if (!is.null(add_predictor_ext)) {
     if (!quiet) {
-      cat("\nAdding predictors from external data.")
+      cat("Adding predictors from external data.\n")
     }
     if (is.vector(add_predictor_ext)) {
       ### vector case -------------------------------
       # make sure types match
       if (!is.numeric(add_predictor_ext)) {
-        stop("\nThe vector supplied to the 'add_predictor_ext' argument must be numeric.")
+        stop("The vector supplied to the 'add_predictor_ext' argument must be numeric.\n")
       }
       names(add_predictor_ext) <- as.numeric(names(add_predictor_ext))
 
       if (var(add_predictor_ext) == 0) {
-        stop("\nThe supplied argument to add_predictor_ext is constant (no variation).
-             This would not be a meaningful predictor.")
+        stop("The supplied argument to add_predictor_ext is constant (no variation).
+             This would not be a meaningful predictor.\n")
       }
 
       # check for alignment
       if (is.null(names(add_predictor_ext)) |
           length(intersect(og_plink_ids, names(add_predictor_ext))) == 0) {
-        stop("\nYou supplied an argument to 'add_predictor_ext', but the names of this
+        stop("You supplied an argument to 'add_predictor_ext', but the names of this
          vector either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
-         \nPlease create or align the names of this vector - alignment is essential for accurate analysis.")
+         \nPlease create or align the names of this vector - alignment is essential for accurate analysis.\n")
       }
 
+      if (!quiet) cat('Aligning IDs between fam and predictor files\n')
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
@@ -124,6 +126,7 @@ add_predictors_to_bigsnp <- function(obj,
          \nPlease create or align the names of this matrix - alignment is essential for accurate analysis.")
       }
 
+      if (!quiet) cat('Aligning IDs between fam and predictor files\n')
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
