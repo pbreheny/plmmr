@@ -45,7 +45,6 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
 
     geno_keep <- bigsnpr::snp_attach(geno_keep_file)
     cat("\nMerging the genotype data and phenotype information; new RDS is ", geno_keep$genotypes$rds)
-    X <- geno_keep$genotypes
     geno_keep$fam <- geno$fam[id_to_keep,]
   } else {
     # case 2: geno and pheno data represent the same samples

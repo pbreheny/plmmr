@@ -23,7 +23,7 @@ add_predictors_to_bigsnp <- function(obj,
                                      quiet){
 
   # genotypes need to have type 'double' from now on, in order to merge
-  geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = "double"))
+  geno_bm <- fbm2bm(bigstatsr::big_copy(X = obj$genotypes, type = 'float'))
 
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
