@@ -1,40 +1,14 @@
 if (interactive()){
-  # test1: penncath_lite data (ships with package) ----------------------------
-  ## setup --------------------------------------
+  # tests with penncath_lite data (ships with package)
+  # setup --------------------------------------
   devtools::load_all(".")
   library(dplyr)
   library(tidyr)
   library(bigsnpr)
-
-  ## read in phenotype data --------------------------
-  pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
-  extdata <- pen_clinic[,3:4]
-  rownames(extdata) <- pen_clinic$FamID # This is important!
-
-  ## process PLINK data ------------------------------
-  temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
-  process_plink(data_dir = find_example_data(parent = TRUE),
-                rds_dir = temp_dir, # using a temporary directory
-                prefix = "penncath_lite",
-                id_var = "FID", # this is KEY!
-                outfile = "process_penncath",
-                impute_method = "mode",
-                add_predictor_fam = "sex",
-                add_phen = pen_clinic,
-                pheno_id = "FamID",
-                pheno_name = "CAD")
-
-  # check this out:
-  pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
-  pen2$std_X_colnames |> head() # std_X includes our non-genomic covariates
-
-  # note: dim(pen2$std_X) is different from the vignette; this is because
-  # here we are testing the functionality of passing in an external phenotype
-  # file. The vignette uses the 6th column of the fam file as the outcome,
-  # and it recognizes the -9 values as missing
-
-  # test 2: use external pheno and predictor files -----------------------------
   unzip_example_data(outdir = 'inst/extdata')
+
+  # test 1: can all 3 pieces be combined correctly?  ----------------------
+  # use external pheno and predictor files, no NAs
 
   ## process plink -------------------------------------------------------------
   penncath_lite <- process_plink(data_dir = "inst/extdata",
@@ -58,28 +32,171 @@ if (interactive()){
     as.matrix()
   colnames(predictors) <- c("age", "tg")
 
-  phen <- cbind(penncath_pheno$FamID, penncath_pheno$hdl) |>
+  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
     as.data.frame() |>
     tidyr::drop_na() |>
     as.matrix()
-  colnames(phen) <- c("FamID", "hdl")
+  colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
 
 
   X <- create_design(dat = penncath_lite,
-                            rds_dir = "inst/extdata",
-                            prefix = "std_penncath_lite",
-                            is_bigsnp = TRUE,
-                            add_phen = phen,
-                            pheno_id = "FamID",
-                            pheno_name = "hdl",
-                            na_phenotype_vals = c(NA_integer_),
-                            add_predictor_ext = predictors,
-                            id_var = "FID",
-                            overwrite = TRUE,
-                            outfile = NULL)
+                     rds_dir = "inst/extdata",
+                     prefix = "std_penncath_lite",
+                     is_bigsnp = TRUE,
+                     add_phen = phen,
+                     pheno_id = "FamID",
+                     pheno_name = "CAD",
+                     na_phenotype_vals = c(NA_integer_),
+                     add_predictor_ext = predictors,
+                     id_var = "FID",
+                     overwrite = TRUE,
+                     outfile = NULL)
 
   res <- readRDS(X)
   str(res)
 
 }
 
+### checks  -------------------------------------------------------------------
+# are external files and PLINK fam file aligned on ID var?
+tinytest::expect_identical(as.character(res$fam$family.ID), res$X_rownames)
+
+# does final fam[,6] have the expected outcome?
+table(res$fam$affection)
+table(penncath_pheno$CAD)
+
+# are row & column names aligned?
+str(res$X_colnames); str(res$X_rownames)
+str(res$std_X_colnames); str(res$std_X_rownames)
+
+# are .bk files 'cleaned up' and labeled correctly?
+list.files("inst/extdata", pattern = "*.bk")
+
+# clear example
+rm(X); rm(res); rm(predictors); rm(phen)
+
+# test 2: is alignment working? -----------------------------
+# shuffle the IDs here, to test alignment
+penncath_pheno <- penncath_pheno[sample(1:nrow(penncath_pheno)),]
+
+predictors <- penncath_pheno |>
+  dplyr::select(age, tg) |>
+  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
+  as.matrix()
+colnames(predictors) <- c("age", "tg")
+rownames(predictors) <- penncath_pheno$FamID
+
+phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
+  as.data.frame() |>
+  tidyr::drop_na() |>
+  as.matrix()
+colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
+
+### create design ---------------------------------------------------------------
+X <- create_design(dat = penncath_lite,
+                   rds_dir = "inst/extdata",
+                   prefix = "std_penncath_lite",
+                   is_bigsnp = TRUE,
+                   add_phen = phen,
+                   pheno_id = "FamID",
+                   pheno_name = "CAD",
+                   na_phenotype_vals = c(NA_integer_),
+                   add_predictor_ext = predictors,
+                   id_var = "FID",
+                   overwrite = TRUE,
+                   outfile = NULL)
+
+res <- readRDS(X)
+str(res)
+
+### checks  -------------------------------------------------------------------
+# are external files and PLINK fam file aligned on ID var?
+tinytest::expect_identical(as.character(res$fam$family.ID), res$X_rownames)
+
+# does final fam[,6] have the expected outcome?
+table(res$fam[,6])
+table(penncath_pheno$CAD)
+
+# are row & column names (IDs) aligned?
+str(res$X_colnames); str(res$X_rownames)
+str(res$std_X_colnames); str(res$std_X_rownames)
+
+# are .bk files 'cleaned up' and labeled correctly?
+list.files("inst/extdata", pattern = "*.bk")
+
+# clear example
+rm(X); rm(res); rm(predictors); rm(phen)
+
+# test 3: what if there are missing outcomes? ----------------------------------
+
+# shuffle the IDs here, to test alignment
+penncath_pheno <- penncath_pheno[sample(1:nrow(penncath_pheno)),]
+
+predictors <- penncath_pheno |>
+  dplyr::select(age, tg) |>
+  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
+  as.matrix()
+colnames(predictors) <- c("age", "tg")
+rownames(predictors) <- penncath_pheno$FamID
+
+# use 'hdl' for outcome - missing in some observations
+summary(penncath_pheno$hdl)
+phen <- cbind(penncath_pheno$FamID, penncath_pheno$hdl) |>
+  as.data.frame() |>
+  as.matrix()
+colnames(phen) <- c("FamID", "hdl")
+
+### create design --------------------------------------------------------------
+
+X <- create_design(dat = penncath_lite,
+                   rds_dir = "inst/extdata",
+                   prefix = "std_penncath_lite",
+                   is_bigsnp = TRUE,
+                   add_phen = phen,
+                   pheno_id = "FamID",
+                   pheno_name = "hdl",
+                   na_phenotype_vals = c(NA_integer_),
+                   add_predictor_ext = predictors,
+                   id_var = "FID",
+                   overwrite = TRUE,
+                   outfile = NULL)
+
+res <- readRDS(X)
+str(res)
+
+### checks  -------------------------------------------------------------------
+# are external files and PLINK fam file aligned on ID var?
+tinytest::expect_identical(as.character(res$fam$family.ID), res$X_rownames)
+
+# does final fam[,6] have the expected outcome?
+summary(res$fam[,6])
+summary(penncath_pheno$hdl)
+
+# are row & column names (IDs) aligned?
+str(res$X_colnames); str(res$X_rownames)
+str(res$std_X_colnames); str(res$std_X_rownames)
+tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$complete_phen])
+tinytest::expect_identical(res$std_X_colnames, res$X_colnames[res$ns])
+
+# are .bk files 'cleaned up' and labeled correctly?
+list.files("inst/extdata", pattern = "*.bk")
+
+# clear example
+rm(X); rm(res); rm(predictors); rm(phen)
+
+# test 4: no external files supplied -------------------------------------------
+
+### create design ---------------------------------------------------------------
+
+
+### checks  -------------------------------------------------------------------
+# are external files and PLINK fam file aligned on ID var?
+
+# does final fam[,6] have the expected outcome?
+
+# are row & column names (IDs) aligned?
+
+# are .bk files 'cleaned up' and labeled correctly?
+
+# clear example
+rm(X); rm(res); rm(predictors); rm(phen)

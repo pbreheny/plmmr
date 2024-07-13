@@ -152,7 +152,7 @@ process_plink <- function(data_dir,
       file = logfile, append = TRUE)
 
 
-  return(file.path(data_dir, paste0(prefix, ".rds")))
+  return(file.path(rds_dir, paste0(prefix, ".rds")))
 
 }
 

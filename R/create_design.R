@@ -21,7 +21,7 @@
 #'                            The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
 #'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
 #'                            The names will be used to subset and align this external covariate with the supplied PLINK data.
-#' @param id_var
+#' @param id_var               String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
 #' @param overwrite
 #' @param outfile
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
@@ -85,9 +85,7 @@ create_design <- function(dat,
          keep using process_delim()")
   }
 
-  og_plink_ids <- obj$rownames # saved from process_plink()
-
-  # add phenotype from external files -----------------------------
+  # determine which IDs to use ---------------------------------
   if (id_var == "IID"){
     geno_id <- "sample.ID"
   } else if (id_var == "FID"){
@@ -97,13 +95,24 @@ create_design <- function(dat,
          the corresponding variable *must* be of type 'char'.")
   }
 
-  step1 <- add_external_phenotype(geno = obj,
-                                  geno_id = geno_id,
-                                  pheno = add_phen,
-                                  pheno_id = pheno_id,
-                                  pheno_col = pheno_name,
-                                  outfile = logfile)
+  if (!is.null(add_phen) & is.null(colnames(add_phen))) {
+    stop("If you supply an external phenotype file to add_phen, this matrix must have
+         column names.")
+  }
 
+  og_plink_ids <- obj$fam[,geno_id] |> as.character()
+
+  # add phenotype from external files -----------------------------
+  if (!is.null(add_phen)){
+    step1 <- add_external_phenotype(geno = obj,
+                                    geno_id = geno_id,
+                                    pheno = add_phen,
+                                    pheno_id = pheno_id,
+                                    pheno_col = pheno_name,
+                                    outfile = logfile)
+  } else {
+    step1 <- obj
+  }
   # address missingness in phenotype values -----------------------
   step2 <- handle_missingness(obj = step1,
                               na_phenotype_vals = na_phenotype_vals,
@@ -118,7 +127,7 @@ create_design <- function(dat,
                                      add_predictor_fam = add_predictor_fam,
                                      add_predictor_ext = add_predictor_ext,
                                      id_var = id_var,
-                                     og_plink_ids = og_plink_ids[step2$complete_phen],
+                                     og_plink_ids = og_plink_ids,
                                      rds_dir = rds_dir,
                                      quiet = quiet)
   gc()
@@ -147,7 +156,7 @@ create_design <- function(dat,
 
   # add meta data -------------------------------------------------------------
   design$std_X_colnames <- pred_X$obj$colnames[design$ns]
-  design$std_X_rownames <- og_plink_ids[step2$obj$complete_phen]
+  design$std_X_rownames <- og_plink_ids[step2$complete_phen]
   design$X_colnames <- pred_X$obj$colnames
   design$X_rownames <- pred_X$obj$rownames
   design$n <- nrow(obj$fam)

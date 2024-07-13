@@ -19,9 +19,11 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
   # check to make sure IDs overlap
   if (inherits(pheno, 'matrix')) {
     overlap <- intersect(geno$fam[[geno_id]], pheno[,pheno_id])
-  } else {
+  } else if (inherits(pheno, 'numeric')) {
     overlap <- intersect(geno$fam[[geno_id]], pheno[[pheno_id]])
   }
+
+
 
   if (length(overlap) < 10) {
     stop("\nThe amount of overlap between the supplied IDs is less than 10 observations.

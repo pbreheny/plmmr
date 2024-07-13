@@ -80,7 +80,7 @@ add_predictors_to_bigsnp <- function(obj,
          vector either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
          \nPlease create or align the names of this vector - alignment is essential for accurate analysis.")
       }
-browser()
+
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
