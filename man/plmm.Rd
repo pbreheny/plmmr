@@ -33,7 +33,7 @@ plmm(
 )
 }
 \arguments{
-\item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
+\item{X}{Design matrix object (as created by \code{create_design()}) or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
 * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
 
 \item{y}{Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}

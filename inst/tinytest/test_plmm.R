@@ -216,11 +216,12 @@ res <- readRDS(X)
   foo_nz <- apply(foo$beta_vals, 2, function(x){which(abs(x) > 0)})
 
   # model 2: in memory
-  foo2 <- plmm(X = X, trace = TRUE,
-               lambda = foo$lambda)
-  # TODO: figure out why the lambda values chosen for in-memory data differ from those
-  #   chosen when data are read into memory
+  foo2 <- plmm(X = X, trace = TRUE)
   foo2_nz <- apply(foo2$beta_vals, 2, function(x){which(abs(x) > 0)})
+
+  # look at how far off these two models are ...
+  apply(X = foo$beta_vals - foo2$beta_vals, 1, crossprod) |> summary()
+  # ^^ --- all near zero, as it should be
 
   # look at head of values (checks SNP names)
   foo$beta_vals[,1:10] |> head()
@@ -238,8 +239,5 @@ res <- readRDS(X)
                               tolerance = 0.001)
   tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4],
                               tolerance = 0.001)
-
-  # look at how far off these two models are ...
-  apply(X = foo$beta_vals - foo2$beta_vals, 1, crossprod) |> summary()
 
 }
