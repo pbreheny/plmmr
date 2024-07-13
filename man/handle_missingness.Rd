@@ -4,31 +4,17 @@
 \alias{handle_missingness}
 \title{A helper function to handle missing genotype values from PLINK data}
 \usage{
-handle_missingness(
-  obj,
-  X,
-  counts,
-  na_phenotype_vals,
-  handle_missing_phen,
-  outfile,
-  quiet
-)
+handle_missingness(obj, na_phenotype_vals, handle_missing_phen, outfile, quiet)
 }
 \arguments{
 \item{obj}{a \code{bigSNP} object}
-
-\item{X}{A matrix of genotype data as  returned by \code{name_and_count_bigsnp}}
-
-\item{counts}{A dataframe as created by \code{bigstatsr::big_counts()} and returned by \code{name_and_count_bigsnp}}
 
 \item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
 
 \item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
 \itemize{
 \item "prune" (default): observations with missing phenotype are removed
-\item "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
-\item "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-\item "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
+\item "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file
 }}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}

@@ -29,16 +29,15 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
     stop("\nThe amount of overlap between the supplied IDs is less than 10 observations.
          This seems really small -- are you sure you chose the right variable names?
          \nAre the ID columns in the genotype and phenotype data of the same type (e.g., both characters)?")
-  } else {
-  cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
-      are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
-      file = outfile, append = TRUE)
   }
 
   id_to_keep <- which(geno$fam[[geno_id]] %in% overlap) # indices of IDs
 
   # case 1: subset geno data to keep only IDs with corresponding rows in pheno data
   if (length(id_to_keep) < nrow(geno$fam)){
+    cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
+      are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
+        file = outfile, append = TRUE)
     geno_keep_file <- bigsnpr::snp_subset(geno,
                                           ind.row = id_to_keep)
     # TODO: should the subset created in the lines above be given a .bk file in a

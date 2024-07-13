@@ -6,34 +6,26 @@
 \usage{
 process_plink(
   data_dir,
-  prefix,
   rds_dir = data_dir,
-  bk_filename,
+  prefix,
+  outfile,
   impute = TRUE,
   impute_method = "mode",
-  na_phenotype_vals = c(-9),
   id_var = "IID",
-  handle_missing_phen = "prune",
-  add_phen = NULL,
-  pheno_id = NULL,
-  pheno_name = NULL,
   quiet = FALSE,
-  outfile,
   overwrite = FALSE,
-  add_predictor_fam = NULL,
-  add_predictor_ext = NULL,
   ...
 )
 }
 \arguments{
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
-
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
-\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
+\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written.
+Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -44,39 +36,13 @@ process_plink(
 * mean2: Imputes the mean rounded to 2 decimal places.
 * xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
 
-\item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
-
-\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
-
-\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
-* "prune" (default): observations with missing phenotype are removed
-* "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-(2) prune missing values, or (3) impute missing values.}
-
-\item{add_phen}{Optional: A \strong{data frame} with at least two columns: and ID column and a phenotype column}
-
-\item{pheno_id}{Optional: A string specifying the name of the ID column in \code{pheno}. MUST be specified if \code{add_phen} is specified.}
-
-\item{pheno_name}{Optional: A string specifying the name of the phenotype column in \code{pheno}.  MUST be specified if \code{add_phen} is specified. This column will be used as the default \code{y} argument to 'plmm()'.}
+\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
-
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 \strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
 To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
-
-\item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
-
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-This argument takes one of two kinds of arguments:
-- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files. \strong{No NA values} can be in this vector.
-The names will be used to subset and align this external covariate with the supplied PLINK data. \strong{No NA values} can be in this matrix.
-- a numeric matrix whose row names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }

@@ -48,7 +48,7 @@ if (interactive()){
                      add_predictor_ext = predictors,
                      id_var = "FID",
                      overwrite = TRUE,
-                     outfile = NULL)
+                     outfile = "design")
 
   res <- readRDS(X)
   str(res)
@@ -116,6 +116,8 @@ table(penncath_pheno$CAD)
 # are row & column names (IDs) aligned?
 str(res$X_colnames); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
+tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$complete_phen])
+tinytest::expect_identical(res$std_X_colnames, res$X_colnames[res$ns])
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")

@@ -3,17 +3,15 @@
 #' @param dat                 Filepath to rds file of processed data
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param prefix              Optional user-specified prefix for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
-#' @param is_bigsnp
+#' @param is_bigsnp           Logical: is the data coming from `process_plink()`? For now, this must be TRUE. Working to expand to accommodate other kinds of data.
 #' @param na_phenotype_vals   A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
 #' @param add_phen            Optional: A **data frame** with at least two columns: and ID column and a phenotype column
 #' @param pheno_id            Optional: A string specifying the name of the ID column in `pheno`. MUST be specified if `add_phen` is specified.
 #' @param pheno_name           Optional: A string specifying the name of the phenotype column in `pheno`.  MUST be specified if `add_phen` is specified. This column will be used as the default `y` argument to 'plmm()'.
 #' @param handle_missing_phen A string indicating how missing phenotypes should be handled:
 #'                                * "prune" (default): observations with missing phenotype are removed
-#'                                * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-#'                                * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
 #'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-#'                            (2) prune missing values, or (3) impute missing values.
+#'                            or (2) prune missing values
 #' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
 #' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                            This argument takes one of two kinds of arguments:
@@ -22,14 +20,12 @@
 #'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
 #'                            The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param id_var               String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
-#' @param overwrite
-#' @param outfile
+#' @param overwrite           Logical: should existing .rds files be overwritten? Defaults to FALSE.
+#' @param outfile             Optional: name of the '.log' file to be written
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #'
-#' @return
 #' @export
 #'
-#' @examples
 create_design <- function(dat,
                           rds_dir,
                           prefix,
@@ -42,14 +38,14 @@ create_design <- function(dat,
                           add_predictor_fam = NULL,
                           add_predictor_ext = NULL,
                           id_var = "IID",
-                          overwrite = FALSE,
                           outfile = NULL,
+                          overwrite = FALSE,
                           quiet = FALSE){
 
   # initial setup --------------------------------------------------
-  # if(missing(outfile)){
-  #   outfile = file.path(data_dir, "design")
-  # }
+  if(!is.null(outfile)){
+    outfile = file.path(rds_dir, outfile)
+  }
 
   logfile <- create_log(outfile = outfile)
 

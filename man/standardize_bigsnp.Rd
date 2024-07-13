@@ -17,7 +17,9 @@ standardize_bigsnp(
 )
 }
 \arguments{
-\item{obj}{A \code{bigSNP} object}
+\item{obj}{A list that includes:
+(1) subset_X: a \code{big.matrix} object that has been subset &/or had any additional predictors appended as columns
+(2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X}
 
 \item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 

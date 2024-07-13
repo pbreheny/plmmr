@@ -9,6 +9,7 @@ add_predictors_to_bigsnp(
   add_predictor_fam,
   add_predictor_ext,
   id_var,
+  geno_id,
   og_plink_ids,
   rds_dir,
   quiet
