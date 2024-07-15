@@ -44,6 +44,8 @@ NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
   NumericVector sums(p);
   NumericVector center_vals(p);
 
+#pragma omp parallel for
+
   for (int j=0;j<p;j++) {
     for (int i=0;i<n;i++) sums[j] += X[j][i];
     center_vals[j] = sums[j]/n;
@@ -57,6 +59,9 @@ NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
   MatrixAccessor<double> X(*X_);
   NumericVector sqsum(p);
   NumericVector scale_vals(p);
+
+#pragma omp parallel for
+
   for (int j=0;j<p;j++) {
     for (int i=0;i<n;i++) sqsum[j] += pow(X[j][i], 2);
     scale_vals[j] = sqrt(sqsum[j]/n);
@@ -68,6 +73,9 @@ NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
 // center columns of a filebacked matrix X
 void center_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector centers) {
   MatrixAccessor<double> X(*X_);
+
+#pragma omp parallel for
+
   for (int j=0;j<p;j++){
     for (int i=0;i<n;i++){
       X[j][i] = X[j][i] - centers[j];
@@ -78,6 +86,9 @@ void center_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector centers) {
 // scale columns of a filebacked matrix X
 void scale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales) {
   MatrixAccessor<double> X(*X_);
+
+#pragma omp parallel for
+
   for (int j=0;j<p;j++){
     for (int i=0;i<n;i++){
       X[j][i] = X[j][i]/scales[j];
@@ -90,6 +101,8 @@ NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
   MatrixAccessor<double> X(*centered_X_);
   NumericVector sums(p);
   NumericVector sd_vals(p);
+
+#pragma omp parallel for
 
   for (int j=0;j<p;j++) {
     for (int i=0;i<n;i++) sums[j] += pow(X[j][i],2);
@@ -158,6 +171,9 @@ void fill_in(XPtr<BigMatrix> fill_into_,
              int cols_from){
   MatrixAccessor<double> fill_into(*fill_into_);
   Rprintf("\nMade it past fill_in() declarations");
+
+#pragma omp parallel for
+
   for (int i = 0; i < rows_from; ++i) {
     for (int j = 0; j < cols_from; ++j) {
       fill_into[j][i] = fill_from[j * rows_from + i];
