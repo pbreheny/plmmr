@@ -24,7 +24,7 @@ handle_missingness <- function(obj, na_phenotype_vals,
 
   if (handle_missing_phen == 'prune'){
     if(!quiet){
-      cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data.")
+      cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data.\n")
       # Note: the actual pruning happens in the 'subset' step
     }
     cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data\n",
@@ -32,7 +32,7 @@ handle_missingness <- function(obj, na_phenotype_vals,
 
   } else if (handle_missing_phen == 'asis'){
     if(!quiet){
-      cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data.")
+      cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data.\n")
     }
     cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data\n",
         file = outfile, append = TRUE)

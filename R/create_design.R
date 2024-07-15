@@ -115,6 +115,7 @@ create_design <- function(dat,
   } else {
     step1 <- obj
   }
+  gc() # cleanup
   # address missingness in phenotype values -----------------------
   step2 <- handle_missingness(obj = step1,
                               na_phenotype_vals = na_phenotype_vals,
@@ -132,7 +133,7 @@ create_design <- function(dat,
                                      og_plink_ids = og_plink_ids,
                                      rds_dir = rds_dir,
                                      quiet = quiet)
-  gc()
+  gc() # again, clean up
 
   # subsetting -----------------------------------------------------------------
   subset_X <- subset_bigsnp(obj = pred_X$obj,
@@ -155,6 +156,7 @@ create_design <- function(dat,
                                outfile = logfile,
                                quiet = quiet,
                                overwrite = overwrite)
+  gc()
 
   # add meta data -------------------------------------------------------------
   design$std_X_colnames <- pred_X$obj$colnames[design$ns]

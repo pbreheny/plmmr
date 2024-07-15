@@ -24,7 +24,7 @@ add_predictors_to_bigsnp <- function(obj,
 
   # genotypes need to have type 'double' from now on, in order to merge
   if (!quiet) cat("")
-  geno_bm <- bigstatsr::big_copy(X = obj$genotypes, type = 'float') |> fbm2bm()
+  geno_bm <- obj$genotypes |> fbm2bm()
 
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
@@ -33,7 +33,7 @@ add_predictors_to_bigsnp <- function(obj,
   ## covariates from .fam file ---------------------------
   if (!is.null(add_predictor_fam)) {
     if (!quiet) {
-      cat("\nAdding predictors from .fam file.")
+      cat("Adding predictors from .fam file.\n")
     }
     if (add_predictor_fam == "sex"){
 
@@ -135,15 +135,17 @@ add_predictors_to_bigsnp <- function(obj,
       # save non_gen: an index marking added columns as non-genomic predictors
       non_gen <- 1:ncol(add_predictor_ext)
 
-      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
-                                                 type = "double",
+      gc()
+      browser()
+      obj$geno_plus_predictors <- bigstatsr::FBM(type = "double",
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
 
+      gc()
       obj$geno_plus_predictors <- big_cbind(A = add_predictor_ext,
-                                          B = geno_bm,
-                                          C = obj$geno_plus_predictors,
-                                          quiet = quiet)
+                                            B = geno_bm,
+                                            C = obj$geno_plus_predictors,
+                                            quiet = quiet)
 
 
       # adjust colnames if applicable
@@ -154,7 +156,7 @@ add_predictors_to_bigsnp <- function(obj,
     }
 
 
-  return(list(obj = obj, non_gen = non_gen))
+    return(list(obj = obj, non_gen = non_gen))
 
   }
 }

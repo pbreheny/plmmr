@@ -8,6 +8,7 @@
 #' @return C, filled in with all column values of A and B combined
 #' @keywords internal
 big_cbind <- function(A, B, C, quiet){
+  browser()
   options(bigmemory.typecast.warning=FALSE)
   if (!quiet) {
     pb <- txtProgressBar(min = 0, max = ncol(A) + ncol(B), style = 3)
@@ -22,7 +23,7 @@ big_cbind <- function(A, B, C, quiet){
   }
   # fill in the rest of the columns of C with B
   for (j in 1:ncol(B)) {
-    C[, j + ncol(A)] <- B[, j]
+    C[, j + ncol(A)] <- as.numeric(B[, j])
     if (!quiet) {
       setTxtProgressBar(pb, j)
     }
