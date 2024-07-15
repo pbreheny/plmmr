@@ -136,7 +136,6 @@ add_predictors_to_bigsnp <- function(obj,
       non_gen <- 1:ncol(add_predictor_ext)
 
       gc()
-      browser()
       obj$geno_plus_predictors <- bigstatsr::FBM(type = "double",
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()

@@ -3,21 +3,21 @@
 #' @param obj           A list that includes:
 #'                       (1) subset_X: a `big.matrix` object that has been subset &/or had any additional predictors appended as columns
 #'                       (2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X
-#' @param prefix        The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
+#' @param new_file        The new_file (as a character string) of the bed/fam data files (e.g., `new_file = 'mydata'`)
 #' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param non_gen       An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #' Note: this is typically passed from the result of `add_predictors()`
 #' @param complete_phen Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
-#' @param outfile       Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile       Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet         Logical: should messages be printed to the console? Defaults to TRUE
-#' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten?
+#' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/new_file, should these be overwritten?
 #'
 #' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.
 #' List also includes several other indices/meta-data on the standardized matrix
 #' @keywords internal
 #'
-standardize_bigsnp <- function(obj, prefix, rds_dir, non_gen, complete_phen, id_var,
+standardize_bigsnp <- function(obj, new_file, rds_dir, non_gen, complete_phen, id_var,
                                outfile, quiet, overwrite){
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}

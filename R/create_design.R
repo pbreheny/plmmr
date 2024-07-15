@@ -59,11 +59,11 @@ create_design <- function(dat,
   if (overwrite){
     # double check how much this will erase
     rds_to_remove <-  list.files(rds_dir,
-                                 pattern=paste0('^', prefix, '.*.rds'),
+                                 pattern=paste0('^', new_file, '.*.rds'),
                                  full.names=TRUE)
     if (length(rds_to_remove) > 1) {
       stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
-      that have the 'std_prefix' pattern.
+      that have the 'new_file' pattern.
            To save you from overwriting anything important, I will not erase anything yet.
            Please move any .rds files with this file name pattern to another directory.")
     }
@@ -71,7 +71,7 @@ create_design <- function(dat,
     gc()
 
     bk_to_remove <-  list.files(rds_dir,
-                                pattern=paste0('^', prefix, '.*.bk'),
+                                pattern=paste0('^', new_file, '.*.bk'),
                                 full.names=TRUE)
     file.remove(bk_to_remove)
     gc()
@@ -141,14 +141,14 @@ create_design <- function(dat,
                             complete_phen = step2$complete_phen,
                             non_gen = pred_X$non_gen,
                             rds_dir = rds_dir,
-                            prefix = prefix,
+                            new_file = new_file,
                             outfile = logfile,
                             quiet = quiet)
   gc()
 
   # standardization ------------------------------------------------------------
   design <- standardize_bigsnp(obj = subset_X,
-                               prefix = prefix,
+                               new_file = new_file,
                                rds_dir = rds_dir,
                                non_gen = pred_X$non_gen,
                                complete_phen = step2$complete_phen,
@@ -178,10 +178,10 @@ create_design <- function(dat,
 
   # cleanup -------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  # list.files(rds_dir, pattern=paste0('^', prefix, '.*.rds'), full.names=TRUE) |>
+  # list.files(rds_dir, pattern=paste0('^', new_file, '.*.rds'), full.names=TRUE) |>
   #   file.remove()
   # gc()
-  # list.files(rds_dir, pattern=paste0('^', prefix, '.*.bk'), full.names=TRUE) |>
+  # list.files(rds_dir, pattern=paste0('^', new_file, '.*.bk'), full.names=TRUE) |>
   #   file.remove()
   # gc()
   # list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
@@ -194,8 +194,8 @@ create_design <- function(dat,
 
 
   # return -------------------------------------------------------------
-  saveRDS(design, file.path(rds_dir, paste0(prefix, ".rds")))
-  return(file.path(rds_dir, paste0(prefix, ".rds")))
+  saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))
+  return(file.path(rds_dir, paste0(new_file, ".rds")))
 
 }
 

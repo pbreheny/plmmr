@@ -1,7 +1,7 @@
 #' A helper function to subset `bigSNP` objects
 #'
 #' @param obj                   A `bigSNP` object
-#' @param prefix                Optional user-specified prefix for the to-be-created .rds/.bk files.
+#' @param new_file                Optional user-specified new_file for the to-be-created .rds/.bk files.
 #' @param handle_missing_phen   A string indicating how missing phenotypes should be handled:
 #'  * "prune" (default): observations with missing phenotype are removed
 #'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
@@ -11,7 +11,7 @@
 #' @param non_gen               an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #'                              **Note**: this is typically passed from the result of `add_predictors()`
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param outfile               Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile               Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet                 Logical: should messages be printed to the console? Defaults to TRUE
 #'
 #' @return A `bigSNP` object that includes a new component, 'subset_X', representing a design matrix wherein:
@@ -22,12 +22,12 @@
 #' @keywords internal
 #'
 subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
-                          rds_dir, prefix, outfile, quiet){
+                          rds_dir, new_file, outfile, quiet){
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
 
-  bk_filename <- paste0(file.path(rds_dir, prefix))
+  bk_filename <- paste0(file.path(rds_dir, new_file))
   if (!quiet){
     cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n")
   }
