@@ -40,7 +40,7 @@ if (interactive()){
 
   X <- create_design(dat = penncath_lite,
                      rds_dir = "inst/extdata",
-                     prefix = "std_penncath_lite",
+                     new_file = "std_penncath_lite",
                      is_bigsnp = TRUE,
                      add_phen = phen,
                      pheno_id = "FamID",
@@ -92,7 +92,7 @@ colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
 ### create design ---------------------------------------------------------------
 X <- create_design(dat = penncath_lite,
                    rds_dir = "inst/extdata",
-                   prefix = "std_penncath_lite",
+                   new_file = "std_penncath_lite",
                    is_bigsnp = TRUE,
                    add_phen = phen,
                    pheno_id = "FamID",
@@ -147,7 +147,7 @@ colnames(phen) <- c("FamID", "hdl")
 ### create design --------------------------------------------------------------
 X <- create_design(dat = penncath_lite,
                    rds_dir = "inst/extdata",
-                   prefix = "std_penncath_lite",
+                   new_file = "std_penncath_lite",
                    is_bigsnp = TRUE,
                    add_phen = phen,
                    pheno_id = "FamID",
@@ -211,7 +211,7 @@ colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
 ### create design ---------------------------------------------------------------
 X <- create_design(dat = geno_n1000,
                    rds_dir = 'inst/extdata',
-                   prefix = "std_penncath_n1000",
+                   new_file = "std_penncath_n1000",
                    is_bigsnp = T,
                    add_phen = phen,
                    pheno_id = "FamID",
