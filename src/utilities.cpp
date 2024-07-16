@@ -19,7 +19,7 @@ double crossprod(XPtr<BigMatrix> X_, double *y_, int j, int n) {
   double val=0.0;
   int i;
 
-#pragma omp parallel for private(i) schedule(static)
+// #pragma omp parallel for private(i) schedule(static)
 
   for (i=0;i < n;i++) {
     val += xCol[i]*y_[i];
@@ -49,7 +49,6 @@ NumericVector mean_sqsum(XPtr<BigMatrix> X_, int n, int p){
 // columnwise means of filebacked matrix X
 NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
   MatrixAccessor<double> X(*X_);
-  NumericVector sums(p);
   NumericVector center_vals(p);
   int j;
 
@@ -57,8 +56,9 @@ NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
 
   for (j=0;j<p;j++) {
     double *xCol = X[j];
-    for (int i=0;i<n;i++) sums[j] += xCol[i];
-    center_vals[j] = sums[j]/n;
+    double sum_j = 0;
+    for (int i=0;i<n;i++) sum_j += xCol[i];
+    center_vals[j] = sum_j/n;
     xCol = nullptr;
   }
 
@@ -68,7 +68,6 @@ NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
 // columnwise sum of squares of filebacked matrix X
 NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
   MatrixAccessor<double> X(*X_);
-  NumericVector sqsum(p);
   NumericVector scale_vals(p);
   int j;
 
@@ -76,8 +75,9 @@ NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p) {
 
   for (j=0;j<p;j++) {
     double *xCol = X[j];
-    for (int i=0;i<n;i++) sqsum[j] += pow(xCol[i], 2);
-    scale_vals[j] = sqrt(sqsum[j]/n);
+    double sqsum = 0;
+    for (int i=0;i<n;i++) sqsum += pow(xCol[i], 2);
+    scale_vals[j] = sqrt(sqsum/n);
     xCol = nullptr;
   }
 
@@ -119,7 +119,6 @@ void scale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales) {
 // column-wise standard deviation of a *centered*, filebacked matrix X
 NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
   MatrixAccessor<double> X(*centered_X_);
-  NumericVector sums(p);
   NumericVector sd_vals(p);
   int j;
 
@@ -127,8 +126,9 @@ NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
 
   for (j=0;j<p;j++) {
     double *xCol = X[j];
-    for (int i=0;i<n;i++) sums[j] += pow(xCol[i],2);
-    sd_vals[j] = sqrt(sums[j]/(n-1));
+    double sum_j = 0;
+    for (int i=0;i<n;i++) sum_j += pow(xCol[i],2);
+    sd_vals[j] = sqrt(sum_j/(n-1));
     xCol = nullptr;
   }
 
