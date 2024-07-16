@@ -49,6 +49,9 @@ create_design <- function(dat,
 
   logfile <- create_log(outfile = outfile)
 
+  # create list to be returned
+  design <- list()
+
   # check for files to be overwritten---------------------------------
 
   existing_files <- list.files(rds_dir)
@@ -87,6 +90,10 @@ create_design <- function(dat,
          keep using process_delim()")
   }
 
+  # save items to return
+  design$n <- nrow(obj$fam)
+  design$p <- nrow(obj$map)
+
   # determine which IDs to use ---------------------------------
   if (id_var == "IID"){
     geno_id <- "sample.ID"
@@ -116,6 +123,7 @@ create_design <- function(dat,
     step1 <- obj
   }
   gc() # cleanup
+
   # address missingness in phenotype values -----------------------
   step2 <- handle_missingness(obj = step1,
                               na_phenotype_vals = na_phenotype_vals,
@@ -123,58 +131,72 @@ create_design <- function(dat,
                               outfile = logfile,
                               quiet = quiet)
 
-  step2$obj$colnames <- obj$colnames # need these to carry to next step
+
+
+  # save items to return
+  design$std_X_rownames <- og_plink_ids[step2$complete_phen]
+  design$complete_phen <- step2$complete_phen # save indices for which samples had complete phenotypes
+  design$ns_genotypes <- step2$ns_genotypes
 
   # add predictors from external files -----------------------------
-  pred_X <- add_predictors_to_bigsnp(obj = step2$obj,
+  step1$obj$colnames <- obj$colnames # need these to carry to next step
+  pred_X <- add_predictors_to_bigsnp(obj = step1,
                                      add_predictor_fam = add_predictor_fam,
                                      add_predictor_ext = add_predictor_ext,
                                      id_var = id_var,
                                      og_plink_ids = og_plink_ids,
                                      rds_dir = rds_dir,
                                      quiet = quiet)
-  gc() # again, clean up
+
+  # save items to return
+  design$map <- pred_X$obj$map
+  design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
+  design$std_X_colnames <- pred_X$obj$colnames[design$ns]
+  design$X_colnames <- pred_X$obj$colnames
+  design$X_rownames <- pred_X$obj$rownames
+  design$fam <- pred_X$obj$fam
+  design$y <- pred_X$obj$fam[,6]
+
+  # again, clean up to save space
+  rm(step1); gc()
 
   # subsetting -----------------------------------------------------------------
   subset_X <- subset_bigsnp(obj = pred_X$obj,
                             handle_missing_phen = handle_missing_phen,
-                            complete_phen = step2$complete_phen,
-                            non_gen = pred_X$non_gen,
+                            complete_phen = design$complete_phen,
+                            non_gen = design$non_gen,
+                            ns_genotypes = design$ns_genotypes,
                             rds_dir = rds_dir,
                             new_file = new_file,
                             outfile = logfile,
                             quiet = quiet)
-  gc()
+  # clean up
+  rm(pred_X); gc()
 
   # standardization ------------------------------------------------------------
-  design <- standardize_bigsnp(obj = subset_X,
+  std_res <- standardize_bigsnp(obj = subset_X,
                                new_file = new_file,
                                rds_dir = rds_dir,
-                               non_gen = pred_X$non_gen,
-                               complete_phen = step2$complete_phen,
+                               non_gen = design$non_gen,
+                               complete_phen = design$complete_phen,
                                id_var = id_var,
                                outfile = logfile,
                                quiet = quiet,
                                overwrite = overwrite)
+  rm(subset_X)
   gc()
 
   # add meta data -------------------------------------------------------------
-  design$std_X_colnames <- pred_X$obj$colnames[design$ns]
-  design$std_X_rownames <- og_plink_ids[step2$complete_phen]
-  design$X_colnames <- pred_X$obj$colnames
-  design$X_rownames <- pred_X$obj$rownames
-  design$n <- nrow(obj$fam)
-  design$p <- nrow(obj$map)
-  design$fam <- pred_X$obj$fam
-  design$complete_phen <- step2$complete_phen # save indices for which samples had complete phenotypes
-  design$id_var <- id_var # save ID variable - will need this downstream for analysis
-  design$map <- pred_X$obj$map
-  design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
+  design$std_X <- std_res$std_X
+  design$std_X_n <- std_res$std_X_n
+  design$std_X_p <- std_res$std_X_p
+  design$std_X_center <- std_res$std_X_center
+  design$std_X_scale <- std_res$std_X_scale
+  design$ns <- std_res$ns
+  design$penalty_factor <- c(rep(0, length(design$non_gen)),
+                             rep(1, design$std_X_p - length(design$non_gen)))
 
-  design$penalty_factor <- c(rep(0, length(pred_X$non_gen)),
-                             rep(1, design$std_X_p - length(pred_X$non_gen)))
 
-  design$y <- pred_X$obj$fam[,6]
 
   # cleanup -------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
@@ -187,9 +209,6 @@ create_design <- function(dat,
   # list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
   #   file.remove()
   # gc()
-  rm(step1)
-  gc()
-
   # Note: calls to gc() are important!
 
 

@@ -41,8 +41,14 @@ handle_missingness <- function(obj, na_phenotype_vals,
 
   }
 
-  return(list(obj = obj,
-              complete_phen = complete_phen,
-              na_phen = na_phen))
+  # check for constant features in genotypes also:
+  ns_genotypes <- count_constant_features(fbm = obj$genotypes,
+                                          ind.row = complete_phen,
+                                          outfile = outfile,
+                                          quiet = quiet)
+
+  return(list(complete_phen = complete_phen,
+              na_phen = na_phen,
+              ns_genotypes = ns_genotypes))
 
 }

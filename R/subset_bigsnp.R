@@ -10,6 +10,8 @@
 #' @param complete_phen         Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param non_gen               an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #'                              **Note**: this is typically passed from the result of `add_predictors()`
+#' @param ns_genotypes          Numeric vector with the indices of the non-singular genotype (feature) columns
+#'                              This vector is created in `handle_missingness()`
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param outfile               Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet                 Logical: should messages be printed to the console? Defaults to TRUE
@@ -22,7 +24,7 @@
 #' @keywords internal
 #'
 subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
-                          rds_dir, new_file, outfile, quiet){
+                          ns_genotypes, rds_dir, new_file, outfile, quiet){
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
@@ -36,10 +38,6 @@ subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
 
   if (handle_missing_phen == "prune"){
     if ("geno_plus_predictors" %in% names(obj)) {
-      ns_genotypes <- count_constant_features(fbm = obj$genotypes,
-                                              ind.row = complete_phen,
-                                              outfile = outfile,
-                                              quiet = quiet)
       ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
       subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
                                           ind.row = complete_phen, # filters out rows with missing phenotypes
@@ -47,10 +45,6 @@ subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
                                           type = "double", # this is key...
                                           backingfile = bk_filename)
     } else {
-      ns <- count_constant_features(fbm = obj$genotypes,
-                                    ind.row = complete_phen,
-                                    outfile = outfile,
-                                    quiet = quiet)
       subset_X <- bigstatsr::big_copy(obj$genotypes,
                                           ind.row = complete_phen, # filters out rows with missing phenotypes
                                           ind.col = ns,

@@ -1,6 +1,6 @@
 #' A function to align genotype and phenotype data
 #'
-#' @param geno      An object created by `name_and_count_bigsnp()`
+#' @param geno      An object created by `process_plink()`
 #' @param geno_id   A character string indicating the ID column name in the 'fam'
 #'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK.
 #' @param pheno     A data frame with at least two columns: and ID column and a phenotype column
@@ -9,7 +9,8 @@
 #' @param outfile   A string with the name of the filepath for the log file
 #' @keywords        internal
 #'
-#' @returns         Nothing is returned; instead, the results are written to an RDS file.
+#' @returns         A `bigSNP` object that has had the phenotype values from the external file assigned as the values in the 6th column of the 'fam' object.
+#'                  Results are written to an RDS file, then reattached with `bigsnpr;:snp_attach()` and returned
 #'                  By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new
 #'                  filename to `rdsfile`
 #'
@@ -35,9 +36,16 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
 
   # case 1: subset geno data to keep only IDs with corresponding rows in pheno data
   if (length(id_to_keep) < nrow(geno$fam)){
+
+    if (!quiet) {
+      cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
+      are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n")
+    }
+
     cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
       are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
         file = outfile, append = TRUE)
+
     geno_keep_file <- bigsnpr::snp_subset(geno,
                                           ind.row = id_to_keep)
     # TODO: should the subset created in the lines above be given a .bk file in a
