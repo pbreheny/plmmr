@@ -16,7 +16,7 @@
 #' @param quiet   Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 add_external_phenotype <- function(geno, geno_id = "sample.ID",
                                       pheno, pheno_id, pheno_col, outfile, quiet){
-
+browser()
   # check to make sure IDs overlap
   if (inherits(pheno, 'matrix')) {
     overlap <- intersect(geno$fam[[geno_id]], pheno[,pheno_id])
@@ -38,18 +38,21 @@ add_external_phenotype <- function(geno, geno_id = "sample.ID",
   if (length(id_to_keep) < nrow(geno$fam)){
 
     if (!quiet) {
-      cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
-      are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n")
+      cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
+          "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n")
     }
 
-    cat("Based on the 'id_var' argument you supplied, a total of", length(overlap), "samples
-      are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
+    cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
+        "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
         file = outfile, append = TRUE)
 
     geno_keep_file <- bigsnpr::snp_subset(geno,
                                           ind.row = id_to_keep)
     # TODO: should the subset created in the lines above be given a .bk file in a
     #   temporary directory instead?
+    geno_keep_file <- bigmemory::big.matrix(nrow = length(id_to_keep),
+                                            ncol = ncol(obj$X),
+                                            backingfile = )
 
     geno_keep <- bigsnpr::snp_attach(geno_keep_file)
     cat("\nMerging the genotype data and phenotype information; new RDS is ", geno_keep$genotypes$rds)

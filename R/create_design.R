@@ -82,7 +82,8 @@ create_design <- function(dat,
   }
 
   if (is_bigsnp) {
-    obj <- bigsnpr::snp_attach(rdsfile = dat)
+    obj <- readRDS(dat)
+    obj$X <- bigmemory::attach.big.matrix(obj$X)
   } else {
     stop("This function currently only works for data coming from process_plink().
          We are working to add the option to pass other kinds of data. For now,
@@ -90,8 +91,8 @@ create_design <- function(dat,
   }
 
   # save items to return
-  design$n <- nrow(obj$fam)
-  design$p <- nrow(obj$map)
+  # design$n <- nrow(obj$fam)
+  # design$p <- nrow(obj$map)
 
   # determine which IDs to use ---------------------------------
   if (id_var == "IID"){

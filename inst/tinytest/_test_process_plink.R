@@ -12,7 +12,8 @@ if (interactive()){
 
   ## process plink -------------------------------------------------------------
   penncath_lite <- process_plink(data_dir = "inst/extdata",
-                                 prefix = "penncath_lite",
+                                 data_prefix = "penncath_lite",
+                                 rds_prefix = "imputed_penncath_lite",
                                  id_var = "FID",
                                  quiet = FALSE,
                                  overwrite = TRUE)

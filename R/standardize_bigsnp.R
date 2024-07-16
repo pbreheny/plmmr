@@ -19,6 +19,7 @@
 #'
 standardize_bigsnp <- function(obj, new_file, rds_dir, non_gen, complete_phen, id_var,
                                outfile, quiet, overwrite){
+  browser()
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
   # convert FBM pointer into a big.matrix pointer

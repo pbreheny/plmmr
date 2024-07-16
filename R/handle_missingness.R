@@ -14,6 +14,7 @@
 #'
 handle_missingness <- function(obj, na_phenotype_vals,
                                handle_missing_phen, outfile, quiet){
+  browser()
   # handle missing phenotypes ---------------------------------------
   # make missing phenotypes explicit (need both of the following because
   # bigstatsr::big_copy() does not handle negative indices)

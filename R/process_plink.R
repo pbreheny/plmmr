@@ -1,9 +1,10 @@
 #' Preprocess PLINK files using the `bigsnpr` package
 #'
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
+#' @param data_prefix           The prefix (as a character string) of the bed/fam data files (e.g., `data_prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param prefix                The prefix (as a character string) of the bed/fam data files (e.g., `prefix = 'mydata'`)
-#' @param outfile               Optional: the name (character string) of the prefix of the logfile to be written.
+#' @param rds_prefix            String specifying the user's preferred filename for the to-b-created .rds file (will be create insie `rds_dir` folder)
+#' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written. Default to NULL (no log file written)
 #'                              Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
@@ -20,15 +21,18 @@
 #'                            To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
-#' @return Nothing is returned by this function, but (at least) two files are created in
+#' @return Nothing is returned by this function, but three files are created in
 #' the location specified by `rds_dir`:
 #'
-#' * 'std_prefix.rds': This is the `bigsnpr::bigSNP` object
+#' * 'prefix.rds': This is the `bigsnpr::bigSNP` object
 #' that holds the PLINK data along with meta-data. See details for explanation of what
 #' is included in this meta-data
 #'
-#' * 'std_prefix.bk': Created by the call to `standardize_fbm()`, this is the
+#' * 'prefix.bk': Created by the call to `standardize_fbm()`, this is the
 #' backingfile that stores the numeric data of the standardized design matrix `std_X`
+#'
+#' * 'rds_prefix.rds'" This will be a list with the `big.matrix` descriptor for the imputed data.
+#'  Several items of meta-data are included in the list as well, including the 'map' and 'fam' data frames
 #'
 #'  Note that `process_plink()` need only be run once for a given set of PLINK
 #'  files; in subsequent data analysis/scripts, `get_data()` will access the '.rds' file.
@@ -36,29 +40,13 @@
 #' @export
 #'
 #' @details
-#' The '.rds' object created by this function has the following elements:
-#' * std_X: The file-backed design matrix, as an `FBM` object (see `bigstatsr` package for more info)
-#' * fam: Data frame equivalent of PLINK '.bim' file
-#' * map: Data frame equivalent of PLINK '.fam' file
-#' * colnames: Character vector of column names for the original data (includes constant features, i.e. monomorphic SNPs)
-#' * rownames: Character vector of row names for the original data.
-#' * n: Number of rows (samples) in the original data
-#' * p: Number of columns (features, SNPs, markers, ...) in the original data
-#' * ns: Numeric vector of indices marking the non-singular columns of the original data
-#' * std_X_center: Numeric vector of values used to center the non-singular columns of the data
-#' * std_X_scale: Numeric vector of values used to scale the non-singular columns of the data
-#' * std_X_colnames: Character vector of column names for the standardized data
-#' * std_X_rownames: Character vector of row names for the standardized data.
-#' * complete_phen: Numeric vector of indices marking the samples with a non-missing phenotype. Ony applicable if `handle_missing_phen = 'prune'`
-#' * id_var: String specifying which ID column in the '.fam' file had the unique sample ID: 'FID' (1st column) or 'IID' (2nd column)
-#'
 #' @examples
 #' \donttest{
 #' temp_dir <- paste0(tempdir()) # using a temporary directory here
 #' process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
 #'               rds_dir = temp_dir,
-#'               prefix = "penncath_lite",
-#'               outfile = "process_penncath",
+#'               data_prefix = "penncath_lite",
+#'               logfile = "process_penncath",
 #'               overwrite = TRUE,
 #'               impute_method = "mode")
 #'
@@ -67,9 +55,10 @@
 #'  }
 #'
 process_plink <- function(data_dir,
+                          data_prefix,
                           rds_dir = data_dir,
-                          prefix,
-                          outfile,
+                          rds_prefix,
+                          logfile = NULL,
                           impute = TRUE,
                           impute_method = 'mode',
                           id_var = "IID",
@@ -78,26 +67,27 @@ process_plink <- function(data_dir,
                           ...){
 
   # start log -----------------------------------------
-  if(missing(outfile)){
-    outfile = file.path(data_dir, "process_plink")
+  if(!is.null(logfile)){
+    logfile <- create_log(file.path(rds_dir, logfile))
+    cat("\nLogging to", logfile)
+  } else {
+    logfile <- tempfile()
   }
 
-  logfile <- create_log(outfile = outfile)
 
   if(!quiet){
-    cat("\nLogging to", logfile)
-    cat("\nPreprocessing", prefix, "data:")
+    cat("\nPreprocessing", data_prefix, "data:")
   }
-  cat("\nPreprocessing", prefix, "data\n", file = logfile, append = TRUE)
+  cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
 
 
   # read in PLINK files --------------------------------
   step1 <- read_plink_files(data_dir = data_dir,
-                                prefix = prefix,
-                                rds_dir = rds_dir,
-                                outfile = logfile,
-                                overwrite = overwrite,
-                                quiet = quiet)
+                            data_prefix = data_prefix,
+                            rds_dir = rds_dir,
+                            outfile = logfile,
+                            overwrite = overwrite,
+                            quiet = quiet)
 
   # name and count ------------------------------------
   step2 <- name_and_count_bigsnp(obj = step1,
@@ -138,21 +128,31 @@ process_plink <- function(data_dir,
 
   bigsnpr::snp_save(step3) # save imputed data
 
+
+  # format return object --------------------------------------------------------
+  ret <- step3
+  ret$genotypes <- NULL
+  ret$X <- fbm2bm(step3$genotypes) |> describe()
+
+  saveRDS(ret, file = file.path(rds_dir, paste0(rds_prefix, ".rds")))
+
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
   gc()
 
-  if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as .rds object.")}
+
+  if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as",
+                 file.path(rds_dir, paste0(rds_prefix, ".rds")))}
 
   cat("\nprocess_plink() completed. \nProcessed files now saved as",
-      file.path(rds_dir, paste0(prefix, ".rds")),
+      file.path(rds_dir, paste0(rds_prefix, ".rds")),
       "at", pretty_time(),
       file = logfile, append = TRUE)
 
-
-  return(file.path(rds_dir, paste0(prefix, ".rds")))
+  # file.remove(tempfile()) # TODO: Not needed? Think about best way to handle logfile...
+  return(file.path(rds_dir, paste0(rds_prefix, ".rds")))
 
 }
 

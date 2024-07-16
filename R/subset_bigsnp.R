@@ -25,6 +25,7 @@
 #'
 subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
                           ns_genotypes, rds_dir, new_file, outfile, quiet){
+  browser()
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested

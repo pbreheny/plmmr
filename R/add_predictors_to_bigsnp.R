@@ -21,7 +21,7 @@ add_predictors_to_bigsnp <- function(obj,
                                      og_plink_ids,
                                      rds_dir,
                                      quiet){
-
+  browser()
   # genotypes need to have type 'double' from now on, in order to merge
   if (!quiet) cat("")
   geno_bm <- obj$genotypes |> fbm2bm()
