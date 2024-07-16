@@ -5,7 +5,7 @@
 #'  * "prune" (default): observations with missing phenotype are removed
 #'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file
 #' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet   Logical: should messages be printed to the console? Defaults to TRUE
+#' @param quiet   Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 #'
 #' @return a list of two components:
 #' * na_idx: a logical vector indicating which columns have missing values

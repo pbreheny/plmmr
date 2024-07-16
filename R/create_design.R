@@ -43,6 +43,11 @@ create_design <- function(dat,
                           quiet = FALSE){
 
   # initial setup --------------------------------------------------
+  existing_files <- list.files(rds_dir)
+  if (any(grepl(paste0(new_file, ".bk"), existing_files, fixed = TRUE))) {
+    stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
+  }
+
   if(!is.null(outfile)){
     outfile = file.path(rds_dir, outfile)
   }
@@ -53,12 +58,6 @@ create_design <- function(dat,
   design <- list()
 
   # check for files to be overwritten---------------------------------
-
-  existing_files <- list.files(rds_dir)
-  if (any(grepl(new_file, existing_files))) {
-    stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
-  }
-
   if (overwrite){
     # double check how much this will erase
     rds_to_remove <-  list.files(rds_dir,
@@ -118,7 +117,8 @@ create_design <- function(dat,
                                     pheno = add_phen,
                                     pheno_id = pheno_id,
                                     pheno_col = pheno_name,
-                                    outfile = logfile)
+                                    outfile = logfile,
+                                    quiet = quiet)
   } else {
     step1 <- obj
   }
@@ -140,24 +140,34 @@ create_design <- function(dat,
 
   # add predictors from external files -----------------------------
   step1$obj$colnames <- obj$colnames # need these to carry to next step
-  pred_X <- add_predictors_to_bigsnp(obj = step1,
-                                     add_predictor_fam = add_predictor_fam,
-                                     add_predictor_ext = add_predictor_ext,
-                                     id_var = id_var,
-                                     og_plink_ids = og_plink_ids,
-                                     rds_dir = rds_dir,
-                                     quiet = quiet)
+ # if (!is.null(add_predictor_fam) | !is.null(add_predictor_ext)){
+    pred_X <- add_predictors_to_bigsnp(obj = step1,
+                                       add_predictor_fam = add_predictor_fam,
+                                       add_predictor_ext = add_predictor_ext,
+                                       id_var = id_var,
+                                       og_plink_ids = og_plink_ids,
+                                       rds_dir = rds_dir,
+                                       quiet = quiet)
 
-  # save items to return
-  design$map <- pred_X$obj$map
-  design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
-  design$X_colnames <- pred_X$obj$colnames
-  design$X_rownames <- pred_X$obj$rownames
-  design$fam <- pred_X$obj$fam
-  design$y <- pred_X$obj$fam[,6]
+    # save items to return
+    design$map <- pred_X$obj$map
+    design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
+    design$X_colnames <- pred_X$obj$colnames
+    design$X_rownames <- pred_X$obj$rownames
+    design$fam <- pred_X$obj$fam
+    design$y <- pred_X$obj$fam[,6]
 
-  # again, clean up to save space
-  rm(step1); gc()
+    # again, clean up to save space
+    rm(step1); gc()
+
+  #} else {
+  #   pred_X <- step1
+  #   design$non_gen <- NULL
+  #
+  #   # again, clean up to save space
+  #   rm(step1); gc()
+  # }
+
 
   # subsetting -----------------------------------------------------------------
   subset_X <- subset_bigsnp(obj = pred_X$obj,
@@ -173,7 +183,7 @@ create_design <- function(dat,
   rm(pred_X); gc()
   design$ns <- subset_X$ns
   design$std_X_colnames <- design$X_colnames[subset_X$ns]
-
+browser()
   # standardization ------------------------------------------------------------
   std_res <- standardize_bigsnp(obj = subset_X,
                                new_file = new_file,

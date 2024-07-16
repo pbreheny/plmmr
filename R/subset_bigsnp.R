@@ -14,7 +14,7 @@
 #'                              This vector is created in `handle_missingness()`
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param outfile               Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet                 Logical: should messages be printed to the console? Defaults to TRUE
+#' @param quiet                 Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 #'
 #' @return A `bigSNP` object that includes a new component, 'subset_X', representing a design matrix wherein:
 #' *  rows are subset according to user's specification in `handle_missing_phen`

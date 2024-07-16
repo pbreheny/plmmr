@@ -10,7 +10,7 @@
 #' @param complete_phen Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param outfile       Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet         Logical: should messages be printed to the console? Defaults to TRUE
+#' @param quiet         Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 #' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/new_file, should these be overwritten?
 #'
 #' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.

@@ -2,7 +2,7 @@
 #'
 #' @param geno      An object created by `process_plink()`
 #' @param geno_id   A character string indicating the ID column name in the 'fam'
-#'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK.
+#'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK. The other option is 'family.ID', equivalent to 'FID' in PLINK.
 #' @param pheno     A data frame with at least two columns: and ID column and a phenotype column
 #' @param pheno_id  A string specifying the name of the ID column in `pheno`
 #' @param pheno_col A string specifying the name of the phenotype column in `pheno`. This column will be used as the default `y` argument to 'plmm()'.
@@ -13,9 +13,9 @@
 #'                  Results are written to an RDS file, then reattached with `bigsnpr;:snp_attach()` and returned
 #'                  By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new
 #'                  filename to `rdsfile`
-#'
+#' @param quiet   Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 add_external_phenotype <- function(geno, geno_id = "sample.ID",
-                                      pheno, pheno_id, pheno_col, outfile){
+                                      pheno, pheno_id, pheno_col, outfile, quiet){
 
   # check to make sure IDs overlap
   if (inherits(pheno, 'matrix')) {

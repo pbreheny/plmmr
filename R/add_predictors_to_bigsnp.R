@@ -6,7 +6,7 @@
 #' @param id_var            String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param og_plink_ids      Character vector passed from `name_and_count_bigsnp()`
 #' @param rds_dir           The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`(from `process_plink()` call)
-#' @param quiet             Logical: should messages be printed to the console? Defaults to TRUE
+#' @param quiet             Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 #'
 #' @return A list of 2 components:
 #' * 'obj' - a `bigSNP` object with an added element representing the matrix that includes the additional predictors as the first few columns
