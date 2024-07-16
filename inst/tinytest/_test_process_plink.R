@@ -64,14 +64,17 @@ table(res$fam$affection)
 table(penncath_pheno$CAD)
 
 # are row & column names aligned?
-str(res$X_colnames); str(res$X_rownames)
+str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
+tinytest::expect_identical(res$X_colnames[res$ns], res$std_X_colnames)
+tinytest::expect_identical(res$X_rownames[res$complete_phen], res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
+list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
 
 # test 2: is alignment working? -----------------------------
 # shuffle the IDs here, to test alignment
@@ -124,6 +127,7 @@ list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
+list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
 
 # test 3: what if there are missing outcomes? ----------------------------------
 
@@ -180,6 +184,7 @@ list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
+list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
 
 # test 4: more obs. in pheno than geno ------------------------------------------
 penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
@@ -242,3 +247,4 @@ list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
+

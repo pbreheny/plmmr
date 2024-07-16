@@ -151,7 +151,6 @@ create_design <- function(dat,
   # save items to return
   design$map <- pred_X$obj$map
   design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
-  design$std_X_colnames <- pred_X$obj$colnames[design$ns]
   design$X_colnames <- pred_X$obj$colnames
   design$X_rownames <- pred_X$obj$rownames
   design$fam <- pred_X$obj$fam
@@ -172,6 +171,8 @@ create_design <- function(dat,
                             quiet = quiet)
   # clean up
   rm(pred_X); gc()
+  design$ns <- subset_X$ns
+  design$std_X_colnames <- design$X_colnames[subset_X$ns]
 
   # standardization ------------------------------------------------------------
   std_res <- standardize_bigsnp(obj = subset_X,
