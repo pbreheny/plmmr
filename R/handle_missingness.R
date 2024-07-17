@@ -14,7 +14,7 @@
 #'
 handle_missingness <- function(obj, na_phenotype_vals,
                                handle_missing_phen, outfile, quiet){
-  browser()
+
   # handle missing phenotypes ---------------------------------------
   # make missing phenotypes explicit (need both of the following because
   # bigstatsr::big_copy() does not handle negative indices)
@@ -43,7 +43,7 @@ handle_missingness <- function(obj, na_phenotype_vals,
   }
 
   # check for constant features in genotypes also:
-  ns_genotypes <- count_constant_features(fbm = obj$genotypes,
+  ns_genotypes <- count_constant_features(fbm = obj$X,
                                           ind.row = complete_phen,
                                           outfile = outfile,
                                           quiet = quiet)

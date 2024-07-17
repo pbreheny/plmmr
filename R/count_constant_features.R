@@ -7,11 +7,14 @@
 #' @return ns A numeric vector with the indicesof the non-singular columns of the matrix associated with `counts`
 #' @keywords internal
 #'
-count_constant_features <- function(fbm, ind.row = bigstatsr::rows_along(fbm), outfile, quiet){
-
+count_constant_features <- function(fbm, ind.row = 1:nrow(fbm), outfile, quiet){
+  browser()
   # NB: pruning out samples with incomplete phenotypes can make some features
   #   *become* constant!
-  colstats <- bigstatsr::big_colstats(fbm, ind.row = ind.row)
+  colstats <- .Call('big_sd',
+                    fbm,
+                    as.integer(bigstatsr::nb_cores()),
+                    PACKAGE = 'plmmr')
   ns <- which(colstats$var > 1e-4)
   constants_idx <- sum(colstats$var < 1e-4)
 

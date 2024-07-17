@@ -2,13 +2,6 @@
 
 RcppExport SEXP big_sd(SEXP X_, SEXP ncore_){
 
-
-  // *********************** NOTE ***********************
-  // This function modifies the X that is currently being
-  // used in the corresponding R session.
-  //*****************************************************
-
-
   // declarations
   //Rprintf("\nDeclarations in big_sd()");
   XPtr<BigMatrix> X(X_); // points to the filebacked matrix of rotated data
@@ -29,15 +22,10 @@ RcppExport SEXP big_sd(SEXP X_, SEXP ncore_){
   omp_set_num_threads(useCores);
 #endif
 
-  // center
-  //Rprintf("\nCalling col_means()");
-  NumericVector center_vals = col_means(X, n, p);
-
-  center_cols(X, n, p, center_vals);
-
   // calculate sd
   //Rprintf("\nCalling sd()");
-  NumericVector sd_vals = sd(X, n, p);
+  NumericVector sd_vals;
+  sd_vals = sd(X, n, p);
 
   //Rprintf("\nreturn result");
   Rcpp::List result;

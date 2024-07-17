@@ -129,7 +129,6 @@ NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
     double sum_j = 0;
     for (int i=0;i<n;i++) sum_j += pow(xCol[i],2);
     sd_vals[j] = sqrt(sum_j/(n-1));
-    xCol = nullptr;
   }
 
   return(sd_vals);

@@ -21,7 +21,7 @@
 #'                            The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param id_var               String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
 #' @param overwrite           Logical: should existing .rds files be overwritten? Defaults to FALSE.
-#' @param outfile             Optional: name of the '.log' file to be written
+#' @param logfile             Optional: name of the '.log' file to be written
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #'
 #' @export
@@ -38,7 +38,7 @@ create_design <- function(dat,
                           add_predictor_fam = NULL,
                           add_predictor_ext = NULL,
                           id_var = "IID",
-                          outfile = NULL,
+                          logfile = NULL,
                           overwrite = FALSE,
                           quiet = FALSE){
 
@@ -48,11 +48,11 @@ create_design <- function(dat,
     stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
   }
 
-  if(!is.null(outfile)){
-    outfile = file.path(rds_dir, outfile)
+  if(!is.null(logfile)){
+    logfile = file.path(rds_dir, logfile)
   }
 
-  logfile <- create_log(outfile = outfile)
+  logfile <- create_log(outfile = logfile)
 
   # create list to be returned
   design <- list()
@@ -114,6 +114,7 @@ create_design <- function(dat,
   # add phenotype from external files -----------------------------
   if (!is.null(add_phen)){
     step1 <- add_external_phenotype(geno = obj,
+                                    rds_dir = rds_dir,
                                     geno_id = geno_id,
                                     pheno = add_phen,
                                     pheno_id = pheno_id,

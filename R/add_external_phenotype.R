@@ -1,6 +1,7 @@
 #' A function to align genotype and phenotype data
 #'
 #' @param geno      An object created by `process_plink()`
+#' @param rds_dir   The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param geno_id   A character string indicating the ID column name in the 'fam'
 #'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK. The other option is 'family.ID', equivalent to 'FID' in PLINK.
 #' @param pheno     A data frame with at least two columns: and ID column and a phenotype column
@@ -14,9 +15,9 @@
 #'                  By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new
 #'                  filename to `rdsfile`
 #' @param quiet   Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
-add_external_phenotype <- function(geno, geno_id = "sample.ID",
+add_external_phenotype <- function(geno, rds_dir, geno_id = "sample.ID",
                                       pheno, pheno_id, pheno_col, outfile, quiet){
-browser()
+
   # check to make sure IDs overlap
   if (inherits(pheno, 'matrix')) {
     overlap <- intersect(geno$fam[[geno_id]], pheno[,pheno_id])
@@ -46,15 +47,15 @@ browser()
         "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
         file = outfile, append = TRUE)
 
-    geno_keep_file <- bigsnpr::snp_subset(geno,
-                                          ind.row = id_to_keep)
     # TODO: should the subset created in the lines above be given a .bk file in a
     #   temporary directory instead?
     geno_keep_file <- bigmemory::big.matrix(nrow = length(id_to_keep),
                                             ncol = ncol(obj$X),
-                                            backingfile = )
+                                            backingfile = "geno_plus_pheno",
+                                            backingpath = rds_dir,
+                                            descriptorfile = "geno_plus_pheno")
 
-    geno_keep <- bigsnpr::snp_attach(geno_keep_file)
+
     cat("\nMerging the genotype data and phenotype information; new RDS is ", geno_keep$genotypes$rds)
     geno_keep$fam <- geno$fam[id_to_keep,]
   } else {

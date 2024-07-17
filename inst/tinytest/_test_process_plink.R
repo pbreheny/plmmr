@@ -49,7 +49,7 @@ if (interactive()){
                      add_predictor_ext = predictors,
                      id_var = "FID",
                      overwrite = TRUE,
-                     outfile = "design")
+                     logfile = "design")
 
   res <- readRDS(X)
   str(res)
