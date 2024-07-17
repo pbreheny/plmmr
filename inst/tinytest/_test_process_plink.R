@@ -44,10 +44,9 @@ if (interactive()){
   X <- create_design(dat = penncath_lite,
                      rds_dir = "inst/extdata",
                      new_file = "std_penncath_lite",
-                     is_bigsnp = TRUE,
-                     add_phen = phen,
-                     pheno_id = "FamID",
-                     pheno_name = "CAD",
+                     add_outcome = phen,
+                     outcome_id = "FamID",
+                     outcome_col = "CAD",
                      add_predictor_ext = predictors,
                      id_var = "FID",
                      overwrite = TRUE,
@@ -100,9 +99,9 @@ X <- create_design(dat = penncath_lite,
                    rds_dir = "inst/extdata",
                    new_file = "std_penncath_lite",
                    is_bigsnp = TRUE,
-                   add_phen = phen,
-                   pheno_id = "FamID",
-                   pheno_name = "CAD",
+                   add_outcome = phen,
+                   outcome_id = "FamID",
+                   outcome_col = "CAD",
                    add_predictor_ext = predictors,
                    id_var = "FID",
                    overwrite = TRUE,
@@ -147,23 +146,22 @@ rownames(predictors) <- penncath_pheno$FamID
 # use 'hdl' for outcome - missing in some observations
 summary(penncath_pheno$hdl)
 phen <- cbind(penncath_pheno$FamID, penncath_pheno$hdl) |>
-  as.data.frame() |>
-  as.matrix()
+  as.data.frame()
 colnames(phen) <- c("FamID", "hdl")
-
+phen <- phen |>
+  dplyr::mutate(FamID = as.character(FamID))
 ### create design --------------------------------------------------------------
 X <- create_design(dat = penncath_lite,
                    rds_dir = "inst/extdata",
                    new_file = "std_penncath_lite",
-                   is_bigsnp = TRUE,
-                   add_phen = phen,
-                   pheno_id = "FamID",
-                   pheno_name = "hdl",
-                   na_phenotype_vals = c(NA_integer_),
+                   add_outcome = phen,
+                   outcome_id = "FamID",
+                   outcome_col = "hdl",
+                   na_outcome_vals = c(NA_integer_),
                    add_predictor_ext = predictors,
                    id_var = "FID",
                    overwrite = TRUE,
-                   outfile = NULL)
+                   logfile = NULL)
 
 res <- readRDS(X)
 str(res)
@@ -221,9 +219,9 @@ X <- create_design(dat = geno_n1000,
                    rds_dir = 'inst/extdata',
                    new_file = "std_penncath_n1000",
                    is_bigsnp = T,
-                   add_phen = phen,
-                   pheno_id = "FamID",
-                   pheno_name = "CAD",
+                   add_outcome = phen,
+                   outcome_id = "FamID",
+                   outcome_col = "CAD",
                    add_predictor_ext = predictors,
                    id_var = "FID",
                    overwrite = TRUE,

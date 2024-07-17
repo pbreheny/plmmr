@@ -3,9 +3,9 @@
 #' @param dat                     Filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
 #' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
-#' @param add_outcome             Optional: A data frame or matrix with at least two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design).
-#' @param outcome_id              Optional: A string specifying the name of the ID column in 'add_outcome'
-#' @param outcome_col             Optional: A string specifying the name of the phenotype column in 'add_outcome'
+#' @param add_outcome             A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
+#' @param outcome_id              A string specifying the name of the ID column in 'add_outcome'
+#' @param outcome_col             A string specifying the name of the phenotype column in 'add_outcome'
 #' @param id_var                  This argument is the ID:
 #'                                  - for PLINK data: a string specifying an ID column of the PLINK `.fam` file. Options are "IID" (default) and "FID"
 #'                                  - for all other data: a character vector of unique identifiers (IDs) for each row of the data (i.e., the data processed with `process_delim()`)
@@ -34,7 +34,6 @@ create_design <- function(dat,
                           outcome_col,
                           id_var,
                           na_outcome_vals = c(-9, NA_integer_),
-                          handle_missing_outcome = "prune",
                           add_predictor_ext = NULL,
                           logfile = NULL,
                           overwrite = FALSE,
@@ -63,9 +62,8 @@ create_design <- function(dat,
                                  full.names=TRUE)
     if (length(rds_to_remove) > 1) {
       stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
-      that have the 'new_file' pattern.
-           To save you from overwriting anything important, I will not erase anything yet.
-           Please move any .rds files with this file name pattern to another directory.")
+      that have the 'new_file' pattern. To save you from overwriting anything important, I will not erase anything yet.
+      Please move any .rds files with this file name pattern to another directory.")
     }
     file.remove(rds_to_remove)
     gc()
@@ -97,24 +95,26 @@ create_design <- function(dat,
     stop("The id_var argument is either misspecified or missing (see documentation for options).")
   }
 
-  if (!is.null(colnames(add_outcome))) {
+  if (is.null(colnames(add_outcome))) {
     stop("The matrix supplied to add_outcome must have column names.")
   }
 
   # add phenotype from external files & index -----------------------------
-  outcome_idx <- index_outcome(obj = obj,
+  sample_idx <- index_samples(obj = obj,
                                rds_dir = rds_dir,
-                               indiv_id = indiv_id,
+                               indiv_id = og_ids,
                                add_outcome = add_outcome,
                                outcome_id = outcome_id,
                                outcome_col = outcome_col,
+                               na_outcome_vals = na_outcome_vals,
                                outfile = logfile,
                                quiet = quiet)
+browser()
   gc() # cleanup
 
   # save items to return
-  design$std_X_rownames <- og_ids[outcome_idx$outcome_present]
-  design$outcome_present <- outcome_idx$outcome_present # save indices for which samples had nonmissing outcome values
+  design$std_X_rownames <- og_ids[sample_idx$outcome_present]
+  design$outcome_present <- sample_idx$outcome_present # save indices for which samples had nonmissing outcome values
 
   # index samples/features to be removed from subset -----------------------
   feature_idx <- index_features(obj = obj,

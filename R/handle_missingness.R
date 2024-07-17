@@ -15,33 +15,6 @@
 handle_missingness <- function(obj, na_phenotype_vals,
                                handle_missing_phen, outfile, quiet){
 
-  # handle missing phenotypes ---------------------------------------
-  # make missing phenotypes explicit (need both of the following because
-  # bigstatsr::big_copy() does not handle negative indices)
-  is_phen_missing <- obj$fam[,6] %in% na_phenotype_vals
-  complete_phen <- which(!(is_phen_missing))
-  na_phen <- which(is_phen_missing)
-  names(na_phen) <- obj$fam$sample.ID[na_phen]
-
-  if (handle_missing_phen == 'prune'){
-    if(!quiet){
-      cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data.\n")
-      # Note: the actual pruning happens in the 'subset' step
-    }
-    cat("\nWill prune out", length(na_phen), "samples/observations with missing phenotype data\n",
-        file = outfile, append = TRUE)
-
-  } else if (handle_missing_phen == 'asis'){
-    if(!quiet){
-      cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data.\n")
-    }
-    cat("\nWill mark", length(na_phen), "samples/observations as having missing phenotype data\n",
-        file = outfile, append = TRUE)
-
-    obj$fam$affection[na_phen] <- NA_integer_
-
-  }
-
   # check for constant features in genotypes also:
   ns_genotypes <- count_constant_features(fbm = obj$X,
                                           ind.row = complete_phen,
