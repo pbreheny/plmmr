@@ -38,7 +38,7 @@ add_predictors_to_bigsnp <- function(obj,
     if (add_predictor_fam == "sex"){
 
       # add space for extra column
-      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+      obj$geno_plus_predictors <- bigstatsr::FBM(type = 'double',
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + 1)
       # fill in new matrix
@@ -91,7 +91,7 @@ add_predictors_to_bigsnp <- function(obj,
       # save non_gen: an index marking the first column as non-genomic predictor
       non_gen <- 1
 
-      obj$geno_plus_predictors <- bigstatsr::FBM(init = 0,
+      obj$geno_plus_predictors <- bigstatsr::FBM(type = 'double',
                                                  nrow = nrow(obj$fam),
                                                  ncol = obj$genotypes$ncol + length(non_gen))
       # fill in new matrix
