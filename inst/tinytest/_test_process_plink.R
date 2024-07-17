@@ -19,8 +19,10 @@ if (interactive()){
                                  overwrite = TRUE)
 
   imputed_dat <- readRDS(penncath_lite)
-  str(imputed_dat)
-  any(is.na(imputed_dat$genotypes[,]))
+
+  # check out imputed data
+  # str(imputed_dat)
+  # any(is.na(imputed_dat$genotypes[,]))
 
   ## create design matrix-------------------------------------------------------
   penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")

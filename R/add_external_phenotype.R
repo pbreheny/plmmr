@@ -10,10 +10,7 @@
 #' @param outfile   A string with the name of the filepath for the log file
 #' @keywords        internal
 #'
-#' @returns         A `bigSNP` object that has had the phenotype values from the external file assigned as the values in the 6th column of the 'fam' object.
-#'                  Results are written to an RDS file, then reattached with `bigsnpr;:snp_attach()` and returned
-#'                  By default, the RDS file in `geno` is overwritten. You may change this behavior by specifying a new
-#'                  filename to `rdsfile`
+#' @returns       The indices of
 #' @param quiet   Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 add_external_phenotype <- function(geno, rds_dir, geno_id = "sample.ID",
                                       pheno, pheno_id, pheno_col, outfile, quiet){
@@ -25,15 +22,13 @@ add_external_phenotype <- function(geno, rds_dir, geno_id = "sample.ID",
     overlap <- intersect(geno$fam[[geno_id]], pheno[[pheno_id]])
   }
 
-
-
   if (length(overlap) < 10) {
     stop("\nThe amount of overlap between the supplied IDs is less than 10 observations.
          This seems really small -- are you sure you chose the right variable names?
          \nAre the ID columns in the genotype and phenotype data of the same type (e.g., both characters)?")
   }
 
-  id_to_keep <- which(geno$fam[[geno_id]] %in% overlap) # indices of IDs
+  id_to_keep <- which(geno$fam[[geno_id]] %in% overlap) # indices of IDs in the order of the PLINK data
 
   # case 1: subset geno data to keep only IDs with corresponding rows in pheno data
   if (length(id_to_keep) < nrow(geno$fam)){
@@ -47,24 +42,12 @@ add_external_phenotype <- function(geno, rds_dir, geno_id = "sample.ID",
         "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
         file = outfile, append = TRUE)
 
-    # TODO: should the subset created in the lines above be given a .bk file in a
-    #   temporary directory instead?
-    geno_keep_file <- bigmemory::big.matrix(nrow = length(id_to_keep),
-                                            ncol = ncol(obj$X),
-                                            backingfile = "geno_plus_pheno",
-                                            backingpath = rds_dir,
-                                            descriptorfile = "geno_plus_pheno")
-
-
-    cat("\nMerging the genotype data and phenotype information; new RDS is ", geno_keep$genotypes$rds)
-    geno_keep$fam <- geno$fam[id_to_keep,]
   } else {
-    # case 2: geno and pheno data represent the same samples
-    geno_keep <- geno
+    id_to_keep <- 1:nrow(geno$X)
   }
 
   # subset and order pheno data to match genotype data
-  subset_pheno <- data.table::merge.data.table(x = data.table::as.data.table(geno_keep$fam),
+  subset_pheno <- data.table::merge.data.table(x = data.table::as.data.table(geno$fam),
                                                by.x = geno_id,
                                                y = data.table::as.data.table(pheno),
                                                by.y = pheno_id)

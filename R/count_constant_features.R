@@ -12,7 +12,7 @@ count_constant_features <- function(fbm, ind.row = 1:nrow(fbm), outfile, quiet){
   # NB: pruning out samples with incomplete phenotypes can make some features
   #   *become* constant!
   colstats <- .Call('big_sd',
-                    fbm,
+                    fbm@address,
                     as.integer(bigstatsr::nb_cores()),
                     PACKAGE = 'plmmr')
   ns <- which(colstats$var > 1e-4)

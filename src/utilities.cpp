@@ -116,13 +116,13 @@ void scale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales) {
   }
 }
 
-// column-wise standard deviation of a *centered*, filebacked matrix X
+// column-wise standard deviation of a (*centered*), filebacked matrix X
 NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
   MatrixAccessor<double> X(*centered_X_);
   NumericVector sd_vals(p);
   int j;
 
-#pragma omp parallel for private(j) schedule(static)
+//#pragma omp parallel for private(j) schedule(static)
 
   for (j=0;j<p;j++) {
     double *xCol = X[j];

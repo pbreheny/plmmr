@@ -1,43 +1,41 @@
-#' A function to create a design matrix to be passed to a model fitting function
+#' A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 #'
-#' @param dat                 Filepath to rds file of processed data
-#' @param rds_dir             The path to the directory in which you want to create the new '.rds' and '.bk' files.
-#' @param new_file            User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
-#' @param is_bigsnp           Logical: is the data coming from `process_plink()`? For now, this must be TRUE. Working to expand to accommodate other kinds of data.
-#' @param na_phenotype_vals   A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
-#' @param add_phen            Optional: A **data frame** with at least two columns: and ID column and a phenotype column
-#' @param pheno_id            Optional: A string specifying the name of the ID column in `pheno`. MUST be specified if `add_phen` is specified.
-#' @param pheno_name           Optional: A string specifying the name of the phenotype column in `pheno`.  MUST be specified if `add_phen` is specified. This column will be used as the default `y` argument to 'plmm()'.
-#' @param handle_missing_phen A string indicating how missing phenotypes should be handled:
-#'                                * "prune" (default): observations with missing phenotype are removed
-#'                            Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-#'                            or (2) prune missing values
-#' @param add_predictor_fam   Optional: if you want to include "sex" (the 5th column of `.fam` file) in the analysis, specify 'sex' here.
-#' @param add_predictor_ext   Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-#'                            This argument takes one of two kinds of arguments:
-#'                              - a **named** numeric vector, where the names align with the sample IDs in the PLINK files. **No NA values** can be in this vector.
-#'                            The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
-#'                              - a numeric matrix whose row names align with the sample IDs in the PLINK files.
-#'                            The names will be used to subset and align this external covariate with the supplied PLINK data.
-#' @param id_var               String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
-#' @param overwrite           Logical: should existing .rds files be overwritten? Defaults to FALSE.
-#' @param logfile             Optional: name of the '.log' file to be written
-#' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
+#' @param dat                     Filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
+#' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
+#' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
+#' @param add_outcome             Optional: A data frame or matrix with at least two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design).
+#' @param outcome_id              Optional: A string specifying the name of the ID column in 'add_outcome'
+#' @param outcome_col             Optional: A string specifying the name of the phenotype column in 'add_outcome'
+#' @param id_var                  This argument is the ID:
+#'                                  - for PLINK data: a string specifying an ID column of the PLINK `.fam` file. Options are "IID" (default) and "FID"
+#'                                  - for all other data: a character vector of unique identifiers (IDs) for each row of the data (i.e., the data processed with `process_delim()`)
+#' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
+#' @param handle_missing_outcome  A string indicating how missing phenotypes should be handled:
+#'                                  * "prune" (default): observations with missing phenotype are removed
+#'                                  Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
+#'                                  or (2) prune missing values
+#' @param add_predictor_ext       Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+#'                                This argument takes one of two kinds of arguments:
+#'                                 - a **named** numeric vector, where the names align with the sample IDs in the PLINK files. **No NA values** can be in this vector.
+#'                                  The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
+#'                                 - a numeric matrix whose row names align with the sample IDs in the PLINK files.
+#'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
+#' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
+#' @param logfile                 Optional: name of the '.log' file to be written
+#' @param quiet                   Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #'
 #' @export
 #'
 create_design <- function(dat,
                           rds_dir,
                           new_file,
-                          is_bigsnp,
-                          na_phenotype_vals = c(-9),
-                          handle_missing_phen = "prune",
-                          add_phen = NULL,
-                          pheno_id = NULL,
-                          pheno_name = NULL,
-                          add_predictor_fam = NULL,
+                          add_outcome,
+                          outcome_id,
+                          outcome_col,
+                          id_var,
+                          na_outcome_vals = c(-9, NA_integer_),
+                          handle_missing_outcome = "prune",
                           add_predictor_ext = NULL,
-                          id_var = "IID",
                           logfile = NULL,
                           overwrite = FALSE,
                           quiet = FALSE){
@@ -77,104 +75,80 @@ create_design <- function(dat,
                                 full.names=TRUE)
     file.remove(bk_to_remove)
     gc()
-  } else {
-    gc()
   }
 
-  if (is_bigsnp) {
-    obj <- readRDS(dat)
-    obj$X <- bigmemory::attach.big.matrix(obj$X)
-  } else {
-    stop("This function currently only works for data coming from process_plink().
-         We are working to add the option to pass other kinds of data. For now,
-         keep using process_delim()")
-  }
-
-  # save items to return
-  # design$n <- nrow(obj$fam)
-  # design$p <- nrow(obj$map)
+  # read in the processed data -------------------------------
+  obj <- readRDS(dat)
+  obj$X <- bigmemory::attach.big.matrix(obj$X)
 
   # determine which IDs to use ---------------------------------
   if (id_var == "IID"){
-    geno_id <- "sample.ID"
+    indiv_id <- "sample.ID"
+    og_ids <- obj$fam[,indiv_id] |> as.character()
+
   } else if (id_var == "FID"){
-    geno_id <- "family.ID"
+    indiv_id <- "family.ID"
+    og_ids <- obj$fam[,indiv_id] |> as.character()
+
+  } else if (is.character(id_var) & length(id_var) == nrow(obj$X)) {
+    og_ids <- id_var
+
   } else {
-    stop("\nThe argument to id_var is misspecified. Must be one of 'IID' or 'FID', and
-         the corresponding variable *must* be of type 'char'.")
+    stop("The id_var argument is either misspecified or missing (see documentation for options).")
   }
 
-  if (!is.null(add_phen) & is.null(colnames(add_phen))) {
-    stop("If you supply an external phenotype file to add_phen, this matrix must have
-         column names.")
+  if (!is.null(colnames(add_outcome))) {
+    stop("The matrix supplied to add_outcome must have column names.")
   }
 
-  og_plink_ids <- obj$fam[,geno_id] |> as.character()
-
-  # add phenotype from external files -----------------------------
-  if (!is.null(add_phen)){
-    step1 <- add_external_phenotype(geno = obj,
-                                    rds_dir = rds_dir,
-                                    geno_id = geno_id,
-                                    pheno = add_phen,
-                                    pheno_id = pheno_id,
-                                    pheno_col = pheno_name,
-                                    outfile = logfile,
-                                    quiet = quiet)
-  } else {
-    step1 <- obj
-  }
+  # add phenotype from external files & index -----------------------------
+  outcome_idx <- index_outcome(obj = obj,
+                               rds_dir = rds_dir,
+                               indiv_id = indiv_id,
+                               add_outcome = add_outcome,
+                               outcome_id = outcome_id,
+                               outcome_col = outcome_col,
+                               outfile = logfile,
+                               quiet = quiet)
   gc() # cleanup
 
-  # address missingness in phenotype values -----------------------
-  step2 <- handle_missingness(obj = step1,
-                              na_phenotype_vals = na_phenotype_vals,
-                              handle_missing_phen = handle_missing_phen,
-                              outfile = logfile,
-                              quiet = quiet)
+  # save items to return
+  design$std_X_rownames <- og_ids[outcome_idx$outcome_present]
+  design$outcome_present <- outcome_idx$outcome_present # save indices for which samples had nonmissing outcome values
 
-
+  # index samples/features to be removed from subset -----------------------
+  feature_idx <- index_features(obj = obj,
+                                na_outcome_vals = na_outcome_vals,
+                                handle_missing_outcome = handle_missing_outcome,
+                                outfile = logfile,
+                                quiet = quiet)
 
   # save items to return
-  design$std_X_rownames <- og_plink_ids[step2$complete_phen]
-  design$complete_phen <- step2$complete_phen # save indices for which samples had complete phenotypes
-  design$ns_genotypes <- step2$ns_genotypes
+  design$ns_genotypes <- feature_index$ns_genotypes
 
   # add predictors from external files -----------------------------
-  step1$obj$colnames <- obj$colnames # need these to carry to next step
- # if (!is.null(add_predictor_fam) | !is.null(add_predictor_ext)){
-    pred_X <- add_predictors_to_bigsnp(obj = step1,
-                                       add_predictor_fam = add_predictor_fam,
-                                       add_predictor_ext = add_predictor_ext,
-                                       id_var = id_var,
-                                       og_plink_ids = og_plink_ids,
-                                       rds_dir = rds_dir,
-                                       quiet = quiet)
+  pred_X <- add_predictors(obj = obj,
+                           add_predictor_ext = add_predictor_ext,
+                           id_var = id_var,
+                           og_ids = og_ids,
+                           rds_dir = rds_dir,
+                           quiet = quiet)
 
-    # save items to return
-    design$map <- pred_X$obj$map
-    design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
-    design$X_colnames <- pred_X$obj$colnames
-    design$X_rownames <- pred_X$obj$rownames
-    design$fam <- pred_X$obj$fam
-    design$y <- pred_X$obj$fam[,6]
+  # save items to return
+  design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
+  design$X_colnames <- pred_X$obj$colnames
+  design$X_rownames <- pred_X$obj$rownames
+  design$fam <- pred_X$obj$fam
+  design$map <- pred_X$obj$map
+  # design$y <- pred_X$obj$fam[,6] # TODO: fix this behavior
 
-    # again, clean up to save space
-    rm(step1); gc()
-
-  #} else {
-  #   pred_X <- step1
-  #   design$non_gen <- NULL
-  #
-  #   # again, clean up to save space
-  #   rm(step1); gc()
-  # }
-
+  # again, clean up to save space
+  rm(obj); gc()
 
   # subsetting -----------------------------------------------------------------
   subset_X <- subset_bigsnp(obj = pred_X$obj,
-                            handle_missing_phen = handle_missing_phen,
-                            complete_phen = design$complete_phen,
+                            handle_missing_outcome = handle_missing_outcome,
+                            outcome_present = design$outcome_present,
                             non_gen = design$non_gen,
                             ns_genotypes = design$ns_genotypes,
                             rds_dir = rds_dir,
@@ -185,17 +159,17 @@ create_design <- function(dat,
   rm(pred_X); gc()
   design$ns <- subset_X$ns
   design$std_X_colnames <- design$X_colnames[subset_X$ns]
-browser()
+
   # standardization ------------------------------------------------------------
   std_res <- standardize_bigsnp(obj = subset_X,
-                               new_file = new_file,
-                               rds_dir = rds_dir,
-                               non_gen = design$non_gen,
-                               complete_phen = design$complete_phen,
-                               id_var = id_var,
-                               outfile = logfile,
-                               quiet = quiet,
-                               overwrite = overwrite)
+                                new_file = new_file,
+                                rds_dir = rds_dir,
+                                non_gen = design$non_gen,
+                                outcome_present = design$outcome_present,
+                                id_var = id_var,
+                                outfile = logfile,
+                                quiet = quiet,
+                                overwrite = overwrite)
   rm(subset_X)
   gc()
 
@@ -208,22 +182,6 @@ browser()
   design$ns <- std_res$ns
   design$penalty_factor <- c(rep(0, length(design$non_gen)),
                              rep(1, design$std_X_p - length(design$non_gen)))
-
-
-
-  # cleanup -------------------------------------------------------------
-  # These steps remove intermediate rds/bk files created by the steps of the data management process
-  # list.files(rds_dir, pattern=paste0('^', new_file, '.*.rds'), full.names=TRUE) |>
-  #   file.remove()
-  # gc()
-  # list.files(rds_dir, pattern=paste0('^', new_file, '.*.bk'), full.names=TRUE) |>
-  #   file.remove()
-  # gc()
-  # list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
-  #   file.remove()
-  # gc()
-  # Note: calls to gc() are important!
-
 
   # return -------------------------------------------------------------
   saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))

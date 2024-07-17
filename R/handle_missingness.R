@@ -1,5 +1,5 @@
 #' A helper function to handle missing genotype values from PLINK data
-#' @param obj     a `bigSNP` object
+#' @param obj     a list with elements 'geno_plus_predictors' (a `big.matrix` object), fam (the fam file data), and ...
 #' @param na_phenotype_vals A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a `bigSNP` object, or the last column of a `.fam` file). Defaults to -9 (matching PLINK conventions).
 #' @param handle_missing_phen A string indicating how missing phenotypes should be handled:
 #'  * "prune" (default): observations with missing phenotype are removed
