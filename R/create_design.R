@@ -99,32 +99,32 @@ create_design <- function(dat,
     stop("The matrix supplied to add_outcome must have column names.")
   }
 
-  # add phenotype from external files & index -----------------------------
+  # index samples for subsetting ------------
+  # Note: this step uses the outcome (from external file) to determine which
+  #   samples/observations should be pruned out; observations with no feature
+  #   data will be removed from analysis
   sample_idx <- index_samples(obj = obj,
-                               rds_dir = rds_dir,
-                               indiv_id = og_ids,
-                               add_outcome = add_outcome,
-                               outcome_id = outcome_id,
-                               outcome_col = outcome_col,
-                               na_outcome_vals = na_outcome_vals,
-                               outfile = logfile,
-                               quiet = quiet)
-browser()
+                              rds_dir = rds_dir,
+                              indiv_id = og_ids,
+                              add_outcome = add_outcome,
+                              outcome_id = outcome_id,
+                              outcome_col = outcome_col,
+                              na_outcome_vals = na_outcome_vals,
+                              outfile = logfile,
+                              quiet = quiet)
+
   gc() # cleanup
 
   # save items to return
   design$std_X_rownames <- og_ids[sample_idx$outcome_present]
   design$outcome_present <- sample_idx$outcome_present # save indices for which samples had nonmissing outcome values
+  design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
 
-  # index samples/features to be removed from subset -----------------------
-  feature_idx <- index_features(obj = obj,
-                                na_outcome_vals = na_outcome_vals,
-                                handle_missing_outcome = handle_missing_outcome,
-                                outfile = logfile,
-                                quiet = quiet)
-
-  # save items to return
-  design$ns_genotypes <- feature_index$ns_genotypes
+  # index features for subsetting --------------------------------------------
+  design$ns_genotypes <- count_constant_features(fbm = obj$X,
+                                                 ind.row = sample_idx$outcome_idx,
+                                                 outfile = logfile,
+                                                 quiet = quiet)
 
   # add predictors from external files -----------------------------
   pred_X <- add_predictors(obj = obj,
@@ -144,6 +144,8 @@ browser()
 
   # again, clean up to save space
   rm(obj); gc()
+
+
 
   # subsetting -----------------------------------------------------------------
   subset_X <- subset_bigsnp(obj = pred_X$obj,

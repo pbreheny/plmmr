@@ -1,6 +1,7 @@
 .Rproj.user
 *.rds
 *.bk
+*.desc
 penncath_*.bed
 penncath_*.bim
 penncath_*.fam

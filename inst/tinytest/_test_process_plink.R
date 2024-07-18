@@ -35,10 +35,9 @@ if (interactive()){
     as.matrix()
   colnames(predictors) <- c("age", "tg")
 
-  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
-    as.data.frame() |>
-    as.matrix()
-  colnames(phen) <- c("FamID", "CAD") # CAD has no missing values in phen file
+  phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
+    mutate(FamID = as.character(FamID))
+  # note: CAD has no missing values in phen file
 
 
   X <- create_design(dat = penncath_lite,

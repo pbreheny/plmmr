@@ -13,14 +13,14 @@
 #' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
 #' @keywords internal
 #'
-add_predictors_to_bigsnp <- function(obj,
-                                     add_predictor_fam,
-                                     add_predictor_ext,
-                                     id_var,
-                                     geno_id,
-                                     og_plink_ids,
-                                     rds_dir,
-                                     quiet){
+add_predictors <- function(obj,
+                           add_predictor_fam,
+                           add_predictor_ext,
+                           id_var,
+                           geno_id,
+                           og_ids,
+                           rds_dir,
+                           quiet){
   browser()
   # genotypes need to have type 'double' from now on, in order to merge
   if (!quiet) cat("")

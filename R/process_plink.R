@@ -21,18 +21,20 @@
 #'                            To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
-#' @return Nothing is returned by this function, but three files are created in
-#' the location specified by `rds_dir`:
+#' @return The filepath to the '.rds' object created; see details for explanation.
 #'
-#' * 'prefix.rds': This is the `bigsnpr::bigSNP` object
-#' that holds the PLINK data along with meta-data. See details for explanation of what
-#' is included in this meta-data
+#' @details Three files are created in the location specified by `rds_dir`:
 #'
-#' * 'prefix.bk': Created by the call to `standardize_fbm()`, this is the
-#' backingfile that stores the numeric data of the standardized design matrix `std_X`
+#' * 'rds_prefix.rds': This is a list with three items:
+#'    (1) `X`: the filebacked `bigmemory::big.matrix` object pointing to the imputed genotype data.
+#'    This matrix has type 'double', which is important for downstream operations in `create_design()`
+#'    (2) `map`: a data.frame with the PLINK 'bim' data (i.e., the variant information)
+#'    (3) `fam`: a data.frame with the PLINK 'fam' data (i.e., the pedigree information)
 #'
-#' * 'rds_prefix.rds'" This will be a list with the `big.matrix` descriptor for the imputed data.
-#'  Several items of meta-data are included in the list as well, including the 'map' and 'fam' data frames
+#' * 'prefix.bk': This is the
+#' backingfile that stores the numeric data of the genotype matrix
+#'
+#' * 'rds_prefix.desc'" This is the description file, as needed by the
 #'
 #'  Note that `process_plink()` need only be run once for a given set of PLINK
 #'  files; in subsequent data analysis/scripts, `get_data()` will access the '.rds' file.
@@ -128,31 +130,48 @@ process_plink <- function(data_dir,
 
   bigsnpr::snp_save(step3) # save imputed data
 
-
   # format return object --------------------------------------------------------
-  ret <- step3
-  ret$genotypes <- NULL
-  ret$X <- fbm2bm(step3$genotypes) |> describe()
 
-  saveRDS(ret, file = file.path(rds_dir, paste0(rds_prefix, ".rds")))
+  X  <- bigmemory::deepcopy(
+    x = fbm2bm(step3$genotypes),
+    row = 1:nrow(step3$genotypes),
+    col = 1:ncol(step3$genotypes),
+    type = 'double', # this is why we're making a copy -- need type 'double' downstream
+    backingpath = rds_dir,
+    backingfile = paste0(rds_prefix, '.bk'),
+    descriptorfile = paste0(rds_prefix, '.desc')
+  )
+
+
+  ret <- list(X = describe(X),
+              map = step3$map,
+              fam = step3$fam)
+
+  rds_filename <- paste0(rds_prefix, ".rds")
+  saveRDS(ret, file = file.path(rds_dir, rds_filename))
 
   # cleanup --------------------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
   list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
+  list.files(rds_dir, pattern = paste0('^', data_prefix, ".rds"), full.names = TRUE) |>
+    file.remove()
+  list.files(rds_dir, pattern = paste0('^', data_prefix, ".bk"), full.names = TRUE) |>
+    file.remove()
+
   gc()
 
 
   if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as",
-                 file.path(rds_dir, paste0(rds_prefix, ".rds")))}
+                 file.path(rds_dir, rds_filename))}
 
   cat("\nprocess_plink() completed. \nProcessed files now saved as",
-      file.path(rds_dir, paste0(rds_prefix, ".rds")),
+      file.path(rds_dir, rds_filename),
       "at", pretty_time(),
       file = logfile, append = TRUE)
 
   # file.remove(tempfile()) # TODO: Not needed? Think about best way to handle logfile...
-  return(file.path(rds_dir, paste0(rds_prefix, ".rds")))
+  return(file.path(rds_dir, rds_filename))
 
 }
 

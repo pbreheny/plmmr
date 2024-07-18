@@ -58,6 +58,5 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile, overwrite,
                         ncores = bigstatsr::nb_cores())
 
   obj <- bigsnpr::snp_attach(paste0(file.path(rds_dir, data_prefix), ".rds"))
-
   return(obj)
 }
