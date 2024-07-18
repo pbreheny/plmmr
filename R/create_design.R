@@ -41,9 +41,9 @@ create_design <- function(dat,
 
   # initial setup --------------------------------------------------
   existing_files <- list.files(rds_dir)
-  if (any(grepl(paste0(new_file, ".bk"), existing_files, fixed = TRUE))) {
-    stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
-  }
+  # if (any(grepl(paste0(new_file, ".bk"), existing_files, fixed = TRUE))) {
+  #   stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
+  # }
 
   if(!is.null(logfile)){
     logfile = file.path(rds_dir, logfile)
@@ -72,12 +72,31 @@ create_design <- function(dat,
                                 pattern=paste0('^', new_file, '.*.bk'),
                                 full.names=TRUE)
     file.remove(bk_to_remove)
+
+    desc_to_remove <- list.files(rds_dir,
+                                 pattern=paste0('^', new_file, '.*.desc'),
+                                 full.names=TRUE)
+
+    file.remove(desc_to_remove)
     gc()
+
+    # check for left over intermediate files
+    list.files(rds_dir,
+               pattern=paste0('^unstd_design_matrix.*.'),
+               full.names=TRUE) |> file.remove()
+
   }
 
   # read in the processed data -------------------------------
   obj <- readRDS(dat)
   obj$X <- bigmemory::attach.big.matrix(obj$X)
+
+  # save these original dim names
+  design$X_colnames <- obj$colnames
+  design$X_rownames <- obj$rownames
+
+  # flag for data coming from plink
+  is_plink <- any(grepl('fam', names(obj)))
 
   # determine which IDs to use ---------------------------------
   if (id_var == "IID"){
@@ -127,7 +146,7 @@ create_design <- function(dat,
                                                  quiet = quiet)
 
   # add predictors from external files -----------------------------
-  pred_X <- add_predictors(obj = obj,
+  unstd_X <- add_predictors(obj = obj,
                            add_predictor_ext = add_predictor_ext,
                            id_var = id_var,
                            og_ids = og_ids,
@@ -135,22 +154,17 @@ create_design <- function(dat,
                            quiet = quiet)
 
   # save items to return
-  design$non_gen <- pred_X$non_gen # save indices for non-genomic covariates
-  design$X_colnames <- pred_X$obj$colnames
-  design$X_rownames <- pred_X$obj$rownames
-  design$fam <- pred_X$obj$fam
-  design$map <- pred_X$obj$map
-  # design$y <- pred_X$obj$fam[,6] # TODO: fix this behavior
+  design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
+  design$fam <- unstd_X$obj$fam
+  design$map <- unstd_X$obj$map
+  # design$y <- unstd_X$obj$fam[,6] # TODO: fix this behavior
 
   # again, clean up to save space
   rm(obj); gc()
 
-
-
   # subsetting -----------------------------------------------------------------
-  subset_X <- subset_bigsnp(obj = pred_X$obj,
-                            handle_missing_outcome = handle_missing_outcome,
-                            outcome_present = design$outcome_present,
+  subset_res <- subset_bigsnp(X = unstd_X$design_matrix,
+                            complete_outcome = design$outcome_idx,
                             non_gen = design$non_gen,
                             ns_genotypes = design$ns_genotypes,
                             rds_dir = rds_dir,
@@ -158,21 +172,18 @@ create_design <- function(dat,
                             outfile = logfile,
                             quiet = quiet)
   # clean up
-  rm(pred_X); gc()
-  design$ns <- subset_X$ns
-  design$std_X_colnames <- design$X_colnames[subset_X$ns]
+  design$ns <- subset_res$ns
+  design$std_X_colnames <- unstd_X$colnames[subset_res$ns]
+  rm(unstd_X); gc()
 
   # standardization ------------------------------------------------------------
-  std_res <- standardize_bigsnp(obj = subset_X,
+  std_res <- standardize_bigsnp(X = subset_res$subset_X,
                                 new_file = new_file,
                                 rds_dir = rds_dir,
-                                non_gen = design$non_gen,
-                                outcome_present = design$outcome_present,
-                                id_var = id_var,
                                 outfile = logfile,
                                 quiet = quiet,
                                 overwrite = overwrite)
-  rm(subset_X)
+  rm(subset_res)
   gc()
 
   # add meta data -------------------------------------------------------------

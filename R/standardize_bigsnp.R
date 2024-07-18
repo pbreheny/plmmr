@@ -1,14 +1,10 @@
 #' A helper function to standardize a `bigSNP`
 #'
-#' @param obj           A list that includes:
+#' @param X           A list that includes:
 #'                       (1) subset_X: a `big.matrix` object that has been subset &/or had any additional predictors appended as columns
 #'                       (2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X
 #' @param new_file        The new_file (as a character string) of the bed/fam data files (e.g., `new_file = 'mydata'`)
 #' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param non_gen       An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
-#' Note: this is typically passed from the result of `add_predictors()`
-#' @param complete_phen Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
-#' @param id_var        String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
 #' @param outfile       Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet         Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
 #' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/new_file, should these be overwritten?
@@ -17,21 +13,19 @@
 #' List also includes several other indices/meta-data on the standardized matrix
 #' @keywords internal
 #'
-standardize_bigsnp <- function(obj, new_file, rds_dir, non_gen, complete_phen, id_var,
+standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
                                outfile, quiet, overwrite){
   browser()
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
-  # convert FBM pointer into a big.matrix pointer
-  std_X <- obj$subset_X |> fbm2bm()
 
   # centering & scaling
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call("big_std",
-                   std_X@address,
+                   X@address,
                    as.integer(bigstatsr::nb_cores()),
                    PACKAGE = "plmmr")
-
+# TODO: pick up here -- what to do about file names here... the same .bk is being modified..
   # add timestamp to log -- the standardization step could take a while
   if (!quiet) {cat("Standardization completed at", pretty_time())}
 
@@ -46,8 +40,7 @@ standardize_bigsnp <- function(obj, new_file, rds_dir, non_gen, complete_phen, i
     std_X_n = nrow(std_X),
     std_X_p = ncol(std_X),
     std_X_center = std_res$std_X_center,
-    std_X_scale = std_res$std_X_scale,
-    ns = obj$ns
+    std_X_scale = std_res$std_X_scale
   )
 
 

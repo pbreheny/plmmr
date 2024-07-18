@@ -1,13 +1,8 @@
 #' A helper function to subset `bigSNP` objects
 #'
-#' @param obj                   A `bigSNP` object
+#' @param X                   A filebacked `big.matrix` with the to-be-standardized design matrix
 #' @param new_file                Optional user-specified new_file for the to-be-created .rds/.bk files.
-#' @param handle_missing_phen   A string indicating how missing phenotypes should be handled:
-#'  * "prune" (default): observations with missing phenotype are removed
-#'  * "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
-#'  * "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-#'  * "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-#' @param complete_phen         Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
+#' @param complete_outcome         Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param non_gen               an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
 #'                              **Note**: this is typically passed from the result of `add_predictors()`
 #' @param ns_genotypes          Numeric vector with the indices of the non-singular genotype (feature) columns
@@ -23,57 +18,32 @@
 #' The 'ns' index plays an important role in `plmm_format()` and `untransform()` (both helper functions in model fitting)
 #' @keywords internal
 #'
-subset_bigsnp <- function(obj, handle_missing_phen, complete_phen, non_gen,
+subset_bigsnp <- function(X, complete_outcome, non_gen,
                           ns_genotypes, rds_dir, new_file, outfile, quiet){
-  browser()
+
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
-
-  bk_filename <- paste0(file.path(rds_dir, new_file))
   if (!quiet){
     cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n")
   }
   cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
       file = outfile, append = TRUE)
 
-  if (handle_missing_phen == "prune"){
-    if ("geno_plus_predictors" %in% names(obj)) {
-      ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
-      subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
-                                          ind.row = complete_phen, # filters out rows with missing phenotypes
-                                          ind.col = ns,
-                                          type = "double", # this is key...
-                                          backingfile = bk_filename)
-    } else {
-      subset_X <- bigstatsr::big_copy(obj$genotypes,
-                                          ind.row = complete_phen, # filters out rows with missing phenotypes
-                                          ind.col = ns,
-                                          type = "double", # this is key...
-                                          backingfile = bk_filename)
+    if (length(non_gen) > 0) {
+      # TODO: adjust this option for more general case -- the issue here is not PLINK
+      #   format, just the adjustment of the ns indices due to the additional covariates
+      ns <- c(non_gen, ns_genotypes + length(non_gen))
+      # Note: add_predictors() already scanned for constant features among the added predictors
     }
 
-  } else {
-    if ("geno_plus_predictors" %in% names(obj)) {
-      ns_genotypes <- count_constant_features(fbm = obj$genotypes,
-                                              outfile = outfile,
-                                              quiet = quiet)
-      ns <- c(non_gen, ns_genotypes + length(non_gen)) # Note: add_predictors() already scanned for constant features among the added predictors
-      subset_X <- bigstatsr::big_copy(obj$geno_plus_predictors,
-                                          ind.col = ns,
-                                          type = "double", # this is key...
-                                          backingfile = bk_filename)
-    } else {
-      ns <- count_constant_features(fbm = obj$genotypes,
-                                    outfile = outfile,
-                                    quiet = quiet)
-      subset_X <- bigstatsr::big_copy(obj$genotypes,
-                                          ind.col = ns,
-                                          type = "double", # this is key...
-                                          backingfile = bk_filename)
-    }
-
-  }
+  subset_X <- bigmemory::deepcopy(x = X,
+                                  row = complete_outcome, # filters out rows with missing phenotypes
+                                  col = ns,
+                                  type = "double", # this is key...
+                                  backingfile = paste0(new_file, ".bk"),
+                                  backingpath = rds_dir,
+                                  descriptorfile = paste0(new_file, '.desc'))
 
   # save ns indices as part of our object
   return(list(subset_X = subset_X, ns = ns))

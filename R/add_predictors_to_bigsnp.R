@@ -14,55 +14,26 @@
 #' @keywords internal
 #'
 add_predictors <- function(obj,
-                           add_predictor_fam,
                            add_predictor_ext,
                            id_var,
-                           geno_id,
                            og_ids,
                            rds_dir,
+                           rds_file,
                            quiet){
-  browser()
-  # genotypes need to have type 'double' from now on, in order to merge
-  if (!quiet) cat("")
-  geno_bm <- obj$genotypes |> fbm2bm()
+
 
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
   non_gen <- NULL
-  ## covariates from .fam file ---------------------------
-  if (!is.null(add_predictor_fam)) {
-    if (!quiet) {
-      cat("Adding predictors from .fam file.\n")
-    }
-    if (add_predictor_fam == "sex"){
 
-      # add space for extra column
-      obj$geno_plus_predictors <- bigstatsr::FBM(type = 'double',
-                                                 nrow = nrow(obj$fam),
-                                                 ncol = obj$genotypes$ncol + 1)
-      # fill in new matrix
-      obj$geno_plus_predictors <- big_cbind(A = as.matrix(obj$fam[add_predictor_fam]),
-                                            B = geno_bm,
-                                            C = obj$geno_plus_predictors,
-                                            quiet = quiet)
-
-      # adjust colnames
-      obj$colnames <- c(add_predictor_fam, obj$colnames)
-
-      # save non_gen: an index marking the first column as non-genomic predictor
-      non_gen <- 1
-
-    }
-  }
-
-  ## covariates from external file   ----------------------------------
   if (!is.null(add_predictor_ext)) {
     if (!quiet) {
       cat("Adding predictors from external data.\n")
     }
+    # vector case ----------------------------------------------------------------
     if (is.vector(add_predictor_ext)) {
-      ### vector case -------------------------------
+
       # make sure types match
       if (!is.numeric(add_predictor_ext)) {
         stop("The vector supplied to the 'add_predictor_ext' argument must be numeric.\n")
@@ -104,7 +75,7 @@ add_predictors <- function(obj,
       obj$colnames <- c(deparse(substitute(add_predictor_ext)), obj$colnames)
 
     } else if (is.matrix(add_predictor_ext) | is.data.frame(add_predictor_ext)) {
-      ### matrix case --------------------------------
+      # matrix case --------------------------------------------------------
       if (is.data.frame(add_predictor_ext)) {
         add_predictor_ext <- as.matrix(add_predictor_ext)
       }
@@ -120,7 +91,7 @@ add_predictors <- function(obj,
 
       # check for alignment
       if (is.null(rownames(add_predictor_ext)) |
-          length(intersect(og_plink_ids, rownames(add_predictor_ext))) == 0) {
+          length(intersect(og_ids, rownames(add_predictor_ext))) == 0) {
         stop("\nYou supplied an argument to 'add_predictor_ext', but the row names of this
          matrix either (a) do not exist or (b) do not align with either of the ID columns in the PLINK fam file.
          \nPlease create or align the names of this matrix - alignment is essential for accurate analysis.")
@@ -130,32 +101,35 @@ add_predictors <- function(obj,
       add_predictor_ext <- align_famfile_ids(id_var = id_var,
                                              quiet = quiet,
                                              add_predictor = add_predictor_ext,
-                                             og_plink_ids = og_plink_ids)
+                                             og_ids = og_ids)
 
       # save non_gen: an index marking added columns as non-genomic predictors
       non_gen <- 1:ncol(add_predictor_ext)
 
-      gc()
-      obj$geno_plus_predictors <- bigstatsr::FBM(type = "double",
-                                                 nrow = nrow(obj$fam),
-                                                 ncol = obj$genotypes$ncol + length(non_gen)) |> fbm2bm()
 
-      gc()
-      obj$geno_plus_predictors <- big_cbind(A = add_predictor_ext,
-                                            B = geno_bm,
-                                            C = obj$geno_plus_predictors,
-                                            quiet = quiet)
+      design_matrix <- big.matrix(nrow = nrow(obj$fam),
+                                  ncol = ncol(obj$X) + length(non_gen),
+                                  type = 'double',
+                                  backingfile = "unstd_design_matrix.bk",
+                                  backingpath = rds_dir,
+                                  descriptorfile = "unstd_design_matrix.desc")
 
 
+      design_matrix <- big_cbind(A = add_predictor_ext,
+                                 B = obj$X,
+                                 C = design_matrix,
+                                 quiet = quiet)
+
+      ret <- list(design_matrix = design_matrix, non_gen = non_gen)
       # adjust colnames if applicable
       if (!is.null(colnames(add_predictor_ext))){
-        obj$colnames <- c(colnames(add_predictor_ext), obj$colnames)
+        ret$colnames <- c(colnames(add_predictor_ext), obj$colnames)
       }
 
     }
 
 
-    return(list(obj = obj, non_gen = non_gen))
+    return(ret)
 
   }
 }

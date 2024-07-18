@@ -7,13 +7,13 @@
 #'
 #' @return An object of the same type as add_predictor
 #' @keywords internal
-align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids) {
+align_famfile_ids <- function(id_var, quiet, add_predictor, og_ids) {
 
-  og_plink_ids <- data.table::as.data.table(og_plink_ids)
+  og_ids <- data.table::as.data.table(og_ids)
 
   # check alignment between the geno/pheno data we've already merged in step 1
   #   and the supplied predictor file.
- if (length(og_plink_ids) > nrow(add_predictor)) {
+ if (length(og_ids) > nrow(add_predictor)) {
     stop("There are more rows (samples) in the supplied PLINK data than there are rows in the 'add_predictor_ext' data.
          For now, this is not supported by plmmr. You need to subset your PLINK data to represent
          only the rows represented in your 'add_predictor_ext' file.
@@ -26,9 +26,9 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids) {
       cat("\nAligning external data with the PLINK .fam data by FID\n")
     }
     add_predictor <- data.table::data.table(FID = rownames(add_predictor), add_predictor)
-    new_add_predictor <- data.table::merge.data.table(x = og_plink_ids,
+    new_add_predictor <- data.table::merge.data.table(x = og_ids,
                                                       y = add_predictor,
-                                                      by.x = 'og_plink_ids',
+                                                      by.x = 'og_ids',
                                                       by.y = 'FID',
                                                       all = FALSE,
                                                       sort = FALSE)
@@ -37,9 +37,9 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids) {
       cat("\nAligning external data with the PLINK .fam data by IID\n")
     }
     add_predictor <- data.table::data.table(IID = rownames(add_predictor), add_predictor)
-    new_add_predictor <- data.table::merge.data.table(x = og_plink_ids,
+    new_add_predictor <- data.table::merge.data.table(x = og_ids,
                                                       y = add_predictor,
-                                                      by.x = 'og_plink_ids',
+                                                      by.x = 'og_ids',
                                                       by.y = 'IID',
                                                       all = FALSE, # this will remove rows of add_predictor that don't correspond to rows in PLINK data
                                                       sort = FALSE)
@@ -47,10 +47,9 @@ align_famfile_ids <- function(id_var, quiet, add_predictor, og_plink_ids) {
 
   # for downstream calls, output *must* be a numeric matrix
   new_add_predictor_mat <- as.matrix(new_add_predictor[,-1])
-  rownames(new_add_predictor_mat) <- new_add_predictor$og_plink_ids |> as.character()
+  rownames(new_add_predictor_mat) <- new_add_predictor$og_ids |> as.character()
   return(new_add_predictor_mat)
 }
-
 
 
 #' A helper function to support `process_delim()`
