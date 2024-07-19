@@ -135,9 +135,9 @@ create_design <- function(dat,
   gc() # cleanup
 
   # save items to return
-  design$std_X_rownames <- og_ids[sample_idx$outcome_present]
-  design$outcome_present <- sample_idx$outcome_present # save indices for which samples had nonmissing outcome values
   design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
+  design$y <-  sample_idx$complete_samples$CAD
+  design$std_X_rownames <- sample_idx$complete_samples$ID
 
   # index features for subsetting --------------------------------------------
   design$ns_genotypes <- count_constant_features(fbm = obj$X,
@@ -155,9 +155,11 @@ create_design <- function(dat,
 
   # save items to return
   design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
-  design$fam <- unstd_X$obj$fam
-  design$map <- unstd_X$obj$map
-  # design$y <- unstd_X$obj$fam[,6] # TODO: fix this behavior
+
+  if (is_plink){
+    design$fam <- unstd_X$obj$fam
+    design$map <- unstd_X$obj$map
+  }
 
   # again, clean up to save space
   rm(obj); gc()
@@ -192,9 +194,13 @@ create_design <- function(dat,
   design$std_X_p <- std_res$std_X_p
   design$std_X_center <- std_res$std_X_center
   design$std_X_scale <- std_res$std_X_scale
-  design$ns <- std_res$ns
   design$penalty_factor <- c(rep(0, length(design$non_gen)),
                              rep(1, design$std_X_p - length(design$non_gen)))
+
+  # cleanup -------------------------------------------------------------------
+  list.files(rds_dir,
+             pattern=paste0('^unstd_design.*'),
+             full.names=TRUE) |> file.remove()
 
   # return -------------------------------------------------------------
   saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))

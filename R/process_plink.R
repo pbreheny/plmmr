@@ -142,10 +142,13 @@ process_plink <- function(data_dir,
     descriptorfile = paste0(rds_prefix, '.desc')
   )
 
-
   ret <- list(X = describe(X),
               map = step3$map,
-              fam = step3$fam)
+              fam = step3$fam,
+              colnames = step3$colnames,
+              rownames = step3$rownames,
+              n = step3$n,
+              p = step3$p)
 
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))

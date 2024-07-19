@@ -107,13 +107,12 @@ add_predictors <- function(obj,
       non_gen <- 1:ncol(add_predictor_ext)
 
 
-      design_matrix <- big.matrix(nrow = nrow(obj$fam),
+      design_matrix <- big.matrix(nrow = nrow(obj$fam), # TODO: think about whether this should be nrow(obj$X)...
                                   ncol = ncol(obj$X) + length(non_gen),
                                   type = 'double',
                                   backingfile = "unstd_design_matrix.bk",
                                   backingpath = rds_dir,
                                   descriptorfile = "unstd_design_matrix.desc")
-
 
       design_matrix <- big_cbind(A = add_predictor_ext,
                                  B = obj$X,

@@ -15,7 +15,7 @@
 #'
 standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
                                outfile, quiet, overwrite){
-  browser()
+
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
 
@@ -25,8 +25,8 @@ standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, 
                    X@address,
                    as.integer(bigstatsr::nb_cores()),
                    PACKAGE = "plmmr")
+X@address <- std_res$std_X # saves standardized .bk
 # TODO: pick up here -- what to do about file names here... the same .bk is being modified..
-  # add timestamp to log -- the standardization step could take a while
   if (!quiet) {cat("Standardization completed at", pretty_time())}
 
   cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
@@ -36,9 +36,9 @@ standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, 
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
   ret <- list(
-    std_X = bigmemory::describe(std_X),
-    std_X_n = nrow(std_X),
-    std_X_p = ncol(std_X),
+    std_X = bigmemory::describe(X),
+    std_X_n = nrow(X),
+    std_X_p = ncol(X),
     std_X_center = std_res$std_X_center,
     std_X_scale = std_res$std_X_scale
   )
