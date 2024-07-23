@@ -1,14 +1,14 @@
 Package: plmmr
 Title: Penalized Linear Mixed Models For Correlated Data
-Version: 3.1.1
+Version: 3.1.1.1
 Date: 2024-07-08
 Authors@R: c(
+    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
+           comment = c(ORCID = "0009-0005-2524-4751")),
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),
     person("Patrick J.", "Breheny", , "patrick-breheny@uiowa.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0650-1119")),
-    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
-           comment = c(ORCID = "0009-0005-2524-4751")),
     person("Yujing", "Lu", role = "aut")
   )
 Description: Fits penalized linear mixed models that correct for

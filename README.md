@@ -24,13 +24,11 @@ For a description of the motivation of the functions in this package (along with
 
 The branches of this repo are organized in the following way: 
 
-  - `master` is the main branch with all the latest updates.
+  - `master` is the main (or 'head') branch.
 
-  - `prep_for_script` is where I've been working to improve `plmmr` functionality for writing scripts (e.g., adding log files, etc.)
+  - `gwas_scale` is where I've been working to improve `plmmr` functionality for analyzing genome-wide scale data. This will bring some notable user-facing changes; stay tuned for more updates. 
     
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
-  
-  - `estimate_eta` is an **archived** branch where we worked through an alternative approach for estimating $\eta$. We're keeping this around for reference as we are writing. 
   
   - `sign_flip` is an **archived** branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.
 
