@@ -1,24 +1,18 @@
 #' A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 #'
-#' @param dat                     Filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
+#' @param dat_file                Filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
 #' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
+#' @param feature_id                  This argument is the ID for the feature data. Two options here:
+#'                                  - for PLINK data: a string specifying an ID column of the PLINK `.fam` file. Options are "IID" (default) and "FID"
+#'                                  - for all other data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with `process_delim()`)
 #' @param add_outcome             A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
 #' @param outcome_id              A string specifying the name of the ID column in 'add_outcome'
 #' @param outcome_col             A string specifying the name of the phenotype column in 'add_outcome'
-#' @param id_var                  This argument is the ID:
-#'                                  - for PLINK data: a string specifying an ID column of the PLINK `.fam` file. Options are "IID" (default) and "FID"
-#'                                  - for all other data: a character vector of unique identifiers (IDs) for each row of the data (i.e., the data processed with `process_delim()`)
 #' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
-#' @param handle_missing_outcome  A string indicating how missing phenotypes should be handled:
-#'                                  * "prune" (default): observations with missing phenotype are removed
-#'                                  Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-#'                                  or (2) prune missing values
-#' @param add_predictor_ext       Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-#'                                This argument takes one of two kinds of arguments:
-#'                                 - a **named** numeric vector, where the names align with the sample IDs in the PLINK files. **No NA values** can be in this vector.
-#'                                  The names will be used to subset and align this external covariate with the supplied PLINK data. **No NA values** can be in this matrix.
-#'                                 - a numeric matrix whose row names align with the sample IDs in the PLINK files.
+#' @param add_predictor       Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+#'                                This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
+#' @param predictor_id            A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
 #'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
 #' @param logfile                 Optional: name of the '.log' file to be written
@@ -29,21 +23,49 @@
 create_design <- function(dat,
                           rds_dir,
                           new_file,
+                          feature_id,
                           add_outcome,
                           outcome_id,
                           outcome_col,
-                          id_var,
                           na_outcome_vals = c(-9, NA_integer_),
-                          add_predictor_ext = NULL,
+                          add_predictor = NULL,
+                          predictor_id = NULL,
                           logfile = NULL,
                           overwrite = FALSE,
                           quiet = FALSE){
 
+  # check for input errors ----------------------------------------
+
+  if (any(add_outcome[,outcome_col] %in% na_outcome_vals)) {
+    stop('It appears that you have some missing values in the outcome data.
+         Please remove these samples; missing values are not permitted in the design.')
+  }
+
+  if (is.null(colnames(add_outcome))) {
+    stop('The columns of "add_outcome" must be named.')
+  }
+
+  # additional checks for case where add_predictor is specified
+  if (!is.null(add_predictor)) {
+
+    if (is.null(colnames(add_predictor))){
+      stop('The columns of "add_predictor" must be named.')
+    }
+
+    if (any(is.na(add_predictor[,]))) {
+      stop('It appears that there are missing values in the predictor data.
+         Please remove these samples; missing values are not permitted in the design.')
+    }
+
+    if (!identical(add_outcome[,outcome_id], add_predictor[,predictor_id])) {
+      stop("Something is off in the supplied outcome and/or predictor data.
+         Make sure the indicated ID columns are character type, represent the same samples, and have the same order.")
+    }
+
+  }
+
   # initial setup --------------------------------------------------
   existing_files <- list.files(rds_dir)
-  # if (any(grepl(paste0(new_file, ".bk"), existing_files, fixed = TRUE))) {
-  #   stop("The new_file you specified already exists in rds_dir. Please choose a different file name.\n")
-  # }
 
   if(!is.null(logfile)){
     logfile = file.path(rds_dir, logfile)
@@ -56,39 +78,25 @@ create_design <- function(dat,
 
   # check for files to be overwritten---------------------------------
   if (overwrite){
-    # double check how much this will erase
-    rds_to_remove <-  list.files(rds_dir,
-                                 pattern=paste0('^', new_file, '.*.rds'),
-                                 full.names=TRUE)
-    if (length(rds_to_remove) > 1) {
-      stop("You set overwrite=TRUE, but this looks like it will overwrite multiiple .rds files
-      that have the 'new_file' pattern. To save you from overwriting anything important, I will not erase anything yet.
-      Please move any .rds files with this file name pattern to another directory.")
+    # remove files with name pattern
+    to_remove <- paste0(new_file, c('.bk', '.rds', '.log', '.desc'))
+    if (any(file.exists(to_remove))) {
+      file.remove(to_remove)
     }
-    file.remove(rds_to_remove)
-    gc()
 
-    bk_to_remove <-  list.files(rds_dir,
-                                pattern=paste0('^', new_file, '.*.bk'),
-                                full.names=TRUE)
-    file.remove(bk_to_remove)
-
-    desc_to_remove <- list.files(rds_dir,
-                                 pattern=paste0('^', new_file, '.*.desc'),
-                                 full.names=TRUE)
-
-    file.remove(desc_to_remove)
-    gc()
 
     # check for left over intermediate files
-    list.files(rds_dir,
-               pattern=paste0('^unstd_design_matrix.*.'),
-               full.names=TRUE) |> file.remove()
+    if (file.exists('unstd_design_matrix.bk')) {
+      file.remove(c('unstd_design_matrix.bk',
+                    'unstd_design_matrix.desc',
+                    'unstd_design_matrix.rds'))
+    }
+
 
   }
 
   # read in the processed data -------------------------------
-  obj <- readRDS(dat)
+  obj <- readRDS(dat_file)
   obj$X <- bigmemory::attach.big.matrix(obj$X)
 
   # save these original dim names
@@ -99,19 +107,19 @@ create_design <- function(dat,
   is_plink <- any(grepl('fam', names(obj)))
 
   # determine which IDs to use ---------------------------------
-  if (id_var == "IID"){
+  if (feature_id == "IID"){
     indiv_id <- "sample.ID"
     og_ids <- obj$fam[,indiv_id] |> as.character()
 
-  } else if (id_var == "FID"){
+  } else if (feature_id == "FID"){
     indiv_id <- "family.ID"
     og_ids <- obj$fam[,indiv_id] |> as.character()
 
-  } else if (is.character(id_var) & length(id_var) == nrow(obj$X)) {
-    og_ids <- id_var
+  } else if (is.character(feature_id) & length(feature_id) == nrow(obj$X)) {
+    og_ids <- feature_id
 
   } else {
-    stop("The id_var argument is either misspecified or missing (see documentation for options).")
+    stop("The feature_id argument is either misspecified or missing (see documentation for options).")
   }
 
   if (is.null(colnames(add_outcome))) {
@@ -136,8 +144,37 @@ create_design <- function(dat,
 
   # save items to return
   design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
-  design$y <-  sample_idx$complete_samples$CAD
+  design$y <-  sample_idx$complete_samples[,..outcome_col]
   design$std_X_rownames <- sample_idx$complete_samples$ID
+
+  if (!is.null(add_predictor)) {
+    if (is.null(predictor_id)) stop('If add_predictor is supplied, the predictor_id argument must also be supplied')
+
+    # align IDs between feature data and external data -------------------------
+    aligned_add_predictor <- align_ids(feature_id = predictor_id,
+                                       quiet = quiet,
+                                       add_predictor = add_predictor,
+                                       og_ids = sample_idx$complete_samples[,'ID'])
+    browser()
+    # add predictors from external files --------------------------------------
+    unstd_X <- add_predictors(obj = obj,
+                              add_predictor = aligned_add_predictor,
+                              feature_id = feature_id,
+                              rds_dir = rds_dir,
+                              quiet = quiet)
+
+    # save items to return
+    design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
+
+    if (is_plink){
+      design$fam <- unstd_X$obj$fam
+      design$map <- unstd_X$obj$map
+    }
+
+    # again, clean up to save space
+    rm(obj); gc()
+
+  }
 
   # index features for subsetting --------------------------------------------
   design$ns_genotypes <- count_constant_features(fbm = obj$X,
@@ -145,34 +182,15 @@ create_design <- function(dat,
                                                  outfile = logfile,
                                                  quiet = quiet)
 
-  # add predictors from external files -----------------------------
-  unstd_X <- add_predictors(obj = obj,
-                           add_predictor_ext = add_predictor_ext,
-                           id_var = id_var,
-                           og_ids = og_ids,
-                           rds_dir = rds_dir,
-                           quiet = quiet)
-
-  # save items to return
-  design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
-
-  if (is_plink){
-    design$fam <- unstd_X$obj$fam
-    design$map <- unstd_X$obj$map
-  }
-
-  # again, clean up to save space
-  rm(obj); gc()
-
   # subsetting -----------------------------------------------------------------
   subset_res <- subset_bigsnp(X = unstd_X$design_matrix,
-                            complete_outcome = design$outcome_idx,
-                            non_gen = design$non_gen,
-                            ns_genotypes = design$ns_genotypes,
-                            rds_dir = rds_dir,
-                            new_file = new_file,
-                            outfile = logfile,
-                            quiet = quiet)
+                              complete_outcome = design$outcome_idx,
+                              non_gen = design$non_gen,
+                              ns_genotypes = design$ns_genotypes,
+                              rds_dir = rds_dir,
+                              new_file = new_file,
+                              outfile = logfile,
+                              quiet = quiet)
   # clean up
   design$ns <- subset_res$ns
   design$std_X_colnames <- unstd_X$colnames[subset_res$ns]

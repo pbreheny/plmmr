@@ -15,7 +15,7 @@ create_design(
   pheno_id = NULL,
   pheno_name = NULL,
   add_predictor_fam = NULL,
-  add_predictor_ext = NULL,
+  add_predictor = NULL,
   id_var = "IID",
   outfile = NULL,
   overwrite = FALSE,
@@ -46,7 +46,7 @@ or (2) prune missing values}
 
 \item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
 
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+\item{add_predictor}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 This argument takes one of two kinds of arguments:
 - a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files. \strong{No NA values} can be in this vector.
 The names will be used to subset and align this external covariate with the supplied PLINK data. \strong{No NA values} can be in this matrix.

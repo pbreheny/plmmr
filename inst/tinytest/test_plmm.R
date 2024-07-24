@@ -203,7 +203,7 @@ if (interactive()) {
                      add_phen = phen,
                      pheno_id = "FamID",
                      pheno_name = "CAD",
-                     add_predictor_ext = predictors,
+                     add_predictor = predictors,
                      id_var = "FID",
                      overwrite = TRUE,
                      outfile = "design")

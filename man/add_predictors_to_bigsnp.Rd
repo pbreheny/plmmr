@@ -7,7 +7,7 @@
 add_predictors_to_bigsnp(
   obj,
   add_predictor_fam,
-  add_predictor_ext,
+  add_predictor,
   id_var,
   geno_id,
   og_plink_ids,
@@ -20,7 +20,7 @@ add_predictors_to_bigsnp(
 
 \item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
 
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).}
+\item{add_predictor}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 

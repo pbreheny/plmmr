@@ -46,7 +46,7 @@ if (interactive()){
                      add_outcome = phen,
                      outcome_id = "FamID",
                      outcome_col = "CAD",
-                     add_predictor_ext = predictors,
+                     add_predictor = predictors,
                      id_var = "FID",
                      overwrite = TRUE,
                      logfile = "design")
@@ -98,7 +98,7 @@ X <- create_design(dat = penncath_lite,
                    add_outcome = phen,
                    outcome_id = "FamID",
                    outcome_col = "CAD",
-                   add_predictor_ext = predictors,
+                   add_predictor = predictors,
                    id_var = "FID",
                    overwrite = TRUE,
                    logfile = "design")
@@ -134,11 +134,8 @@ list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> f
 penncath_pheno <- penncath_pheno[sample(1:nrow(penncath_pheno)),]
 
 predictors <- penncath_pheno |>
-  dplyr::select(age, tg) |>
-  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
-  as.matrix()
-colnames(predictors) <- c("age", "tg")
-rownames(predictors) <- penncath_pheno$FamID
+  dplyr::select(FamID, age, tg) |>
+  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg))
 
 # use 'hdl' for outcome - missing in some observations
 summary(penncath_pheno$hdl)
@@ -152,7 +149,8 @@ X <- create_design(dat = penncath_lite,
                    outcome_id = "FamID",
                    outcome_col = "hdl",
                    na_outcome_vals = c(NA_integer_),
-                   add_predictor_ext = predictors,
+                   add_predictor = predictors,
+                   predictor_id = 'FamID',
                    id_var = "FID",
                    overwrite = TRUE,
                    logfile = NULL)
@@ -204,7 +202,7 @@ X <- create_design(dat = 'inst/extdata/imputed_data_n1000.rds',
                    add_outcome = phen,
                    outcome_id = "FamID",
                    outcome_col = "CAD",
-                   add_predictor_ext = predictors,
+                   add_predictor = predictors,
                    id_var = "FID",
                    overwrite = TRUE,
                    logfile = "design_penncath_n1000")

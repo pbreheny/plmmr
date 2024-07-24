@@ -78,7 +78,7 @@ pen_design <- create_design(dat = plink_data,
                             prefix = "penncath_lite",
                             is_bigsnp = TRUE,
                             id_var = "FID",
-                            add_predictor_ext = extdata)
+                            add_predictor = extdata)
                             
 
 # we can check to see that our data have been standardized 
@@ -245,7 +245,7 @@ new_plink_data <- process_plink(data_dir = temp_dir2,
               id_var = "FID", # this is KEY!
               outfile = file.path(temp_dir2,"process_penncath_addvar"),
               impute_method = "mode",
-              add_predictor_ext = extdata)
+              add_predictor = extdata)
 
 # check this out: 
 pen2 <- readRDS(new_plink_data)
