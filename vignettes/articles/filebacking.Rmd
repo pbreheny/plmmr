@@ -122,23 +122,6 @@ b2 <- fit$beta_vals
 tinytest::expect_equivalent(b1, b2, 0.01) 
 ```
 
-The format is similar for data that came from `process_delim` -- however, in the case of our `colon2` data, we need to supply our own kinship matrix. The data are not genomic, so estimating a genomic relatedness matrix doesn't make sense. For our purposes, we will make up a 'dummy' K matrix.
-
-```{r}
-# pretend genomic data from 500 SNPs
-genomic_dat <- matrix(sample(0:2, 62*500, replace = TRUE), nrow = 62, ncol = 500)
-K <- relatedness_mat(genomic_dat)
-pretend_outcome <- rnorm(62) # notice: this is a completely made-up outcome
-# depending on the seed used for this rnorm() call, results may look aberrant/'weird'
-colon2_fit <- plmm(X = file.path(temp_dir, "std_colon2"),
-                   y = pretend_outcome,
-                   K = K,
-                   returnX = FALSE,
-                   trace = TRUE)
-
-plot(colon2_fit)
-```
-
 ## Step 3: Plot/summarize results
 
 To summarize a single model (no CV), we can look at a plot of the coefficient paths:
@@ -159,7 +142,7 @@ summary(fb_fit, idx = 50)
 In most applications, we will want to fit a model using cross validation in order to choose an appropriate value of $\lambda$, the tuning parameter for our penalized model.
 
 ```{r}
-cv_fb_fit <- cv_plmm(X = plink_data,
+cv_fb_fit <- cv_plmm(design = pen_design,
                      type = 'blup',
                      returnX = FALSE,
                      nfolds = 3, # for sake of testing, I made this small. 
@@ -167,7 +150,7 @@ cv_fb_fit <- cv_plmm(X = plink_data,
                      # cross validation - hence, the default is nfolds = 5
                      returnBiasDetails = TRUE,
                      trace = TRUE,
-                     save_rds = file.path(plink_data,
+                     save_rds = file.path(bigmemory::dir.name(bigmemory::attach.big.matrix(pen_design_rds$std_X)),
                                           "cv"), # save_results to save folder as data 
                      save_fold_res = TRUE, # saves loss and predictions in each fold
                      compact_save = TRUE, # saves results in separate files
@@ -178,16 +161,18 @@ cv_fb_fit <- cv_plmm(X = plink_data,
 Fitting an equivalent model using the `penncath_lite` data that uses RAM could look like this: 
 
 ```{r, eval=FALSE}
-cv_fit <- cv_plmm(X = plink_data,
+cv_fit <- cv_plmm(design = pen_design_rds,
                   type = 'blup',
                   nfolds = 3,
                   returnBiasDetails = TRUE,
                   trace = TRUE,
                   seed = 123)
 
-print(summary(cv_fit))
-plot(cv_fit)
+# the tests below confirm that results are the same for the filebacked and in-memory CV fits
 tinytest::expect_equivalent(cv_fb_fit$cve, cv_fit$cve, tolerance = 0.01)
+tinytest::expect_equivalent(cv_fb_fit$Loss[,cv_fb_fit$min],
+                            cv_fit$Loss[,cv_fit$min],
+                            tolerance = 0.01)
 ```
 
 To summarize and plot a CV fit, we can look at a plot of cross validation error:
@@ -209,7 +194,7 @@ The default penalty in `plmmr` is the lasso. Another option would be the minimax
 [^1]: Zhang, Cun-Hui. "Nearly unbiased variable selection under minimax concave penalty." (2010): 894-942.
 
 ```{r}
-fb_mcp <- plmm(X = plink_data,
+fb_mcp <- plmm(design = pen_design,
                  penalty = "MCP",
                  returnX = FALSE,
                  trace = TRUE)
@@ -220,38 +205,36 @@ summary(fb_mcp, idx = 50)
 
 ## To add predictors that are not genomic
 
-In many biological applications, we want to include some features/covariates/predictors in addition to the genomic information, like clinical or demographic information. Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `process_plink()`:
+In many biological applications, we want to include some features/covariates/predictors in addition to the genomic information, like clinical or demographic information. Let's suppose that in the `penncath` data analysis, we want to include 'sex' and 'age' as unpenalized covariates. We can do this by supplying an additional argument to `create_design()`:
 
 ```{r}
-# create a new temporary directory, to avoid over-writing saved results
-temp_dir2 <- paste0(tempdir(), sample(LETTERS, 1))
-unzip_example_data(outdir = temp_dir2) # change this line if you're working on Windows
+extdata <- penncath_pheno |> 
+  dplyr::select(FamID, sex, age) |>
+  dplyr::mutate(FamID = as.character(FamID))
+any(is.na(extdata)) # important: additional predictors cannot have any missing values
 
-pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
-extdata <- pen_clinic[,3:4]
-rownames(extdata) <- pen_clinic$FamID # This is important! 
-
-# create a new temporary directory
-new_plink_data <- process_plink(data_dir = temp_dir2,
-              # again, adjust this to wherever you've got the unzipped PLINK data
-              rds_dir = temp_dir2, # using a temporary directory
-              prefix = "penncath_lite",
-              id_var = "FID", # this is KEY!
-              outfile = file.path(temp_dir2,"process_penncath_addvar"),
-              impute_method = "mode",
-              add_predictor = extdata)
-
+# create a new design, using the additional predictors this time
+new_pen_design <- create_design(dat_file = plink_data,
+                            feature_id = "FID",
+                            rds_dir = temp_dir,
+                            new_file = "std_penn_lit_plus_pred",
+                            add_outcome = phen,
+                            outcome_id = "FamID",
+                            outcome_col = "CAD",
+                            # the lines below are what's new here: 
+                            add_predictor = extdata,
+                            predictor_id = 'FamID',
+                            overwrite = TRUE,
+                            logfile = "design_with_pred")
 # check this out: 
-pen2 <- readRDS(new_plink_data)
+pen2 <- readRDS(new_pen_design)
 pen2$std_X_colnames |> head() # std_X includes our non-genomic covariates 
-pen2$std_X <- bigmemory::attach.big.matrix(pen2$std_X)
 ```
 
 We usually want these kinds of variables to always be in the model (i.e., they are not penalized). To make sure 'sex' and 'age' are always included in the chosen model, let's set `penalty_factor` to have 0 values corresponding to these predictors.
 
 ```{r}
-fit_plus_newvars <- plmm(X = new_plink_data,
-                         penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+fit_plus_newvars <- plmm(design = new_pen_design,
                          K = fb_fit$K, 
                          returnX = FALSE,
                          trace = TRUE)
@@ -262,7 +245,7 @@ We can check out how these additional covariates impact model fit:
 ```{r}
 plot(fit_plus_newvars)
 
-summary(fb_fit, idx = 1) 
+summary(fb_fit, idx = 1) # at highest penalty value, nothing in the original model
 summary(fit_plus_newvars, idx = 1) # at highest penalty value, sex and age are still in the model
 
 # look at the estimated coefficients 

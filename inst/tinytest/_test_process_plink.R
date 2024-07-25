@@ -65,7 +65,7 @@ table(plink$fam$affection, penncath_pheno$CAD)
 # are row & column names aligned?
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
-tinytest::expect_identical(c(res$non_gen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
+tinytest::expect_identical(c(res$unpen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
 tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
@@ -115,7 +115,7 @@ table(penncath_pheno$CAD)
 # are row & column names (IDs) aligned?
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
-tinytest::expect_identical(c(res$non_gen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
+tinytest::expect_identical(c(res$unpen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
 tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
@@ -167,7 +167,7 @@ tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
 str(res$X_colnames); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
 tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
-tinytest::expect_identical(res$std_X_colnames, c(res$non_gen_colnames,res$X_colnames)[res$ns])
+tinytest::expect_identical(res$std_X_colnames, c(res$unpen_colnames,res$X_colnames)[res$ns])
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")
@@ -203,7 +203,7 @@ tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
 str(res$X_colnames); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
 tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
-tinytest::expect_identical(res$std_X_colnames, c(res$non_gen_colnames,res$X_colnames)[res$ns])
+tinytest::expect_identical(res$std_X_colnames, c(res$unpen_colnames,res$X_colnames)[res$ns])
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")

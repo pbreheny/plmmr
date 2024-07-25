@@ -124,7 +124,7 @@ create_design <- function(dat_file,
 
   # save these original dim names
   if (is_plink){
-    design$X_colnames <- obj$map$marker.ID
+    design$X_colnames <- obj$colnames <- obj$map$marker.ID
   } else {
     stop('How to name columns for data coming from process_delim()?')
   }
@@ -176,12 +176,12 @@ create_design <- function(dat_file,
                               rds_dir = rds_dir,
                               quiet = quiet)
     # save items to return
-    design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
-    design$non_gen_colnames <- setdiff(colnames(add_predictor), predictor_id)
+    design$unpen<- unstd_X$unpen# save indices for unpenalized covariates
+    design$unpen_colnames <- setdiff(colnames(add_predictor), predictor_id)
 
   } else {
-    design$non_gen <- NULL
-    design$non_gen_colnames <- NULL
+    design$unpen<- NULL
+    design$unpen_colnames <- NULL
     unstd_X <- obj
     unstd_X$design_matrix <- obj$X
     unstd_X$colnames <- design$X_colnames
@@ -230,8 +230,8 @@ create_design <- function(dat_file,
   design$std_X_p <- std_res$std_X_p
   design$std_X_center <- std_res$std_X_center
   design$std_X_scale <- std_res$std_X_scale
-  design$penalty_factor <- c(rep(0, length(design$non_gen)),
-                             rep(1, design$std_X_p - length(design$non_gen)))
+  design$penalty_factor <- c(rep(0, length(design$unpen)),
+                             rep(1, design$std_X_p - length(design$unpen)))
 
 
   #TODO: future work can add nuance to the way penalty.factor options are given

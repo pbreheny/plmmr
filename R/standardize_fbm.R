@@ -4,7 +4,7 @@
 #' @param prefix   The data file name without the extension
 #' @param rds_dir  The directory where the user wants to create the '.rds' and '.bk' files
 #' @param ns       Integer vector with indices of non-singular columns of `subset_X`
-#' @param non_gen  Integer vector of indices with non-genomic covariates
+#' @param unpen Integer vector of indices with non-genomic covariates
 #' @param outfile  Optional: the name (character string) of the prefix of the logfile to be written.
 #' @param quiet    Logical: should the messages printed to the console be silenced? Defaults to FALSE.
 #'
@@ -42,7 +42,7 @@ standardize_fbm <- function(subset_X, prefix, rds_dir, ns, non_gen,
     std_X_center = std_res$std_X_center,
     std_X_scale = std_res$std_X_scale,
     ns = ns,
-    non_gen = non_gen) # save indices for non-genomic covariates
+    unpen= non_gen) # save indices for non-genomic covariates
 
   if (!quiet){
     cat("Done with standardization. File formatting in progress.\n",

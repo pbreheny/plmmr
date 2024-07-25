@@ -7,13 +7,13 @@
 #' @param p  The number of columns in the original design matrix
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
-#' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
+#' @param unpen Vector specifying which columns of the design matrix represent features that are *not* penalized.
 #' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#' For all other cases, 'unpen' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent penalized features).
 #' @keywords internal
 
 
-untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic) {
+untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, unpen) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -24,12 +24,12 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
   # this will create columns of zeros for betas corresponding to singular columns
   if (fbm_flag) {
     untransformed_beta <- Matrix::Matrix(0,
-                                 nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
+                                 nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept
                                  ncol = ncol(std_scale_beta), # this is the number of lambda values
                                  sparse = TRUE)
   } else {
     untransformed_beta <- matrix(0,
-                                 nrow = (p + length(non_genomic) + 1), # + 1 is for the intercept
+                                 nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept
                                  ncol = ncol(std_scale_beta)) # again, # lambda values
   }
 
@@ -95,8 +95,13 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
 
   }
 
-  if (!is.null(std_X_details$X_colnames)) {
-    rownames(untransformed_beta) <- c("(Intercept)", std_X_details$X_colnames)
+  if (!is.null(std_X_details$unpen_colnames)) {
+    rownames(untransformed_beta) <- c("(Intercept)",
+                                      std_X_details$unpen_colnames,
+                                      std_X_details$X_colnames)
+  } else {
+    rownames(untransformed_beta) <- c("(Intercept)",
+                                      std_X_details$X_colnames)
   }
 
   # Final step: return un-transformed beta values

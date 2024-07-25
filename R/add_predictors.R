@@ -8,7 +8,7 @@
 #'
 #' @return A list of 2 components:
 #' * 'obj' - a `bigSNP` object with an added element representing the matrix that includes the additional predictors as the first few columns
-#' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2
+#' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
 #' @keywords internal
 #'
 add_predictors <- function(obj,
@@ -21,7 +21,7 @@ add_predictors <- function(obj,
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
-  non_gen <- NULL
+  unpen <- NULL
 
   if (!quiet) {
     cat("Adding predictors from external data.\n")
@@ -41,12 +41,12 @@ add_predictors <- function(obj,
 
   if (!quiet) cat('Aligning IDs between fam and predictor files\n')
 
-  # save non_gen: an index marking added columns as non-genomic predictors
-  non_gen <- 1:ncol(add_predictor)
+  # save unpen: an index marking added columns as non-genomic predictors
+  unpen <- 1:ncol(add_predictor)
 
 
   design_matrix <- big.matrix(nrow = nrow(obj$X),
-                              ncol = ncol(obj$X) + length(non_gen),
+                              ncol = ncol(obj$X) + length(unpen),
                               type = 'double',
                               backingfile = "unstd_design_matrix.bk",
                               backingpath = rds_dir,
@@ -57,7 +57,7 @@ add_predictors <- function(obj,
                              C = design_matrix,
                              quiet = quiet)
 
-  ret <- list(design_matrix = design_matrix, non_gen = non_gen)
+  ret <- list(design_matrix = design_matrix, unpen = unpen)
   # adjust colnames if applicable
   if (!is.null(colnames(add_predictor))){
     ret$colnames <- c(colnames(add_predictor), obj$colnames)

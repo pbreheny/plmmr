@@ -3,12 +3,7 @@
 #' Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 #'  linear mixed models over a grid of values for the regularization parameter `lambda`.
 #'
-#' @param X               Design matrix for model fitting. May include clinical covariates and other non-SNP data.
-#' @param y               Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param col_names       Optional vector of column names for design matrix. Defaults to NULL.
-#' @param non_genomic     Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-#'                        For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#'                        For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#' @param design                  Design matrix object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
 #' @param K               Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -23,10 +18,6 @@
 #' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
-#' @param penalty_factor  A multiplicative factor for the penalty applied to each coefficient.
-#'                        If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
-#'                        The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
-#'                        In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
@@ -83,15 +74,11 @@
 #' # https://pbreheny.github.io/plmmr/articles/filebacking.html
 #'
 #'
-cv_plmm <- function(X,
-                    y = NULL,
-                    col_names = NULL,
-                    non_genomic = NULL,
+cv_plmm <- function(design,
                     K = NULL,
                     diag_K = NULL,
                     eta_star = NULL,
                     penalty = "lasso",
-                    penalty_factor = NULL,
                     type = 'blup',
                     gamma,
                     alpha = 1,
@@ -139,15 +126,11 @@ cv_plmm <- function(X,
                                          "./cv-plmm"))
 
   # run data checks ------------------------------
-  checked_data <- plmm_checks(X,
-                              col_names = col_names,
-                              non_genomic = non_genomic,
-                              y = y,
+  checked_data <- plmm_checks(design = design,
                               K = K,
                               diag_K = diag_K,
                               eta_star = eta_star,
                               penalty = penalty,
-                              penalty_factor = penalty_factor,
                               init = init,
                               dfmax = dfmax,
                               gamma = gamma,
@@ -204,16 +187,10 @@ cv_plmm <- function(X,
       pretty_time(),
       file = logfile, append = TRUE)
 
-  if (is.null(col_names)){
-    if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$X_colnames
-    }
-  }
-
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
-                               feature_names = col_names,
+                               feature_names = checked_data$std_X_details$X_colnames,
                                fbm_flag = checked_data$fbm_flag,
                                non_genomic = checked_data$non_genomic)
 

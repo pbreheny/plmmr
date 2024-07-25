@@ -42,8 +42,11 @@ plmm_checks <- function(design,
   }
   if("character" %in% class(design)){
     design <- get_data(path = design, trace = trace, ...)
+    std_X <- design$std_X
+  } else {
+    std_X <- bigmemory::attach.big.matrix(design$std_X)
   }
-  std_X <- design$std_X
+
   std_X_n <- design$std_X_n
   std_X_p <- design$std_X_p
   genomic <- index_std_X(std_X_p = design$std_X_p, non_genomic = design$non_gen)
@@ -54,6 +57,8 @@ plmm_checks <- function(design,
     center = design$std_X_center,
     scale = design$std_X_scale,
     ns = design$ns,
+    unpen = design$unpen,
+    unpen_colnames = design$unpen_colnames,
     X_colnames = design$X_colnames,
     X_rownames = design$X_rownames,
     std_X_rownames = design$std_X_rownames,
@@ -110,7 +115,6 @@ plmm_checks <- function(design,
     std_X_details = std_X_details,
     std_X_n = std_X_n,
     std_X_p = std_X_p,
-    genomic = genomic,
     std_X_n = std_X_n,
     std_X_p = std_X_p,
     y = y,
@@ -124,8 +128,7 @@ plmm_checks <- function(design,
     gamma = gamma,
     init = init,
     n = design$n,
-    p = design$p,
-    non_genomic = design$non_gen
+    p = design$p
   )
 
   if (trace & !is.null(save_rds)){cat("Your results will be saved to ", save_rds, "\n")}

@@ -11,7 +11,7 @@
 #' @param ind.col       Numeric vector of the columns to read in. Don't use negative indicies.
 #'                      If you're not sure how many columns are in your file,
 #'                      use something like `data.table::fread()` to examine the first row or two.
-#' @param non_gen       Numeric vector with indices of columns that have non-genomic information. **Note**: if you plan on
+#' @param unpen      Numeric vector with indices of columns that have non-genomic information. **Note**: if you plan on
 #'                      estimating the genomic relatedness among observations in your file, you
 #'                      **must** include this information in order for the estimates to be correct.
 #' @param outfile       Optional: the name (character string) of the prefix of the
@@ -49,7 +49,7 @@ process_delim <- function(file,
                           rds_dir = data_dir,
                           bk_filename,
                           ind.col,
-                          non_gen = NULL,
+                          unpen= NULL,
                           outfile,
                           overwrite = FALSE,
                           quiet = FALSE){
@@ -150,7 +150,7 @@ process_delim <- function(file,
                                 prefix = prefix,
                                 rds_dir = rds_dir,
                                 ns = ns,
-                                non_gen = non_gen,
+                                unpen= non_gen,
                                 outfile = logfile,
                                 quiet = quiet)
   std_X_list$n <- n

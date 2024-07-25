@@ -10,7 +10,7 @@ process_delim(
   rds_dir = data_dir,
   bk_filename,
   ind.col,
-  non_gen = NULL,
+  unpen= NULL,
   outfile,
   overwrite = FALSE,
   quiet = FALSE

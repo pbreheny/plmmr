@@ -47,8 +47,8 @@
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #'  * `K`: a list with 2 elements, `s` and `U` ---
-#'    * `s`: a vector of the eigenvalues of the genomic relatedness matrix; see `relatedness_mat()` for details.
-#'    * `U`: a matrix of the eigenvectors of the genomic relatedness matrix
+#'    * `s`: a vector of the eigenvalues of the relatedness matrix; see `relatedness_mat()` for details.
+#'    * `U`: a matrix of the eigenvectors of the relatedness matrix
 #' @export
 #'
 #' @examples
@@ -133,7 +133,6 @@ plmm <- function(design,
                         std_X_p = checked_data$std_X_p,
                         n = checked_data$n,
                         p = checked_data$p,
-                        genomic = checked_data$genomic,
                         centered_y = checked_data$centered_y,
                         K = checked_data$K,
                         diag_K = checked_data$diag_K,
@@ -173,9 +172,7 @@ plmm <- function(design,
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
-                                   feature_names = checked_data$std_X_details$X_colnames,
-                                   fbm_flag = checked_data$fbm_flag,
-                                   non_genomic = checked_data$non_genomic)
+                                   fbm_flag = checked_data$fbm_flag)
 
   if (trace)(cat("Model ready at ",
                  pretty_time()))

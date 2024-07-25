@@ -28,7 +28,7 @@ subset_bigsnp(
 
 \item{complete_phen}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
 
-\item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
+\item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2.
 \strong{Note}: this is typically passed from the result of \code{add_predictors()}}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
