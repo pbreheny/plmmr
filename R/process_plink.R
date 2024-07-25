@@ -83,6 +83,12 @@ process_plink <- function(data_dir,
   cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
 
 
+  # handle overwrite ----------------------------------
+  if (overwrite) {
+    to_remove <- list.files(file.path(rds_dir, rds_prefix))
+    file.remove(to_remove)
+  }
+
   # read in PLINK files --------------------------------
   step1 <- read_plink_files(data_dir = data_dir,
                             data_prefix = data_prefix,
@@ -145,8 +151,6 @@ process_plink <- function(data_dir,
   ret <- list(X = describe(X),
               map = step3$map,
               fam = step3$fam,
-              colnames = step3$colnames,
-              rownames = step3$rownames,
               n = step3$n,
               p = step3$p)
 

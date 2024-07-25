@@ -44,9 +44,12 @@ get_data <- function(path, returnX, trace = TRUE){
   bk <- paste0(path, ".bk") # .bk will be present if RDS was created with bigsnpr methods
   obj <- readRDS(rds)
 
+  # attach std_X
+  std_X_bm <- attach.big.matrix(obj$std_X)
+
   # return data in a tractable format
   if (missing(returnX)) {
-    if (utils::object.size(obj$std_X) > 1e8) {
+    if (utils::object.size(std_X_bm) > 1e8) {
       warning("Due to the large size of X (>100 Mb), X has been returned as a file-backed matrix\n.
               To turn this message off, explicitly specify fbm=TRUE or fbm=FALSE)\n.")
       returnX <- FALSE
@@ -55,9 +58,6 @@ get_data <- function(path, returnX, trace = TRUE){
       returnX <- TRUE
     }
   }
-
-  # attach std_X
-  std_X_bm <- attach.big.matrix(obj$std_X)
 
   if(returnX){
     obj$std_X <- std_X_bm[,]

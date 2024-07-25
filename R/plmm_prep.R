@@ -98,6 +98,7 @@ plmm_prep <- function(std_X,
       U <- K$U
     }
   }
+
   # otherwise, need to do eigendecomposition:
   if (sum(c(flag1, flag2, flag3)) == 0) {
     if (trace) {cat("Starting decomposition.\n")}
@@ -107,12 +108,7 @@ plmm_prep <- function(std_X,
 
       if (trace) cat("Calculating the eigendecomposition of K\n")
 
-      if (identical(genomic,1:std_X_p)) {
-        # if all columns are genomic, no need to filter
-        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
-      } else {
-        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag, ind.col = genomic)
-      }
+      eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
       K <- eigen_res$K
       s <- eigen_res$s
       U <- eigen_res$U
@@ -149,10 +145,6 @@ plmm_prep <- function(std_X,
 
   # return values to be passed into plmm_fit():
   ret <- structure(list(
-   # n = n,
-   #  p = p,
-    # std_X_n = std_X_n,
-    # std_X_p = std_X_p,
     std_X = std_X,
     centered_y = centered_y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())

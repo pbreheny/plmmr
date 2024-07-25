@@ -2,14 +2,7 @@
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
-#' @param X                       Design matrix object (as created by `create_design()`) or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
-#'                                * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param y                       Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param col_names               Optional vector of column names for design matrix. Defaults to NULL.
-#'                                For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#' @param non_genomic             Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-#'                                For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#'                                For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#' @param design                  Design matrix object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
 #' @param K                       Similarity matrix used to rotate the data. This should either be:
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
@@ -18,7 +11,6 @@
 #'                                Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star                Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty                 The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
-#' @param penalty_factor          A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma                   The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha                   Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
@@ -76,15 +68,11 @@
 #' # see the article "PLINK files/file-backed matrices" on our website
 #' # https://pbreheny.github.io/plmmr/articles/filebacking.html
 #'
-plmm <- function(X,
-                 y = NULL,
-                 col_names = NULL,
-                 non_genomic = NULL,
+plmm <- function(design,
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
                  penalty = "lasso",
-                 penalty_factor = NULL,
                  init = NULL,
                  gamma,
                  alpha = 1,
@@ -120,15 +108,11 @@ plmm <- function(X,
                                          "./plmm"))
 
   # run checks ------------------------------
-  checked_data <- plmm_checks(X,
-                              col_names = col_names,
-                              non_genomic = non_genomic,
-                              y = y,
+  checked_data <- plmm_checks(design,
                               K = K,
                               diag_K = diag_K,
                               eta_star = eta_star,
                               penalty = penalty,
-                              penalty_factor = penalty_factor,
                               init = init,
                               dfmax = dfmax,
                               gamma = gamma,
@@ -186,17 +170,10 @@ plmm <- function(X,
   # format results ---------------------------------------------------
   if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
 
-  if (is.null(checked_data$col_names)){
-    if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$map$marker.ID
-    }
-  } else {
-    col_names <- checked_data$col_names
-  }
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
-                                   feature_names = col_names,
+                                   feature_names = checked_data$std_X_details$X_colnames,
                                    fbm_flag = checked_data$fbm_flag,
                                    non_genomic = checked_data$non_genomic)
 

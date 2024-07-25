@@ -1,12 +1,5 @@
 #' plmm_checks
-#'
-#' @param X Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
-#' * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param y Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param col_names Optional vector of column names for design matrix. Defaults to NULL.
-#' @param non_genomic Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-#' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#' For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#' @param design The design object, as created by `create_design()`
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -26,15 +19,11 @@
 #'
 #' @keywords internal
 #'
-plmm_checks <- function(X,
-                        y = NULL,
-                        col_names = NULL,
-                        non_genomic = NULL,
+plmm_checks <- function(design,
                         K = NULL,
                         diag_K = NULL,
                         eta_star = NULL,
                         penalty = "lasso",
-                        penalty_factor = NULL,
                         init = NULL,
                         gamma,
                         alpha = 1,
@@ -44,108 +33,43 @@ plmm_checks <- function(X,
                         return_fit = TRUE,
                         ...){
 
-  # check X types -------------------------------------------------
-  if (!any(class(X) %in% c("character", "matrix"))) {
-    stop("\nThe X argument must be either (1) a numeric matrix or (2) a character
-         string specifying a filepath to an RDS object that you created using
-         process_delim() or create_design().")
-  }
-
   # read in X -----------------------------------------------------
-  if("character" %in% class(X)){
-    # case 1: X is a filebacked matrix from process_delim() or create_design()
-    dat <- get_data(path = X, trace = trace, ...)
-    X <- std_X <- dat$std_X
-    std_X_n <- dat$std_X_n
-    std_X_p <- dat$std_X_p
-    col_names <- dat$X_colnames
-    genomic <- index_std_X(std_X_p = std_X_p, non_genomic = dat$non_gen)
+  # TODO: maybe need to add a 'catch' here for incorrect list input...
 
-    # create a list that captures the centering/scaling for std_X;
-    # will need this later, see `untransform()`
-    std_X_details <- list(
-      center = dat$std_X_center,
-      scale = dat$std_X_scale,
-      ns = dat$ns)
+  if (!(inherits(design, 'list') | inherits(design, 'character'))) {
+    stop('Input to "design" in plmm() must be either a list output from create_design()
+         or an .rds filepath to a saved list output from create_design()')
+  }
+  if("character" %in% class(design)){
+    design <- get_data(path = design, trace = trace, ...)
+  }
+  std_X <- design$std_X
+  std_X_n <- design$std_X_n
+  std_X_p <- design$std_X_p
+  genomic <- index_std_X(std_X_p = design$std_X_p, non_genomic = design$non_gen)
 
-    if ('colnames' %in% names(dat) | 'std_X_colnames' %in% names(dat)){
-      std_X_details$X_colnames <- dat$colnames
-      std_X_details$X_rownames <-  dat$rownames
-      std_X_details$std_X_rownames <- dat$std_X_rownames
-      std_X_details$std_X_colnames <-  dat$std_X_colnames
-    } else if (!missing(col_names)){
-      std_X_details$X_colnames <- col_names
-      std_X_details$std_X_colnames <- col_names[std_X_details$ns]
-    }
+  # create a list that captures the centering/scaling for std_X;
+  # will need this later, see `untransform()`
+  std_X_details <- list(
+    center = design$std_X_center,
+    scale = design$std_X_scale,
+    ns = design$ns,
+    X_colnames = design$X_colnames,
+    X_rownames = design$X_rownames,
+    std_X_rownames = design$std_X_rownames,
+    std_X_colnames =  design$std_X_colnames)
 
-    if(inherits(std_X, "big.matrix")){
-      fbm_flag <- TRUE
-    } else {
-      fbm_flag <- FALSE
-    }
-
-    y <- dat$y
-    penalty_factor <- dat$penalty_factor
-
+  if(inherits(std_X, "big.matrix")){
+    fbm_flag <- TRUE
   } else {
-    # TODO: work through this case now that process_plink() has been split into
-    # process_plink() and create_design()
-    # case 2: X is a matrix in-memory
-    if (!inherits(X, "matrix")) {
-      tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
-      if (inherits(tmp, "try-error")) stop("X must be a matrix or able to be coerced to a matrix", call.=FALSE)
-    }
-    if (typeof(X)=="integer") storage.mode(X) <- "double"
-    if (typeof(X)=="character") stop("if X is a matrix, it must be a numeric matrix", call.=FALSE)
-
     fbm_flag <- FALSE
-
-    # designate the dimensions of the original design matrix
-    n <- nrow(X)
-    p <- ncol(X) - length(non_genomic)
-    # Note: p only includes genomic markers (in GWAS context);
-    # This parallels the behavior of `process_plink()` for filebacked data
-
-    # set default column names of X
-    if (is.null(col_names) & !is.null(attr(X, "dimnames")[[2]])) {
-      col_names <- attr(X, "dimnames")[[2]]
-    }
-
-    # handle standardization (for in-memory matrix case)
-      std_res <- standardize_matrix(X, penalty_factor)
-      std_X <- std_res$std_X
-      std_X_details <- std_res$std_X_details
-      penalty_factor <- std_res$penalty_factor
-
-    # designate dimensions of the standardized data
-      std_X_n <- nrow(std_X)
-      std_X_p <- ncol(std_X)
-      genomic <- index_std_X(std_X_p = std_X_p, non_genomic = non_genomic)
-
-
-  } # this bracket closes case 2 (the matrix case )
-
-  #  check y types & read y -------------------------------
-  # if y is still null, notify
-  if(is.null(y)){
-      stop("If the data did not come from create_design(), you must specify a
-           'y' argument\n")
   }
 
-  if (!is.double(y)) {
-    op <- options(warn=2)
-    on.exit(options(op))
-    y <- tryCatch(
-      error = function(cond) stop("y must be numeric or able to be coerced to numeric\n", call.=FALSE),
-      as.double(y))
-    options(op)
-  }
+  y <- design$y[,1] |> unlist() # design$y will have one column
+  penalty_factor <- design$penalty_factor
 
   # set up defaults --------------------------------------------------
   if(is.null(dfmax)){dfmax <- std_X_p + 1}
-
-  # default: penalize everything except the intercept, which we will add later
-  if(is.null(penalty_factor)){penalty_factor <- rep(1, std_X_p)}
 
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
@@ -154,35 +78,10 @@ plmm_checks <- function(X,
   # set default gamma (gamma not used in 'lasso' option)
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
-  # error checking ------------------------------------------------------------
-  if(!fbm_flag){
-    # error check for matrix X
-    if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
+  # error checking design matrix  ---------------------------------------------
+  if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
 
-    if (any(is.na(y)) | any(is.na(std_X))) stop("Missing data (NA's) detected in outcome, 'y'.
-                                            \nTake actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
-    if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match", call.=FALSE)
-  } else {
-    #  error checking for filebacked X
-    if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
-    if (any(is.na(y))) stop("Missing data (NA's) detected in the outcome.  Take actions (e.g., removing cases, removing features, imputation) to eliminate missing data before passing X and y to plmm", call.=FALSE)
-    if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match", call.=FALSE)
-
-    # if penalty factor has 0s, these must be contiguous
-    # (necessary for subsetting later -- see setup_lambda(), for example)
-    if (any(penalty_factor < 1e-8)){
-      pf <- which(penalty_factor < 1e-8)
-      if (!identical(pf, 1:length(pf))) {
-        stop("It looks like you are trying to make some covariates *not* be penalized, as
-           you have some penalty_factor values set to 0.\n
-           If this is your intention, you must make all 'n' unpenalized covariates appear
-           as the first 'n' columns in your design matrix.\n This is needed for subsetting later
-             (for now, subsetting filebacked matrices requires a contiguous submatrix).\n")
-      }
-    }
-
-
-  }
+  if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match; something is off in the supplied design", call.=FALSE)
 
   # check K types -------------------------------------------------------
   if (!is.null(K)){
@@ -206,7 +105,6 @@ plmm_checks <- function(X,
   }
 
   # return list for model preparation ---------------------------------
-
   ret <- list(
     std_X = std_X,
     std_X_details = std_X_details,
@@ -215,8 +113,8 @@ plmm_checks <- function(X,
     genomic = genomic,
     std_X_n = std_X_n,
     std_X_p = std_X_p,
-    col_names = col_names,
     y = y,
+    y_name = colnames(design$y),
     centered_y = y - mean(y),
     K = K,
     diag_K = diag_K,
@@ -224,19 +122,11 @@ plmm_checks <- function(X,
     penalty = penalty,
     penalty_factor = penalty_factor,
     gamma = gamma,
-    init = init
+    init = init,
+    n = design$n,
+    p = design$p,
+    non_genomic = design$non_gen
   )
-
-  if (exists('dat')){
-    ret$n <- dat$n
-    ret$p <- dat$p
-    ret$non_genomic <- dat$non_gen
-    ret$dat <- dat
-  } else {
-    ret$n <- n
-    ret$p <- p
-    ret$non_genomic <- non_genomic
-  }
 
   if (trace & !is.null(save_rds)){cat("Your results will be saved to ", save_rds, "\n")}
 

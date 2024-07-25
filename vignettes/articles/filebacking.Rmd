@@ -74,33 +74,27 @@ any(is.na(pen$genotypes[,]))
 To prepare for data analysis, we need to use the data to create the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
 
 ```{r}
-pen_design <- create_design(dat = plink_data,
-                            prefix = "penncath_lite",
-                            is_bigsnp = TRUE,
-                            id_var = "FID",
-                            add_predictor = extdata)
-                            
+# get outcome data 
+penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
+
+phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
+  mutate(FamID = as.character(FamID))
+
+pen_design <- create_design(dat_file = plink_data,
+                            feature_id = "FID",
+                            rds_dir = temp_dir,
+                            new_file = "std_penncath_lite",
+                            add_outcome = phen,
+                            outcome_id = "FamID",
+                            outcome_col = "CAD",
+                            overwrite = TRUE,
+                            logfile = "design")
+pen_design_rds <- readRDS(pen_design)
 
 # we can check to see that our data have been standardized 
-std_X <- attach.big.matrix(pen$std_X)
+std_X <- attach.big.matrix(pen_design_rds$std_X)
 colMeans(std_X[,]) |> summary() # columns have mean zero...
 apply(std_X[,], 2, var) |> summary() # ... & variance 1
-```
-
-
-
-### What if my data aren't in PLINK format?
-
-The methodology in `plmmr` was motivated by applications in GWAS, but it certainly isn't limited to that context. Suppose you have a high dimensional data set, such as the `colon2` data -- this is like the `colon` data that ships with the `biglasso` package, only here I've inserted some NA values just for didactic purposes.
-
-```{r}
-colon_data <- process_delim(file = "colon2.txt",
-          data_dir = find_example_data(parent = TRUE),
-          rds_dir = temp_dir,
-          ind.col = 2:2002) # don't use the 1st column; it has IDs in it
-
-std_colon2 <- readRDS(file = colon_data)
-str(std_colon2) # notice that the columns with NA values were dropped 
 ```
 
 ## Step 2: fit a model
@@ -108,7 +102,7 @@ str(std_colon2) # notice that the columns with NA values were dropped
 Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defaults to using the 6th column from the '.fam' file as the phenotype/outcome (this behavior is the same as what PLINK does).
 
 ```{r}
-fb_fit <- plmm(X = plink_data,
+fb_fit <- plmm(design = pen_design,
                returnX = FALSE,
                # this datset is small enough to fit in memory
                # by setting returnX = FALSE, I force plmm() to run on the filebacked data
@@ -120,7 +114,7 @@ fb_fit <- plmm(X = plink_data,
 
 We can confirm that our filebacked methods and in-memory methods give the same results:
 ```{r}
-fit <- plmm(X = plink_data, # will run in-memory by default, since data will fit
+fit <- plmm(design = pen_design, # will run in-memory by default, since data will fit
             trace = TRUE)
 
 b1 <- fb_fit$beta_vals |> as.matrix()

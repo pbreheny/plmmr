@@ -103,10 +103,6 @@ create_design <- function(dat_file,
   obj <- readRDS(dat_file)
   obj$X <- bigmemory::attach.big.matrix(obj$X)
 
-  # save these original dim names
-  design$X_colnames <- obj$colnames
-  design$X_rownames <- obj$rownames
-
   # flag for data coming from plink
   is_plink <- any(grepl('fam', names(obj)))
 
@@ -126,9 +122,24 @@ create_design <- function(dat_file,
     stop("The feature_id argument is either misspecified or missing (see documentation for options).")
   }
 
+  # save these original dim names
+  if (is_plink){
+    design$X_colnames <- obj$map$marker.ID
+  } else {
+    stop('How to name columns for data coming from process_delim()?')
+  }
+
+  design$X_rownames <- og_ids
+
+  # save colnames of add_predictor (if supplied)
   if (is.null(colnames(add_outcome))) {
     stop("The matrix supplied to add_outcome must have column names.")
   }
+
+
+  # save original dimensions
+  design$n <- nrow(obj$X)
+  design$p <- ncol(obj$X) # Note: p = # of features, not including any additional predictors!
 
   # index samples for subsetting ------------
   # Note: this step uses the outcome (from external file) to determine which
@@ -164,7 +175,6 @@ create_design <- function(dat_file,
                               id_var = feature_id,
                               rds_dir = rds_dir,
                               quiet = quiet)
-
     # save items to return
     design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
     design$non_gen_colnames <- setdiff(colnames(add_predictor), predictor_id)
@@ -174,6 +184,7 @@ create_design <- function(dat_file,
     design$non_gen_colnames <- NULL
     unstd_X <- obj
     unstd_X$design_matrix <- obj$X
+    unstd_X$colnames <- design$X_colnames
   }
 
     if (is_plink){
@@ -221,6 +232,24 @@ create_design <- function(dat_file,
   design$std_X_scale <- std_res$std_X_scale
   design$penalty_factor <- c(rep(0, length(design$non_gen)),
                              rep(1, design$std_X_p - length(design$non_gen)))
+
+
+  #TODO: future work can add nuance to the way penalty.factor options are given
+  #   below is one idea to hold onto...
+  # if penalty factor has 0s, these must be contiguous
+  # (necessary for subsetting later -- see setup_lambda(), for example)
+  # if (any(penalty_factor < 1e-8)){
+  #   pf <- which(penalty_factor < 1e-8)
+  #   if (!identical(pf, 1:length(pf))) {
+  #     stop("It looks like you are trying to make some covariates *not* be penalized, as
+  #        you have some penalty_factor values set to 0.\n
+  #        If this is your intention, you must make all 'n' unpenalized covariates appear
+  #        as the first 'n' columns in your design matrix.\n This is needed for subsetting later
+  #          (for now, subsetting filebacked matrices requires a contiguous submatrix).\n")
+  #   }
+  # }
+
+
 
   # cleanup -------------------------------------------------------------------
   list.files(rds_dir,
