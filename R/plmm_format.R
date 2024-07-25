@@ -37,8 +37,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag){
     std_scale_beta = fit$std_scale_beta,
     p = p,
     std_X_details = std_X_details,
-    fbm_flag = fbm_flag,
-    unpen = unpen)
+    fbm_flag = fbm_flag)
 
   # give the matrix of beta_values readable names
   # features on the rows, lambda values on the columns

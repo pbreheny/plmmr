@@ -190,9 +190,7 @@ cv_plmm <- function(design,
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
-                               feature_names = checked_data$std_X_details$X_colnames,
-                               fbm_flag = checked_data$fbm_flag,
-                               non_genomic = checked_data$non_genomic)
+                               fbm_flag = checked_data$fbm_flag)
 
   cat("\nFormatting for full model finished at",
       pretty_time(),

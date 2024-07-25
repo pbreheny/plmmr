@@ -117,19 +117,20 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     convex = fold_args$convex,
                     dfmax = ncol(train_X) + 1)
 
-  format.i <- plmm_format(fit = fit.i,
-              p =  ncol(train_X),
-              std_X_details = fold_args$std_X_details,
-              use_feature_names = FALSE, # no need for names in internal CV fits
-              non_genomic = NULL,
-              # Note: must keep non_genomic length 0 for untransform() to work correctly within each fold
-              fbm_flag = fold_args$fbm_flag)
+  # get beta values back in original scale
+  og_betas.i <- untransform(
+      std_scale_beta = fit.i$std_scale_beta,
+      p = nrow(fit.i$std_scale_beta)-1, # take off 1 for intercept
+      std_X_details = fold_args$std_X_details,
+      fbm_flag = fold_args$fbm_flag,
+      use_names = FALSE)
+
 
   if(type == "lp"){
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = train_X,
                               testX = test_X,
-                              og_scale_beta = format.i$beta_vals,
+                              og_scale_beta = og_betas.i,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
@@ -143,7 +144,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                               trainX = train_X,
                               trainY = fold_args$y,
                               testX = test_X,
-                              og_scale_beta = format.i$beta_vals,
+                              og_scale_beta = og_betas.i,
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,

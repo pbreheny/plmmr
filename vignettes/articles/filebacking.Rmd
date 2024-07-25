@@ -42,7 +42,7 @@ unzip_example_data(outdir = temp_dir)
 
 # Analyzing filebacked data from start to finish
 
-## Step 1: preprocess the data
+## Step 1: Preprocess the data
 
 The most important step is where you begin -- for GWAS data, we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files).
 
@@ -71,6 +71,8 @@ str(pen) # note: genotype data is *not* in memory
 any(is.na(pen$genotypes[,]))
 ```
 
+## Step 2: Create a design for analysis
+
 To prepare for data analysis, we need to use the data to create the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
 
 ```{r}
@@ -78,7 +80,7 @@ To prepare for data analysis, we need to use the data to create the pieces we ne
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
 
 phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
-  mutate(FamID = as.character(FamID))
+  dplyr::mutate(FamID = as.character(FamID))
 
 pen_design <- create_design(dat_file = plink_data,
                             feature_id = "FID",
@@ -97,7 +99,7 @@ colMeans(std_X[,]) |> summary() # columns have mean zero...
 apply(std_X[,], 2, var) |> summary() # ... & variance 1
 ```
 
-## Step 2: fit a model
+## Step 3: Fit a model
 
 Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defaults to using the 6th column from the '.fam' file as the phenotype/outcome (this behavior is the same as what PLINK does).
 
@@ -122,7 +124,7 @@ b2 <- fit$beta_vals
 tinytest::expect_equivalent(b1, b2, 0.01) 
 ```
 
-## Step 3: Plot/summarize results
+## Step 4: Plot/summarize results
 
 To summarize a single model (no CV), we can look at a plot of the coefficient paths:
 
@@ -137,7 +139,7 @@ summary(fb_fit, idx = 50)
 ```
 
 
-## Step 4: Cross-validation (tuning parameter selection)
+## Step 5: Cross-validation (tuning parameter selection)
 
 In most applications, we will want to fit a model using cross validation in order to choose an appropriate value of $\lambda$, the tuning parameter for our penalized model.
 
@@ -210,7 +212,7 @@ In many biological applications, we want to include some features/covariates/pre
 ```{r}
 extdata <- penncath_pheno |> 
   dplyr::select(FamID, sex, age) |>
-  dplyr::mutate(FamID = as.character(FamID))
+  dplyr::mutate(FamID = as.character(FamID)) # ID variable must be a character
 any(is.na(extdata)) # important: additional predictors cannot have any missing values
 
 # create a new design, using the additional predictors this time

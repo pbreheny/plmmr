@@ -7,13 +7,11 @@
 #' @param p  The number of columns in the original design matrix
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
-#' @param unpen Vector specifying which columns of the design matrix represent features that are *not* penalized.
-#' For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#' For all other cases, 'unpen' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent penalized features).
+#' @param use_names Logical: should names be added? Defaults to TRUE. Set to FALSE inside of `cvf()` helper, as 'ns' will vary within CV folds.
 #' @keywords internal
 
 
-untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, unpen) {
+untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, use_names = TRUE) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -95,14 +93,17 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, unpen) {
 
   }
 
-  if (!is.null(std_X_details$unpen_colnames)) {
-    rownames(untransformed_beta) <- c("(Intercept)",
-                                      std_X_details$unpen_colnames,
-                                      std_X_details$X_colnames)
-  } else {
-    rownames(untransformed_beta) <- c("(Intercept)",
-                                      std_X_details$X_colnames)
+  if (use_names) {
+    if (!is.null(std_X_details$unpen_colnames)) {
+      rownames(untransformed_beta) <- c("(Intercept)",
+                                        std_X_details$unpen_colnames,
+                                        std_X_details$X_colnames)
+    } else {
+      rownames(untransformed_beta) <- c("(Intercept)",
+                                        std_X_details$X_colnames)
+    }
   }
+
 
   # Final step: return un-transformed beta values
   return(untransformed_beta)
