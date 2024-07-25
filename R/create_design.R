@@ -169,6 +169,13 @@ create_design <- function(dat_file,
     design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
     design$non_gen_colnames <- setdiff(colnames(add_predictor), predictor_id)
 
+  } else {
+    design$non_gen <- NULL
+    design$non_gen_colnames <- NULL
+    unstd_X <- obj
+    unstd_X$design_matrix <- obj$X
+  }
+
     if (is_plink){
       design$fam <- unstd_X$obj$fam
       design$map <- unstd_X$obj$map
@@ -223,9 +230,7 @@ create_design <- function(dat_file,
   # return -------------------------------------------------------------
   saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))
   return(file.path(rds_dir, paste0(new_file, ".rds")))
-  } else {
-    stop('still working through the case where no predictors are added')
-  }
+
 }
 
 

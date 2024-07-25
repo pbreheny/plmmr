@@ -175,3 +175,39 @@ list.files("inst/extdata", pattern = "*.bk")
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
 
+# test 4: handle the case with no predictors ----------------------------
+
+penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
+
+phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
+  mutate(FamID = as.character(FamID))
+
+X <- create_design(dat_file = penncath_lite,
+                   feature_id = "FID",
+                   rds_dir = "inst/extdata",
+                   new_file = "std_penncath_lite",
+                   add_outcome = phen,
+                   outcome_id = "FamID",
+                   outcome_col = "CAD",
+                   overwrite = TRUE,
+                   logfile = "design")
+
+res <- readRDS(X)
+str(res)
+
+## chekcs ----------------------------------------------------------------------
+# does final fam[,6] have the expected outcome?
+tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
+
+# are row & column names (IDs) aligned?
+str(res$X_colnames); str(res$X_rownames)
+str(res$std_X_colnames); str(res$std_X_rownames)
+tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
+tinytest::expect_identical(res$std_X_colnames, c(res$non_gen_colnames,res$X_colnames)[res$ns])
+
+# are .bk files 'cleaned up' and labeled correctly?
+list.files("inst/extdata", pattern = "*.bk")
+
+# clear example
+rm(X); rm(res); rm(predictors); rm(phen)
+
