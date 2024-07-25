@@ -51,29 +51,19 @@ index_samples <- function(obj,
 
   }
 
-  # second, count samples which have a missing value in the outcome data ------
-  is_missing <- add_outcome[,outcome_col] %in% na_outcome_vals
-  outcome_present <- overlap_df[which(!is_missing),]
-
-  if(!quiet){
-    cat("\nWill prune out", sum(is_missing), "samples/observations with missing phenotype data.\n")
-    # Note: the actual pruning happens in the 'subset' step
-  }
-  cat("\nWill prune out", sum(is_missing), "samples/observations with missing phenotype data\n",
-      file = outfile, append = TRUE)
-
   # finally, subset & sort add_outcome -----------------------------------------
   indiv_id_df <- data.table::as.data.table(as.character(indiv_id))
   colnames(indiv_id_df) <- "ID"
   complete_samples <- data.table::merge.data.table(x = indiv_id_df,
                                                    by.x = 'ID',
-                                                   y = data.table::as.data.table(outcome_present),
+                                                   y = data.table::as.data.table(add_outcome),
                                                    by.y = outcome_id)
-
+# NB: here, 'complete samples' means samples that appear in both the outcome data
+  # *and* the feature data
 
   # keep the indices
   return(list(complete_samples = complete_samples,
-              outcome_idx = which(indiv_id %in% outcome_present[,outcome_id])))
+              outcome_idx = which(indiv_id %in% add_outcome[,outcome_id])))
 
 }
 

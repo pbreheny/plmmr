@@ -44,7 +44,7 @@ add_predictors <- function(obj,
   # save non_gen: an index marking added columns as non-genomic predictors
   non_gen <- 1:ncol(add_predictor)
 
-  browser()
+
   design_matrix <- big.matrix(nrow = nrow(obj$X),
                               ncol = ncol(obj$X) + length(non_gen),
                               type = 'double',

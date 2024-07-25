@@ -20,7 +20,7 @@
 #'
 #' @export
 #'
-create_design <- function(dat,
+create_design <- function(dat_file,
                           rds_dir,
                           new_file,
                           feature_id,
@@ -47,6 +47,10 @@ create_design <- function(dat,
 
   # additional checks for case where add_predictor is specified
   if (!is.null(add_predictor)) {
+
+    if (is.null(predictor_id)) {
+      stop("If add_predictor is specified, the user must also specify predictor_id")
+    }
 
     if (is.null(colnames(add_predictor))){
       stop('The columns of "add_predictor" must be named.')
@@ -78,18 +82,18 @@ create_design <- function(dat,
 
   # check for files to be overwritten---------------------------------
   if (overwrite){
+
     # remove files with name pattern
-    to_remove <- paste0(new_file, c('.bk', '.rds', '.log', '.desc'))
+    to_remove <- paste0(file.path(rds_dir, new_file), c('.bk', '.rds', '.desc'))
     if (any(file.exists(to_remove))) {
       file.remove(to_remove)
     }
 
 
     # check for left over intermediate files
-    if (file.exists('unstd_design_matrix.bk')) {
-      file.remove(c('unstd_design_matrix.bk',
-                    'unstd_design_matrix.desc',
-                    'unstd_design_matrix.rds'))
+    if (file.exists(file.path(rds_dir,'unstd_design_matrix.bk'))) {
+      file.remove(c(file.path(rds_dir,'unstd_design_matrix.bk'),
+                    file.path(rds_dir,'unstd_design_matrix.desc')))
     }
 
 
@@ -140,8 +144,6 @@ create_design <- function(dat,
                               outfile = logfile,
                               quiet = quiet)
 
-  gc() # cleanup
-
   # save items to return
   design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
   design$y <-  sample_idx$complete_samples[,..outcome_col]
@@ -151,20 +153,21 @@ create_design <- function(dat,
     if (is.null(predictor_id)) stop('If add_predictor is supplied, the predictor_id argument must also be supplied')
 
     # align IDs between feature data and external data -------------------------
-    aligned_add_predictor <- align_ids(feature_id = predictor_id,
+    aligned_add_predictor <- align_ids(id_var = predictor_id,
                                        quiet = quiet,
                                        add_predictor = add_predictor,
-                                       og_ids = sample_idx$complete_samples[,'ID'])
-    browser()
+                                       og_ids = og_ids)
+
     # add predictors from external files --------------------------------------
     unstd_X <- add_predictors(obj = obj,
                               add_predictor = aligned_add_predictor,
-                              feature_id = feature_id,
+                              id_var = feature_id,
                               rds_dir = rds_dir,
                               quiet = quiet)
 
     # save items to return
     design$non_gen <- unstd_X$non_gen # save indices for non-genomic covariates
+    design$non_gen_colnames <- setdiff(colnames(add_predictor), predictor_id)
 
     if (is_plink){
       design$fam <- unstd_X$obj$fam
@@ -172,21 +175,18 @@ create_design <- function(dat,
     }
 
     # again, clean up to save space
-    rm(obj); gc()
-
-  }
+    rm(obj)
 
   # index features for subsetting --------------------------------------------
-  design$ns_genotypes <- count_constant_features(fbm = obj$X,
-                                                 ind.row = sample_idx$outcome_idx,
+
+  design$ns <- count_constant_features(fbm = unstd_X$design_matrix,
                                                  outfile = logfile,
                                                  quiet = quiet)
 
   # subsetting -----------------------------------------------------------------
   subset_res <- subset_bigsnp(X = unstd_X$design_matrix,
-                              complete_outcome = design$outcome_idx,
-                              non_gen = design$non_gen,
-                              ns_genotypes = design$ns_genotypes,
+                              complete_samples = design$outcome_idx,
+                              ns = design$ns,
                               rds_dir = rds_dir,
                               new_file = new_file,
                               outfile = logfile,
@@ -194,7 +194,7 @@ create_design <- function(dat,
   # clean up
   design$ns <- subset_res$ns
   design$std_X_colnames <- unstd_X$colnames[subset_res$ns]
-  rm(unstd_X); gc()
+  rm(unstd_X)
 
   # standardization ------------------------------------------------------------
   std_res <- standardize_bigsnp(X = subset_res$subset_X,
@@ -223,7 +223,9 @@ create_design <- function(dat,
   # return -------------------------------------------------------------
   saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))
   return(file.path(rds_dir, paste0(new_file, ".rds")))
-
+  } else {
+    stop('still working through the case where no predictors are added')
+  }
 }
 
 

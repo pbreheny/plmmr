@@ -30,24 +30,22 @@ if (interactive()){
 
   predictors <- penncath_pheno |>
     dplyr::select(FamID, age, tg) |>
-    dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
-    tibble::column_to_rownames('FamID') |>
-    as.matrix()
-  colnames(predictors) <- c("age", "tg")
+    dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg),
+                  FamID = as.character(FamID))
 
   phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
     mutate(FamID = as.character(FamID))
   # note: CAD has no missing values in phen file
 
-
-  X <- create_design(dat = penncath_lite,
+  X <- create_design(dat_file = penncath_lite,
+                     feature_id = "FID",
                      rds_dir = "inst/extdata",
                      new_file = "std_penncath_lite",
                      add_outcome = phen,
                      outcome_id = "FamID",
                      outcome_col = "CAD",
                      add_predictor = predictors,
-                     id_var = "FID",
+                     predictor_id = 'FamID',
                      overwrite = TRUE,
                      logfile = "design")
 
@@ -67,7 +65,7 @@ table(plink$fam$affection, penncath_pheno$CAD)
 # are row & column names aligned?
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
-tinytest::expect_identical(res$X_colnames[res$ns], res$std_X_colnames[-res$non_gen])
+tinytest::expect_identical(c(res$non_gen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
 tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
@@ -82,24 +80,23 @@ list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> f
 penncath_pheno <- penncath_pheno[sample(1:nrow(penncath_pheno)),]
 
 predictors <- penncath_pheno |>
-  dplyr::select(age, tg) |>
-  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
-  as.matrix()
-colnames(predictors) <- c("age", "tg")
-rownames(predictors) <- penncath_pheno$FamID
+  dplyr::select(FamID, age, tg) |>
+  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg),
+                FamID = as.character(FamID))
 
 phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
   mutate(FamID = as.character(FamID))
 
 ### create design ---------------------------------------------------------------
-X <- create_design(dat = penncath_lite,
+X <- create_design(dat_file = penncath_lite,
                    rds_dir = "inst/extdata",
                    new_file = "std_penncath_lite",
                    add_outcome = phen,
                    outcome_id = "FamID",
                    outcome_col = "CAD",
                    add_predictor = predictors,
-                   id_var = "FID",
+                   predictor_id = 'FamID',
+                   feature_id = "FID",
                    overwrite = TRUE,
                    logfile = "design")
 
@@ -118,7 +115,7 @@ table(penncath_pheno$CAD)
 # are row & column names (IDs) aligned?
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
-tinytest::expect_identical(res$X_colnames[res$ns], res$std_X_colnames[-res$non_gen])
+tinytest::expect_identical(c(res$non_gen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
 tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
@@ -128,55 +125,7 @@ list.files("inst/extdata", pattern = "*.bk")
 rm(X); rm(res); rm(predictors); rm(phen)
 list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
 
-# test 3: what if there are missing outcomes? ----------------------------------
-
-# shuffle the IDs here, to test alignment
-penncath_pheno <- penncath_pheno[sample(1:nrow(penncath_pheno)),]
-
-predictors <- penncath_pheno |>
-  dplyr::select(FamID, age, tg) |>
-  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg))
-
-# use 'hdl' for outcome - missing in some observations
-summary(penncath_pheno$hdl)
-phen <- data.frame(FamID = penncath_pheno$FamID, hdl = penncath_pheno$hdl) |>
-  mutate(FamID = as.character(FamID))
-### create design --------------------------------------------------------------
-X <- create_design(dat = penncath_lite,
-                   rds_dir = "inst/extdata",
-                   new_file = "std_penncath_lite",
-                   add_outcome = phen,
-                   outcome_id = "FamID",
-                   outcome_col = "hdl",
-                   na_outcome_vals = c(NA_integer_),
-                   add_predictor = predictors,
-                   predictor_id = 'FamID',
-                   id_var = "FID",
-                   overwrite = TRUE,
-                   logfile = NULL)
-
-res <- readRDS(X)
-str(res)
-
-### checks  -------------------------------------------------------------------
-# are external files and PLINK fam file aligned on ID var?
-plink <- readRDS('inst/extdata/imputed_penncath_lite.rds')
-tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
-
-# are row & column names (IDs) aligned?
-str(res$X_colnames[res$ns]); str(res$X_rownames)
-str(res$std_X_colnames); str(res$std_X_rownames)
-tinytest::expect_identical(res$X_colnames[res$ns], res$std_X_colnames[-res$non_gen])
-tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
-
-# are .bk files 'cleaned up' and labeled correctly?
-list.files("inst/extdata", pattern = "*.bk")
-
-# clear example
-rm(X); rm(res); rm(predictors); rm(phen)
-list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
-
-# test 4: more obs. in pheno than geno ------------------------------------------
+# test 3: more obs. in pheno than geno ------------------------------------------
 penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
 
 # subset geno data - take just 1000 samples
@@ -187,10 +136,9 @@ saveRDS(imputed_dat,'inst/extdata/imputed_data_n1000.rds')
 
 predictors <- penncath_pheno |>
   dplyr::select(FamID, age, tg) |>
-  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg)) |>
-  tibble::column_to_rownames('FamID') |>
-  as.matrix()
-colnames(predictors) <- c("age", "tg")
+  dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg),
+                FamID = as.character(FamID))
+
 
 phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
   mutate(FamID = as.character(FamID))
@@ -199,11 +147,12 @@ phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
 X <- create_design(dat = 'inst/extdata/imputed_data_n1000.rds',
                    rds_dir = 'inst/extdata',
                    new_file = "std_penncath_n1000",
+                   feature_id = "FID",
                    add_outcome = phen,
                    outcome_id = "FamID",
                    outcome_col = "CAD",
                    add_predictor = predictors,
-                   id_var = "FID",
+                   predictor_id = 'FamID',
                    overwrite = TRUE,
                    logfile = "design_penncath_n1000")
 
@@ -218,7 +167,7 @@ tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
 str(res$X_colnames); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
 tinytest::expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
-tinytest::expect_identical(res$std_X_colnames[-res$non_gen], res$X_colnames[res$ns])
+tinytest::expect_identical(res$std_X_colnames, c(res$non_gen_colnames,res$X_colnames)[res$ns])
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")
