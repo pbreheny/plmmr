@@ -57,7 +57,8 @@ index_samples <- function(obj,
   complete_samples <- data.table::merge.data.table(x = indiv_id_df,
                                                    by.x = 'ID',
                                                    y = data.table::as.data.table(add_outcome),
-                                                   by.y = outcome_id)
+                                                   by.y = outcome_id,
+                                                   sort = FALSE)
 # NB: here, 'complete samples' means samples that appear in both the outcome data
   # *and* the feature data
 

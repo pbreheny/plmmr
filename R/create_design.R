@@ -1,6 +1,6 @@
 #' A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 #'
-#' @param dat_file                Filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
+#' @param dat_file                A filepath to rds file of processed data (data from `process_plink()`, `process_delim()`, or `process_matrix()`)
 #' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
 #' @param feature_id                  This argument is the ID for the feature data. Two options here:
@@ -12,7 +12,7 @@
 #' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
 #' @param add_predictor       Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                                This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
-#' @param predictor_id            A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
+#' @param predictor_id            Optinal: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
 #'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
 #' @param logfile                 Optional: name of the '.log' file to be written
@@ -107,14 +107,16 @@ create_design <- function(dat_file,
   is_plink <- any(grepl('fam', names(obj)))
 
   # determine which IDs to use ---------------------------------
-  if (feature_id == "IID"){
-    indiv_id <- "sample.ID"
-    og_ids <- obj$fam[,indiv_id] |> as.character()
+  if (length(feature_id) == 1) {
+    if (feature_id == "IID"){
+      indiv_id <- "sample.ID"
+      og_ids <- obj$fam[,indiv_id] |> as.character()
 
-  } else if (feature_id == "FID"){
-    indiv_id <- "family.ID"
-    og_ids <- obj$fam[,indiv_id] |> as.character()
+    } else if (feature_id == "FID"){
+      indiv_id <- "family.ID"
+      og_ids <- obj$fam[,indiv_id] |> as.character()
 
+    }
   } else if (is.character(feature_id) & length(feature_id) == nrow(obj$X)) {
     og_ids <- feature_id
 
@@ -126,7 +128,7 @@ create_design <- function(dat_file,
   if (is_plink){
     design$X_colnames <- obj$colnames <- obj$map$marker.ID
   } else {
-    stop('How to name columns for data coming from process_delim()?')
+    design$X_colnames <- colnames(obj$X)
   }
 
   design$X_rownames <- og_ids

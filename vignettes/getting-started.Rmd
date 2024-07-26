@@ -37,13 +37,45 @@ Since we are focused on penalized regression in this package, `plmmr` offers 3 c
   
 In this overview, I will provide a demo of the main functions in `plmmr` using the `admix` data. Checkout the 'Working with PLINK files' vignette to see a demo of processing the `penncath_lite` data from the original PLINK file formats. 
 
+## Definitions: features v. added predictors
+
+In the `plmmr` package, we make a distinction between 'features' and 'added predictors' -- while both of these refer to columns in the design matrix, the difference is in the penalization. 'Features' are penalized, while 'added predictors' are not. Added predictors are always in the model; features may be screened out with penalization. For more information on the theoretical context of penalized regression, check out [these online course notes](https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html) from Prof. Patrick Breheny (the PI of our lab). The section on 'ridge regression' may be a good place to start. THIS PARAGRAPH NEEDS WORK.
+
+## Preparing data for analysis 
+
+The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. 
+
+'Processing the data' means that we take the feature data (in any form you have: a matrix, a set of PLINK files, or some other delimited file) and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). For reasons discussed more in detail in [our vignette on preprocessing data](), this step is necessary even for datasets that are small enough to fit into the memory of your R session. We may process our `admix` data like this: 
+
+```{r}
+admix$rds <- process_matrix(X = admix$X, rds_dir = tempdir(), rds_prefix = 'admix') 
+str(readRDS(admix$rds))
+```
+
+'Creating a design' means that we take the processed data and create the three essential elements for data analysis: a design matrix, an outcome vector, and a penalty factor indicator. In our [math notation](), the design matrix is $\mathbf{X}$, the outcome vector is $\mathbf{y}$, and the penalty factor indicator is a vector of 1s and 0s, where 1s correspond to the features in $\mathbf{X}$ that will be penalized (and the 0s correspond to the unpenalized added predictors). To create a design for our 'admix' data, we do this: 
+
+```{r}
+# we will need some IDs for the participants
+paste0("ID", 1:nrow(admix$X)) -> admix$ID
+
+admix$design <- create_design(dat_file = admix$rds,
+              rds_dir = tempdir(), 
+              new_file = "new_admix",
+              feature_id = admix$ID,
+              add_outcome = data.frame(ID = admix$ID, y = admix$y),
+              outcome_id = "ID",
+              outcome_col = 'y',
+              logfile = "new_admix")
+str(readRDS(admix$design)) # check out what is here 
+```
+
 
 ## Basic model fitting 
 
-The `admix` data is already formatted to have elements $X$ and $y$, so I can jump right in with a call to `plmmr::plmm()` (our main function):
+The `admix` dataset is now ready to analyze with a call to `plmmr::plmm()` (our main function):
 
 ```{r admix_fit}
-admix_fit <- plmm(X = admix$X, y = admix$y)
+admix_fit <- plmm(design = admix$design)
 summary(admix_fit, lambda = admix_fit$lambda[50])
 ```
 
