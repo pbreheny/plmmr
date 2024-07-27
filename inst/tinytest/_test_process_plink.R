@@ -66,14 +66,16 @@ table(plink$fam$affection, penncath_pheno$CAD)
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
 tinytest::expect_identical(c(res$unpen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
-tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
+tinytest::expect_identical(as.character(plink$fam$family.ID[res$outcome_idx]), res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
-list.files("inst/extdata", pattern = "std_penncath_lite.*", full.names = T) |> file.remove()
+list.files("inst/extdata",
+           pattern = "std_penncath_lite.*",
+           full.names = T) |> file.remove()
 
 # test 2: is alignment working? -----------------------------
 # shuffle the IDs here, to test alignment
@@ -116,7 +118,7 @@ table(penncath_pheno$CAD)
 str(res$X_colnames[res$ns]); str(res$X_rownames)
 str(res$std_X_colnames); str(res$std_X_rownames)
 tinytest::expect_identical(c(res$unpen_colnames,res$X_colnames)[res$ns], res$std_X_colnames)
-tinytest::expect_identical(plink$rownames[res$outcome_idx], res$std_X_rownames)
+tinytest::expect_identical(as.character(plink$fam$family.ID[res$outcome_idx]), res$std_X_rownames)
 
 # are .bk files 'cleaned up' and labeled correctly?
 list.files("inst/extdata", pattern = "*.bk")
@@ -161,7 +163,7 @@ str(res)
 
 ### checks  -------------------------------------------------------------------
 # does final fam[,6] have the expected outcome?
-tinytest::expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
+tinytest::expect_identical(as.character(plink$fam$family.ID[1:1000]), res$X_rownames)
 
 # are row & column names (IDs) aligned?
 str(res$X_colnames); str(res$X_rownames)
@@ -175,7 +177,7 @@ list.files("inst/extdata", pattern = "*.bk")
 # clear example
 rm(X); rm(res); rm(predictors); rm(phen)
 
-# test 4: handle the case with no predictors ----------------------------
+# test 4: handle the case with no unpenalized predictors ----------------------------
 
 penncath_pheno <- read.csv("inst/extdata/penncath_clinical.csv")
 
@@ -209,5 +211,5 @@ tinytest::expect_identical(res$std_X_colnames, c(res$unpen_colnames,res$X_colnam
 list.files("inst/extdata", pattern = "*.bk")
 
 # clear example
-rm(X); rm(res); rm(predictors); rm(phen)
+rm(X); rm(res); rm(penncath_pheno); rm(plink)
 
