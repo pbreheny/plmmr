@@ -160,7 +160,7 @@ cv_fb_fit <- cv_plmm(design = pen_design,
 
 ```
 
-Fitting an equivalent model using the `penncath_lite` data that uses RAM could look like this: 
+Alternatively, we can pass the 'pen_design_rds' object to `cv_plmm()` for an equivalent analysis: 
 
 ```{r, eval=FALSE}
 cv_fit <- cv_plmm(design = pen_design_rds,
@@ -253,4 +253,19 @@ summary(fit_plus_newvars, idx = 1) # at highest penalty value, sex and age are s
 # look at the estimated coefficients 
 fb_fit$beta_vals[1:10, 1:5]
 fit_plus_newvars$beta_vals[1:10, 1:5]
+```
+
+And just as in the previous example, we can choose a value for $\lambda$ using cross validation: 
+
+```{r}
+cv_plus_newvars <- cv_plmm(design = new_pen_design,
+                           returnX = FALSE, # running this filebacked
+                           type = 'blup',
+                           penalty = "lasso",
+                           nfolds = 3,
+                           returnBiasDetails = TRUE,
+                           trace = TRUE)
+
+plot(cv_plus_newvars)
+summary(cv_plus_newvars)
 ```
