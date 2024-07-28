@@ -1,21 +1,21 @@
 ### plmmr log file ###
 Logging to ./cv-plmm.log 
-Host: fv-az569-582 
+Host: fv-az801-273 
 Current working directory: /home/runner/work/plmmr/plmmr/docs/reference 
-Start log at: 2024-07-28 01:19:50
+Start log at: 2024-07-28 01:23:34
 Call: cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X)) 
 
-Input data passed all checks at  2024-07-28 01:19:50
+Input data passed all checks at  2024-07-28 01:23:34
 
-Eigendecomposition finished at  2024-07-28 01:19:50
+Eigendecomposition finished at  2024-07-28 01:23:34
 
-Full model fit finished at 2024-07-28 01:19:50
+Full model fit finished at 2024-07-28 01:23:34
 
-Formatting for full model finished at 2024-07-28 01:19:50
+Formatting for full model finished at 2024-07-28 01:23:34
 
-Cross validation started at:  2024-07-28 01:19:50
-Started fold 1 at 2024-07-28 01:19:50
-Started fold 2 at 2024-07-28 01:19:50
-Started fold 3 at 2024-07-28 01:19:50
-Started fold 4 at 2024-07-28 01:19:50
-Started fold 5 at 2024-07-28 01:19:51
+Cross validation started at:  2024-07-28 01:23:34
+Started fold 1 at 2024-07-28 01:23:34
+Started fold 2 at 2024-07-28 01:23:34
+Started fold 3 at 2024-07-28 01:23:34
+Started fold 4 at 2024-07-28 01:23:34
+Started fold 5 at 2024-07-28 01:23:34
