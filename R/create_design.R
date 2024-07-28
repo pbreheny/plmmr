@@ -161,7 +161,7 @@ create_design <- function(dat_file,
   design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
   design$y <-  sample_idx$complete_samples[,..outcome_col]
   design$std_X_rownames <- sample_idx$complete_samples$ID
-
+gc()
   if (!is.null(add_predictor)) {
     if (is.null(predictor_id)) stop('If add_predictor is supplied, the predictor_id argument must also be supplied')
 
@@ -170,7 +170,7 @@ create_design <- function(dat_file,
                                        quiet = quiet,
                                        add_predictor = add_predictor,
                                        og_ids = og_ids)
-
+gc()
     # add predictors from external files --------------------------------------
     unstd_X <- add_predictors(obj = obj,
                               add_predictor = aligned_add_predictor,
@@ -180,7 +180,7 @@ create_design <- function(dat_file,
     # save items to return
     design$unpen<- unstd_X$unpen# save indices for unpenalized covariates
     design$unpen_colnames <- setdiff(colnames(add_predictor), predictor_id)
-
+gc()
   } else {
     design$unpen<- NULL
     design$unpen_colnames <- NULL
@@ -202,7 +202,7 @@ create_design <- function(dat_file,
   design$ns <- count_constant_features(fbm = unstd_X$design_matrix,
                                                  outfile = logfile,
                                                  quiet = quiet)
-
+gc()
   # subsetting -----------------------------------------------------------------
   subset_res <- subset_bigsnp(X = unstd_X$design_matrix,
                               complete_samples = design$outcome_idx,
@@ -215,7 +215,7 @@ create_design <- function(dat_file,
   design$ns <- subset_res$ns
   design$std_X_colnames <- unstd_X$colnames[subset_res$ns]
   rm(unstd_X)
-
+gc()
   # standardization ------------------------------------------------------------
   std_res <- standardize_bigsnp(X = subset_res$subset_X,
                                 new_file = new_file,
@@ -257,7 +257,7 @@ create_design <- function(dat_file,
   list.files(rds_dir,
              pattern=paste0('^unstd_design.*'),
              full.names=TRUE) |> file.remove()
-
+gc()
   # return -------------------------------------------------------------
   saveRDS(design, file.path(rds_dir, paste0(new_file, ".rds")))
   return(file.path(rds_dir, paste0(new_file, ".rds")))

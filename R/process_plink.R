@@ -4,8 +4,7 @@
 #' @param data_prefix           The prefix (as a character string) of the bed/fam data files (e.g., `data_prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param rds_prefix            String specifying the user's preferred filename for the to-b-created .rds file (will be create insie `rds_dir` folder)
-#' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written. Default to NULL (no log file written)
-#'                              Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.
+#' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
 #'                                * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
