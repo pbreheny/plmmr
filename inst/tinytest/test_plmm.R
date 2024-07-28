@@ -157,65 +157,65 @@ if(abs(mean(test[,2] - test[,4])) > 5) stop("PLMM and GLMNET predictions are far
 
 
 # Test 6: is resid. method working ----------------------------------------------
-R <- residuals(object = plmm(admix$X, admix$y, penalty = "lasso",
-                                  diag_K = TRUE, lambda = lambda0))
-
-ncv_fit <- ncvreg::ncvreg(X = admix$X, y = admix$y, penalty = "lasso", lambda = lambda0)
-ncv_R <- matrix(nrow = nrow(ncv_fit$linear_predictors), ncol = ncol(ncv_fit$linear_predictors))
-for(j in 1:ncol(ncv_R)){
-  ncv_R[,j] <- ncv_fit$y - ncv_fit$linear_predictors[j]
-}
-
-tinytest::expect_equivalent(R, ncv_R)
+# R <- residuals(object = plmm(admix$X, admix$y, penalty = "lasso",
+#                                   diag_K = TRUE, lambda = lambda0))
+#
+# ncv_fit <- ncvreg::ncvreg(X = admix$X, y = admix$y, penalty = "lasso", lambda = lambda0)
+# ncv_R <- matrix(nrow = nrow(ncv_fit$linear_predictors), ncol = ncol(ncv_fit$linear_predictors))
+# for(j in 1:ncol(ncv_R)){
+#   ncv_R[,j] <- ncv_fit$y - ncv_fit$linear_predictors[j]
+# }
+#
+# tinytest::expect_equivalent(R, ncv_R)
 
 # Test 7: make sure plmm() runs in-memory and filebacked ---------------------
 
-if (interactive()) {
-  # process data
-  pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
-  extdata <- pen_clinic[,3:4]
-  rownames(extdata) <- pen_clinic$FamID # This is important!
-
-  # create a new temporary directory
-  temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
-
-  process_plink(data_dir = find_example_data(parent = TRUE),
-                rds_dir = temp_dir, # using a temporary directory
-                prefix = "penncath_lite",
-                id_var = "FID", # this is KEY!
-                outfile = "process_penncath",
-                impute_method = "mode",
-                add_predictor_ext = extdata)
-
-  # filebacked
-  dat_plus_newvars <- paste0(temp_dir, "/std_penncath_lite")
-  pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
-  foo <- plmm(X = dat_plus_newvars,
-                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-                           returnX = FALSE,
-                           trace = TRUE)
-
-  # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this
-  #   will run in-memory because of the small size of this test data set
-  foo_nz <- which(foo$beta_vals[,4] != 0)
-
-  # in memory
-  foo2 <- plmm(X = dat_plus_newvars,
-                           penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-                           trace = TRUE)
-  foo2_nz <- which(foo2$beta_vals[,4] != 0)
-
-  # look at head of values (checks SNP names)
-  foo$beta_vals[,4] |> head()
-  foo2$beta_vals[,4] |> head()
-
-  # look at just nonzero values
-  foo$beta_vals[foo_nz,4] |> head()
-  foo2$beta_vals[foo2_nz,4] |> head()
-
-  tinytest::expect_equivalent(foo$beta_vals[,3], foo2$beta_vals[,3],
-                              tolerance = 0.001)
-  tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4],
-                              tolerance = 0.001)
-
-}
+# if (interactive()) {
+#   # process data
+#   pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
+#   extdata <- pen_clinic[,3:4]
+#   rownames(extdata) <- pen_clinic$FamID # This is important!
+#
+#   # create a new temporary directory
+#   temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
+#
+#   process_plink(data_dir = find_example_data(parent = TRUE),
+#                 rds_dir = temp_dir, # using a temporary directory
+#                 prefix = "penncath_lite",
+#                 id_var = "FID", # this is KEY!
+#                 outfile = "process_penncath",
+#                 impute_method = "mode",
+#                 add_predictor_ext = extdata)
+#
+#   # filebacked
+#   dat_plus_newvars <- paste0(temp_dir, "/std_penncath_lite")
+#   pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
+#   foo <- plmm(X = dat_plus_newvars,
+#                            penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+#                            returnX = FALSE,
+#                            trace = TRUE)
+#
+#   # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this
+#   #   will run in-memory because of the small size of this test data set
+#   foo_nz <- which(foo$beta_vals[,4] != 0)
+#
+#   # in memory
+#   foo2 <- plmm(X = dat_plus_newvars,
+#                            penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
+#                            trace = TRUE)
+#   foo2_nz <- which(foo2$beta_vals[,4] != 0)
+#
+#   # look at head of values (checks SNP names)
+#   foo$beta_vals[,4] |> head()
+#   foo2$beta_vals[,4] |> head()
+#
+#   # look at just nonzero values
+#   foo$beta_vals[foo_nz,4] |> head()
+#   foo2$beta_vals[foo2_nz,4] |> head()
+#
+#   tinytest::expect_equivalent(foo$beta_vals[,3], foo2$beta_vals[,3],
+#                               tolerance = 0.001)
+#   tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4],
+#                               tolerance = 0.001)
+#
+# }

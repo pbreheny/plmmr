@@ -130,6 +130,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                               trainX = train_X,
                               testX = test_X,
                               og_scale_beta = format.i$beta_vals,
+                              std_X_details = fold_args$std_X_details,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
