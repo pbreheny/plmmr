@@ -32,6 +32,7 @@ Imports:
     bigsnpr,
     bigstatsr,
     data.table,
+    glmnet,
     Matrix,
     ncvreg,
     utils

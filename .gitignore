@@ -9,6 +9,7 @@ data-raw/admix.rds
 *.o
 *.so
 *.desc
+*.tmp
 .Rhistory
 .DS_Store
 admixture_data.R 

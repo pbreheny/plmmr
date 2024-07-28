@@ -12,6 +12,7 @@ NULL
 #' @importFrom bigmemory big.matrix
 #' @importFrom bigmemory sub.big.matrix
 #' @importFrom data.table merge.data.table
+#' @importFrom glmnet glmnet
 #' @importFrom utils setTxtProgressBar
 #' @importFrom utils txtProgressBar
 ## usethis namespace: end
