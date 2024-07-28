@@ -15,11 +15,11 @@ standardize_fbm(subset_X, prefix, rds_dir, ns, non_gen, outfile, quiet)
 
 \item{ns}{Integer vector with indices of non-singular columns of \code{subset_X}}
 
-\item{non_gen}{Integer vector of indices with non-genomic covariates}
-
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written.}
 
 \item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
+
+\item{unpen}{Integer vector of indices with non-genomic covariates}
 }
 \value{
 A list that includes:

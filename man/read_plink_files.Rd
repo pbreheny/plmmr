@@ -4,12 +4,12 @@
 \alias{read_plink_files}
 \title{A function to read in PLINK files using \code{bigsnpr} methods}
 \usage{
-read_plink_files(data_dir, prefix, rds_dir, outfile, overwrite, quiet)
+read_plink_files(data_dir, data_prefix, rds_dir, outfile, overwrite, quiet)
 }
 \arguments{
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+\item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 

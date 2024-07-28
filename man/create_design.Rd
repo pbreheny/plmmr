@@ -2,65 +2,55 @@
 % Please edit documentation in R/create_design.R
 \name{create_design}
 \alias{create_design}
-\title{A function to create a design matrix to be passed to a model fitting function}
+\title{A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function}
 \usage{
 create_design(
-  dat,
+  dat_file,
   rds_dir,
-  prefix,
-  is_bigsnp,
-  na_phenotype_vals = c(-9),
-  handle_missing_phen = "prune",
-  add_phen = NULL,
-  pheno_id = NULL,
-  pheno_name = NULL,
-  add_predictor_fam = NULL,
+  new_file,
+  feature_id,
+  add_outcome,
+  outcome_id,
+  outcome_col,
+  na_outcome_vals = c(-9, NA_integer_),
   add_predictor = NULL,
-  id_var = "IID",
-  outfile = NULL,
+  predictor_id = NULL,
+  logfile = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
 }
 \arguments{
-\item{dat}{Filepath to rds file of processed data}
+\item{dat_file}{A filepath to rds file of processed data (data from \code{process_plink()}, \code{process_delim()}, or \code{process_matrix()})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files.}
 
-\item{prefix}{Optional user-specified prefix for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.}
+\item{new_file}{User-specified filename (\emph{without .bk/.rds extension}) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.}
 
-\item{is_bigsnp}{Logical: is the data coming from \code{process_plink()}? For now, this must be TRUE. Working to expand to accommodate other kinds of data.}
+\item{feature_id}{This argument is the ID for the feature data. Two options here:
+- for PLINK data: a string specifying an ID column of the PLINK \code{.fam} file. Options are "IID" (default) and "FID"
+- for all other data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with \code{process_delim()})}
 
-\item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
+\item{add_outcome}{A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.}
 
-\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
-* "prune" (default): observations with missing phenotype are removed
-Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-or (2) prune missing values}
+\item{outcome_id}{A string specifying the name of the ID column in 'add_outcome'}
 
-\item{add_phen}{Optional: A \strong{data frame} with at least two columns: and ID column and a phenotype column}
+\item{outcome_col}{A string specifying the name of the phenotype column in 'add_outcome'}
 
-\item{pheno_id}{Optional: A string specifying the name of the ID column in \code{pheno}. MUST be specified if \code{add_phen} is specified.}
+\item{na_outcome_vals}{A vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).}
 
-\item{pheno_name}{Optional: A string specifying the name of the phenotype column in \code{pheno}.  MUST be specified if \code{add_phen} is specified. This column will be used as the default \code{y} argument to 'plmm()'.}
+\item{add_predictor}{Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.}
 
-\item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
-
-\item{add_predictor}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-This argument takes one of two kinds of arguments:
-- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files. \strong{No NA values} can be in this vector.
-The names will be used to subset and align this external covariate with the supplied PLINK data. \strong{No NA values} can be in this matrix.
-- a numeric matrix whose row names align with the sample IDs in the PLINK files.
+\item{predictor_id}{Optinal: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
 The names will be used to subset and align this external covariate with the supplied PLINK data.}
 
-\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
-
-\item{outfile}{Optional: name of the '.log' file to be written}
+\item{logfile}{Optional: name of the '.log' file to be written}
 
 \item{overwrite}{Logical: should existing .rds files be overwritten? Defaults to FALSE.}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 }
 \description{
-A function to create a design matrix to be passed to a model fitting function
+A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 }

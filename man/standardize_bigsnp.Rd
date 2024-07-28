@@ -5,11 +5,11 @@
 \title{A helper function to standardize a \code{bigSNP}}
 \usage{
 standardize_bigsnp(
-  obj,
-  prefix,
+  X,
+  new_file,
   rds_dir,
   non_gen,
-  complete_phen,
+  complete_outcome,
   id_var,
   outfile,
   quiet,
@@ -17,26 +17,19 @@ standardize_bigsnp(
 )
 }
 \arguments{
-\item{obj}{A list that includes:
+\item{X}{A list that includes:
 (1) subset_X: a \code{big.matrix} object that has been subset &/or had any additional predictors appended as columns
 (2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+\item{new_file}{The new_file (as a character string) of the bed/fam data files (e.g., \code{new_file = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{non_gen}{An integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2.
-Note: this is typically passed from the result of \code{add_predictors()}}
+\item{outfile}{Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
-\item{complete_phen}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
+\item{quiet}{Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)}
 
-\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
-
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
-
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
-
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten?}
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/new_file, should these be overwritten?}
 }
 \value{
 A list with a new component of \code{obj} called 'std_X' - this is an FBM with column-standardized data.

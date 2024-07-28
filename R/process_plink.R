@@ -40,7 +40,7 @@
 #'
 #' @export
 #'
-#' @details
+#' @details See vignette on processing PLINK files
 #' @examples
 #' \donttest{
 #' temp_dir <- paste0(tempdir()) # using a temporary directory here

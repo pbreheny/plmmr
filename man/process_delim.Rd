@@ -10,7 +10,7 @@ process_delim(
   rds_dir = data_dir,
   bk_filename,
   ind.col,
-  unpen= NULL,
+  unpen = NULL,
   outfile,
   overwrite = FALSE,
   quiet = FALSE
@@ -33,7 +33,7 @@ Defaults to \code{data_dir}}
 If you're not sure how many columns are in your file,
 use something like \code{data.table::fread()} to examine the first row or two.}
 
-\item{non_gen}{Numeric vector with indices of columns that have non-genomic information. \strong{Note}: if you plan on
+\item{unpen}{Numeric vector with indices of columns that have non-genomic information. \strong{Note}: if you plan on
 estimating the genomic relatedness among observations in your file, you
 \strong{must} include this information in order for the estimates to be correct.}
 
