@@ -211,7 +211,7 @@ cv_plmm <- function(design,
           file = logfile, append = TRUE)
     }
   }
-
+  gc()
 
   # set up arguments for cv ---------------------------
   cv_args <- fit_args
@@ -313,7 +313,7 @@ cv_plmm <- function(design,
       cat("Predicted outcomes saved to:", paste0(save_rds, "_yhat.rds"), "at", pretty_time(),
           file = logfile, append = TRUE)
     }
-
+    gc()
   }
 
   # post-process results -----------------------------------------

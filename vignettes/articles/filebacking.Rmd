@@ -101,8 +101,6 @@ apply(std_X[,], 2, var) |> summary() # ... & variance 1
 
 ## Step 3: Fit a model
 
-Note: for data coming from `process_plink()`, the `y` argument in `plmm()` defaults to using the 6th column from the '.fam' file as the phenotype/outcome (this behavior is the same as what PLINK does).
-
 ```{r}
 fb_fit <- plmm(design = pen_design,
                returnX = FALSE,
