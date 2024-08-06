@@ -32,11 +32,11 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
   if(!quiet){
     cat("\nThere are", obj$n, "observations and",
         obj$p, "genomic features in the specified data files, representing chromosomes",
-        chr_range[1], "-", chr_range[2])
+        chr_range[1], "-", chr_range[2], "\n")
   }
   cat("\nThere are", obj$n, "observations and",
       obj$p, "genomic features in the specified data files, representing chromosomes",
-      chr_range[1], "-", chr_range[2],
+      chr_range[1], "-", chr_range[2], "\n",
       file = outfile, append = TRUE)
 
   # save these counts
