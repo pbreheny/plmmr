@@ -63,7 +63,9 @@ create_design <- function(dat_file,
 
     if (!identical(add_outcome[,outcome_id], add_predictor[,predictor_id])) {
       stop("Something is off in the supplied outcome and/or predictor data.
-         Make sure the indicated ID columns are character type, represent the same samples, and have the same order.")
+         Make sure the indicated ID columns are character type, represent the same samples, and have the same order.
+           Note: 'create_design()' will align the two external data items (outcome and predictors) with
+           the PLINK data. It is your responsibility to align the external data items with each other.\n")
     }
 
   }

@@ -9,6 +9,7 @@
 #' @keywords internal
 big_cbind <- function(A, B, C, quiet){
   if (!quiet) {
+    cat("Column-wise combining data sets\n")
     pb <- txtProgressBar(min = 0, max = ncol(A) + ncol(B), style = 3)
   }
 # cat("fill in first few columns of C with A\n")

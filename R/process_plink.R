@@ -4,7 +4,9 @@
 #' @param data_prefix           The prefix (as a character string) of the bed/fam data files (e.g., `data_prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param rds_prefix            String specifying the user's preferred filename for the to-b-created .rds file (will be create insie `rds_dir` folder)
+#'                              Note: 'rds_prefix' cannot be the same as 'data_prefix'
 #' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
+#'                              Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
 #'                                * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -67,8 +69,11 @@ process_plink <- function(data_dir,
                           overwrite = FALSE,
                           ...){
 
+  if (identical(rds_prefix, data_prefix)) stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n")
+
   # start log -----------------------------------------
   if(!is.null(logfile)){
+    # TODO there seems to be a bug here -- needs investigation
     logfile <- create_log(file.path(rds_dir, logfile))
     cat("\nLogging to", logfile)
   } else {
