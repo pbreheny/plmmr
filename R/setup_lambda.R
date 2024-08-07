@@ -46,7 +46,7 @@ setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor, inter
     cprod_res <- .Call("big_crossprod",
                        pen_X@address,
                        fit$residuals,
-                       as.integer(bigstatsr::nb_cores()),
+                       as.integer(count_cores()),
                        PACKAGE = "plmmr")
     cprod <- cprod_res[[1]]
     decomp_backsolve <- abs(cprod)/penalty_factor[ind]

@@ -23,7 +23,7 @@ standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, 
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call("big_std",
                    X@address,
-                   as.integer(bigstatsr::nb_cores()),
+                   as.integer(count_cores()),
                    PACKAGE = "plmmr")
 X@address <- std_res$std_X # saves standardized .bk
 # TODO: pick up here -- what to do about file names here... the same .bk is being modified..

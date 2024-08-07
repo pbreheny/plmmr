@@ -12,7 +12,7 @@ count_constant_features <- function(fbm, outfile, quiet){
   #   *become* constant!
   colstats <- .Call('big_sd',
                     fbm@address,
-                    as.integer(bigstatsr::nb_cores()),
+                    as.integer(count_cores()),
                     PACKAGE = 'plmmr')
   ns <- which(colstats$sd_vals > 1e-4)
   constants_idx <- sum(colstats$sd_vals < 1e-4)

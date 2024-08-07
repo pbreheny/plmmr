@@ -55,7 +55,7 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile, overwrite,
 
   bigsnpr::snp_readBed2(bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
                         backingfile = file.path(rds_dir, data_prefix),
-                        ncores = bigstatsr::nb_cores())
+                        ncores = count_cores())
 
   obj <- bigsnpr::snp_attach(paste0(file.path(rds_dir, data_prefix), ".rds"))
   return(obj)

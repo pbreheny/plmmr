@@ -22,7 +22,7 @@ rotate_filebacked <- function(prep, ...){
   # re-standardize (since std_X is big, we do this in C++)
   std_rot <- .Call("big_std",
                    rot_X@address,
-                   as.integer(bigstatsr::nb_cores()),
+                   as.integer(count_cores()),
                    PACKAGE = "plmmr")
   stdrot_X@address <- std_rot[[1]]
 

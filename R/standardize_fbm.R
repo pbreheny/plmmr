@@ -25,7 +25,7 @@ standardize_fbm <- function(subset_X, prefix, rds_dir, ns, non_gen,
   # centering & scaling
   std_res <- .Call("big_std",
                    subset_X_bm@address,
-                   as.integer(bigstatsr::nb_cores()),
+                   as.integer(count_cores()),
                    PACKAGE = "plmmr")
 
   std_X <- bigmemory::big.matrix(nrow = nrow(subset_X), ncol = ncol(subset_X))

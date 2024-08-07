@@ -33,12 +33,20 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
 
-    fold_args$std_X <- train_X <- bigstatsr::big_copy(full_cv_prep$std_X,
-                                              ind.row = which(fold!=i)) |> fbm2bm()
+    # fold_args$std_X <- train_X <- bigstatsr::big_copy(full_cv_prep$std_X,
+    #                                           ind.row = which(fold!=i)) |> fbm2bm()
+
+    fold_args$std_X <- train_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+                                                      rows = which(fold!=i),
+                                                      type = "double",
+                                                      backingfile = paste0("fold",i,".bk"),
+                                                      descriptorfile = paste0("fold",i,".desc"),
+                                                      backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
                            fold_args$std_X@address,
-                           as.integer(bigstatsr::nb_cores()),
+                           as.integer(count_cores()),
                            PACKAGE = "plmmr")
     fold_args$std_X@address <- train_data$std_X
     fold_args$std_X_details$center <- train_data$std_X_center
