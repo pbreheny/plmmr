@@ -11,7 +11,7 @@
 #'
 #' @keywords internal
 cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
-# save the 'prep' object from the plmm_prep() in cv_plmm
+  # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
   y <- cv_args$y
   # make list to hold the data for this particular fold:
@@ -29,25 +29,38 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     convex = cv_args$convex,
                     dfmax = cv_args$dfmax,
                     lambda = cv_args$lambda)
+
   # subset std_X, U, and y to match fold indices ------------------------
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
 
-    # fold_args$std_X <- train_X <- bigstatsr::big_copy(full_cv_prep$std_X,
-    #                                           ind.row = which(fold!=i)) |> fbm2bm()
+    # designate the training set
+    train_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+                                   rows = which(fold!=i),
+                                   type = "double",
+                                   backingfile = paste0("train_fold",i,".bk"),
+                                   descriptorfile = paste0("train_fold",i,".desc"),
+                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
-    fold_args$std_X <- train_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                                      rows = which(fold!=i),
-                                                      type = "double",
-                                                      backingfile = paste0("fold",i,".bk"),
-                                                      descriptorfile = paste0("fold",i,".desc"),
-                                                      backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+    # TODO should these fold-specific data files be created in a tempdir? Then,
+    #   the entire tempdir could be deleted at the end of this function....
+
+    # create the copy of the training data to be standardized
+    fold_args$std_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+                                           rows = which(fold!=i),
+                                           type = "double",
+                                           backingfile = paste0("std_train_fold",i,".bk"),
+                                           descriptorfile = paste0("std_train_fold",i,".desc"),
+                                           backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+
+
 
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
-                           fold_args$std_X@address,
-                           as.integer(count_cores()),
-                           PACKAGE = "plmmr")
+                        fold_args$std_X@address,
+                        as.integer(count_cores()),
+                        PACKAGE = "plmmr")
+
     fold_args$std_X@address <- train_data$std_X
     fold_args$std_X_details$center <- train_data$std_X_center
     fold_args$std_X_details$scale <- train_data$std_X_scale
@@ -78,8 +91,12 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
   # extract test set --------------------------------------
   # this comes from cv prep on full data
   if (cv_args$fbm_flag){
-    test_X <- bigstatsr::big_copy(full_cv_prep$std_X,
-                                  ind.row = which(fold==i)) |> fbm2bm()
+    test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+                                  rows = which(fold==i),
+                                  type = "double",
+                                  backingfile = paste0("test_fold",i,".bk"),
+                                  descriptorfile = paste0("test_fold",i,".desc"),
+                                  backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, fold_args$std_X_details$ns, drop=FALSE]
@@ -127,11 +144,11 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   # get beta values back in original scale
   og_betas.i <- untransform(
-      std_scale_beta = fit.i$std_scale_beta,
-      p = nrow(fit.i$std_scale_beta)-1, # take off 1 for intercept
-      std_X_details = fold_args$std_X_details,
-      fbm_flag = fold_args$fbm_flag,
-      use_names = FALSE)
+    std_scale_beta = fit.i$std_scale_beta,
+    p = nrow(fit.i$std_scale_beta)-1, # take off 1 for intercept
+    std_X_details = fold_args$std_X_details,
+    fbm_flag = fold_args$fbm_flag,
+    use_names = FALSE)
 
 
   if(type == "lp"){
@@ -161,6 +178,14 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   }
 
+  # cleanup -----------------------------------------------------------------
+  # delete files created in cross-validation
+  list.files(path = bigmemory::dir.name(full_cv_prep$std_X),
+             pattern = paste0("fold",i),
+             full.names = TRUE) |> file.remove()
+  gc() # release the pointer
+
+  # return -----------------------------------------------------------------
   loss <- sapply(1:ncol(yhat), function(ll) plmm_loss(test_y, yhat[,ll]))
   list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
 }

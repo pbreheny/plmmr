@@ -3,7 +3,7 @@
 #' Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 #'  linear mixed models over a grid of values for the regularization parameter `lambda`.
 #'
-#' @param design                  Design matrix object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
+#' @param design          Design matrix object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
 #' @param K               Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
@@ -407,8 +407,14 @@ cv_plmm <- function(design,
         file = logfile, append = TRUE)
   }
 
+  # release pointer
+  gc()
+
+  # return ----------------------------------------------------------------
   if (return_fit){
     return(structure(val, class="cv_plmm"))
   }
+
+
 
 }

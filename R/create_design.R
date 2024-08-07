@@ -45,6 +45,14 @@ create_design <- function(dat_file,
     stop('The columns of "add_outcome" must be named.')
   }
 
+  if (grepl(pattern = 'fold', x = rds_file)) {
+    warning("The string 'fold' is a keyword that is used to create intermediate files in cv_plmm().
+            If you call cv_plmm() on this design, there is a big possiblity that you will lose files unintentionally.
+            I recommend you either (1) choose a different 'rds_file' name (best option) or (2)
+            double check that the folder where you will save your results from
+            downstream analysis is not the same folder where you are saving this design.")
+  }
+
   # additional checks for case where add_predictor is specified
   if (!is.null(add_predictor)) {
 
