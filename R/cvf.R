@@ -53,8 +53,6 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                                            descriptorfile = paste0("std_train_fold",i,".desc"),
                                            backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
-
-
     # re-scale data & check for singularity
     train_data <- .Call("big_std",
                         fold_args$std_X@address,

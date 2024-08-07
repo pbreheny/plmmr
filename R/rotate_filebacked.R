@@ -16,6 +16,7 @@ rotate_filebacked <- function(prep, ...){
   std_X <- prep$std_X
   rot_X <- wUt%*%std_X # using %*% method from bigalgebra
   stdrot_X <- bigmemory::big.matrix(nrow = nrow(wUt), ncol = ncol(std_X))
+
   # rotate y
   rot_y <- wUt%*%prep$centered_y
 
