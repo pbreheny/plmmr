@@ -103,7 +103,6 @@ apply(std_X[,], 2, var) |> summary() # ... & variance 1
 
 ```{r}
 fb_fit <- plmm(design = pen_design,
-               returnX = FALSE,
                # this datset is small enough to fit in memory
                # by setting returnX = FALSE, I force plmm() to run on the filebacked data
                save_rds = file.path(temp_dir, "fb_fit"),
@@ -115,6 +114,7 @@ fb_fit <- plmm(design = pen_design,
 We can confirm that our filebacked methods and in-memory methods give the same results:
 ```{r}
 fit <- plmm(design = pen_design, # will run in-memory by default, since data will fit
+            returnX = TRUE, # must explicitly request the data to be read into memory
             trace = TRUE)
 
 b1 <- fb_fit$beta_vals |> as.matrix()
@@ -144,7 +144,6 @@ In most applications, we will want to fit a model using cross validation in orde
 ```{r}
 cv_fb_fit <- cv_plmm(design = pen_design,
                      type = 'blup',
-                     returnX = FALSE,
                      nfolds = 3, # for sake of testing, I made this small. 
                      # In practice, 3 folds is usually not enough for robust 
                      # cross validation - hence, the default is nfolds = 5
@@ -194,10 +193,7 @@ The default penalty in `plmmr` is the lasso. Another option would be the minimax
 [^1]: Zhang, Cun-Hui. "Nearly unbiased variable selection under minimax concave penalty." (2010): 894-942.
 
 ```{r}
-fb_mcp <- plmm(design = pen_design,
-                 penalty = "MCP",
-                 returnX = FALSE,
-                 trace = TRUE)
+fb_mcp <- plmm(design = pen_design, penalty = "MCP", trace = TRUE)
 
 plot(fb_mcp)
 summary(fb_mcp, idx = 50)
@@ -236,7 +232,6 @@ We usually want these kinds of variables to always be in the model (i.e., they a
 ```{r}
 fit_plus_newvars <- plmm(design = new_pen_design,
                          K = fb_fit$K, 
-                         returnX = FALSE,
                          trace = TRUE)
 ```
 
@@ -257,7 +252,6 @@ And just as in the previous example, we can choose a value for $\lambda$ using c
 
 ```{r}
 cv_plus_newvars <- cv_plmm(design = new_pen_design,
-                           returnX = FALSE, # running this filebacked
                            type = 'blup',
                            penalty = "lasso",
                            nfolds = 3,

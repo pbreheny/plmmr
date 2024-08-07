@@ -2,7 +2,7 @@
 #' This function is intended to be called after either `process_plink()` or `process_delim()` has been called once.
 #'
 #' @param path The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path.
-#' @param returnX Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.
+#' @param returnX Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE.
 #' @param trace Logical: Should trace messages be shown? Default is TRUE.
 #' @returns A list with these components:
 #'  * std_X, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See `bigstatsr::FBM()` and `bigsnpr::bigSnp-class` documentation for details.
@@ -36,7 +36,7 @@
 #' The rows of `X` will be sorted to align in the same order as in `fam`, where rownames of `X` will be sample ID.
 #'
 #'
-get_data <- function(path, returnX, trace = TRUE){
+get_data <- function(path, returnX = FALSE, trace = TRUE){
 
  path <- check_for_file_extension(path)
 
@@ -46,18 +46,6 @@ get_data <- function(path, returnX, trace = TRUE){
 
   # attach std_X
   std_X_bm <- attach.big.matrix(obj$std_X)
-
-  # return data in a tractable format
-  if (missing(returnX)) {
-    if (utils::object.size(std_X_bm) > 1e8) {
-      warning("Due to the large size of X (>100 Mb), X has been returned as a file-backed matrix\n.
-              To turn this message off, explicitly specify fbm=TRUE or fbm=FALSE)\n.")
-      returnX <- FALSE
-    } else {
-      # if it fits, it ships
-      returnX <- TRUE
-    }
-  }
 
   if(returnX){
     obj$std_X <- std_X_bm[,]
