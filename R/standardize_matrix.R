@@ -20,11 +20,16 @@ standardize_matrix <- function(X){
     }
 }
 
-    standardization <- .Call("standardize", X, PACKAGE = 'plmmr')
+    standardization <- .Call("in_mem_std", X, PACKAGE = 'plmmr')
     dimnames(standardization[[1]]) <- dimnames(X)
     ns <- which(standardization[[3]] > 1e-6)
     std_X <- standardization[[1]]
     std_X_details <- list()
+
+    # difference from ncvreg::std(): instead of removing singular columns,
+    #   this version fills constant columns with 0s to preserve the dimension
+    #   of the matrix.
+    std_X[,-ns] <- 0
 
     attr(std_X, "center") <- std_X_details$center <- standardization[[2]]
     attr(std_X, "scale") <- std_X_details$scale <- standardization[[3]]

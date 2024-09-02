@@ -13,7 +13,7 @@ extern SEXP big_sd(SEXP X_, SEXP ncore_);
 extern SEXP big_std(SEXP X_, SEXP ncore_);
 
 // standardize a matrix of in-memory data
-extern SEXP standardize(SEXP X);
+extern SEXP in_mem_std(SEXP X_);
 
 // big_crossprod
 extern SEXP big_crossprod(SEXP X_,
@@ -25,7 +25,7 @@ static const R_CallMethodDef callMethods[] = {
   {"big_crossprod", (DL_FUNC) &big_crossprod, 4},
   {"big_std", (DL_FUNC) &big_std, 2},
   {"big_sd", (DL_FUNC) &big_sd, 2},
-  {"standardize", (DL_FUNC) &standardize, 1},
+  {"in_mem_std", (DL_FUNC) &in_mem_std, 1},
   {NULL, NULL, 0}
 };
 

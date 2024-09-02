@@ -2,8 +2,10 @@
 // Note: this function is taken from the R package ncvreg;
 // See https://github.com/pbreheny/ncvreg/blob/master/src/standardize.c
 
-List standardize(NumericMatrix X) {
+RcppExport SEXP in_mem_std(SEXP X_) {
+
   // Declarations
+  NumericMatrix X = NumericMatrix(X_);
   int n = X.nrow();
   int p = X.ncol();
   NumericMatrix XX(n, p);
