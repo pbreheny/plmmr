@@ -11,7 +11,6 @@
 #define UTILITIES_H
 
 using namespace Rcpp;
-using namespace std;
 
 // double prod(XPtr<BigMatrix> X_, double *y, int i, int p);
 double crossprod(XPtr<BigMatrix> X_, double *y, int j, int n);

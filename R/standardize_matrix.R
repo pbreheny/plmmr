@@ -1,23 +1,37 @@
-#' A helper function to standardize matrices 
+#' A helper function to standardize matrices
 #'
-#' @param X a matrix 
-#' @param penalty_factor a vector of 0s and 1s, passed from `plmm()` 
+#' @param X a matrix
 #'
-#' @returns a list with the standardized matrix and its details 
+#' @returns a list with the standardized matrix and its details
 #' @keywords internal
 #'
-standardize_matrix <- function(X, penalty_factor){
-  std_X <- ncvreg::std(X)
-  std_X_details <- list(center = attr(std_X, 'center'),
-                        scale = attr(std_X, 'scale'),
-                        ns = attr(std_X, 'nonsingular'))
-  if (!is.null(penalty_factor)) {
-    # if user supplied penalty factor, make sure to adjust for columns that 
-    # may have been constant features 
-    penalty_factor <- penalty_factor[std_X_details$ns]
-  }
-  
-  return(list(std_X = std_X,
-              std_X_details = std_X_details,
-              penalty_factor = penalty_factor))
+#' @details
+#' This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
+#'
+standardize_matrix <- function(X){
+
+  if (typeof(X) == 'integer') storage.mode(X) <- 'double'
+  if (!inherits(X, "matrix")) {
+    if (is.numeric(X)) {
+      X <- matrix(as.double(X), ncol=1)
+    } else {
+      tmp <- try(X <- stats::model.matrix(~0+., data=X), silent=TRUE)
+      if (inherits(tmp, "try-error")) stop("X must be a matrix or able to be coerced to a matrix", call.=FALSE)
+    }
+}
+
+    standardization <- .Call("standardize", X, PACKAGE = 'plmmr')
+    dimnames(standardization[[1]]) <- dimnames(X)
+    ns <- which(standardization[[3]] > 1e-6)
+    std_X <- standardization[[1]]
+    std_X_details <- list()
+
+    attr(std_X, "center") <- std_X_details$center <- standardization[[2]]
+    attr(std_X, "scale") <- std_X_details$scale <- standardization[[3]]
+    attr(std_X, "nonsingular") <- std_X_details$ns <- ns
+
+    res <- list(std_X = std_X,
+                std_X_details = std_X_details)
+
+    return(res)
 }
