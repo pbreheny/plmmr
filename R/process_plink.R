@@ -3,7 +3,7 @@
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
 #' @param data_prefix           The prefix (as a character string) of the bed/fam data files (e.g., `data_prefix = 'mydata'`)
 #' @param rds_dir               The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param rds_prefix            String specifying the user's preferred filename for the to-b-created .rds file (will be create insie `rds_dir` folder)
+#' @param rds_prefix            String specifying the user's preferred filename for the to-be-created .rds file (will be create insie `rds_dir` folder)
 #'                              Note: 'rds_prefix' cannot be the same as 'data_prefix'
 #' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
 #'                              Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.

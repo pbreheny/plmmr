@@ -1,17 +1,17 @@
 #' A function to read in large data files as an FBM
 #'
-#' @param file          The file to be read in, without the filepath. This should be a file of numeric values, no header row!
+#' @param data_dir      The directory to the file.
+#' @param data_file     The file to be read in, without the filepath. This should be a file of numeric values, no header row!
 #'                      Headers should be taken out of the file and supplied to the `col_names` argument in `plmm()`
-#'                      Example: use `file = "myfile.txt"`, not `file = "~/mydirectory/myfile.txt"`
-#' @param data_dir      The directory to the file
+#'                      Example: use `data_file = "myfile.txt"`, not `data_file = "~/mydirectory/myfile.txt"`
 #' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files
 #'                      Defaults to `data_dir`
-#' @param bk_filename   Optional string to name the backingfile that will be created for the output data. Defaults to `paste0(std_`. `prefix`).
-#'                      **Note**: Do NOT include a `.bk` extension in the filename.
-#' @param ind.col       Numeric vector of the columns to read in. Don't use negative indicies.
+#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create insie `rds_dir` folder)
+#'                      Note: 'rds_prefix' cannot be the same as 'data_prefix'
+#' @param col_ind       Numeric vector of the columns to read in. Don't use negative indices.
 #'                      If you're not sure how many columns are in your file,
-#'                      use something like `data.table::fread()` to examine the first row or two.
-#' @param unpen      Numeric vector with indices of columns that have non-genomic information. **Note**: if you plan on
+#'                      one option would be to use `data.table::fread()` to examine the first row or two.
+#' @param unpen         Numeric vector with indices of columns that have non-genomic information. **Note**: if you plan on
 #'                      estimating the genomic relatedness among observations in your file, you
 #'                      **must** include this information in order for the estimates to be correct.
 #' @param outfile       Optional: the name (character string) of the prefix of the
@@ -25,7 +25,7 @@
 #' @return Nothing is returned by this function, but (at least) two files are created in
 #' the location specified by `rds_dir`:
 #'
-#' * 'std_prefix.rds': This is the `bigsnpr::bigSNP` object
+#' * 'std_prefix.rds': This is the `bigstatsr` object
 #' that holds the PLINK data along with meta-data. See details for explanation of what
 #' is included in this meta-data
 #'
@@ -44,17 +44,18 @@
 #' # colon2_rds <- readRDS(paste0(temp_dir, "std_colon2.rds"))
 #' # str(colon2_rds)
 #'
-process_delim <- function(file,
-                          data_dir,
+process_delim <- function(data_dir,
+                          data_file,
                           rds_dir = data_dir,
-                          bk_filename,
+                          rds_prefix,
                           ind.col,
-                          unpen= NULL,
-                          outfile,
+                          impute = TRUE,
+                          impute_method = 'mode',
+                          quiet = FALSE,
                           overwrite = FALSE,
-                          quiet = FALSE){
+                          ...){
 
-  prefix <- unlist(strsplit(file, split = "\\."))[1]
+  prefix <- unlist(strsplit(data_file, split = "\\."))[1]
 
   if(missing(bk_filename)){
     bk_filename <- paste0("std_", prefix)
