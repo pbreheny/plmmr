@@ -158,6 +158,8 @@ process_plink <- function(data_dir,
               n = step3$n,
               p = step3$p)
 
+  structure(ret, class = "processed_plink")
+
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))
 

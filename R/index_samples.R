@@ -42,11 +42,11 @@ index_samples <- function(obj,
 
     if (!quiet) {
       cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
-          "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n")
+          "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n")
     }
 
     cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
-        "samples are in both your genotype and phenotype data. We will subset our analysis to include only these samples.\n",
+        "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n",
         file = outfile, append = TRUE)
 
   }
