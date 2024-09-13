@@ -77,16 +77,14 @@ process_delim <- function(data_dir,
   # notify about missing values ---------------------------------
   if(!quiet){
     cat("At this time, plmmr::process_delim() does not not handle missing values in delimited data.
-      Please make sure you have addressedd missingness before you proceed.\n")
+      Please make sure you have addressed missingness before you proceed.\n")
   }
 
   # create return object --------------------------------------------
-  ret <- list(X = bigmemory::describe(X),
+  ret <- structure(list(X = bigmemory::describe(X),
               # save original dimensions
               n = nrow(X),
-              p = ncol(X))
-
-  structure(ret, class = "processed_delim")
+              p = ncol(X)), class = "processed_delim")
 
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))

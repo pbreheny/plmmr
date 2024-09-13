@@ -107,7 +107,6 @@ plmm_prep <- function(std_X,
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
       if (trace) cat("Calculating the eigendecomposition of K\n")
-
       eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
       K <- eigen_res$K
       s <- eigen_res$s

@@ -1,6 +1,6 @@
 #' A helper function to count constant features
 #'
-#' @param fbm An FBM object, usually the 'genotypes' component from a bigSNP list
+#' @param fbm A filebacked `big.matrix`
 #' @param outfile String specifying name of log file
 #' @param quiet Logical: should a message be printed to the console
 #' @return ns A numeric vector with the indices of the non-singular columns of the matrix associated with `counts`

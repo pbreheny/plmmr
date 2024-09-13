@@ -22,13 +22,18 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, use_names = 
   # this will create columns of zeros for betas corresponding to singular columns
   if (fbm_flag) {
     untransformed_beta <- Matrix::Matrix(0,
-                                 nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept
+                                 nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept; see note below
                                  ncol = ncol(std_scale_beta), # this is the number of lambda values
                                  sparse = TRUE)
   } else {
     untransformed_beta <- matrix(0,
-                                 nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept
+                                 nrow = (p + 1), # + 1 is for the intercept; see note below
                                  ncol = ncol(std_scale_beta)) # again, # lambda values
+
+    ## Note: for in-memory matrix data, unpenalized columns are included in 'p',
+    ##     the number of columns in X;
+    ##     This differs from the filebacked data, where unpenalized columns are
+    ##     *appended* to the columns of 'X'.
   }
 
 
@@ -94,10 +99,11 @@ untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, use_names = 
   }
 
   if (use_names) {
-    if (!is.null(std_X_details$unpen_colnames)) {
-      rownames(untransformed_beta) <- c("(Intercept)",
-                                        std_X_details$unpen_colnames,
-                                        std_X_details$X_colnames)
+    if (!is.null(std_X_details$unpen_colnames) & fbm_flag) {
+        rownames(untransformed_beta) <- c("(Intercept)",
+                                          std_X_details$unpen_colnames,
+                                          std_X_details$X_colnames)
+
     } else {
       rownames(untransformed_beta) <- c("(Intercept)",
                                         std_X_details$X_colnames)

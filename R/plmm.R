@@ -2,7 +2,7 @@
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
-#' @param design                  Design matrix object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
+#' @param design                  A `plmm_design` object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
 #' @param K                       Similarity matrix used to rotate the data. This should either be:
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
@@ -25,7 +25,8 @@
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                                Defaults to NULL, which does not save the result.
-#' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
+#' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
+#'                                Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.
 #' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 #'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
@@ -87,7 +88,7 @@ plmm <- function(design,
                  trace = FALSE,
                  save_rds = NULL,
                  compact_save = FALSE,
-                 return_fit = TRUE,
+                 return_fit = NULL,
                  ...) {
 
   # check filepaths for saving results ------------------------------
@@ -120,6 +121,15 @@ plmm <- function(design,
                               trace = trace,
                               ...)
 
+  # set defaults for returning fit
+  if (is.null(return_fit)) {
+    if (checked_data$fbm_flag) {
+      return_fit <- FALSE
+    } else {
+      return_fit <- TRUE
+    }
+  }
+
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",
                 pretty_time())}
@@ -146,7 +156,7 @@ plmm <- function(design,
       pretty_time(),
       "\n", file = logfile, append = TRUE)
 
-  # rotate & fit -------------------------------------------------------------
+    # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       y = checked_data$y,
                       std_X_details = checked_data$std_X_details,

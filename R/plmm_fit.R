@@ -190,7 +190,7 @@ plmm_fit <- function(prep,
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1,
                              ncol = ncol(stdrot_scale_beta))
-    bb <-  stdrot_scale_beta/stdrot_X_details$scale
+    bb <-  stdrot_scale_beta/(stdrot_X_details$scale)
     std_scale_beta[-1,] <- bb
     std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 

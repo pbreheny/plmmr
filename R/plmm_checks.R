@@ -36,20 +36,26 @@ plmm_checks <- function(design,
   # read in X -----------------------------------------------------
   # TODO: maybe need to add a 'catch' here for incorrect list input...
 
-  if (!(inherits(design, 'list') | inherits(design, 'character'))) {
-    stop('Input to "design" in plmm() must be either a list output from create_design()
+  if (!(inherits(design, 'plmm_design') | inherits(design, 'character'))) {
+    stop('Input to "design" in plmm() must be either a plmm_design object output from create_design()
          or an .rds filepath to a saved list output from create_design()')
   }
   if("character" %in% class(design)){
     design <- get_data(path = design, trace = trace, ...)
     std_X <- design$std_X
   } else {
-    std_X <- bigmemory::attach.big.matrix(design$std_X)
+
+    if (inherits(design$std_X, "bib.matrix")) {
+      std_X <- bigmemory::attach.big.matrix(design$std_X)
+    } else if (inherits(design$std_X, "matrix")) {
+      std_X <- design$std_X
+    }
+
   }
 
   std_X_n <- design$std_X_n
   std_X_p <- design$std_X_p
-  genomic <- index_std_X(std_X_p = design$std_X_p, non_genomic = design$non_gen)
+  # genomic <- index_std_X(std_X_p = design$std_X_p, non_genomic = design$non_gen)
 
   # create a list that captures the centering/scaling for std_X;
   # will need this later, see `untransform()`
@@ -66,11 +72,12 @@ plmm_checks <- function(design,
 
   if(inherits(std_X, "big.matrix")){
     fbm_flag <- TRUE
+    y <- design$y[,1] |> unlist() # design$y will have one column
   } else {
     fbm_flag <- FALSE
+    y <- design$y
   }
 
-  y <- design$y[,1] |> unlist() # design$y will have one column
   penalty_factor <- design$penalty_factor
 
   # set up defaults --------------------------------------------------

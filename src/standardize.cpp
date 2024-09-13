@@ -35,5 +35,5 @@ RcppExport SEXP in_mem_std(SEXP X_) {
   }
 
   // Return list
-  return List::create(Named("XX") = XX, Named("c") = c, Named("s") = s);
+  return List::create(Named("std_X") = XX, Named("center") = c, Named("scale") = s);
 }
