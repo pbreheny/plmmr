@@ -26,13 +26,13 @@
 #' colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
 #'
 #' # create a design
-#' my_design <- create_design(data_file = colon_dat, rds_dir = temp_dir, new_file = "std_colon2",
+#' colon_design <- create_design(data_file = colon_dat, rds_dir = temp_dir, new_file = "std_colon2",
 #' add_outcome = colon_outcome, outcome_id = "ID", outcome_col = "y",
 #' overwrite = TRUE, logfile = "test.log")
 #'
 #' # look at the results
-#' rds <- readRDS(my_design)
-#' str(rds)
+#' colon_rds <- readRDS(colon_design)
+#' str(colon_rds)
 #'
 #' ## Example 2: matrix data in-memory
 #' admix_design <- create_design(X = admix$X, outcome_col = admix$y, unpen = "Snp1")
@@ -53,10 +53,12 @@ create_design <- function(data_file = NULL,
             processed_plink = create_design_filebacked(data_file = data_file,
                                                        rds_dir = rds_dir,
                                                        obj = obj,
+                                                       outcome_col = outcome_col,
                                                        ...),
             processed_delim = create_design_filebacked(data_file = data_file,
                                                        rds_dir = rds_dir,
                                                        obj = obj,
+                                                       outcome_col = outcome_col,
                                                        ...)
     )
   }

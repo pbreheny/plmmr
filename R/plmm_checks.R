@@ -45,7 +45,7 @@ plmm_checks <- function(design,
     std_X <- design$std_X
   } else {
 
-    if (inherits(design$std_X, "bib.matrix")) {
+    if (inherits(design$std_X, "big.matrix")) {
       std_X <- bigmemory::attach.big.matrix(design$std_X)
     } else if (inherits(design$std_X, "matrix")) {
       std_X <- design$std_X
@@ -72,9 +72,13 @@ plmm_checks <- function(design,
 
   if(inherits(std_X, "big.matrix")){
     fbm_flag <- TRUE
-    y <- design$y[,1] |> unlist() # design$y will have one column
   } else {
     fbm_flag <- FALSE
+  }
+
+  if (inherits(design$y, "matrix") | inherits(design$y, "data.frame")) {
+    y <- design$y[,1] |> unlist() # design$y will have one column
+  } else {
     y <- design$y
   }
 
@@ -86,8 +90,7 @@ plmm_checks <- function(design,
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
 
-
-  # set default gamma (gamma not used in 'lasso' option)
+    # set default gamma (gamma not used in 'lasso' option)
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
   # error checking design matrix  ---------------------------------------------

@@ -1,9 +1,9 @@
 ---
-title: "Getting started with plmm"
+title: "Getting started with plmmr"
 output: rmarkdown::html_vignette
 author: "Tabitha Peter"
 vignette: >
-  %\VignetteIndexEntry{Getting started with plmm}
+  %\VignetteIndexEntry{Getting started with plmmr}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -23,143 +23,55 @@ library(plmmr)
 
 ## Introduction 
 
-`plmmr` (which stands for **P**enalized **L**inear **M**ixed **M**odels for **R**) is an `R` package created for the purpose of fitting penalized regression models to high dimensional data, particularly in which the observations are correlated. This kind of data arises often in the context of genetics (*e.g.* GWAS dealing with population structure/family structure), and this will be the motivation for the examples presented here.
+`plmmr` (I say it as "PLUM-are") is a package for fitting **P**enalized **L**inear **M**ixed **M**odels in **R**. This package was created for the purpose of fitting penalized regression models to high dimensional data in which the observations are correlated in some complex way. For instance, this kind of data arises often in the context of genetics (*e.g.*, GWAS dealing with population structure/family structure). 
 
-At this time, the package is designed for linear regression only -- that is, we are considering only continuous (numeric) outcomes. In many applications with high dimensional data, the objective of statistical models is to identify signals - for example, many GWAS are interested in identifying a set of variants that show evidence of association with an outcome. Practitioners in these situations are often more interested identifying biological pathways than in estimating odds ratios for individual variants. For these applications, treating binary or categorical outcomes as numeric values is a possibility. In the future, we would like to extend this package to handle logistic regression (to handle dichotomous outcomes). 
+For more information on the theoretical context of penalized regression, check out [these online course notes](https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html) from Prof. Patrick Breheny (the PI of our lab). The section on 'ridge regression' may be a good place to start.
 
-Since we are focused on penalized regression in this package, `plmmr` offers 3 choices of penalty: the minimax concave (MCP), the smoothly clipped absolute deviation (SCAD), and the least absolute shrinkage and selection operator (LASSO). ^[For data running filebacked, only the LASSO is currently implemented (we are working to expand this)] Much of the work in this package is built on the concepts/techniques provided in the `ncvreg` [package](https://github.com/pbreheny/ncvreg) by [Patrick Breheny](https://myweb.uiowa.edu/pbreheny/). The filebacked computation relies on the `bigsnpr` [package](https://privefl.github.io/bigsnpr/) by [Florian Privé](https://privefl.github.io/) and the `biglasso` [package](https://github.com/pbreheny/biglasso) by [Yaohui Zeng](https://scholar.google.com/citations?user=jpEmf04AAAAJ&hl=en) & colleagues. 
+The novelties of `plmmr` are:
 
-`plmmr` currently includes two example data sets: 
+(1) **Integration**: `plmmr` combines the functionality of several packages in order to do quality control, model fitting/analysis, and data visualization all in one package. `plmmr` will take you from PLINK files all the way to a list of SNPs for downstream analysis.
 
-  * `admix` is a small data set (197 observations, 100 SNPs) that describes individuals of different ancestry groups. The outcome of `admix` is simulated to include population structure effects (*i.e.* race/ethnicity have an impact on the SNP associations). This data set is available as `.rda` object under the `data/` folder. 
+(2) **Accessibility**: `plmmr` can be run from an `R` session on a typical desktop/laptop machine. The user does not need access to a supercomputer or experience with the command line in order to fit models `plmmr`. 
+
+(3) **Handling correlation**: `plmmr` uses a transformation that addresses correlation among samples and uses this correlation to improve predictions (via the best linear unbiased predictor, or BLUP). This means that in `plmm()`, there's no need to filter data down to a 'maximum subset of unrelated individuals.'
+
+## Computational capability
+
+### File-backing
+In many applications of high dimensional data analysis, the dataset is too large to read into R -- the session will crash for lack of memory. This is almost always an issue with analyzing genetic data from [PLINK](https://www.cog-genomics.org/plink/) files. To analyze such large datasets, `plmmr` is equipped to analyze data using *filebacking* - a strategy that lets R 'point' to a file on disk, rather than reading the file into the R session. Many other packages use this technique - [bigstatsr](https://privefl.github.io/bigstatsr/) and [biglasso](https://github.com/pbreheny/biglasso) are two examples of packages that use filebacking. 
+
+### Numeric outcomes only
+At this time, the package is designed for linear regression only -- that is, we are considering only continuous (numeric) outcomes. We maintain that treating binary or categorical outcomes as numeric values is appropriate in some contexts, as described by Hastie et al. in the [Elements of Statistical Learning, chapter ...](). In the future, we would like to extend this package to handle dichotomous outcomes via logistic regression; the theoretical work underlying this is an open problem. 
+
+### 3 types of penalization 
+Since we are focused on penalized regression in this package, `plmmr` offers 3 choices of penalty: the minimax concave (MCP), the smoothly clipped absolute deviation (SCAD), and the least absolute shrinkage and selection operator (LASSO). Much of the work in this package is built on the concepts/techniques provided in the `ncvreg` [package](https://github.com/pbreheny/ncvreg) by [Patrick Breheny](https://myweb.uiowa.edu/pbreheny/). The filebacked computation relies on the `biglasso` [package](https://github.com/pbreheny/biglasso) by [Yaohui Zeng](https://scholar.google.com/citations?user=jpEmf04AAAAJ&hl=en) & colleagues. For processing PLINK files, we use methods from the `bigsnpr` [package](https://privefl.github.io/bigsnpr/) by [Florian Privé](https://privefl.github.io/).
+
+### Data size and dimensionality 
+
+We distinguish between the data attributes 'big' and 'high dimensional.' 'Big' describes the amount of space data takes up on a computer, while 'high dimensional' describes a context where the ratio of features (also called 'variables' or 'predictors') to observations (e.g., samples) is high. For instance, data with 100 samples and 100 variables is high dimensional, but not big. By contrast, data with 10 million observations and 100 variables is big, but not high dimensional.
+
+`plmmr` is optimized for data that are high dimensional -- the methods we are using to estimate relatedness among observations perform best when there are a high number of features relative to the number of observations. 
+
+`plmmr` is also designed to accommodate data that is too large to analyze in-memory. We accommodate such data through file-backing (as described above). This approach works well for data with files up to about 40 Gb in size -- our current methods are not optimized for data larger that 40 Gb. In practice, this means that `plmmr` is equipped to analyze GWAS data, but not biobank-sized data.
+
+## Data input types 
+
+`plmmr` currently works with three types of data input: 
+
+  1. Data that is stored in-memory as a matrix or data frame
   
-  * `penncath_lite` (data on coronary artery disease from the [PennCath study](https://pubmed.ncbi.nlm.nih.gov/21239051/)) is a mid-sized, high dimensional data set (1401 observations, 4217 SNPs) with several health outcomes as well as age and sex information. This data set is a subset of a much larger data set (the original data has over 800K SNPs). For for information on this data set, refer to the [original publication](https://pubmed.ncbi.nlm.nih.gov/21239051/).
+  2. Data that is stored in PLINK files 
   
-In this overview, I will provide a demo of the main functions in `plmmr` using the `admix` data. Checkout the 'Working with PLINK files' vignette to see a demo of processing the `penncath_lite` data from the original PLINK file formats. 
+  3. Data that is stored in delimited files 
 
-## Definitions: features v. added predictors
+### Example data sets 
+`plmmr` currently includes three example data sets, one for each type of data input. 
 
-In the `plmmr` package, we make a distinction between 'features' and 'added predictors' -- while both of these refer to columns in the design matrix, the difference is in the penalization. 'Features' are penalized, while 'added predictors' are not. Added predictors are always in the model; features may be screened out with penalization. For more information on the theoretical context of penalized regression, check out [these online course notes](https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html) from Prof. Patrick Breheny (the PI of our lab). The section on 'ridge regression' may be a good place to start. THIS PARAGRAPH NEEDS WORK.
-
-## Preparing data for analysis 
-
-The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. 
-
-'Processing the data' means that we take the feature data (in any form you have: a matrix, a set of PLINK files, or some other delimited file) and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). For reasons discussed more in detail in [our vignette on preprocessing data](), this step is necessary even for datasets that are small enough to fit into the memory of your R session. We may process our `admix` data like this: 
-
-```{r}
-admix$rds <- process_matrix(X = admix$X, rds_dir = tempdir(), rds_prefix = 'admix') 
-str(readRDS(admix$rds))
-```
-
-'Creating a design' means that we take the processed data and create the three essential elements for data analysis: a design matrix, an outcome vector, and a penalty factor indicator. In our [math notation](), the design matrix is $\mathbf{X}$, the outcome vector is $\mathbf{y}$, and the penalty factor indicator is a vector of 1s and 0s, where 1s correspond to the features in $\mathbf{X}$ that will be penalized (and the 0s correspond to the unpenalized added predictors). To create a design for our 'admix' data, we do this: 
-
-```{r}
-# we will need some IDs for the participants
-paste0("ID", 1:nrow(admix$X)) -> admix$ID
-
-admix$design <- create_design(dat_file = admix$rds,
-              rds_dir = tempdir(), 
-              new_file = "new_admix",
-              feature_id = admix$ID,
-              add_outcome = data.frame(ID = admix$ID, y = admix$y),
-              outcome_id = "ID",
-              outcome_col = 'y',
-              logfile = "new_admix")
-str(readRDS(admix$design)) # check out what is here 
-```
+  * The `admix` data is our example of matrix input data. `admix` is a small data set (197 observations, 100 SNPs) that describes individuals of different ancestry groups. The outcome of `admix` is simulated to include population structure effects (*i.e.* race/ethnicity have an impact on the SNP associations). This data set is available as whenever `library(plmmr)` is called. An example analysis with the `admix` data is available on the ['If your data is in a matrix or data frame' page](articles/matrix_data.html).
+  
+  * The `penncath_lite` data is our example of PLINK input data. `penncath_lite` (data on coronary artery disease from the [PennCath study](https://pubmed.ncbi.nlm.nih.gov/21239051/)) is a mid-sized, high dimensional data set (1401 observations, 4217 SNPs) with several health outcomes as well as age and sex information. This data set is a subset of a much larger data set (the original data has over 800K SNPs). For for information on this data set, refer to the [original publication](https://pubmed.ncbi.nlm.nih.gov/21239051/). An example analysis with the `penncath_lite` data is available on the ['If your data is in PLINK files' page](articles/plink_data.html).
+  
+  * The `colon2` data is our example of delimited-file input data. `colon2` is a variation of the `colon` data included in the [`biglasso` package](LINK). `colon2` has 62 observations and 2,001 features representing a study of colon disease. 2000 features are original to the data, and the 'sex' feature is simulated. An example analysis with the `colon2` data is available on the ['If your data is in delimited files' page](articles/filebacking.html).
+  
 
 
-## Basic model fitting 
-
-The `admix` dataset is now ready to analyze with a call to `plmmr::plmm()` (our main function):
-
-```{r admix_fit}
-admix_fit <- plmm(design = admix$design)
-summary(admix_fit, lambda = admix_fit$lambda[50])
-```
-
-The returned `beta_vals` item is a matrix whose rows are $\hat\beta$ coefficients and whose columns represent values of the penalization parameter $\lambda$. By default, `plmm` fits 100 values of $\lambda$ (see the `setup_lambda` function for details). 
-
-```{r}
-admix_fit$beta_vals[1:10, 97:100] |> 
-  knitr::kable(digits = 3,
-               format = "html")
-```
-
-Note that for all values of $\lambda$, SNP 8 has $\hat \beta = 0$. This is because SNP 8 is a constant feature, a feature (column) whose values do not vary among the members of this population.
-
-We can summarize our fit at the nth $\lambda$ value:  
-
-```{r summary1}
-# for n = 25 
-summary(admix_fit, lambda = admix_fit$lambda[25])
-```
-
-We can also plot the path of the fit to see how model coefficients vary with $\lambda$:
-
-```{r admix_plots, fig.align='center', fig.width=8, fig.cap="Plot of path for model fit"}
-plot(admix_fit)
-```
-
-Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). Here is how that could look: 
-
-```{r}
-X_plus_ancestry <- cbind(admix$race, admix$X)
-colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
-admix_fit2 <- plmm(X = X_plus_ancestry, y = admix$y,
-                   penalty = "lasso",
-                   non_genomic = 1, # mark ancestry variable as non-genomic 
-                   # make the penalty factor 0 to keep the corresponding covariate unpenalized
-                   penalty_factor = c(0, rep(1, ncol(admix$X))))
-
-summary(admix_fit2, idx = 95)
-plot(admix_fit2)
-```
-
-## Cross validation 
-
-To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
-
-```{r admix_cv}
-admix_cv <- cv_plmm(X = X_plus_ancestry, y = admix$y,
-                    penalty = "lasso",
-                    non_genomic = 1, # mark ancestry variable as non-genomic
-                    penalty_factor = c(0, rep(1, ncol(admix$X))))
-admix_cv_s <- summary(admix_cv, lambda = "min")
-print(admix_cv_s)
-```
-
-We can also plot the cross-validation error (CVE) versus $\lambda$ (on the log scale):
-
-```{r cvplot, fig.align='center', fig.width=8, fig.cap="Plot of CVE"}
-plot(admix_cv)
-```
-
-## Predicted values 
-
-Below is an example of the `predict()` methods for PLMMs: 
-
-```{r admix_pred}
-# make predictions for select lambda value(s)
-y_hat <- predict(object = admix_fit,
-                       newX = admix$X,
-                       type = "blup",
-                       X = admix$X,
-                       y = admix$y)
-
-```
-
-We can compare these predictions with the predictions we would get from an intercept-only model using mean squared prediction error (MSPE) -- lower is better:
-
-```{r}
-# intercept-only (or 'null') model
-crossprod(admix$y - mean(admix$y))/length(admix$y)
-
-# our model at its best value of lambda
-apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
-min(mse)
-# ^ across all values of lambda, our model has MSPE lower than the null model
-```
-
-We see our model has better predictions than the null

@@ -18,7 +18,7 @@
 #' @param predictor_id            Optional: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
 #'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
-#' @param logfile                 Optional: name of the '.log' file to be written
+#' @param logfile                 Optional: name of the '.log' file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param quiet                   Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #'
 #' @keywords internal
@@ -193,7 +193,7 @@ create_design_filebacked <- function(data_file,
   } else {
     # save items to return
     design$outcome_idx <- 1:nrow(obj$X)
-    design$y <- unlist(add_outcome[outcome_col])
+    design$y <- unlist(add_outcome[,outcome_col])
     design$std_X_rownames <- design$X_rownames
   }
 

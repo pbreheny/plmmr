@@ -13,12 +13,16 @@ navbar:
     href: reference/index.html
   - text: Articles
     menu:
-    - text: Getting started
+    - text: Start here: getting to know plmmr
       href: articles/getting-started.html
+    - text: If your data is a matrix or data frame
+      href: articles/matrix_data.html
+    - text: If your data is in PLINK files
+      href: articles/plink_files.html
+    - text: If your data is in (a) delimited file(s)
+      href: articles/delim_files.html
     - text: Notes on notation
       href: articles/notation.html
-    - text: PLINK files/file-backed matrices
-      href: articles/filebacking.html
     - text: 'In progress: PLMMs & deconfounding'
       href: articles/deconfounding.html
   - text: News

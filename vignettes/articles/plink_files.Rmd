@@ -1,0 +1,131 @@
+---
+title: "If your data is in PLINK files"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Notes on analyzing data from PLINK files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(plmmr)
+```
+
+A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of '.bed', '.bed', and '.fam' files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the [article on analyzing data from delimited files](articles/filebacking.html).
+
+The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. Processing the data means that we take the feature data and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). Creating a design involves standardizing the input of the features, outcome, and penalty factor into the modeling functions `plmm()` and `cv_plmm()`. 
+
+## Procesing PLINK files 
+
+First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; if you are on MacOS or Linux, you can run this command to unzip: 
+
+```{r, eval=FALSE}
+temp_dir <- tempdir() # using a temp dir -- change to fit your preference
+unzip_example_data(outdir = temp_dir)
+```
+
+For GWAS data, we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files). We do this with `process_plinkk()`. 
+
+Here, we will create the files we want in a temporary directory just for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
+
+```{r}
+# temp_dir <- tempdir() # using a temporary directory (if you didn't already create one above)
+plink_data <- process_plink(data_dir = find_example_data(parent = TRUE), 
+                            # find_example_data() will read in data that 'shipped' with the package, 
+                            # once it has been unzipped (assuming you unzipped in the same folder)
+                            data_prefix = "penncath_lite",
+                            rds_dir = temp_dir,
+                            rds_prefix = "imputed_penncath_lite",
+                            # imputing the mode to address missing values
+                            impute_method = "mode")
+```
+
+
+You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files: `imputed_penncath_lite.rds` and `imputed_penncath_lite.bk` contain the data. ^[Optionally, you can add a `.log` file via the `logfile` argument: a log file is a text file documenting the steps that were just done.] These will show up in the folder where the PLINK data is. What is returned is a filepath: `r plink_data`. The `.rds` object at this filepath contains the processed data, which we will now use to create our design. 
+
+For didactic purposes, let's examine what's in `imputed_penncath_lite.rds` using the `readRDS()` function (**Note** Don't do this in your analysis - the section below reads the data into memory. This is just for illustration):
+
+```{r}
+pen <- readRDS(plink_data) # notice: this is a `processed_plink` object 
+str(pen) # note: genotype data is *not* in memory
+# notice: no more missing values in X
+any(is.na(pen$genotypes[,]))
+```
+
+
+## Creating a design 
+Now we are ready to create a `plmm_design`, which is an object with the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
+
+```{r}
+# get outcome data 
+penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
+
+phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
+  dplyr::mutate(FamID = as.character(FamID))
+
+pen_design <- create_design(data_file = plink_data,
+                            feature_id = "FID",
+                            rds_dir = temp_dir,
+                            new_file = "std_penncath_lite",
+                            add_outcome = phen,
+                            outcome_id = "FamID",
+                            outcome_col = "CAD",
+                            overwrite = TRUE,
+                            logfile = "design")
+
+# examine the design - notice the components of this object 
+pen_design_rds <- readRDS(pen_design)
+```
+
+A key part of what `create_design()` is doing is standardizing the columns of the genotype matrix. Below is a didactic example showing that the columns of the `std_X` element in our design have mean = 0 and variance = 1. **Note again** that this is not something you should do in your analysis -- this reads the data into memory. 
+
+```{r}
+# we can check to see that our data have been standardized 
+std_X <- attach.big.matrix(pen_design_rds$std_X)
+colMeans(std_X[,]) |> summary() # columns have mean zero...
+apply(std_X[,], 2, var) |> summary() # ... & variance 1
+```
+
+
+## Fitting a model 
+
+Now that we have a design object, we are ready to fit a model. By default, the model fitting results are saved as files in the folder specified in the `rds_dir` argument of `plmmm`. If you want to return the model fitting results, set `return_fit = TRUE` in `plmm()`. 
+
+```{r}
+pen_fit <- plmm(design = pen_design,
+                trace = T,
+                return_fit = T)
+# you can turn off the trace messages by letting trace = F (default)
+```
+
+We examine our model results below:
+
+```{r}
+summary(pen_fit, idx = 50)
+
+plot(pen_fit)
+```
+
+
+## Details: `create_design()` for PLINK data
+
+The call to `create_design()` involves these steps:
+
+-   Integrate in the external phenotype information, if supplied. **Note: Any samples in the PLINK data that do not have a phenotype value in the specified additional phenotype file will be removed from the analysis.** 
+
+-   Identify missing values in both samples and SNPs/features.
+
+-   Impute missing values per user's specified method. See [R documentation for `bigsnpr::snp_fastImputeSimple()`](https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html) for more details. **Note: the plmmr package cannot fit models if datasets have missing values.** All missing values must be imputed or subset out before analysis.
+
+-   Integrate in the external predictor information, if supplied. This could be a matrix of meta-data (e.g., age, principal components, etc.). **Note:** If there are samples in the supplied file that are not included in the PLINK data, these will be removed. For example, if you have more phenotyped participants than genotyped participants in your study, `plmmr::create_design()` will create a matrix of data representing all the *genotyped* samples that also have data in the supplied external phenotype file.
+
+-   Create a design matrix that represents the nonsingular features and the samples that have predictor and phenotype information available (in the case where external data are supplied).
+
+-   Standardize the design matrix so that all columns have mean of 0 and variance of 1. 

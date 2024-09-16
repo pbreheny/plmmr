@@ -1,0 +1,136 @@
+---
+title: "If your data is in a matrix or data frame"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(plmmr)
+```
+
+In this overview, I will provide a demo of the main functions in `plmmr` using the `admix` data. Checkout the other vignettes to see examples of analyzing data from PLINK files or delimited files.
+
+Examine what we have in the `admix` data: 
+
+```{r}
+str(admix)
+```
+
+## Preparing data for analysis 
+
+The first step with in-memory data is creating a **plmm_design** object, which we do with `create_design()` like this:
+
+```{r}
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+str(admix_design)
+```
+
+'Creating a design' means that we take the processed data and create the three essential elements for data analysis: a design matrix that is column-standardized, an outcome vector, and a penalty factor indicator. In our [math notation](articles/notation.html), the design matrix is $\mathbf{X}$, the outcome vector is $\mathbf{y}$, and the penalty factor indicator is a vector of 1s and 0s, where 1s correspond to the features in $\mathbf{X}$ that will be penalized (and the 0s correspond to the unpenalized added predictors). Note that in our current `admix_design`, all features are penalized (i.e., the penalty factor is a vector of 1). 
+
+## Basic model fitting 
+
+The `admix` dataset is now ready to analyze with a call to `plmmr::plmm()` (one of the main functions in `plmmr`):
+
+```{r admix_fit}
+admix_fit <- plmm(design = admix_design)
+summary(admix_fit, lambda = admix_fit$lambda[50])
+```
+
+The returned `beta_vals` item is a matrix whose rows are $\hat\beta$ coefficients and whose columns represent values of the penalization parameter $\lambda$. By default, `plmm` fits 100 values of $\lambda$ (see the `setup_lambda` function for details). 
+
+```{r}
+admix_fit$beta_vals[1:10, 97:100] |> 
+  knitr::kable(digits = 3,
+               format = "html")
+```
+
+Note that for all values of $\lambda$, SNP 8 has $\hat \beta = 0$. This is because SNP 8 is a constant feature, a feature (i.e., a column of $\mathbf{X}$) whose values do not vary among the members of this population.
+
+We can summarize our fit at the nth $\lambda$ value:  
+
+```{r summary1}
+# for n = 25 
+summary(admix_fit, lambda = admix_fit$lambda[25])
+```
+
+We can also plot the path of the fit to see how model coefficients vary with $\lambda$:
+
+```{r admix_plots, fig.align='center', fig.width=8, fig.cap="Plot of path for model fit"}
+plot(admix_fit)
+```
+Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). Here is how that could look: 
+
+```{r}
+X_plus_ancestry <- cbind(admix$race, admix$X)
+colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
+
+# create a new design
+admix_design2 <- create_design(X = X_plus_ancestry, outcome_col = admix$y)
+
+# now fit a model 
+admix_fit2 <- plmm(design = admix_design2, 
+                   outcome_col = admix$y,
+                   # below, I mark ancestry variable as unpenalized
+                   unpen = "ancestry")
+```
+
+We may compare the results from the model which includes 'ancestry' to our first model: 
+
+```{r}
+summary(admix_fit2, idx = 25)
+plot(admix_fit2)
+```
+
+PICK UP HERE; what is below needs updating
+
+## Cross validation 
+
+To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
+
+```{r admix_cv}
+admix_cv <- cv_plmm(X = X_plus_ancestry, y = admix$y,
+                    penalty = "lasso",
+                    non_genomic = 1, # mark ancestry variable as non-genomic
+                    penalty_factor = c(0, rep(1, ncol(admix$X))))
+admix_cv_s <- summary(admix_cv, lambda = "min")
+print(admix_cv_s)
+```
+
+We can also plot the cross-validation error (CVE) versus $\lambda$ (on the log scale):
+
+```{r cvplot, fig.align='center', fig.width=8, fig.cap="Plot of CVE"}
+plot(admix_cv)
+```
+
+## Predicted values 
+
+Below is an example of the `predict()` methods for PLMMs: 
+
+```{r admix_pred}
+# make predictions for select lambda value(s)
+y_hat <- predict(object = admix_fit,
+                       newX = admix$X,
+                       type = "blup",
+                       X = admix$X,
+                       y = admix$y)
+
+```
+
+We can compare these predictions with the predictions we would get from an intercept-only model using mean squared prediction error (MSPE) -- lower is better:
+
+```{r}
+# intercept-only (or 'null') model
+crossprod(admix$y - mean(admix$y))/length(admix$y)
+
+# our model at its best value of lambda
+apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
+min(mse)
+# ^ across all values of lambda, our model has MSPE lower than the null model
+```
+
+We see our model has better predictions than the null
