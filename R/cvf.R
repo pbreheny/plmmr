@@ -155,7 +155,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     dfmax = ncol(train_X) + 1)
 
 if (any(is.nan(fit.i$std_scale_beta))) browser()
-if (nrow(fit.i$std_scale_beta) - 1 != length(fold_args$std_X_details$ns)) browser()
+# if (nrow(fit.i$std_scale_beta) - 1 != length(fold_args$std_X_details$ns)) browser()
   # get beta values back in original scale
   og_betas.i <- untransform(
     std_scale_beta = fit.i$std_scale_beta,
