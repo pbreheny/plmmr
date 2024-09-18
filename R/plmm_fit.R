@@ -101,9 +101,10 @@ plmm_fit <- function(prep,
     rot_y <- wUt %*% prep$centered_y # remember: prep$y is the centered outcome vector
 
     # re-standardize rot_X
-    stdrot_X <- ncvreg::std(rot_X)
-    stdrot_X_details <- list(center = attr(stdrot_X, "center"),
-                             scale = attr(stdrot_X, "scale"))
+    stdrot_info <- standardize_matrix(rot_X)
+    stdrot_X <- stdrot_info$std_X
+    stdrot_X_details <- stdrot_info$std_X_details
+
   } else {
     rot_res <- rotate_filebacked(prep)
     stdrot_X <- rot_res$stdrot_X
@@ -176,6 +177,7 @@ plmm_fit <- function(prep,
                             max.iter = max_iter,
                             penalty.factor = penalty_factor,
                             warn = warn)
+
       stdrot_scale_beta[, ll] <- init <- res$beta
       linear_predictors[,ll] <- stdrot_X%*%(res$beta)
       iter[ll] <- res$iter
@@ -185,12 +187,13 @@ plmm_fit <- function(prep,
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
     }
     if(prep$trace) close(pb)
-
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1,
                              ncol = ncol(stdrot_scale_beta))
-    bb <-  stdrot_scale_beta/(stdrot_X_details$scale)
+
+    stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
+    bb <-  stdrot_scale_beta/(stdrot_unscale)
     std_scale_beta[-1,] <- bb
     std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 

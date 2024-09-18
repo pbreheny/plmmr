@@ -7,7 +7,8 @@
 #'
 #' @details
 #' This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
-#'
+#' NOTE: this function returns a matrix **in memory**. For standardizing filebacked
+#' data, use `big_std()`  -- see src/big_standardize.cpp
 standardize_matrix <- function(X){
 
   if (typeof(X) == 'integer') storage.mode(X) <- 'double'
@@ -35,7 +36,7 @@ standardize_matrix <- function(X){
     attr(std_X, "scale") <- std_X_details$scale <- standardization[[3]]
     attr(std_X, "nonsingular") <- std_X_details$ns <- ns
 
-    res <- list(std_X = std_X,
+    res <- list(std_X = std_X[,],
                 std_X_details = std_X_details)
 
     return(res)

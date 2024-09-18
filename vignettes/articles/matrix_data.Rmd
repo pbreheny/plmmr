@@ -93,10 +93,8 @@ PICK UP HERE; what is below needs updating
 To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
-admix_cv <- cv_plmm(X = X_plus_ancestry, y = admix$y,
-                    penalty = "lasso",
-                    non_genomic = 1, # mark ancestry variable as non-genomic
-                    penalty_factor = c(0, rep(1, ncol(admix$X))))
+admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
+
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 ```

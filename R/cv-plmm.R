@@ -141,6 +141,7 @@ cv_plmm <- function(design,
   cat("\nInput data passed all checks at ",
       pretty_time(),
       file = logfile, append = TRUE)
+
   # prep  ------------------------
   prep_args <- c(list(std_X = checked_data$std_X,
                       std_X_n = checked_data$std_X_n,
@@ -181,6 +182,7 @@ cv_plmm <- function(design,
   if (!missing(lambda_min)){
     fit_args$lambda_min <- lambda_min
   }
+
   fit <- do.call('plmm_fit', fit_args)
 
   cat("\nFull model fit finished at",

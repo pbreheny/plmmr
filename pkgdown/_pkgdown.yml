@@ -89,6 +89,8 @@ reference:
     - big_cbind
     - check_for_file_extension
     - create_log
+    - create_design_filebacked
+    - create_design_in_memory
     - count_constant_features
     - cvf
     - delta
