@@ -47,10 +47,6 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
 
 \item{...}{Additional arguments to \code{get_data()}}
-
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
-The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
-In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 }
 \description{
 plmm_checks

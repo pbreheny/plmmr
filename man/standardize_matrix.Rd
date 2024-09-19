@@ -4,17 +4,20 @@
 \alias{standardize_matrix}
 \title{A helper function to standardize matrices}
 \usage{
-standardize_matrix(X, penalty_factor)
+standardize_matrix(X)
 }
 \arguments{
 \item{X}{a matrix}
-
-\item{penalty_factor}{a vector of 0s and 1s, passed from \code{plmm()}}
 }
 \value{
 a list with the standardized matrix and its details
 }
 \description{
 A helper function to standardize matrices
+}
+\details{
+This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
+NOTE: this function returns a matrix \strong{in memory}. For standardizing filebacked
+data, use \code{big_std()}  -- see src/big_standardize.cpp
 }
 \keyword{internal}

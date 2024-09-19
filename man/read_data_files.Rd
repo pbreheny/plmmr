@@ -5,25 +5,37 @@
 \title{A function to read in a large file as a numeric file-backed matrix (\code{FBM})
 Note: this function is a wrapper for \code{bigstatsr::big_read()}}
 \usage{
-read_data_files(file, data_dir, rds_dir, ind.col, outfile, overwrite, quiet)
+read_data_files(
+  data_file,
+  data_dir,
+  rds_dir,
+  rds_prefix,
+  outfile,
+  overwrite,
+  quiet,
+  ...
+)
 }
 \arguments{
-\item{file}{The name of the file to read, not including its directory. Directory should be specified in \code{data_dir}}
+\item{data_file}{The name of the file to read, not including its directory. Directory should be specified in \code{data_dir}}
 
 \item{data_dir}{The path to the directory where 'file' is}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{ind.col}{The indices (positive integers) that are sorted in ascending order. Passed to \code{bigstatsr::big_read()}}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds/.bk files (will be create insie \code{rds_dir} folder)
+Note: 'rds_prefix' cannot be the same as 'data_file'}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+
+\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: 'sep' is an option to pass here.}
 }
 \value{
-'.rds' and '.bk' files are created in \code{data_dir}, and \code{obj} (a \code{bigSNP} object) is returned. See \code{bigsnpr} documentation for more info on the \code{bigSNP} class.
+'.rds', '.bk', and '.desc' files are created in \code{data_dir}, and \code{obj} (a filebacked \verb{bigmemory big.matrix} object) is returned. See \code{bigmemory} documentation for more info on the \code{big.matrix} class.
 }
 \description{
 A function to read in a large file as a numeric file-backed matrix (\code{FBM})

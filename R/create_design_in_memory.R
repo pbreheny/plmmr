@@ -9,12 +9,6 @@
 #' @return A list with elements including a standardized X and model design information
 #' @keywords internal
 #'
-#' @examples
-#' example <-create_design_in_memory(X = admix$X, outcome_col = admix$y, unpen = "Snp1")
-#'
-#' @details
-#' The standardized X that is returned has the same dimensions as X, wherein any constant features in X are columns with 0s in std_X.
-#'
 create_design_in_memory <- function(X, outcome_col, unpen = NULL){
 
   # standardize X

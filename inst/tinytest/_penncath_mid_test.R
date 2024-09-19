@@ -32,8 +32,3 @@ pen_design <- create_design(dat_file = pen_mid,
 # fit a model -----------------------------------------------------------
 fit <- plmm(design = pen_design, trace = TRUE)
 
-
-# CV -------------------------------------------------------------------
-
-
-

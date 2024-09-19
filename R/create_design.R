@@ -6,8 +6,12 @@
 #'                      passed to `create_design_filebacked()`.
 #' @param X             For in-memory data, this is the design matrix.
 #' @param outcome_col   For in-memory data, this is the numeric vector representing the outcome.
+#' @param ...           Additional arguments to pass to `create_design_filebacked()` or `create_design_in_memory()`.
+#'                      See the documentation for those helper functions for details.
 #'
 #' @return An object of class `plmm_design`
+#'
+#' @export
 #'
 #' @details
 #' This function is a wrapper for the other `create_design...()` inner functions; all arguments

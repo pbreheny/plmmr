@@ -5,12 +5,12 @@
 \title{Read in processed data
 This function is intended to be called after either \code{process_plink()} or \code{process_delim()} has been called once.}
 \usage{
-get_data(path, returnX, trace = TRUE)
+get_data(path, returnX = FALSE, trace = TRUE)
 }
 \arguments{
 \item{path}{The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path.}
 
-\item{returnX}{Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.}
+\item{returnX}{Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE.}
 
 \item{trace}{Logical: Should trace messages be shown? Default is TRUE.}
 }

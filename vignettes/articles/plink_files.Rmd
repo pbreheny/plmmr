@@ -1,10 +1,5 @@
 ---
 title: "If your data is in PLINK files"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Notes on analyzing data from PLINK files}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}

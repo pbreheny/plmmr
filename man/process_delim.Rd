@@ -5,39 +5,33 @@
 \title{A function to read in large data files as an FBM}
 \usage{
 process_delim(
-  file,
   data_dir,
+  data_file,
+  feature_id,
   rds_dir = data_dir,
-  bk_filename,
-  ind.col,
-  unpen = NULL,
-  outfile,
+  rds_prefix,
+  logfile = NULL,
   overwrite = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  ...
 )
 }
 \arguments{
-\item{file}{The file to be read in, without the filepath. This should be a file of numeric values, no header row!
-Headers should be taken out of the file and supplied to the \code{col_names} argument in \code{plmm()}
-Example: use \code{file = "myfile.txt"}, not \code{file = "~/mydirectory/myfile.txt"}}
+\item{data_dir}{The directory to the file.}
 
-\item{data_dir}{The directory to the file}
+\item{data_file}{The file to be read in, without the filepath. This should be a file of numeric values, no header row!
+Headers should be taken out of the file and supplied to the \code{col_names} argument in \code{plmm()}
+Example: use \code{data_file = "myfile.txt"}, not \code{data_file = "~/mydirectory/myfile.txt"}}
+
+\item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.}
 
 \item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files
 Defaults to \code{data_dir}}
 
-\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
-\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create insie \code{rds_dir} folder)
+Note: 'rds_prefix' cannot be the same as 'data_prefix'}
 
-\item{ind.col}{Numeric vector of the columns to read in. Don't use negative indicies.
-If you're not sure how many columns are in your file,
-use something like \code{data.table::fread()} to examine the first row or two.}
-
-\item{unpen}{Numeric vector with indices of columns that have non-genomic information. \strong{Note}: if you plan on
-estimating the genomic relatedness among observations in your file, you
-\strong{must} include this information in order for the estimates to be correct.}
-
-\item{outfile}{Optional: the name (character string) of the prefix of the
+\item{logfile}{Optional: the name (character string) of the prefix of the
 logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.}
 
 \item{overwrite}{Optional: the name (character string) of the prefix of the logfile to be written.
@@ -46,29 +40,22 @@ Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfil
 To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
 
 \item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
+
+\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: 'sep' is an option to pass here, as is 'header'.}
 }
 \value{
-Nothing is returned by this function, but (at least) two files are created in
-the location specified by \code{rds_dir}:
-\itemize{
-\item 'std_prefix.rds': This is the \code{bigsnpr::bigSNP} object
-that holds the PLINK data along with meta-data. See details for explanation of what
-is included in this meta-data
-\item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
-backingfile that stores the numeric data of the standardized design matrix \code{std_X}
-}
+The file path to the newly created '.rds' file
 }
 \description{
 A function to read in large data files as an FBM
 }
 \examples{
 temp_dir <- tempdir()
-process_delim(file = "colon2.txt",
- data_dir = find_example_data(parent = TRUE),
- rds_dir = temp_dir,
-  ind.col = 2:2002)
+colon_dat <- process_delim(data_file = "colon2.txt",
+ data_dir = find_example_data(parent = TRUE), overwrite = TRUE,
+ rds_dir = temp_dir, rds_prefix = "processed_colon2", sep = "\t", header = TRUE)
 
-# colon2_rds <- readRDS(paste0(temp_dir, "std_colon2.rds"))
-# str(colon2_rds)
+colon2 <- readRDS(colon_dat)
+str(colon2)
 
 }

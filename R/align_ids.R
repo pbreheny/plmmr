@@ -32,7 +32,7 @@ align_ids <- function(id_var, quiet, add_predictor, og_ids) {
   if (!quiet) {
     cat("\nAligning external data with the feature data by", id_var, "\n")
   }
-
+  # make original IDs into a table with which the added predictors can be merged
   og_ids <- data.table::as.data.table(data.frame(ID = og_ids))
   add_predictor <- data.table::data.table(add_predictor)
   new_add_predictor <- data.table::merge.data.table(x = og_ids,
@@ -43,6 +43,6 @@ align_ids <- function(id_var, quiet, add_predictor, og_ids) {
                                                     sort = FALSE)
   # for downstream calls, output *must* be a numeric matrix
   new_add_predictor_mat <- as.matrix(new_add_predictor[,-1])
-  rownames(new_add_predictor_mat) <- new_add_predictor[,ID] |> as.character()
+  rownames(new_add_predictor_mat) <- new_add_predictor[,'ID'] |> as.character()
   return(new_add_predictor_mat)
 }

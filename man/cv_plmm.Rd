@@ -132,8 +132,8 @@ Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 linear mixed models over a grid of values for the regularization parameter \code{lambda}.
 }
 \examples{
-cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y,
- non_genomic = 1, penalty_factor = c(0, rep(1, ncol(admix$X))))
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 print(summary(cv_fit))
 plot(cv_fit)
 

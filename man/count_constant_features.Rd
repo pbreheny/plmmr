@@ -7,7 +7,7 @@
 count_constant_features(fbm, outfile, quiet)
 }
 \arguments{
-\item{fbm}{An FBM object, usually the 'genotypes' component from a bigSNP list}
+\item{fbm}{A filebacked \code{big.matrix}}
 
 \item{outfile}{String specifying name of log file}
 

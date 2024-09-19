@@ -2,55 +2,63 @@
 % Please edit documentation in R/create_design.R
 \name{create_design}
 \alias{create_design}
-\title{A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function}
+\title{a function to create a design for PLMM modeling}
 \usage{
 create_design(
-  dat_file,
-  rds_dir,
-  new_file,
-  feature_id,
-  add_outcome,
-  outcome_id,
-  outcome_col,
-  na_outcome_vals = c(-9, NA_integer_),
-  add_predictor = NULL,
-  predictor_id = NULL,
-  logfile = NULL,
-  overwrite = FALSE,
-  quiet = FALSE
+  data_file = NULL,
+  rds_dir = NULL,
+  X = NULL,
+  outcome_col = NULL,
+  ...
 )
 }
 \arguments{
-\item{dat_file}{A filepath to rds file of processed data (data from \code{process_plink()}, \code{process_delim()}, or \code{process_matrix()})}
+\item{data_file}{For filebacked data (data from \code{process_plink()} or \code{process_delim()}), this is the
+filepath to the processed data. Defaults to NULL (does not apply for in-memory data)}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files.}
+\item{rds_dir}{For filebacked data, this is the filepath to the directory/folder where you want the design to be saved.
+\strong{Note}: do not include/append the name you want for the to-be-created file -- the name is the argument \code{new_file},
+passed to \code{create_design_filebacked()}.}
 
-\item{new_file}{User-specified filename (\emph{without .bk/.rds extension}) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.}
+\item{X}{For in-memory data, this is the design matrix.}
 
-\item{feature_id}{This argument is the ID for the feature data. Two options here:
-- for PLINK data: a string specifying an ID column of the PLINK \code{.fam} file. Options are "IID" (default) and "FID"
-- for all other data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with \code{process_delim()})}
+\item{outcome_col}{For in-memory data, this is the numeric vector representing the outcome.}
 
-\item{add_outcome}{A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.}
-
-\item{outcome_id}{A string specifying the name of the ID column in 'add_outcome'}
-
-\item{outcome_col}{A string specifying the name of the phenotype column in 'add_outcome'}
-
-\item{na_outcome_vals}{A vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).}
-
-\item{add_predictor}{Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.}
-
-\item{predictor_id}{Optinal: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
-The names will be used to subset and align this external covariate with the supplied PLINK data.}
-
-\item{logfile}{Optional: name of the '.log' file to be written}
-
-\item{overwrite}{Logical: should existing .rds files be overwritten? Defaults to FALSE.}
-
-\item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
+\item{...}{Additional arguments to pass to \code{create_design_filebacked()} or \code{create_design_in_memory()}.
+See the documentation for those helper functions for details.}
+}
+\value{
+An object of class \code{plmm_design}
 }
 \description{
-A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
+a function to create a design for PLMM modeling
+}
+\details{
+This function is a wrapper for the other \code{create_design...()} inner functions; all arguments
+included here are passed along to the \code{create_design...()} inner function that
+matches the type of the data being supplied.
+}
+\examples{
+## Example 1: delimited data ##
+# process delimited data
+temp_dir <- tempdir()
+colon_dat <- process_delim(data_file = "colon2.txt",
+ data_dir = find_example_data(parent = TRUE), overwrite = TRUE,
+ rds_dir = temp_dir, rds_prefix = "processed_colon2", sep = "\t", header = TRUE)
+
+# prepare outcome data
+colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
+
+# create a design
+colon_design <- create_design(data_file = colon_dat, rds_dir = temp_dir, new_file = "std_colon2",
+add_outcome = colon_outcome, outcome_id = "ID", outcome_col = "y",
+overwrite = TRUE, logfile = "test.log")
+
+# look at the results
+colon_rds <- readRDS(colon_design)
+str(colon_rds)
+
+## Example 2: matrix data in-memory
+admix_design <- create_design(X = admix$X, outcome_col = admix$y, unpen = "Snp1")
+
 }

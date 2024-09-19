@@ -54,16 +54,11 @@
 #'
 #' @examples
 #' # using admix data
-#' fit_admix1 <- plmm(X = admix$X, y = admix$y)
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' fit_admix1 <- plmm(design = admix_design)
 #' s1 <- summary(fit_admix1, idx = 50)
 #' print(s1)
 #' plot(fit_admix1)
-#'
-#' # an example with p > n:
-#' fit_admix2 <- plmm(X = admix$X[1:50, ], y = admix$y[1:50])
-#' s2 <- summary(fit_admix2, idx = 99)
-#' print(s2)
-#' plot(fit_admix2) # notice: the default penalty is MCP
 #'
 #' # Note: for examples with large data that are too big to fit in memory,
 #' # see the article "PLINK files/file-backed matrices" on our website

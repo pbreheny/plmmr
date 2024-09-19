@@ -188,7 +188,7 @@ create_design_filebacked <- function(data_file,
 
     # save items to return
     design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
-    design$y <-  sample_idx$complete_samples[,..outcome_col]
+    design$y <- sample_idx$complete_samples[,'..outcome_col']
     design$std_X_rownames <- sample_idx$complete_samples$ID
   } else {
     # save items to return

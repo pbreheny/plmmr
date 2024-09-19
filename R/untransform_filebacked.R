@@ -10,7 +10,7 @@
 #' @keywords internal
 
 
-untransform_filebacked <- function(std_scale_beta, p, std_X_details, fbm_flag, use_names = TRUE) {
+untransform_filebacked <- function(std_scale_beta, p, std_X_details, use_names = TRUE) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -58,7 +58,7 @@ untransform_filebacked <- function(std_scale_beta, p, std_X_details, fbm_flag, u
   }
 
   if (use_names) {
-    if (!is.null(std_X_details$unpen_colnames) & fbm_flag) {
+    if (!is.null(std_X_details$unpen_colnames)) {
       rownames(untransformed_beta) <- c("(Intercept)",
                                         std_X_details$unpen_colnames,
                                         std_X_details$X_colnames)

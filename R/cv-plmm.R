@@ -65,8 +65,8 @@
 #' @export
 #'
 #' @examples
-#' cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y,
-#'  non_genomic = 1, penalty_factor = c(0, rep(1, ncol(admix$X))))
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 #' print(summary(cv_fit))
 #' plot(cv_fit)
 #'
@@ -261,9 +261,10 @@ cv_plmm <- function(design,
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("X", "y", "K", "fold", "type", "cv_args", "estimated_Sigma"), envir=environment())
+    parallel::clusterExport(cluster, c("design", "K", "fold", "type", "cv_args", "estimated_Sigma"), envir=environment())
     parallel::clusterCall(cluster, function() library(plmmr))
-    fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf, X=X, y=y,
+    fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf,
+                                        design = design,
                                         fold=fold, type=type, cv_args=cv_args,
                                         estimated_Sigma = estimated_Sigma)
   }

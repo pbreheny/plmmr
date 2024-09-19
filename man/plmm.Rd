@@ -24,12 +24,12 @@ plmm(
   trace = FALSE,
   save_rds = NULL,
   compact_save = FALSE,
-  return_fit = TRUE,
+  return_fit = NULL,
   ...
 )
 }
 \arguments{
-\item{design}{Design matrix object (as created by \code{create_design()}) or a string with the file path to a design object (the file path must end in '.rds').}
+\item{design}{A \code{plmm_design} object (as created by \code{create_design()}) or a string with the file path to a design object (the file path must end in '.rds').}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
@@ -73,7 +73,8 @@ Defaults to NULL, which does not save the result.}
 \item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
-\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
+\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session.
+Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
 
 \item{...}{Additional optional arguments to \code{plmm_checks()}}
 }
@@ -109,16 +110,11 @@ NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
 # using admix data
-fit_admix1 <- plmm(X = admix$X, y = admix$y)
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+fit_admix1 <- plmm(design = admix_design)
 s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
-
-# an example with p > n:
-fit_admix2 <- plmm(X = admix$X[1:50, ], y = admix$y[1:50])
-s2 <- summary(fit_admix2, idx = 99)
-print(s2)
-plot(fit_admix2) # notice: the default penalty is MCP
 
 # Note: for examples with large data that are too big to fit in memory,
 # see the article "PLINK files/file-backed matrices" on our website

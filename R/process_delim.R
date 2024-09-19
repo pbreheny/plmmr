@@ -9,8 +9,7 @@
 #'                      Defaults to `data_dir`
 #' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create insie `rds_dir` folder)
 #'                      Note: 'rds_prefix' cannot be the same as 'data_prefix'
-#' @param id_var        String specifying which column of the `data_file` has the unique sample identifiers.
-#' @param outfile       Optional: the name (character string) of the prefix of the
+#' @param logfile       Optional: the name (character string) of the prefix of the
 #'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
 #' @param overwrite     Optional: the name (character string) of the prefix of the logfile to be written.
 #'                      Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
@@ -37,9 +36,8 @@ process_delim <- function(data_dir,
                           rds_dir = data_dir,
                           rds_prefix,
                           logfile = NULL,
-                          col_ind,
-                          quiet = FALSE,
                           overwrite = FALSE,
+                          quiet = FALSE,
                           ...){
 
   prefix <- unlist(strsplit(data_file, split = "\\."))[1]

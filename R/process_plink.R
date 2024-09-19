@@ -152,7 +152,7 @@ process_plink <- function(data_dir,
     descriptorfile = paste0(rds_prefix, '.desc')
   )
 
-  ret <- structure(list(X = describe(X),
+  ret <- structure(list(X = bigmemory::describe(X),
               map = step3$map,
               fam = step3$fam,
               n = step3$n,

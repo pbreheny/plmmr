@@ -70,13 +70,15 @@ X_plus_ancestry <- cbind(admix$race, admix$X)
 colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
 
 # create a new design
-admix_design2 <- create_design(X = X_plus_ancestry, outcome_col = admix$y)
+admix_design2 <- create_design(X = X_plus_ancestry,
+                               outcome_col = admix$y,
+                               # below, I mark ancestry variable as unpenalized
+                               # we want ancestry to always be in the model
+                               unpen = "ancestry")
 
 # now fit a model 
 admix_fit2 <- plmm(design = admix_design2, 
-                   outcome_col = admix$y,
-                   # below, I mark ancestry variable as unpenalized
-                   unpen = "ancestry")
+                   outcome_col = admix$y)
 ```
 
 We may compare the results from the model which includes 'ancestry' to our first model: 
@@ -85,8 +87,6 @@ We may compare the results from the model which includes 'ancestry' to our first
 summary(admix_fit2, idx = 25)
 plot(admix_fit2)
 ```
-
-PICK UP HERE; what is below needs updating
 
 ## Cross validation 
 
@@ -131,4 +131,4 @@ min(mse)
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 
-We see our model has better predictions than the null
+We see our model has better predictions than the null.  
