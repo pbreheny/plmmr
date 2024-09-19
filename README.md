@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=3.0.0&color=blue&logo=github)](https://github.com/pbreheny/plmmr)
+[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=3.2.0.0&color=blue&logo=github)](https://github.com/pbreheny/plmmr)
 [![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions)
 [![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
 <!-- badges: end -->
@@ -25,11 +25,11 @@ For a description of the motivation of the functions in this package (along with
 The branches of this repo are organized in the following way: 
 
   - `master` is the main (or 'head') branch.
-
-  - `gwas_scale` is where I've been working to improve `plmmr` functionality for analyzing genome-wide scale data. This will bring some notable user-facing changes; stay tuned for more updates. 
     
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
   - `sign_flip` is an **archived** branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.
+  
+  - `gwas_scale` is an **archived** branch that contains the development version of the package I used to run my dissertation analysis. 
 
   

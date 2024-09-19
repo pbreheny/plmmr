@@ -1,6 +1,6 @@
 #' A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 #'
-#' @param data_file               A filepath to rds file of processed data (data from `process_plink()`, `process_delim()`, or `process_matrix()`)
+#' @param data_file               A filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
 #' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param obj                     The RDS object read in by `create_design()`
 #' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
@@ -188,7 +188,7 @@ create_design_filebacked <- function(data_file,
 
     # save items to return
     design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
-    design$y <- sample_idx$complete_samples[,'..outcome_col']
+    design$y <- sample_idx$complete_samples[,outcome_col, with = FALSE] |> unlist()
     design$std_X_rownames <- sample_idx$complete_samples$ID
   } else {
     # save items to return

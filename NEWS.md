@@ -1,6 +1,14 @@
-# plmmr 3.1.0
+# plmmr 3.2.0.0
 
 ## Most recent changes
+
+## 3.2.0.0
+
+These changes were borne out of the troubleshooting of the real data analysis elements of my dissertation. This is the version that has a integrated system for analyzing data from in-memory matrices/data frames, delimited files, and PLINK files. Checkout the highlights from these changes below: 
+
+-   **Major re-structuring of preprocessing pipeline**: Data from external files must now be processed with `process_plink()` or `process_delim()`. All data (including in-memory data) must be prepared for analysis via `create_design()`. This change ensures that data are funneled into a uniform format for analysis. 
+
+-  **bigsnpr now in Suggests, not Imports**: The essential filebacking support is now all done with `bigmemory` and `bigalgebra`. The `bigsnpr` package is used only for processing PLINK files. 
 
 ## 3.1.0
 
@@ -12,13 +20,14 @@
 
 ## 3.0.0
 
--   **Bug fix**: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated $\hat\eta$ in each CV fold -- but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions.[^news-1] As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster -- this is a question we are actively studying.
+-   **Bug fix**: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated $\hat\eta$ in each CV fold -- but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions. These best practices are summarized in the *Elements of Statistical Learning* by Hastie et al., section 7.10 (in 2nd edition, available [online](https://hastie.su.domains/Papers/ESLII.pdf) from author).
+
+As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster -- this is a question we are actively studying.
 
 -   **Computational speedup**: The standardization and rotation of filebacked data are now much faster; we have moved toward using methods from `bigalgebra` and `bigmemory` for these computations.
 
 -   **Methods development** (for the nerds): We have derived that on the standardized scale, the intercept of our PLMM is the mean of the outcome. With this in mind, we have updated the way we handle the intercept in model fitting -- which has made our code in internal functions more 'readable'.
 
-[^news-1]: See *Elements of Statistical Learning* by Hastie et al., section 7.10 (in 2nd edition). Available [online](https://hastie.su.domains/Papers/ESLII.pdf) from author.
 
 # plmmr 2.2.1
 

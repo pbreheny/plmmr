@@ -45,7 +45,7 @@
 #'                        Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...             Additional arguments to `plmm_fit`
 #'
-#' @returns a list with 11 items:
+#' @returns a list with 12 items:
 #'
 #' * type: the type of prediction used ('lp' or 'blup')
 #' * cve: numeric vector with the cross validation error (CVE) at each value of `lambda`
@@ -62,6 +62,7 @@
 #' * null.dev: numeric value representing the deviance for the
 #'  intercept-only model. If you have supplied your own `lambda` sequence,
 #'  this quantity may not be meaningful.
+#' * estimated_Sigma: an n x n matrix representing the estimated covariance matrix.
 #' @export
 #'
 #' @examples

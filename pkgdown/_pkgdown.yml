@@ -53,6 +53,7 @@ reference:
 
   - title: Data (pre)processing and wrangling
     contents:
+    - create_design
     - get_data
     - find_example_data
     - get_bm_from_plink
@@ -60,7 +61,6 @@ reference:
     - process_delim
     - relatedness_mat
     - unzip_example_data
-
 
   - title: Plotting, summarizing, and formatting
     contents:
@@ -82,25 +82,25 @@ reference:
 
   - title: internal
     contents:
-    - add_external_phenotype
-    - add_predictors_to_bigsnp
-    - align_ids
+    - add_predictors
     - align_ids
     - big_cbind
     - check_for_file_extension
-    - create_log
+    - count_constant_features
+    - count_cores
     - create_design_filebacked
     - create_design_in_memory
-    - count_constant_features
+    - create_log
     - cvf
     - delta
     - eigen_K
     - estimate_eta
     - fbm2bm
+    - file_sans_ext
     - get_hostname
-    - handle_missingness
     - impute_snp_data
     - index_std_X
+    - index_samples
     - lam_names
     - lasso
     - MCP

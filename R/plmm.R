@@ -31,25 +31,22 @@
 #'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #' @returns A list which includes:
-#'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
-#'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
-#'  * `lambda`: a numeric vector of the lasso tuning parameter values used in model fitting.
-#'  * `eta`: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
-#'  * `rot_y`: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-#'  * `linear_predictors`: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
-#'  * `penalty`: character string indicating the penalty with which the model was fit (e.g., 'MCP')
-#'  * `gamma`: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
-#'  * `alpha`: numeric value indicating the elastic net tuning parameter.
-#'  * `loss`: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
-#'  * `penalty_factor`: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-#'  * `ns_idx`: vector with the indices of predictors which were constant features (i.e., had no variation).
-#'  * `p`: the number of features
-#'  * `n`: the number of observations (instances)
-#'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
-#'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
-#'  * `K`: a list with 2 elements, `s` and `U` ---
-#'    * `s`: a vector of the eigenvalues of the relatedness matrix; see `relatedness_mat()` for details.
-#'    * `U`: a matrix of the eigenvectors of the relatedness matrix
+#'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
+#'  * rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
+#'  * lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
+#'  * eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
+#'  * linear_predictors: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
+#'  * penalty: character string indicating the penalty with which the model was fit (e.g., 'MCP')
+#'  * gamma: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
+#'  * alpha: numeric value indicating the elastic net tuning parameter.
+#'  * loss: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
+#'  * penalty_factor: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+#'  * ns_idx: vector with the indices of predictors which were non-singular features (i.e., features which had variation).
+#'  * iter: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
+#'  * converged: vector of logical values indicating whether the model fitting converged at each value of `lambda`
+#'  * K: a list with 2 elements, `s` and `U` ---
+#'    * s: a vector of the eigenvalues of the relatedness matrix; see `relatedness_mat()` for details.
+#'    * U: a matrix of the eigenvectors of the relatedness matrix
 #' @export
 #'
 #' @examples

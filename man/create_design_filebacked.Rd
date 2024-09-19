@@ -22,7 +22,7 @@ create_design_filebacked(
 )
 }
 \arguments{
-\item{data_file}{A filepath to rds file of processed data (data from \code{process_plink()}, \code{process_delim()}, or \code{process_matrix()})}
+\item{data_file}{A filepath to rds file of processed data (data from \code{process_plink()} or \code{process_delim()})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files.}
 

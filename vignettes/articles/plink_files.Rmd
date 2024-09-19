@@ -1,5 +1,7 @@
 ---
 title: "If your data is in PLINK files"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -13,7 +15,7 @@ knitr::opts_chunk$set(
 library(plmmr)
 ```
 
-A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of '.bed', '.bed', and '.fam' files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the [article on analyzing data from delimited files](articles/filebacking.html).
+A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of '.bed', '.bed', and '.fam' files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the article on analyzing data from delimited files at `vignette("delim_files", package = "plmmr")`.
 
 The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. Processing the data means that we take the feature data and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). Creating a design involves standardizing the input of the features, outcome, and penalty factor into the modeling functions `plmm()` and `cv_plmm()`. 
 
@@ -21,7 +23,7 @@ The `plmmr` package is designed to handle data so that users can analyze large d
 
 First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; if you are on MacOS or Linux, you can run this command to unzip: 
 
-```{r, eval=FALSE}
+```{r}
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
 ```
@@ -32,14 +34,17 @@ Here, we will create the files we want in a temporary directory just for the sak
 
 ```{r}
 # temp_dir <- tempdir() # using a temporary directory (if you didn't already create one above)
-plink_data <- process_plink(data_dir = find_example_data(parent = TRUE), 
-                            # find_example_data() will read in data that 'shipped' with the package, 
+plink_data <- process_plink(data_dir = temp_dir, 
                             # once it has been unzipped (assuming you unzipped in the same folder)
                             data_prefix = "penncath_lite",
                             rds_dir = temp_dir,
                             rds_prefix = "imputed_penncath_lite",
                             # imputing the mode to address missing values
-                            impute_method = "mode")
+                            impute_method = "mode",
+                            # overwrite existing files in temp_dir
+                            # (you can turn this feature off if you need to)
+                            overwrite = T
+                            )
 ```
 
 
@@ -72,8 +77,10 @@ pen_design <- create_design(data_file = plink_data,
                             add_outcome = phen,
                             outcome_id = "FamID",
                             outcome_col = "CAD",
-                            overwrite = TRUE,
-                            logfile = "design")
+                            logfile = "design",
+                            # again, overwrite if needed; use with caution
+                            overwrite = TRUE
+                            )
 
 # examine the design - notice the components of this object 
 pen_design_rds <- readRDS(pen_design)
