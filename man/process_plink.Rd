@@ -74,18 +74,3 @@ files; in subsequent data analysis/scripts, \code{get_data()} will access the '.
 
 See vignette on processing PLINK files
 }
-\examples{
-\donttest{
-temp_dir <- paste0(tempdir()) # using a temporary directory here
-process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
-              rds_dir = temp_dir,
-              data_prefix = "penncath_lite",
-              logfile = "process_penncath",
-              overwrite = TRUE,
-              impute_method = "mode")
-
- # pen <- get_data(file.path(temp_dir, "std_penncath_lite"))
- # str(pen)
- }
-
-}

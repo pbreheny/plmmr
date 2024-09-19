@@ -81,26 +81,23 @@ Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
 \value{
 A list which includes:
 \itemize{
-\item \code{beta_vals}: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
-\item \code{rotated_scale_beta_vals}: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
-\item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
-\item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
-\item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
-\item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
-\item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
-\item \code{alpha}: numeric value indicating the elastic net tuning parameter.
-\item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
-\item \code{penalty_factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-\item \code{ns_idx}: vector with the indices of predictors which were constant features (i.e., had no variation).
-\item \code{p}: the number of features
-\item \code{n}: the number of observations (instances)
-\item \code{iter}: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}
-\item \code{converged}: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
-\item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
+\item beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
+\item rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
+\item lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
+\item eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
+\item linear_predictors: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
+\item penalty: character string indicating the penalty with which the model was fit (e.g., 'MCP')
+\item gamma: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
+\item alpha: numeric value indicating the elastic net tuning parameter.
+\item loss: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
+\item penalty_factor: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+\item ns_idx: vector with the indices of predictors which were non-singular features (i.e., features which had variation).
+\item iter: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}
+\item converged: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
+\item K: a list with 2 elements, \code{s} and \code{U} ---
 \itemize{
-\item \code{s}: a vector of the eigenvalues of the relatedness matrix; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvectors of the relatedness matrix
+\item s: a vector of the eigenvalues of the relatedness matrix; see \code{relatedness_mat()} for details.
+\item U: a matrix of the eigenvectors of the relatedness matrix
 }
 }
 }

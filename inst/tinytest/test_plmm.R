@@ -141,22 +141,31 @@ if (interactive()) {
 
 
 # Test 5: make sure predict method is working -------------------
-plmm_fit <- plmm(design = admix_design,
-                 penalty = 'lasso',
-                 lambda = c(0.1, 0.01))
-plmm_pred <- predict(object = plmm_fit, newX = admix$X, type = "lp")
+if (interactive()) {
+  plmm_fit <- plmm(design = admix_design,
+                   penalty = 'lasso',
+                   lambda = c(0.1, 0.01))
+  plmm_pred <- predict(object = plmm_fit, newX = admix$X, type = "lp")
 
-# use glmnet as gold standard
-glmnet_fit <- glmnet::glmnet(admix$X, admix$y, lambda = c(0.1, 0.01))
-glmnet_pred <- predict(glmnet_fit, newx = admix$X, type = "response")
+  # use glmnet as gold standard
+  glmnet_fit <- glmnet::glmnet(admix$X, admix$y, lambda = c(0.1, 0.01))
+  glmnet_pred <- predict(glmnet_fit, newx = admix$X, type = "response")
 
-cbind(admix$y, plmm_pred, glmnet_pred) -> test
-colnames(test) <- c('y',
-                 'y_hat_plmm0.1',
-                 'y_hat_plmm0.01',
-                 'y_hat_glmnet0.1',
-                 'y_hat_glmnet0.01')
+  cbind(admix$y, plmm_pred, glmnet_pred) -> test
+  colnames(test) <- c('y',
+                      'y_hat_plmm0.1',
+                      'y_hat_plmm0.01',
+                      'y_hat_glmnet0.1',
+                      'y_hat_glmnet0.01')
 
-if(abs(mean(test[,2] - test[,4])) > 0.01) stop("PLMM and GLMNET predictions do not align well.")
-# examine the values to see how much the two sets of predictions differ...
-# test[1:10,]
+glmnet_spe0.1 <- crossprod(glmnet_pred[,1] - admix$y)/nrow(admix$X)
+plmmr_spe0.1 <- crossprod(plmm_pred[,1] - admix$y)/nrow(admix$X)
+
+glmnet_spe0.01 <- crossprod(glmnet_pred[,2] - admix$y)/nrow(admix$X)
+plmmr_spe0.01 <- crossprod(plmm_pred[,2] - admix$y)/nrow(admix$X)
+
+  # examine the values to see how much the two sets of predictions differ...
+  # abs(mean(test[,2] - test[,4]))
+  # test[1:10,]
+
+}

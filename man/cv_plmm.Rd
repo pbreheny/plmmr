@@ -108,7 +108,7 @@ Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argu
 \item{...}{Additional arguments to \code{plmm_fit}}
 }
 \value{
-a list with 11 items:
+a list with 12 items:
 \itemize{
 \item type: the type of prediction used ('lp' or 'blup')
 \item cve: numeric vector with the cross validation error (CVE) at each value of \code{lambda}
@@ -125,6 +125,7 @@ standard error of that which minimizes \code{cve}
 \item null.dev: numeric value representing the deviance for the
 intercept-only model. If you have supplied your own \code{lambda} sequence,
 this quantity may not be meaningful.
+\item estimated_Sigma: an n x n matrix representing the estimated covariance matrix.
 }
 }
 \description{
