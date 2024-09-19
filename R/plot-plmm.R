@@ -4,19 +4,19 @@
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha=1} is equivalent to MCP/SCAD penalty, while \code{alpha=0} would be equivalent to ridge regression. However, \code{alpha=0} is not supported; alpha may be arbitrarily small, but not exactly 0.
 #' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.
 #' @param shade Logical to indicate whether a local nonconvex region should be shaded. Defaults to TRUE.
-#' @param col Vector of colors for coefficient lines. 
+#' @param col Vector of colors for coefficient lines.
 #' @param ... Additional arguments.
-#' 
+#'
 #' @returns Nothing is returned; instead, a plot of the coefficient paths is drawn
-#' at each value of lambda (one 'path' for each value of lambda). 
-#' 
-#' 
+#' at each value of lambda (one 'path' for each value of lambda).
+#'
+#'
 #' @export
-#' 
-#' @examples 
-#' fit <- plmm(admix$X[,1:10], admix$y, nlambda = 10)
-#' # for the sake of illustration, I consider only 10 SNPs in the plot 
-#' plot(fit) 
+#'
+#' @examples
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' fit <- plmm(design = admix_design)
+#' plot(fit)
 #' plot(fit, log.l = TRUE)
 
 ## from ncvreg
@@ -27,11 +27,11 @@ plot.plmm <- function(x, alpha=1, log.l=FALSE, shade=TRUE, col, ...) {
   nonzero <- which(apply(abs(YY), 1, sum)!=0)
   ind <- intersect(penalized, nonzero)
 
-  # check for null model 
+  # check for null model
   if (length(ind) == 0) {
     stop("\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here...")
   }
-  
+
   Y <- YY[ind, , drop=FALSE]
   p <- nrow(Y)
   l <- x$lambda

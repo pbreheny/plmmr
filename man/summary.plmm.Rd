@@ -37,7 +37,7 @@ whose values are constant in the whole sample (e.g., monomorphic SNPs in a genet
 A summary method for the plmm objects
 }
 \examples{
-fit <- cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
-summary(fit$fit, idx = 97)
-summary(fit, lambda = fit$lambda_min)
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+fit <- plmm(design = admix_design)
+summary(fit, idx = 97)
 }

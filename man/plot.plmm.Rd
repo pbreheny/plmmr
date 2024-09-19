@@ -27,8 +27,8 @@ at each value of lambda (one 'path' for each value of lambda).
 Plot method for plmm class
 }
 \examples{
-fit <- plmm(admix$X[,1:10], admix$y, nlambda = 10)
-# for the sake of illustration, I consider only 10 SNPs in the plot 
-plot(fit) 
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+fit <- plmm(design = admix_design)
+plot(fit)
 plot(fit, log.l = TRUE)
 }

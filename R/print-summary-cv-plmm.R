@@ -13,7 +13,8 @@
 #' @export
 #'
 #' @examples
-#' cv_fit <- cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' cv_fit <- cv_plmm(design = admix_design)
 #' print(summary(cv_fit))
 #'
 print.summary.cv_plmm <- function(x, digits, ...){

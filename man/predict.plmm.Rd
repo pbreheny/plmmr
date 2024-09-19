@@ -64,11 +64,13 @@ set.seed(123)
 train_idx <- sample(1:nrow(admix$X), 100)
 # Note: ^ shuffling is important here! Keeps test and train groups comparable.
 train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
+train_design <- create_design(X = train$X, outcome_col = train$y)
+
 test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
-fit <- plmm(X = train$X, y = train$y)
+fit <- plmm(design = train_design)
 
 # make predictions for all lambda values
- pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
+ pred1 <- predict(object = fit, newX = test$X, type = "lp")
 
 # look at mean squared prediction error
 mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
