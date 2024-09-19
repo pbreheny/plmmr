@@ -54,8 +54,9 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile, overwrite,
   if (!quiet) cat("\nCreating ", data_prefix, ".rds\n", sep='')
 
   bigsnpr::snp_readBed2(bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
-                        backingfile = file.path(rds_dir, data_prefix),
-                        ncores = count_cores())
+                        backingfile = file.path(rds_dir, data_prefix))
+  # TODO: think about how, if at all, multiple cores should be used in the call
+  #   to bigsnpr::snp_readBed2
 
   obj <- bigsnpr::snp_attach(paste0(file.path(rds_dir, data_prefix), ".rds"))
   return(obj)
