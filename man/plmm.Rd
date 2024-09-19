@@ -5,15 +5,11 @@
 \title{Fit a linear mixed model with non-convex regularization}
 \usage{
 plmm(
-  X,
-  y = NULL,
-  col_names = NULL,
-  non_genomic = NULL,
+  design,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
   penalty = "lasso",
-  penalty_factor = NULL,
   init = NULL,
   gamma,
   alpha = 1,
@@ -28,22 +24,12 @@ plmm(
   trace = FALSE,
   save_rds = NULL,
   compact_save = FALSE,
-  return_fit = TRUE,
+  return_fit = NULL,
   ...
 )
 }
 \arguments{
-\item{X}{Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to \code{get_data()}.
-* Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.}
-
-\item{y}{Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
-
-\item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.
-For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.}
-
-\item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
-For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
+\item{design}{A \code{plmm_design} object (as created by \code{create_design()}) or a string with the file path to a design object (the file path must end in '.rds').}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
@@ -56,8 +42,6 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
-
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
@@ -89,7 +73,8 @@ Defaults to NULL, which does not save the result.}
 \item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
-\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
+\item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session.
+Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
 
 \item{...}{Additional optional arguments to \code{plmm_checks()}}
 }
@@ -114,8 +99,8 @@ A list which includes:
 \item \code{converged}: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
 \item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
 \itemize{
-\item \code{s}: a vector of the eigenvalues of the genomic relatedness matrix; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvectors of the genomic relatedness matrix
+\item \code{s}: a vector of the eigenvalues of the relatedness matrix; see \code{relatedness_mat()} for details.
+\item \code{U}: a matrix of the eigenvectors of the relatedness matrix
 }
 }
 }
@@ -125,16 +110,11 @@ NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
 }
 \examples{
 # using admix data
-fit_admix1 <- plmm(X = admix$X, y = admix$y)
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+fit_admix1 <- plmm(design = admix_design)
 s1 <- summary(fit_admix1, idx = 50)
 print(s1)
 plot(fit_admix1)
-
-# an example with p > n:
-fit_admix2 <- plmm(X = admix$X[1:50, ], y = admix$y[1:50])
-s2 <- summary(fit_admix2, idx = 99)
-print(s2)
-plot(fit_admix2) # notice: the default penalty is MCP
 
 # Note: for examples with large data that are too big to fit in memory,
 # see the article "PLINK files/file-backed matrices" on our website

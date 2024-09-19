@@ -4,50 +4,23 @@
 \alias{subset_bigsnp}
 \title{A helper function to subset \code{bigSNP} objects}
 \usage{
-subset_bigsnp(
-  obj,
-  counts,
-  handle_missing_phen,
-  complete_phen,
-  non_gen,
-  data_dir,
-  rds_dir,
-  prefix,
-  bk_filename,
-  outfile,
-  quiet
-)
+subset_bigsnp(X, complete_samples, ns, rds_dir, new_file, outfile, quiet)
 }
 \arguments{
-\item{obj}{A \code{bigSNP} object}
+\item{X}{A filebacked \code{big.matrix} with the to-be-standardized design matrix}
 
-\item{counts}{A dataframe as returned by \code{bigstatsr::big_counts()}}
+\item{complete_samples}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
 
-\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
-\itemize{
-\item "prune" (default): observations with missing phenotype are removed
-\item "asis": leaves missing phenotypes as NA (this is fine if outcome will be supplied later from a separate file)
-\item "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-\item "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-}}
-
-\item{complete_phen}{Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the \code{.fam} file}
-
-\item{non_gen}{an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, non_gen = 1:2.
-\strong{Note}: this is typically passed from the result of \code{add_predictors()}}
-
-\item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
+\item{ns}{Numeric vector with the indices of the non-singular columns
+This vector is created in \code{handle_missingness()}}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+\item{new_file}{Optional user-specified new_file for the to-be-created .rds/.bk files.}
 
-\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
-\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
+\item{outfile}{Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
-
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{quiet}{Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)}
 }
 \value{
 A \code{bigSNP} object that includes a new component, 'subset_X', representing a design matrix wherein:

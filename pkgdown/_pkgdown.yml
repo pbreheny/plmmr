@@ -13,14 +13,16 @@ navbar:
     href: reference/index.html
   - text: Articles
     menu:
-    - text: Getting started
+    - text: Start here - getting to know plmmr
       href: articles/getting-started.html
-    - text: If your data is from PLINK...
-      href: articles/process_plink_files.html
+    - text: If your data is a matrix or data frame
+      href: articles/matrix_data.html
+    - text: If your data is in PLINK files
+      href: articles/plink_files.html
+    - text: If your data is in (a) delimited file(s)
+      href: articles/delim_files.html
     - text: Notes on notation
       href: articles/notation.html
-    - text: File-backed data (how to work with big files)
-      href: articles/filebacking.html
     - text: 'In progress: PLMMs & deconfounding'
       href: articles/deconfounding.html
   - text: News
@@ -83,10 +85,12 @@ reference:
     - add_external_phenotype
     - add_predictors_to_bigsnp
     - align_ids
-    - align_famfile_ids
+    - align_ids
     - big_cbind
     - check_for_file_extension
     - create_log
+    - create_design_filebacked
+    - create_design_in_memory
     - count_constant_features
     - cvf
     - delta
@@ -113,10 +117,11 @@ reference:
     - SCAD
     - setup_lambda
     - standardize_bigsnp
-    - standardize_fbm
     - standardize_matrix
     - subset_bigsnp
     - untransform
+    - untransform_in_memory
+    - untransform_filebacked
     - varp
 
 

@@ -6,34 +6,30 @@
 \usage{
 process_plink(
   data_dir,
-  prefix,
+  data_prefix,
   rds_dir = data_dir,
-  bk_filename,
+  rds_prefix,
+  logfile = NULL,
   impute = TRUE,
   impute_method = "mode",
-  na_phenotype_vals = c(-9),
   id_var = "IID",
-  handle_missing_phen = "prune",
-  add_phen = NULL,
-  pheno_id = NULL,
-  pheno_name = NULL,
   quiet = FALSE,
-  outfile,
   overwrite = FALSE,
-  add_predictor_fam = NULL,
-  add_predictor_ext = NULL,
   ...
 )
 }
 \arguments{
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
 
-\item{prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
+\item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{data_prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{bk_filename}{Optional string to name the backingfile that will be created for the output data. Defaults to \verb{paste0(std_}. \code{prefix}).
-\strong{Note}: Do NOT include a \code{.bk} extension in the filename.}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create insie \code{rds_dir} folder)
+Note: 'rds_prefix' cannot be the same as 'data_prefix'}
+
+\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
+Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
@@ -44,85 +40,47 @@ process_plink(
 * mean2: Imputes the mean rounded to 2 decimal places.
 * xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
 
-\item{na_phenotype_vals}{A vector of numeric values used to code NA values in the phenotype/outcome (this is the 'affection' column in a \code{bigSNP} object, or the last column of a \code{.fam} file). Defaults to -9 (matching PLINK conventions).}
-
-\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
-
-\item{handle_missing_phen}{A string indicating how missing phenotypes should be handled:
-* "prune" (default): observations with missing phenotype are removed
-* "median": impute missing phenotypes using the median (warning: this is overly simplistic in many cases).
-* "mean": impute missing phenotypes using the mean (warning: this is overly simplistic in many cases).
-Note: for data coming from PLINK, no missing values of the phenotype are allowed. You have to (1) supply phenotype from an external file,
-(2) prune missing values, or (3) impute missing values.}
-
-\item{add_phen}{Optional: A \strong{data frame} with at least two columns: and ID column and a phenotype column}
-
-\item{pheno_id}{Optional: A string specifying the name of the ID column in \code{pheno}. MUST be specified if \code{add_phen} is specified.}
-
-\item{pheno_name}{Optional: A string specifying the name of the phenotype column in \code{pheno}.  MUST be specified if \code{add_phen} is specified. This column will be used as the default \code{y} argument to 'plmm()'.}
+\item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
-
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile, created in the same directory as 'data_dir'.}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 \strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
 To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
 
-\item{add_predictor_fam}{Optional: if you want to include "sex" (the 5th column of \code{.fam} file) in the analysis, specify 'sex' here.}
-
-\item{add_predictor_ext}{Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
-This argument takes one of two kinds of arguments:
-- a \strong{named} numeric vector, where the names align with the sample IDs in the PLINK files. \strong{No NA values} can be in this vector.
-The names will be used to subset and align this external covariate with the supplied PLINK data. \strong{No NA values} can be in this matrix.
-- a numeric matrix whose row names align with the sample IDs in the PLINK files.
-The names will be used to subset and align this external covariate with the supplied PLINK data.}
-
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
 \value{
-Nothing is returned by this function, but (at least) two files are created in
-the location specified by \code{rds_dir}:
-\itemize{
-\item 'std_prefix.rds': This is the \code{bigsnpr::bigSNP} object
-that holds the PLINK data along with meta-data. See details for explanation of what
-is included in this meta-data
-\item 'std_prefix.bk': Created by the call to \code{standardize_fbm()}, this is the
-backingfile that stores the numeric data of the standardized design matrix \code{std_X}
-}
-
-Note that \code{process_plink()} need only be run once for a given set of PLINK
-files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
+The filepath to the '.rds' object created; see details for explanation.
 }
 \description{
 Preprocess PLINK files using the \code{bigsnpr} package
 }
 \details{
-The '.rds' object created by this function has the following elements:
+Three files are created in the location specified by \code{rds_dir}:
 \itemize{
-\item std_X: The file-backed design matrix, as an \code{FBM} object (see \code{bigstatsr} package for more info)
-\item fam: Data frame equivalent of PLINK '.bim' file
-\item map: Data frame equivalent of PLINK '.fam' file
-\item colnames: Character vector of column names for the original data (includes constant features, i.e. monomorphic SNPs)
-\item rownames: Character vector of row names for the original data.
-\item n: Number of rows (samples) in the original data
-\item p: Number of columns (features, SNPs, markers, ...) in the original data
-\item ns: Numeric vector of indices marking the non-singular columns of the original data
-\item std_X_center: Numeric vector of values used to center the non-singular columns of the data
-\item std_X_scale: Numeric vector of values used to scale the non-singular columns of the data
-\item std_X_colnames: Character vector of column names for the standardized data
-\item std_X_rownames: Character vector of row names for the standardized data.
-\item complete_phen: Numeric vector of indices marking the samples with a non-missing phenotype. Ony applicable if \code{handle_missing_phen = 'prune'}
-\item id_var: String specifying which ID column in the '.fam' file had the unique sample ID: 'FID' (1st column) or 'IID' (2nd column)
+\item 'rds_prefix.rds': This is a list with three items:
+(1) \code{X}: the filebacked \code{bigmemory::big.matrix} object pointing to the imputed genotype data.
+This matrix has type 'double', which is important for downstream operations in \code{create_design()}
+(2) \code{map}: a data.frame with the PLINK 'bim' data (i.e., the variant information)
+(3) \code{fam}: a data.frame with the PLINK 'fam' data (i.e., the pedigree information)
+\item 'prefix.bk': This is the
+backingfile that stores the numeric data of the genotype matrix
+\item 'rds_prefix.desc'" This is the description file, as needed by the
 }
+
+Note that \code{process_plink()} need only be run once for a given set of PLINK
+files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
+
+See vignette on processing PLINK files
 }
 \examples{
 \donttest{
 temp_dir <- paste0(tempdir()) # using a temporary directory here
 process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
               rds_dir = temp_dir,
-              prefix = "penncath_lite",
-              outfile = "process_penncath",
+              data_prefix = "penncath_lite",
+              logfile = "process_penncath",
               overwrite = TRUE,
               impute_method = "mode")
 

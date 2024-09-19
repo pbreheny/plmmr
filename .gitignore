@@ -1,6 +1,7 @@
 .Rproj.user
 *.rds
 *.bk
+*.desc
 penncath_*.bed
 penncath_*.bim
 penncath_*.fam
@@ -21,6 +22,9 @@ inst/doc
 inst/extdata/og_cad.*
 inst/extdata/cad_mid.*
 inst/extdata/*.rds
+inst/extdata/*.bim
+inst/extdata/*.bed
+inst/extdata/*.fam
 R/_*
 README.html
 Rprof.*

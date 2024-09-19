@@ -2,14 +2,7 @@
 #'
 #' This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
 #' NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
-#' @param X                       Design matrix object or a string with the file path to a design matrix. If a string, string will be passed to `get_data()`.
-#'                                * Note: X may include clinical covariates and other non-SNP data, but no missing values are allowed.
-#' @param y                       Numeric outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.
-#' @param col_names               Optional vector of column names for design matrix. Defaults to NULL.
-#'                                For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#' @param non_genomic             Optional vector specifying which columns of the design matrix represent features that are *not* genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-#'                                For cases where X is a filepath to an object created by `process_plink()`, this is handled automatically via the arguments to `process_plink()`.
-#'                                For all other cases, 'non_genomic' defaults to NULL (meaning `plmm()` will assume that all columns of `X` represent genomic features).
+#' @param design                  A `plmm_design` object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
 #' @param K                       Similarity matrix used to rotate the data. This should either be:
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
@@ -18,7 +11,6 @@
 #'                                Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta_star                Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty                 The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
-#' @param penalty_factor          A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma                   The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha                   Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
@@ -33,7 +25,8 @@
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                                Defaults to NULL, which does not save the result.
-#' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
+#' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
+#'                                Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.
 #' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 #'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
@@ -55,36 +48,27 @@
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #'  * `K`: a list with 2 elements, `s` and `U` ---
-#'    * `s`: a vector of the eigenvalues of the genomic relatedness matrix; see `relatedness_mat()` for details.
-#'    * `U`: a matrix of the eigenvectors of the genomic relatedness matrix
+#'    * `s`: a vector of the eigenvalues of the relatedness matrix; see `relatedness_mat()` for details.
+#'    * `U`: a matrix of the eigenvectors of the relatedness matrix
 #' @export
 #'
 #' @examples
 #' # using admix data
-#' fit_admix1 <- plmm(X = admix$X, y = admix$y)
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' fit_admix1 <- plmm(design = admix_design)
 #' s1 <- summary(fit_admix1, idx = 50)
 #' print(s1)
 #' plot(fit_admix1)
-#'
-#' # an example with p > n:
-#' fit_admix2 <- plmm(X = admix$X[1:50, ], y = admix$y[1:50])
-#' s2 <- summary(fit_admix2, idx = 99)
-#' print(s2)
-#' plot(fit_admix2) # notice: the default penalty is MCP
 #'
 #' # Note: for examples with large data that are too big to fit in memory,
 #' # see the article "PLINK files/file-backed matrices" on our website
 #' # https://pbreheny.github.io/plmmr/articles/filebacking.html
 #'
-plmm <- function(X,
-                 y = NULL,
-                 col_names = NULL,
-                 non_genomic = NULL,
+plmm <- function(design,
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
                  penalty = "lasso",
-                 penalty_factor = NULL,
                  init = NULL,
                  gamma,
                  alpha = 1,
@@ -99,7 +83,7 @@ plmm <- function(X,
                  trace = FALSE,
                  save_rds = NULL,
                  compact_save = FALSE,
-                 return_fit = TRUE,
+                 return_fit = NULL,
                  ...) {
 
   # check filepaths for saving results ------------------------------
@@ -120,21 +104,26 @@ plmm <- function(X,
                                          "./plmm"))
 
   # run checks ------------------------------
-  checked_data <- plmm_checks(X,
-                              col_names = col_names,
-                              non_genomic = non_genomic,
-                              y = y,
+  checked_data <- plmm_checks(design,
                               K = K,
                               diag_K = diag_K,
                               eta_star = eta_star,
                               penalty = penalty,
-                              penalty_factor = penalty_factor,
                               init = init,
                               dfmax = dfmax,
                               gamma = gamma,
                               alpha = alpha,
                               trace = trace,
                               ...)
+
+  # set defaults for returning fit
+  if (is.null(return_fit)) {
+    if (checked_data$fbm_flag) {
+      return_fit <- FALSE
+    } else {
+      return_fit <- TRUE
+    }
+  }
 
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",
@@ -149,7 +138,6 @@ plmm <- function(X,
                         std_X_p = checked_data$std_X_p,
                         n = checked_data$n,
                         p = checked_data$p,
-                        genomic = checked_data$genomic,
                         centered_y = checked_data$centered_y,
                         K = checked_data$K,
                         diag_K = checked_data$diag_K,
@@ -163,7 +151,7 @@ plmm <- function(X,
       pretty_time(),
       "\n", file = logfile, append = TRUE)
 
-  # rotate & fit -------------------------------------------------------------
+    # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       y = checked_data$y,
                       std_X_details = checked_data$std_X_details,
@@ -186,19 +174,10 @@ plmm <- function(X,
   # format results ---------------------------------------------------
   if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
 
-  if (is.null(checked_data$col_names)){
-    if (!is.null(checked_data$dat)) {
-      col_names <- checked_data$dat$map$marker.ID
-    }
-  } else {
-    col_names <- checked_data$col_names
-  }
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
-                                   feature_names = col_names,
-                                   fbm_flag = checked_data$fbm_flag,
-                                   non_genomic = checked_data$non_genomic)
+                                   fbm_flag = checked_data$fbm_flag)
 
   if (trace)(cat("Model ready at ",
                  pretty_time()))

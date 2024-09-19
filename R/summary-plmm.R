@@ -22,10 +22,9 @@
 #' @export
 #'
 #' @examples
-#' fit <- cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
-#' summary(fit$fit, idx = 97)
-#' summary(fit, lambda = fit$lambda_min)
-
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' fit <- plmm(design = admix_design)
+#' summary(fit, idx = 97)
 summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
 
   # lambda/which
@@ -39,7 +38,6 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
     }
 
   }
-
 
   # nvars (tells number of non-zero coefficients)
   nvars <- predict(object, type="nvars", lambda=lambda, idx=idx, ...)
@@ -58,7 +56,7 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
 
   out <- structure(list(
     penalty=object$penalty,
-    n=nrow(object$linear_predictors),
+    n=nrow(object$K$U),
     std_X_n = object$std_X_n,
     p=nrow(object$beta_vals),
     converged=object$converged[idx],

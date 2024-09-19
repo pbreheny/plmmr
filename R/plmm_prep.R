@@ -8,7 +8,7 @@
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param centered_y Continuous outcome vector, centered.
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the _standardized_ design matrix.
+#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the **standardized** design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
@@ -98,6 +98,7 @@ plmm_prep <- function(std_X,
       U <- K$U
     }
   }
+
   # otherwise, need to do eigendecomposition:
   if (sum(c(flag1, flag2, flag3)) == 0) {
     if (trace) {cat("Starting decomposition.\n")}
@@ -106,13 +107,7 @@ plmm_prep <- function(std_X,
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
       if (trace) cat("Calculating the eigendecomposition of K\n")
-
-      if (identical(genomic,1:std_X_p)) {
-        # if all columns are genomic, no need to filter
-        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
-      } else {
-        eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag, ind.col = genomic)
-      }
+      eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
       K <- eigen_res$K
       s <- eigen_res$s
       U <- eigen_res$U
@@ -149,10 +144,6 @@ plmm_prep <- function(std_X,
 
   # return values to be passed into plmm_fit():
   ret <- structure(list(
-   # n = n,
-   #  p = p,
-    # std_X_n = std_X_n,
-    # std_X_p = std_X_p,
     std_X = std_X,
     centered_y = centered_y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())

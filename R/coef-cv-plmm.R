@@ -4,17 +4,18 @@
 #' @param lambda A numeric vector of lambda values.
 #' @param which Vector of lambda indices for which coefficients to return. Defaults to lambda index with minimum CVE.
 #' @param ... Additional arguments (not used).
-#' 
+#'
 #' @rdname coef.cv_plmm
-#' 
-#' @returns Returns a named numeric vector. Values are the coefficients of the 
-#' model at the specified value of either `lambda` or `which`. Names are the 
+#'
+#' @returns Returns a named numeric vector. Values are the coefficients of the
+#' model at the specified value of either `lambda` or `which`. Names are the
 #' values of `lambda`.
-#' 
+#'
 #' @export
-#' 
-#' @examples 
-#' cv_fit <- cv_plmm(X = admix$X, y = admix$y, K = relatedness_mat(admix$X))
+#'
+#' @examples
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 #' head(coef(cv_fit))
 #'
 coef.cv_plmm <- function(object, lambda, which = object$min, ...){

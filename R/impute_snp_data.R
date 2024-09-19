@@ -19,6 +19,7 @@
 #'
 impute_snp_data <- function(obj, X, impute, impute_method,
                             outfile, quiet, seed = as.numeric(Sys.Date()),...){
+
   if(!quiet & impute){
     # catch for misspellings
     if(!(impute_method %in% c('mode', 'random', 'mean0', 'mean2', 'xgboost'))){
@@ -35,13 +36,13 @@ impute_snp_data <- function(obj, X, impute, impute_method,
     if(impute_method %in% c('mode', 'random', 'mean0', 'mean2')){
 
       obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
-                                                     ncores = bigstatsr::nb_cores(),
+                                                     ncores = count_cores(),
                                                      method = impute_method) # dots can pass other args
 
     } else if (impute_method == "xgboost"){
 
       obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
-                                               ncores = bigstatsr::nb_cores(),
+                                               ncores = count_cores(),
                                                infos.chr = obj$chr,
                                                seed = seed,
                                                ...) # dots can pass other args

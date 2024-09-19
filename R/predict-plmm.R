@@ -46,11 +46,13 @@
 #' train_idx <- sample(1:nrow(admix$X), 100)
 #' # Note: ^ shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
+#' train_design <- create_design(X = train$X, outcome_col = train$y)
+#'
 #' test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
-#' fit <- plmm(X = train$X, y = train$y)
+#' fit <- plmm(design = train_design)
 #'
 #' # make predictions for all lambda values
-#'  pred1 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
+#'  pred1 <- predict(object = fit, newX = test$X, type = "lp")
 #'
 #' # look at mean squared prediction error
 #' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
@@ -125,13 +127,13 @@ predict.plmm <- function(object,
   if (type == "blup"){ # assuming eta of X and newX are the same
     if (fbm_flag) stop("\nBLUP prediction outside of cross-validation is not yet implemented for filebacked data. This will be available soon.")
     if (missing(X)) stop("The design matrix is required for BLUP calculation. Please supply the no-intercept design matrix to the X argument.")
-    if (missing(y) & is.null(object$y)) stop("The vector of outcomes is required for BLUP calculation. Please either supply it to the y argument, or set returnX=TRUE in the plmm function.")
+    if (missing(y)) stop("The vector of outcomes is required for BLUP calculation. Please either supply it to the y argument")
+
     # check dimensions -- must have same number of features
     if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
-    if (!is.null(object$y)) y <- object$y
 
     Sigma_11 <- construct_variance(fit = object)
-    Sigma_21 <- object$eta * (1/p) * tcrossprod(newX,X) # same as Sigma_21_check
+    Sigma_21 <- object$eta * (1/p) * tcrossprod(newX, X) # same as Sigma_21_check
     Xb_old <- sweep(X %*% b, 2, a, "+")
     resid_old <- drop(y) - Xb_old
 

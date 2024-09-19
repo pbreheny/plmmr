@@ -4,9 +4,8 @@
 
 # set up
 lambda0 <- c(1, 0.1, 0.01, 0.001)
-
-plmm0 <- plmm(X = admix$X,
-              y = admix$y,
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+plmm0 <- plmm(design = admix_design,
               diag_K = TRUE,
               lambda = lambda0,
               penalty = "lasso",
@@ -23,7 +22,7 @@ B0 <- as.matrix(lasso0$beta[1:9, ]) # NB: glmnet() does not return intercept val
 dimnames(B0) <- NULL
 
 # test 0 - implementation
-expect_equivalent(A0, B0, tolerance = 0.01)
+tinytest::expect_equivalent(A0, B0, tolerance = 0.01)
 
 
 # Test 1 Case where K is diagonal and lambda is 0 ---------------------------
@@ -33,11 +32,10 @@ expect_equivalent(A0, B0, tolerance = 0.01)
 K_diagonal <- diag(x = (rnorm(n = nrow(admix$X))^2),
                    nrow = nrow(admix$X))
 
-plmm1 <- plmm(X = admix$X,
-              y = admix$y,
+plmm1 <- plmm(design = admix_design,
               K = K_diagonal,
               diag_K = TRUE,
-              # FIXME: Need to fix plmm so that lambda can be a single value
+              # TODO: Need to fix plmm so that lambda can be a single value
               lambda = c(0.001, 0),
               penalty = "lasso")
 
@@ -56,7 +54,7 @@ names(B1) <- NULL
 B1 <- ifelse(is.na(B1), 0, B1)
 
 # test 1: implementation
-expect_equivalent(A1, B1, tolerance = 0.01)
+tinytest::expect_equivalent(A1, B1, tolerance = 0.01)
 
 # check
 # head(data.frame(A1, B1))
@@ -65,8 +63,7 @@ expect_equivalent(A1, B1, tolerance = 0.01)
 
 lambda2 <- c(1, 0.1, 0.01)
 
-plmm2 <- plmm(X = admix$X,
-              y = admix$y,
+plmm2 <- plmm(design = admix_design,
               diag_K = TRUE,
               K = K_diagonal,
               lambda = lambda2,
@@ -88,13 +85,13 @@ B2 <- as.matrix(lasso2$beta[1:9, ]) # NB: glmnet() does not return intercept val
 dimnames(B2) <- NULL
 
 # test 2 - implementation
-expect_equivalent(A2, B2, tolerance = 0.1)
+tinytest::expect_equivalent(A2, B2, tolerance = 0.1)
 
 # Test 3: show that monomorphic SNPs are given beta values of 0s -------------
 monomorphic <- apply(admix$X[,1:15], 2, var) == 0
 monomorphic_snps <- paste0("Snp", which(monomorphic))
 # NB: SNPs 8 and 14 are monomorphic
-fit3 <- plmm(X = admix$X[,1:15], y = admix$y)
+fit3 <- plmm(design = admix_design)
 tinytest::expect_equivalent(matrix(0,
                  nrow = length(monomorphic_snps),
                  ncol = length(fit3$lambda)
@@ -103,40 +100,48 @@ tinytest::expect_equivalent(matrix(0,
 
 # Test 4: make sure in-memory and filebacked computations match ---------------
 if (interactive()) {
-  # process PLINK files
+  # process delimited files
   temp_dir <- tempdir() # using a temp dir -- change to fit your preference
-  unzip_example_data(outdir = temp_dir)
-  process_plink(data_dir = temp_dir,
-                rds_dir = temp_dir,
-                prefix = "penncath_lite",
-                outfile = "process_penncath",
-                overwrite = TRUE,
-                impute_method = "mode")
+  colon_dat <- process_delim(data_file = "colon2.txt",
+                             data_dir = find_example_data(parent = TRUE),
+                             rds_dir = temp_dir,
+                             rds_prefix = "processed_colon2",
+                             sep = "\t",
+                             overwrite = TRUE,
+                             header = TRUE)
+  # prepare outcome data
+  colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
 
+  # create a design
+  colon_design <- create_design(data_file = colon_dat,
+                                rds_dir = temp_dir,
+                                new_file = "std_colon2",
+                                add_outcome = colon_outcome,
+                                outcome_id = "ID",
+                                outcome_col = "y",
+                                logfile = "colon_design",
+                                overwrite = TRUE)
   # filebacked
-  my_fb_data <- paste0(temp_dir, "/std_penncath_lite")
-  fb_fit <- plmm(X = my_fb_data,
-                 returnX = FALSE,
-                 # this datset is small enough to fit in memory
-                 # by setting returnX = FALSE, I force plmm() to run on the filebacked data
-                 trace = TRUE)
+  fb_fit <- plmm(design = colon_design, trace = TRUE, return_fit = TRUE)
 
   # in-memory
-  fit <- plmm(X = my_fb_data, # will run in-memory by default, since data will fit
+  colon_X <- read.delim(file = "inst/extdata/colon2.txt")
+  in_mem_design <- create_design(X = colon_X, outcome_col = colon_outcome$y)
+  fit <- plmm(design = in_mem_design,
+              # make sure to use the same K!
+              K = fb_fit$K,
               trace = TRUE)
 
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()
   b2 <- fit$beta_vals
-  tinytest::expect_equivalent(b1, b2, 0.01) # passes
+  tinytest::expect_equivalent(b1, b2, tolerance = 0.001) # passes
 
 }
 
 
 # Test 5: make sure predict method is working -------------------
-plmm_fit <- plmm(admix$X,
-                 admix$y,
-                 # K = relatedness_mat(admix$X),
+plmm_fit <- plmm(design = admix_design,
                  penalty = 'lasso',
                  lambda = c(0.1, 0.01))
 plmm_pred <- predict(object = plmm_fit, newX = admix$X, type = "lp")
@@ -151,71 +156,7 @@ colnames(test) <- c('y',
                  'y_hat_plmm0.01',
                  'y_hat_glmnet0.1',
                  'y_hat_glmnet0.01')
-# test[1:10,] # in plmm method, all rows of X have same predicted value!
-if(abs(mean(test[,2] - test[,4])) > 5) stop("PLMM and GLMNET predictions are far off for the test model.")
-# NB: the 5 above is chosen arbitrarily, based on my experience with the admix data
 
-
-# Test 6: is resid. method working ----------------------------------------------
-# R <- residuals(object = plmm(admix$X, admix$y, penalty = "lasso",
-#                                   diag_K = TRUE, lambda = lambda0))
-#
-# ncv_fit <- ncvreg::ncvreg(X = admix$X, y = admix$y, penalty = "lasso", lambda = lambda0)
-# ncv_R <- matrix(nrow = nrow(ncv_fit$linear_predictors), ncol = ncol(ncv_fit$linear_predictors))
-# for(j in 1:ncol(ncv_R)){
-#   ncv_R[,j] <- ncv_fit$y - ncv_fit$linear_predictors[j]
-# }
-#
-# tinytest::expect_equivalent(R, ncv_R)
-
-# Test 7: make sure plmm() runs in-memory and filebacked ---------------------
-
-# if (interactive()) {
-#   # process data
-#   pen_clinic <- read.csv(paste0(find_example_data(parent = TRUE), "/penncath_clinical.csv"))
-#   extdata <- pen_clinic[,3:4]
-#   rownames(extdata) <- pen_clinic$FamID # This is important!
-#
-#   # create a new temporary directory
-#   temp_dir <- paste0(tempdir(), sample(LETTERS, 1))
-#
-#   process_plink(data_dir = find_example_data(parent = TRUE),
-#                 rds_dir = temp_dir, # using a temporary directory
-#                 prefix = "penncath_lite",
-#                 id_var = "FID", # this is KEY!
-#                 outfile = "process_penncath",
-#                 impute_method = "mode",
-#                 add_predictor_ext = extdata)
-#
-#   # filebacked
-#   dat_plus_newvars <- paste0(temp_dir, "/std_penncath_lite")
-#   pen2 <- readRDS(paste0(temp_dir, "/std_penncath_lite.rds"))
-#   foo <- plmm(X = dat_plus_newvars,
-#                            penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-#                            returnX = FALSE,
-#                            trace = TRUE)
-#
-#   # NB: returnX = FALSE is needed to pass to get_data(); otherwise, this
-#   #   will run in-memory because of the small size of this test data set
-#   foo_nz <- which(foo$beta_vals[,4] != 0)
-#
-#   # in memory
-#   foo2 <- plmm(X = dat_plus_newvars,
-#                            penalty_factor = c(0, 0, rep(1, ncol(pen2$std_X) - 2)),
-#                            trace = TRUE)
-#   foo2_nz <- which(foo2$beta_vals[,4] != 0)
-#
-#   # look at head of values (checks SNP names)
-#   foo$beta_vals[,4] |> head()
-#   foo2$beta_vals[,4] |> head()
-#
-#   # look at just nonzero values
-#   foo$beta_vals[foo_nz,4] |> head()
-#   foo2$beta_vals[foo2_nz,4] |> head()
-#
-#   tinytest::expect_equivalent(foo$beta_vals[,3], foo2$beta_vals[,3],
-#                               tolerance = 0.001)
-#   tinytest::expect_equivalent(foo$beta_vals[,4], foo2$beta_vals[,4],
-#                               tolerance = 0.001)
-#
-# }
+if(abs(mean(test[,2] - test[,4])) > 0.01) stop("PLMM and GLMNET predictions do not align well.")
+# examine the values to see how much the two sets of predictions differ...
+# test[1:10,]

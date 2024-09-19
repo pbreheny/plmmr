@@ -1,7 +1,7 @@
 Package: plmmr
 Title: Penalized Linear Mixed Models For Correlated Data
-Version: 3.1.1.3
-Date: 2024-07-08
+Version: 3.2.0.0
+Date: 2024-09-19
 Authors@R: c(
     person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),
@@ -29,19 +29,19 @@ Depends:
     R (>= 4.4.0)
 Imports:
     biglasso (>= 1.6.0),
-    bigsnpr,
-    bigstatsr,
     data.table,
     glmnet,
     Matrix,
     ncvreg,
+    parallel,
     utils
 Suggests:
+    bigsnpr,
+    bigstatsr,
     graphics,
     grDevices,
     knitr,
     MASS,
-    parallel,
     rmarkdown,
     tinytest
 LinkingTo: 

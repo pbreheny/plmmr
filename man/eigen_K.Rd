@@ -5,17 +5,12 @@
 \title{A function to take the eigendecomposition of K
 Note: This is faster than taking SVD of X when p >> n}
 \usage{
-eigen_K(std_X, fbm_flag, ...)
+eigen_K(std_X, fbm_flag)
 }
 \arguments{
 \item{std_X}{The \emph{standardized} design matrix, stored as big.matrix object.}
 
 \item{fbm_flag}{Logical: is std_X an FBM obejct? Passed from \code{plmm()}.}
-
-\item{...}{Optional additional arguments to \code{bigstatsr::big_tcrossprodSelf()},
-Of note, one additional argument is \code{ind.col}, which is used to \emph{exclude} the
-unpenalized additional, non-genomic covariates (like sex, age, etc.) from being
-included in the calculation of kinship.}
 }
 \value{
 A list with the eigenvectors and eigenvalues of K

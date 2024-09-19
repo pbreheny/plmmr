@@ -45,15 +45,14 @@ setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor, inter
       lastCol = ind[length(ind)])
     cprod_res <- .Call("big_crossprod",
                        pen_X@address,
-                       y,
-                       as.integer(bigstatsr::nb_cores()),
+                       fit$residuals,
+                       as.integer(count_cores()),
                        PACKAGE = "plmmr")
     cprod <- cprod_res[[1]]
     decomp_backsolve <- abs(cprod)/penalty_factor[ind]
   }
   zmax <- max(stats::na.exclude(decomp_backsolve))/n
   lambda.max <- zmax/alpha
-
 
   # error check
   if(!is.finite(log(lambda.max))){stop("log(lambda.max) is not finite")}

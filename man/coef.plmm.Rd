@@ -26,6 +26,7 @@ feature names, columns are values of \code{lambda}.
 Coef method for "plmm" class
 }
 \examples{
-fit <- plmm(admix$X, admix$y)
-coef(fit)[1:10, 1:5]
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+fit <- plmm(design = admix_design)
+coef(fit)[1:10, 41:45]
 }

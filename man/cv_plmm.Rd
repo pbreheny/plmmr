@@ -5,15 +5,11 @@
 \title{Cross-validation for plmm}
 \usage{
 cv_plmm(
-  X,
-  y = NULL,
-  col_names = NULL,
-  non_genomic = NULL,
+  design,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
   penalty = "lasso",
-  penalty_factor = NULL,
   type = "blup",
   gamma,
   alpha = 1,
@@ -41,15 +37,7 @@ cv_plmm(
 )
 }
 \arguments{
-\item{X}{Design matrix for model fitting. May include clinical covariates and other non-SNP data.}
-
-\item{y}{Continuous outcome vector. Defaults to NULL, assuming that the outcome is the 6th column in the .fam PLINK file data. Can also be a user-supplied numeric vector.}
-
-\item{col_names}{Optional vector of column names for design matrix. Defaults to NULL.}
-
-\item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
-For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
+\item{design}{Design matrix object (as created by \code{create_design()}) or a string with the file path to a design object (the file path must end in '.rds').}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().}
 
@@ -59,11 +47,6 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
-
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient.
-If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X.
-The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model.
-In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{type}{A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
 based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
@@ -149,8 +132,8 @@ Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
 linear mixed models over a grid of values for the regularization parameter \code{lambda}.
 }
 \examples{
-cv_fit <- cv_plmm(X = cbind(admix$race,admix$X), y = admix$y,
- non_genomic = 1, penalty_factor = c(0, rep(1, ncol(admix$X))))
+admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 print(summary(cv_fit))
 plot(cv_fit)
 

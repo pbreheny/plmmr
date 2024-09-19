@@ -4,7 +4,7 @@
 \alias{untransform}
 \title{Untransform coefficient values back to the original scale}
 \usage{
-untransform(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
+untransform(std_scale_beta, p, std_X_details, fbm_flag, use_names = TRUE)
 }
 \arguments{
 \item{std_scale_beta}{The estimated coefficients on the standardized scale}
@@ -15,9 +15,7 @@ untransform(std_scale_beta, p, std_X_details, fbm_flag, non_genomic)
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked?}
 
-\item{non_genomic}{Optional vector specifying which columns of the design matrix represent features that are \emph{not} genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-For cases where X is a filepath to an object created by \code{process_plink()}, this is handled automatically via the arguments to \code{process_plink()}.
-For all other cases, 'non_genomic' defaults to NULL (meaning \code{plmm()} will assume that all columns of \code{X} represent genomic features).}
+\item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as 'ns' will vary within CV folds.}
 }
 \description{
 This function unwinds the initial standardization of the data to obtain

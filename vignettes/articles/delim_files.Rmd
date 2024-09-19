@@ -1,0 +1,85 @@
+---
+title: "If your data is in (a) delimited file(s)"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(plmmr)
+```
+
+If you have data stored as a delimited file (e.g., a `.txt` file), this is the place for you to begin. To analyze such data, there is a 3-step procedure: (1) process the data, (2) create a design, and (3) fit a model. 
+
+## Process the data 
+
+```{r}
+ # I will create the processed data files in a temporary directory; 
+#   fill in the `rds_dir` argument with the directory of your choice
+temp_dir <- tempdir()
+
+colon_dat <- process_delim(data_file = "colon2.txt",
+  data_dir = find_example_data(parent = TRUE), 
+  rds_dir = temp_dir,
+  rds_prefix = "processed_colon2",
+  sep = "\t",
+  header = TRUE)
+```
+
+The output messages indicate that the data has been processed. This call created 2 files, one `.rds` file and a corresponding `.bk` file. The `.bk` file is a special type of binary file that can be used to store large data sets. The `.rds` file contains a pointer to the `.bk` file, along with other meta-data. 
+
+Note that what is returned by `process_delim()` is a character string with a filepath: `r str(colon_dat)`. 
+
+## Create a design 
+
+```{r}
+# prepare outcome data
+colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
+
+# create a design
+colon_design <- create_design(data_file = colon_dat,
+                              rds_dir = temp_dir,
+                              new_file = "std_colon2",
+                              add_outcome = colon_outcome,
+                              outcome_id = "ID",
+                              outcome_col = "y",
+                              logfile = "colon_design")
+```
+
+As with `process_delim()`, the `create_design()` function returns a filepath: `r str(colon_design)`. The output messages document the steps in the create design procedure, and these messages are saved to the text file `colon_design.log` in the `rds_dir` folder. 
+
+For didactic purposes, we can look at the design: 
+
+```{r}
+# look at the results
+colon_rds <- readRDS(colon_design)
+str(colon_rds)
+```
+
+
+## Fit a model 
+
+We fit a model using our design as follows: 
+
+```{r}
+colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
+```
+
+Notice the messages that are printed out -- this documentation may be optionally saved to another `.log` file using the `logfile` argument. 
+
+We can examine the results at a specific $\lambda$ value: 
+
+```{r}
+summary(colon_fit, idx = 50)
+```
+
+We may also plot of the paths of the estimated coefficients: 
+
+```{r}
+plot(colon_fit)
+```
+
