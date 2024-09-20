@@ -48,7 +48,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 ```
 
 
-You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files: `imputed_penncath_lite.rds` and `imputed_penncath_lite.bk` contain the data. ^[Optionally, you can add a `.log` file via the `logfile` argument: a log file is a text file documenting the steps that were just done.] These will show up in the folder where the PLINK data is. What is returned is a filepath: `r plink_data`. The `.rds` object at this filepath contains the processed data, which we will now use to create our design. 
+You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files: `imputed_penncath_lite.rds` and `imputed_penncath_lite.bk` contain the data. ^[Optionally, you can add a `.log` file via the `logfile` argument: a log file is a text file documenting the steps that were just done.] These will show up in the folder where the PLINK data is. What is returned is a filepath. The `.rds` object at this filepath contains the processed data, which we will now use to create our design. 
 
 For didactic purposes, let's examine what's in `imputed_penncath_lite.rds` using the `readRDS()` function (**Note** Don't do this in your analysis - the section below reads the data into memory. This is just for illustration):
 
