@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Getting started with plmm • plmmr</title>
+<title>Getting started with plmmr • plmmr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Getting started with plmm">
+<meta property="og:title" content="Getting started with plmmr">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,10 +35,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul>
 </li>
@@ -59,7 +60,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Getting started with plmm</h1>
+      <h1>Getting started with plmmr</h1>
                         <h4 data-toc-skip class="author">Tabitha
 Peter</h4>
             
@@ -77,392 +78,147 @@ Peter</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><code>plmmr</code> (which stands for <strong>P</strong>enalized
-<strong>L</strong>inear <strong>M</strong>ixed <strong>M</strong>odels
-for <strong>R</strong>) is an <code>R</code> package created for the
-purpose of fitting penalized regression models to high dimensional data,
-particularly in which the observations are correlated. This kind of data
-arises often in the context of genetics (<em>e.g.</em> GWAS dealing with
-population structure/family structure), and this will be the motivation
-for the examples presented here.</p>
+<p><code>plmmr</code> (I say it as “PLUM-are”) is a package for fitting
+<strong>P</strong>enalized <strong>L</strong>inear
+<strong>M</strong>ixed <strong>M</strong>odels in <strong>R</strong>.
+This package was created for the purpose of fitting penalized regression
+models to high dimensional data in which the observations are correlated
+in some complex way. For instance, this kind of data arises often in the
+context of genetics (<em>e.g.</em>, GWAS dealing with population
+structure/family structure).</p>
+<p>For more information on the theoretical context of penalized
+regression, check out <a href="https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html" class="external-link">these online
+course notes</a> from Prof. Patrick Breheny (the PI of our lab). The
+section on ‘ridge regression’ may be a good place to start.</p>
+<p>The novelties of <code>plmmr</code> are:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Integration</strong>: <code>plmmr</code> combines the
+functionality of several packages in order to do quality control, model
+fitting/analysis, and data visualization all in one package.
+<code>plmmr</code> will take you from PLINK files all the way to a list
+of SNPs for downstream analysis.</p></li>
+<li><p><strong>Accessibility</strong>: <code>plmmr</code> can be run
+from an <code>R</code> session on a typical desktop/laptop machine. The
+user does not need access to a supercomputer or experience with the
+command line in order to fit models <code>plmmr</code>.</p></li>
+<li><p><strong>Handling correlation</strong>: <code>plmmr</code> uses a
+transformation that addresses correlation among samples and uses this
+correlation to improve predictions (via the best linear unbiased
+predictor, or BLUP). This means that in <code><a href="../reference/plmm.html">plmm()</a></code>, there’s no
+need to filter data down to a ‘maximum subset of unrelated
+individuals.’</p></li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="computational-capability">Computational capability<a class="anchor" aria-label="anchor" href="#computational-capability"></a>
+</h2>
+<div class="section level3">
+<h3 id="file-backing">File-backing<a class="anchor" aria-label="anchor" href="#file-backing"></a>
+</h3>
+<p>In many applications of high dimensional data analysis, the dataset
+is too large to read into R – the session will crash for lack of memory.
+This is almost always an issue with analyzing genetic data from <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> files. To analyze
+such large datasets, <code>plmmr</code> is equipped to analyze data
+using <em>filebacking</em> - a strategy that lets R ‘point’ to a file on
+disk, rather than reading the file into the R session. Many other
+packages use this technique - <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> and <a href="https://github.com/pbreheny/biglasso" class="external-link">biglasso</a> are two
+examples of packages that use filebacking.</p>
+</div>
+<div class="section level3">
+<h3 id="numeric-outcomes-only">Numeric outcomes only<a class="anchor" aria-label="anchor" href="#numeric-outcomes-only"></a>
+</h3>
 <p>At this time, the package is designed for linear regression only –
-that is, we are considering only continuous (numeric) outcomes. In many
-applications with high dimensional data, the objective of statistical
-models is to identify signals - for example, many GWAS are interested in
-identifying a set of variants that show evidence of association with an
-outcome. Practitioners in these situations are often more interested
-identifying biological pathways than in estimating odds ratios for
-individual variants. For these applications, treating binary or
-categorical outcomes as numeric values is a possibility. In the future,
-we would like to extend this package to handle logistic regression (to
-handle dichotomous outcomes).</p>
+that is, we are considering only continuous (numeric) outcomes. We
+maintain that treating binary or categorical outcomes as numeric values
+is appropriate in some contexts, as described by Hastie et al. in the <a href="https://hastie.su.domains/Papers/ESLII.pdf" class="external-link">Elements of
+Statistical Learning</a>. In the future, we would like to extend this
+package to handle dichotomous outcomes via logistic regression; the
+theoretical work underlying this is an open problem.</p>
+</div>
+<div class="section level3">
+<h3 id="types-of-penalization">3 types of penalization<a class="anchor" aria-label="anchor" href="#types-of-penalization"></a>
+</h3>
 <p>Since we are focused on penalized regression in this package,
 <code>plmmr</code> offers 3 choices of penalty: the minimax concave
 (MCP), the smoothly clipped absolute deviation (SCAD), and the least
-absolute shrinkage and selection operator (LASSO). <a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For data running filebacked, only the LASSO is currently
-implemented (we are working to expand this)&lt;/p&gt;"><sup>1</sup></a> Much of the work in
+absolute shrinkage and selection operator (LASSO). Much of the work in
 this package is built on the concepts/techniques provided in the
 <code>ncvreg</code> <a href="https://github.com/pbreheny/ncvreg" class="external-link">package</a> by <a href="https://myweb.uiowa.edu/pbreheny/" class="external-link">Patrick Breheny</a>. The
-filebacked computation relies on the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a> and the
-<code>biglasso</code> <a href="https://github.com/pbreheny/biglasso" class="external-link">package</a> by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
-Zeng</a> &amp; colleagues.</p>
-<p><code>plmmr</code> currently includes two example data sets:</p>
+filebacked computation relies on the <code>biglasso</code> <a href="https://github.com/pbreheny/biglasso" class="external-link">package</a> by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
+Zeng</a> &amp; colleagues. For processing PLINK files, we use methods
+from the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="data-size-and-dimensionality">Data size and dimensionality<a class="anchor" aria-label="anchor" href="#data-size-and-dimensionality"></a>
+</h3>
+<p>We distinguish between the data attributes ‘big’ and ‘high
+dimensional.’ ‘Big’ describes the amount of space data takes up on a
+computer, while ‘high dimensional’ describes a context where the ratio
+of features (also called ‘variables’ or ‘predictors’) to observations
+(e.g., samples) is high. For instance, data with 100 samples and 100
+variables is high dimensional, but not big. By contrast, data with 10
+million observations and 100 variables is big, but not high
+dimensional.</p>
+<p><code>plmmr</code> is optimized for data that are high dimensional –
+the methods we are using to estimate relatedness among observations
+perform best when there are a high number of features relative to the
+number of observations.</p>
+<p><code>plmmr</code> is also designed to accommodate data that is too
+large to analyze in-memory. We accommodate such data through
+file-backing (as described above). This approach works well for data
+with files up to about 40 Gb in size – our current methods are not
+optimized for data larger that 40 Gb. In practice, this means that
+<code>plmmr</code> is equipped to analyze GWAS data, but not
+biobank-sized data.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="data-input-types">Data input types<a class="anchor" aria-label="anchor" href="#data-input-types"></a>
+</h2>
+<p><code>plmmr</code> currently works with three types of data
+input:</p>
+<ol style="list-style-type: decimal">
+<li><p>Data that is stored in-memory as a matrix or data frame</p></li>
+<li><p>Data that is stored in PLINK files</p></li>
+<li><p>Data that is stored in delimited files</p></li>
+</ol>
+<div class="section level3">
+<h3 id="example-data-sets">Example data sets<a class="anchor" aria-label="anchor" href="#example-data-sets"></a>
+</h3>
+<p><code>plmmr</code> currently includes three example data sets, one
+for each type of data input.</p>
 <ul>
-<li><p><code>admix</code> is a small data set (197 observations, 100
-SNPs) that describes individuals of different ancestry groups. The
-outcome of <code>admix</code> is simulated to include population
-structure effects (<em>i.e.</em> race/ethnicity have an impact on the
-SNP associations). This data set is available as <code>.rda</code>
-object under the <code>data/</code> folder.</p></li>
-<li><p><code>penncath_lite</code> (data on coronary artery disease from
+<li><p>The <code>admix</code> data is our example of matrix input data.
+<code>admix</code> is a small data set (197 observations, 100 SNPs) that
+describes individuals of different ancestry groups. The outcome of
+<code>admix</code> is simulated to include population structure effects
+(<em>i.e.</em> race/ethnicity have an impact on the SNP associations).
+This data set is available as whenever <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(plmmr)</a></code> is
+called. An example analysis with the <code>admix</code> data is
+available in
+<code>vignette('matrix_data', package = "plmmr")</code>.</p></li>
+<li><p>The <code>penncath_lite</code> data is our example of PLINK input
+data. <code>penncath_lite</code> (data on coronary artery disease from
 the <a href="https://pubmed.ncbi.nlm.nih.gov/21239051/" class="external-link">PennCath
 study</a>) is a mid-sized, high dimensional data set (1401 observations,
 4217 SNPs) with several health outcomes as well as age and sex
 information. This data set is a subset of a much larger data set (the
 original data has over 800K SNPs). For for information on this data set,
 refer to the <a href="https://pubmed.ncbi.nlm.nih.gov/21239051/" class="external-link">original
-publication</a>.</p></li>
+publication</a>. An example analysis with the <code>penncath_lite</code>
+data is available in
+<code>vignette('plink_files', package = "plmmr")</code>.</p></li>
+<li><p>The <code>colon2</code> data is our example of delimited-file
+input data. <code>colon2</code> is a variation of the <code>colon</code>
+data included in the <a href="LINK"><code>biglasso</code> package</a>.
+<code>colon2</code> has 62 observations and 2,001 features representing
+a study of colon disease. 2000 features are original to the data, and
+the ‘sex’ feature is simulated. An example analysis with the
+<code>colon2</code> data is available in
+<code>vignette('delim_files', package = "plmmr")</code>.</p></li>
 </ul>
-<p>In this overview, I will provide a demo of the main functions in
-<code>plmmr</code> using the <code>admix</code> data. Checkout the
-‘Working with PLINK files’ vignette to see a demo of processing the
-<code>penncath_lite</code> data from the original PLINK file
-formats.</p>
-</div>
-<div class="section level2">
-<h2 id="basic-model-fitting">Basic model fitting<a class="anchor" aria-label="anchor" href="#basic-model-fitting"></a>
-</h2>
-<p>The <code>admix</code> data is already formatted to have elements
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>,
-so I can jump right in with a call to <code><a href="../reference/plmm.html">plmmr::plmm()</a></code> (our
-main function):</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.01380</span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; The model converged </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  85 </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
-<p>The returned <code>beta_vals</code> item is a matrix whose rows are
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>β</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat\beta</annotation></semantics></math>
-coefficients and whose columns represent values of the penalization
-parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.
-By default, <code>plmm</code> fits 100 values of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-(see the <code>setup_lambda</code> function for details).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_fit</span><span class="op">$</span><span class="va">beta_vals</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">97</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>               format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-0.00052
-</th>
-<th style="text-align:right;">
-0.00048
-</th>
-<th style="text-align:right;">
-0.00045
-</th>
-<th style="text-align:right;">
-0.00042
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-7.020
-</td>
-<td style="text-align:right;">
-7.021
-</td>
-<td style="text-align:right;">
-7.022
-</td>
-<td style="text-align:right;">
-7.022
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp1
-</td>
-<td style="text-align:right;">
--0.841
-</td>
-<td style="text-align:right;">
--0.841
-</td>
-<td style="text-align:right;">
--0.841
-</td>
-<td style="text-align:right;">
--0.842
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp2
-</td>
-<td style="text-align:right;">
-0.199
-</td>
-<td style="text-align:right;">
-0.199
-</td>
-<td style="text-align:right;">
-0.199
-</td>
-<td style="text-align:right;">
-0.199
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp3
-</td>
-<td style="text-align:right;">
-3.580
-</td>
-<td style="text-align:right;">
-3.581
-</td>
-<td style="text-align:right;">
-3.581
-</td>
-<td style="text-align:right;">
-3.581
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp4
-</td>
-<td style="text-align:right;">
-0.189
-</td>
-<td style="text-align:right;">
-0.190
-</td>
-<td style="text-align:right;">
-0.190
-</td>
-<td style="text-align:right;">
-0.190
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp5
-</td>
-<td style="text-align:right;">
-0.588
-</td>
-<td style="text-align:right;">
-0.588
-</td>
-<td style="text-align:right;">
-0.589
-</td>
-<td style="text-align:right;">
-0.589
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp6
-</td>
-<td style="text-align:right;">
--0.135
-</td>
-<td style="text-align:right;">
--0.135
-</td>
-<td style="text-align:right;">
--0.135
-</td>
-<td style="text-align:right;">
--0.135
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp7
-</td>
-<td style="text-align:right;">
-0.207
-</td>
-<td style="text-align:right;">
-0.208
-</td>
-<td style="text-align:right;">
-0.208
-</td>
-<td style="text-align:right;">
-0.208
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp8
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-<td style="text-align:right;">
-0.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Snp9
-</td>
-<td style="text-align:right;">
-0.310
-</td>
-<td style="text-align:right;">
-0.310
-</td>
-<td style="text-align:right;">
-0.310
-</td>
-<td style="text-align:right;">
-0.310
-</td>
-</tr>
-</tbody>
-</table>
-<p>Note that for all values of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>,
-SNP 8 has
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat \beta = 0</annotation></semantics></math>.
-This is because SNP 8 is a constant feature, a feature (column) whose
-values do not vary among the members of this population.</p>
-<p>We can summarize our fit at the nth
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-value:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># for n = 25 </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">25</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.07896</span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; The model converged </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  46 </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
-<p>We can also plot the path of the fit to see how model coefficients
-vary with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="getting-started_files/figure-html/admix_plots-1.png" alt="Plot of path for model fit" width="768"><p class="caption">
-Plot of path for model fit
-</p>
-</div>
-<p>Suppose we also know the ancestry groups with which for each person
-in the <code>admix</code> data self-identified. We would probably want
-to include this in the model as an unpenalized covariate (i.e., we would
-want ‘ancestry’ to always be in the model). Here is how that could
-look:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">X_plus_ancestry</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">race</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">X_plus_ancestry</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ancestry"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">admix_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_plus_ancestry</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
-<span>                   penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
-<span>                   non_genomic <span class="op">=</span> <span class="fl">1</span>, <span class="co"># mark ancestry variable as non-genomic </span></span>
-<span>                   <span class="co"># make the penalty factor 0 to keep the corresponding covariate unpenalized</span></span>
-<span>                   penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit2</span>, idx <span class="op">=</span> <span class="fl">95</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.00077</span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; The model converged </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  99 </span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_fit2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-</div>
-<div class="section level2">
-<h2 id="cross-validation">Cross validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
-</h2>
-<p>To select a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-value, we often use cross validation. Below is an example of using
-<code>cv_plmm</code> to select a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-that minimizes cross-validation error:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_plus_ancestry</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
-<span>                    penalty <span class="op">=</span> <span class="st">"lasso"</span>,</span>
-<span>                    non_genomic <span class="op">=</span> <span class="fl">1</span>, <span class="co"># mark ancestry variable as non-genomic</span></span>
-<span>                    penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">admix_cv_s</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2035):</span></span>
-<span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.17</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.081</span></span></code></pre></div>
-<p>We can also plot the cross-validation error (CVE) versus
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
-(on the log scale):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_cv</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="getting-started_files/figure-html/cvplot-1.png" alt="Plot of CVE" width="768"><p class="caption">
-Plot of CVE
-</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="predicted-values">Predicted values<a class="anchor" aria-label="anchor" href="#predicted-values"></a>
-</h2>
-<p>Below is an example of the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> methods for
-PLMMs:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># make predictions for select lambda value(s)</span></span>
-<span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">admix_fit</span>,</span>
-<span>                       newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
-<span>                       type <span class="op">=</span> <span class="st">"blup"</span>,</span>
-<span>                       X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
-<span>                       y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></code></pre></div>
-<p>We can compare these predictions with the predictions we would get
-from an intercept-only model using mean squared prediction error (MSPE)
-– lower is better:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># intercept-only (or 'null') model</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/matmult-methods.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          [,1]</span></span>
-<span><span class="co">#&gt; [1,] 5.928528</span></span>
-<span></span>
-<span><span class="co"># our model at its best value of lambda</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">y_hat</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/matmult-methods.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">mse</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.9259769</span></span>
-<span><span class="co"># ^ across all values of lambda, our model has MSPE lower than the null model</span></span></code></pre></div>
-<p>We see our model has better predictions than the null</p>
-</div>
-
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -474,7 +230,7 @@ from an intercept-only model using mean squared prediction error (MSPE)
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

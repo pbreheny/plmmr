@@ -9,7 +9,7 @@ Note: this function is a wrapper for bigstatsr::big_read()"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,10 +21,11 @@ Note: this function is a wrapper for bigstatsr::big_read()"></head><body>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -49,14 +50,23 @@ Note: this function is a wrapper for <code><a href="https://privefl.github.io/bi
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_data_files</span><span class="op">(</span><span class="va">file</span>, <span class="va">data_dir</span>, <span class="va">rds_dir</span>, <span class="va">ind.col</span>, <span class="va">outfile</span>, <span class="va">overwrite</span>, <span class="va">quiet</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_data_files</span><span class="op">(</span></span>
+<span>  <span class="va">data_file</span>,</span>
+<span>  <span class="va">data_dir</span>,</span>
+<span>  <span class="va">rds_dir</span>,</span>
+<span>  <span class="va">rds_prefix</span>,</span>
+<span>  <span class="va">outfile</span>,</span>
+<span>  <span class="va">overwrite</span>,</span>
+<span>  <span class="va">quiet</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
+<dl><dt id="arg-data-file">data_file<a class="anchor" aria-label="anchor" href="#arg-data-file"></a></dt>
 <dd><p>The name of the file to read, not including its directory. Directory should be specified in <code>data_dir</code></p></dd>
 
 
@@ -68,8 +78,9 @@ Note: this function is a wrapper for <code><a href="https://privefl.github.io/bi
 <dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
 
 
-<dt id="arg-ind-col">ind.col<a class="anchor" aria-label="anchor" href="#arg-ind-col"></a></dt>
-<dd><p>The indices (positive integers) that are sorted in ascending order. Passed to <code><a href="https://privefl.github.io/bigstatsr/reference/big_read.html" class="external-link">bigstatsr::big_read()</a></code></p></dd>
+<dt id="arg-rds-prefix">rds_prefix<a class="anchor" aria-label="anchor" href="#arg-rds-prefix"></a></dt>
+<dd><p>String specifying the user's preferred filename for the to-be-created .rds/.bk files (will be create insie <code>rds_dir</code> folder)
+Note: 'rds_prefix' cannot be the same as 'data_file'</p></dd>
 
 
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
@@ -83,10 +94,14 @@ Note: this function is a wrapper for <code><a href="https://privefl.github.io/bi
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
 
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Optional: other arguments to be passed to <code><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html" class="external-link">bigmemory::read.big.matrix()</a></code>. Note: 'sep' is an option to pass here.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>'.rds' and '.bk' files are created in <code>data_dir</code>, and <code>obj</code> (a <code>bigSNP</code> object) is returned. See <code>bigsnpr</code> documentation for more info on the <code>bigSNP</code> class.</p>
+    <p>'.rds', '.bk', and '.desc' files are created in <code>data_dir</code>, and <code>obj</code> (a filebacked <code>bigmemory big.matrix</code> object) is returned. See <code>bigmemory</code> documentation for more info on the <code>big.matrix</code> class.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -98,7 +113,7 @@ Note: this function is a wrapper for <code><a href="https://privefl.github.io/bi
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

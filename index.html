@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,10 +37,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="articles/process_plink_files.html">If your data is from PLINK...</a></li>
+<li><a class="dropdown-item" href="articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul>
 </li>
@@ -76,9 +77,9 @@
 <p>The branches of this repo are organized in the following way:</p>
 <ul>
 <li><p><code>master</code> is the main (or ‘head’) branch.</p></li>
-<li><p><code>gwas_scale</code> is where I’ve been working to improve <code>plmmr</code> functionality for analyzing genome-wide scale data. This will bring some notable user-facing changes; stay tuned for more updates.</p></li>
 <li><p><code>gh_pages</code> is where we are keeping all the documentation for <code>plmmr</code></p></li>
 <li><p><code>sign_flip</code> is an <strong>archived</strong> branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.</p></li>
+<li><p><code>gwas_scale</code> is an <strong>archived</strong> branch that contains the development version of the package I used to run my dissertation analysis.</p></li>
 </ul>
 </div>
 
@@ -110,7 +111,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/pbreheny/plmmr" class="external-link"><img src="https://img.shields.io/static/v1?label=GitHub&amp;message=3.0.0&amp;color=blue&amp;logo=github" alt="GitHub version"></a></li>
+<li><a href="https://github.com/pbreheny/plmmr" class="external-link"><img src="https://img.shields.io/static/v1?label=GitHub&amp;message=3.2.0.0&amp;color=blue&amp;logo=github" alt="GitHub version"></a></li>
 <li><a href="https://github.com/pbreheny/plmmr/actions" class="external-link"><img src="https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/pbreheny/plmmr?branch=master" class="external-link"><img src="https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
@@ -125,7 +126,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

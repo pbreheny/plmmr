@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,10 +19,11 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -46,15 +47,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span></span>
-<span>  <span class="va">fit</span>,</span>
-<span>  <span class="va">p</span>,</span>
-<span>  <span class="va">std_X_details</span>,</span>
-<span>  <span class="va">fbm_flag</span>,</span>
-<span>  use_feature_names <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  feature_names <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  non_genomic <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plmm_format</span><span class="op">(</span><span class="va">fit</span>, <span class="va">p</span>, <span class="va">std_X_details</span>, <span class="va">fbm_flag</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,20 +71,6 @@
 
 <dt id="arg-fbm-flag">fbm_flag<a class="anchor" aria-label="anchor" href="#arg-fbm-flag"></a></dt>
 <dd><p>Logical: is the corresponding design matrix filebacked? Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
-
-
-<dt id="arg-use-feature-names">use_feature_names<a class="anchor" aria-label="anchor" href="#arg-use-feature-names"></a></dt>
-<dd><p>Logical: should features be named (e.g., should the returned matrix of coefficients have rows/columns named?). Defaults to TRUE.</p></dd>
-
-
-<dt id="arg-feature-names">feature_names<a class="anchor" aria-label="anchor" href="#arg-feature-names"></a></dt>
-<dd><p>A vector of names for features, passed internally if such names are included with the data <code>X</code> passed to <code><a href="plmm.html">plmm()</a></code></p></dd>
-
-
-<dt id="arg-non-genomic">non_genomic<a class="anchor" aria-label="anchor" href="#arg-non-genomic"></a></dt>
-<dd><p>Optional vector specifying which columns of the design matrix represent features that are <em>not</em> genomic, as these features are excluded from the empirical estimation of genomic relatedness.
-For cases where X is a filepath to an object created by <code><a href="process_plink.html">process_plink()</a></code>, this is handled automatically via the arguments to <code><a href="process_plink.html">process_plink()</a></code>.
-For all other cases, 'non_genomic' defaults to NULL (meaning <code><a href="plmm.html">plmm()</a></code> will assume that all columns of <code>X</code> represent genomic features).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -125,7 +104,7 @@ For all other cases, 'non_genomic' defaults to NULL (meaning <code><a href="plmm
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

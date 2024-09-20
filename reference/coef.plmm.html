@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,10 +19,11 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -83,19 +84,20 @@ feature names, columns are values of <code>lambda</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              0.42141  0.39301  0.36652  0.34182 0.31878</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 4.145401 4.156508 4.162843 4.124933  4.1066</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp2        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp4        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp5        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp6        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp7        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp8        0.000000 0.000000 0.000000 0.000000  0.0000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp9        0.000000 0.000000 0.000000 0.000000  0.0000</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">admix_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, outcome_col <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">41</span><span class="op">:</span><span class="fl">45</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 0.02586     0.02411     0.02249     0.02097     0.01956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  6.50458550  6.53962944  6.57080027  6.59746906  6.62130139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        -0.69640800 -0.70705286 -0.71671404 -0.72519450 -0.73344673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp2         0.12755219  0.13288164  0.13757472  0.14174103  0.14580213</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3         3.44235797  3.45135332  3.46004369  3.47126149  3.48122632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp4         0.02681945  0.03589876  0.04449564  0.05283671  0.06070351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp5         0.20898024  0.23442725  0.25670947  0.27670485  0.29547753</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp6        -0.07096336 -0.07565843 -0.08011181 -0.08427045 -0.08800835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp7         0.10236895  0.10942728  0.11619760  0.12233142  0.12815783</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp8         0.00000000  0.00000000  0.00000000  0.00000000  0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp9         0.26169664  0.26434601  0.26729738  0.27037993  0.27312787</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -107,7 +109,7 @@ feature names, columns are values of <code>lambda</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

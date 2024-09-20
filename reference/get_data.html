@@ -9,7 +9,7 @@ This function is intended to be called after either process_plink() or process_d
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,10 +21,11 @@ This function is intended to be called after either process_plink() or process_d
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -49,7 +50,7 @@ This function is intended to be called after either <code><a href="process_plink
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_data</span><span class="op">(</span><span class="va">path</span>, <span class="va">returnX</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_data</span><span class="op">(</span><span class="va">path</span>, returnX <span class="op">=</span> <span class="cn">FALSE</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,7 +62,7 @@ This function is intended to be called after either <code><a href="process_plink
 
 
 <dt id="arg-returnx">returnX<a class="anchor" aria-label="anchor" href="#arg-returnx"></a></dt>
-<dd><p>Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE if the object sizes exceeds 100 Mb.</p></dd>
+<dd><p>Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE.</p></dd>
 
 
 <dt id="arg-trace">trace<a class="anchor" aria-label="anchor" href="#arg-trace"></a></dt>
@@ -95,18 +96,13 @@ The rows of <code>X</code> will be sorted to align in the same order as in <code
 <span class="r-in"><span>              outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span></span>
 <span class="r-in"><span>              overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>              impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Logging to process_penncath.log</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Preprocessing penncath_lite data:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It looks like your files are zipped -- please unzip them before calling process_plink().</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Creating penncath_lite.rds</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> File '/home/runner/work/_temp/Library/plmmr/extdata/penncath_lite.bed' doesn't exist.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in process_plink(data_dir = find_example_data(parent = TRUE), rds_dir = temp_dir,     prefix = "penncath_lite", gz = TRUE, outfile = "process_penncath",     overwrite = TRUE, impute_method = "mode"):</span> argument "rds_prefix" is missing, with no default</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">pen</span> <span class="op">&lt;-</span> <span class="fu">get_data</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_penncath_lite"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/tmp/Rtmprfdto0/std_penncath_lite.rds', probable reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/tmp/RtmpEstLS9/std_penncath_lite.rds', probable reason 'No such file or directory'</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pen</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'pen' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'pen' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -120,7 +116,7 @@ The rows of <code>X</code> will be sorted to align in the same order as in <code
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

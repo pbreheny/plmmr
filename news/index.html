@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,10 +19,11 @@
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/process_plink_files.html">If your data is from PLINK...</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Start here - getting to know plmmr</a></li>
+    <li><a class="dropdown-item" href="../articles/matrix_data.html">If your data is a matrix or data frame</a></li>
+    <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
+    <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/filebacking.html">File-backed data (how to work with big files)</a></li>
     <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -40,20 +41,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.1.0" id="plmmr-310">plmmr 3.1.0<a class="anchor" aria-label="anchor" href="#plmmr-310"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.2.0.0" id="plmmr-3200">plmmr 3.2.0.0<a class="anchor" aria-label="anchor" href="#plmmr-3200"></a></h2>
 <div class="section level3">
-<h3 id="most-recent-changes-3-1-0">Most recent changes<a class="anchor" aria-label="anchor" href="#most-recent-changes-3-1-0"></a></h3>
+<h3 id="most-recent-changes-3-2-0-0">Most recent changes<a class="anchor" aria-label="anchor" href="#most-recent-changes-3-2-0-0"></a></h3>
 </div>
 <div class="section level3">
-<h3 id="id_310-3-1-0">3.1.0<a class="anchor" aria-label="anchor" href="#id_310-3-1-0"></a></h3>
+<h3 id="id_3200-3-2-0-0">3.2.0.0<a class="anchor" aria-label="anchor" href="#id_3200-3-2-0-0"></a></h3>
+<p>These changes were borne out of the troubleshooting of the real data analysis elements of my dissertation. This is the version that has a integrated system for analyzing data from in-memory matrices/data frames, delimited files, and PLINK files. Checkout the highlights from these changes below:</p>
+<ul><li><p><strong>Major re-structuring of preprocessing pipeline</strong>: Data from external files must now be processed with <code><a href="../reference/process_plink.html">process_plink()</a></code> or <code><a href="../reference/process_delim.html">process_delim()</a></code>. All data (including in-memory data) must be prepared for analysis via <code><a href="../reference/create_design.html">create_design()</a></code>. This change ensures that data are funneled into a uniform format for analysis.</p></li>
+<li><p><strong>bigsnpr now in Suggests, not Imports</strong>: The essential filebacking support is now all done with <code>bigmemory</code> and <code>bigalgebra</code>. The <code>bigsnpr</code> package is used only for processing PLINK files.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="id_310-3-2-0-0">3.1.0<a class="anchor" aria-label="anchor" href="#id_310-3-2-0-0"></a></h3>
 <ul><li><p><strong>Enhancement</strong>: To make <code>plmmr</code> have better functionality for writing scripts, the functions <code><a href="../reference/process_plink.html">process_plink()</a></code>, <code>plmmm()</code>, and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> now write ‘.log’ files each time they are called. The design of these log files is based on the behavior of <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK software</a>.</p></li>
 <li><p><strong>Enhancement</strong>: In cases where users are working with large datasets, it may not be practical or desirable for all the results returned by <code>plmmm()</code> or <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> to be saved in a single ‘.rds’ file. There is now an option in both of these model fitting functions called ‘compact_save’, which gives users the option to save the output in multiple, smaller ‘.rds’ files.</p></li>
 <li><p><strong>Argument removed</strong>: Previously, the functions <code>plmmm()</code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> had an argument ‘std_needed’ that allowed users to ‘turn off’ standardization. The more I have worked with this and thought about it, the more I realized that the package isn’t mature enough yet to handle this complex, nuanced option. This option has been removed for now – we may add this back in later.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="id_300-3-1-0">3.0.0<a class="anchor" aria-label="anchor" href="#id_300-3-1-0"></a></h3>
-<ul><li><p><strong>Bug fix</strong>: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>η</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat\eta</annotation></semantics></math> in each CV fold – but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster – this is a question we are actively studying.</p></li>
-<li><p><strong>Computational speedup</strong>: The standardization and rotation of filebacked data are now much faster; we have moved toward using methods from <code>bigalgebra</code> and <code>bigmemory</code> for these computations.</p></li>
+<h3 id="id_300-3-2-0-0">3.0.0<a class="anchor" aria-label="anchor" href="#id_300-3-2-0-0"></a></h3>
+<ul><li>
+<strong>Bug fix</strong>: As of June 27, 2024, we have addressed some issues with our cross-validation implementation. Previously, we were using all eigenvalues and the estimated <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>η</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat\eta</annotation></semantics></math> in each CV fold – but this is not consistent with the best practices for CV implementation, as information from outside a given fold should not inform predictions. These best practices are summarized in the <em>Elements of Statistical Learning</em> by Hastie et al., section 7.10 (in 2nd edition, available <a href="https://hastie.su.domains/Papers/ESLII.pdf" class="external-link">online</a> from author).</li>
+</ul><p>As of this update, all modeling steps are carried out in each fold: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction. There may be a way to make the eigendecomposition step faster – this is a question we are actively studying.</p>
+<ul><li><p><strong>Computational speedup</strong>: The standardization and rotation of filebacked data are now much faster; we have moved toward using methods from <code>bigalgebra</code> and <code>bigmemory</code> for these computations.</p></li>
 <li><p><strong>Methods development</strong> (for the nerds): We have derived that on the standardized scale, the intercept of our PLMM is the mean of the outcome. With this in mind, we have updated the way we handle the intercept in model fitting – which has made our code in internal functions more ‘readable’.</p></li>
 </ul></div>
 </div>
@@ -73,7 +82,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

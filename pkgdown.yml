@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   articles/deconfounding: deconfounding.html
-  articles/filebacking: filebacking.html
+  articles/delim_files: delim_files.html
   getting-started: getting-started.html
+  articles/matrix_data: matrix_data.html
   articles/notation: notation.html
-  processing_plink_files: processing_plink_files.html
-  articles/types_of_pointers: types_of_pointers.html
-last_built: 2024-07-28T22:35Z
+  articles/plink_files: plink_files.html
+last_built: 2024-09-20T12:21Z
