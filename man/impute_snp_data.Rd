@@ -9,6 +9,7 @@ impute_snp_data(
   X,
   impute,
   impute_method,
+  parallel,
   outfile,
   quiet,
   seed = as.numeric(Sys.Date()),
@@ -29,11 +30,16 @@ impute_snp_data(
 \item mean0: Imputes the rounded mean.
 \item mean2: Imputes the mean rounded to 2 decimal places.
 \item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
-@param seed Numeric value to be passed as the seed for \code{impute_method = 'xgboost'}. Defaults to \code{as.numeric(Sys.Date())}
-\@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 }}
 
+\item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
+In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}
+
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+
+\item{seed}{Numeric value to be passed as the seed for \code{impute_method = 'xgboost'}. Defaults to \code{as.numeric(Sys.Date())}}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }

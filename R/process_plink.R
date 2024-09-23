@@ -16,6 +16,8 @@
 #'                                * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
 
 #' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
+#' @param parallel            Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
+#'                              In particular, the user should be aware that too much parallelization can make computations *slower*.
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #'                            **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
@@ -52,6 +54,7 @@ process_plink <- function(data_dir,
                           impute = TRUE,
                           impute_method = 'mode',
                           id_var = "IID",
+                          parallel = TRUE,
                           quiet = FALSE,
                           overwrite = FALSE,
                           ...){
@@ -85,12 +88,14 @@ process_plink <- function(data_dir,
                             data_prefix = data_prefix,
                             rds_dir = rds_dir,
                             outfile = logfile,
+                            parallel = parallel,
                             overwrite = overwrite,
                             quiet = quiet)
 
   # name and count ------------------------------------
   step2 <- name_and_count_bigsnp(obj = step1,
                                  id_var = id_var,
+                                 parallel = parallel,
                                  quiet = quiet,
                                  outfile = logfile)
 
@@ -122,6 +127,7 @@ process_plink <- function(data_dir,
                            step2$X,
                            impute = impute,
                            impute_method = impute_method,
+                           parallel = parallel,
                            outfile = logfile,
                            quiet = quiet, ...)
 

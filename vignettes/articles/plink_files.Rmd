@@ -35,7 +35,6 @@ Here, we will create the files we want in a temporary directory just for the sak
 ```{r}
 # temp_dir <- tempdir() # using a temporary directory (if you didn't already create one above)
 plink_data <- process_plink(data_dir = temp_dir, 
-                            # once it has been unzipped (assuming you unzipped in the same folder)
                             data_prefix = "penncath_lite",
                             rds_dir = temp_dir,
                             rds_prefix = "imputed_penncath_lite",
@@ -43,7 +42,9 @@ plink_data <- process_plink(data_dir = temp_dir,
                             impute_method = "mode",
                             # overwrite existing files in temp_dir
                             # (you can turn this feature off if you need to)
-                            overwrite = T)
+                            overwrite = T,
+                            # turning off parallelization - leaving this on causes problems knitting this vignette
+                            parallel = FALSE)
 ```
 
 

@@ -4,7 +4,15 @@
 \alias{read_plink_files}
 \title{A function to read in PLINK files using \code{bigsnpr} methods}
 \usage{
-read_plink_files(data_dir, data_prefix, rds_dir, outfile, overwrite, quiet)
+read_plink_files(
+  data_dir,
+  data_prefix,
+  rds_dir,
+  outfile,
+  parallel,
+  overwrite,
+  quiet
+)
 }
 \arguments{
 \item{data_dir}{The path to the bed/bim/fam data files, \emph{without} a trailing "/" (e.g., use \code{data_dir = '~/my_dir'}, \strong{not} \code{data_dir = '~/my_dir/'})}
@@ -14,6 +22,9 @@ read_plink_files(data_dir, data_prefix, rds_dir, outfile, overwrite, quiet)
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+
+\item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
+In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 

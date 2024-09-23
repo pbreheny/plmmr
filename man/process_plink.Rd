@@ -13,6 +13,7 @@ process_plink(
   impute = TRUE,
   impute_method = "mode",
   id_var = "IID",
+  parallel = TRUE,
   quiet = FALSE,
   overwrite = FALSE,
   ...
@@ -41,6 +42,9 @@ Note: if you supply a file path in this argument, it will error out with a "file
 * xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
+
+\item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
+In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 

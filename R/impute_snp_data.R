@@ -9,8 +9,10 @@
 #'  * mean0: Imputes the rounded mean.
 #'  * mean2: Imputes the mean rounded to 2 decimal places.
 #'  * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
-#'  @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
-#' \@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
+#' @param parallel Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
+#'                  In particular, the user should be aware that too much parallelization can make computations *slower*.
+#' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet Logical: should messages be printed to the console? Defaults to TRUE
 #' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
@@ -18,7 +20,8 @@
 #' @keywords internal
 #'
 impute_snp_data <- function(obj, X, impute, impute_method,
-                            outfile, quiet, seed = as.numeric(Sys.Date()),...){
+                            parallel, outfile, quiet,
+                            seed = as.numeric(Sys.Date()),...){
 
   if(!quiet & impute){
     # catch for misspellings
@@ -35,17 +38,29 @@ impute_snp_data <- function(obj, X, impute, impute_method,
 
     if(impute_method %in% c('mode', 'random', 'mean0', 'mean2')){
 
-      obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
-                                                     ncores = count_cores(),
-                                                     method = impute_method) # dots can pass other args
+      if (parallel) {
+        obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
+                                                       ncores = count_cores(),
+                                                       method = impute_method)
+      } else {
+        obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
+                                                       method = impute_method)
+      }
 
     } else if (impute_method == "xgboost"){
 
-      obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
-                                               ncores = count_cores(),
-                                               infos.chr = obj$chr,
-                                               seed = seed,
-                                               ...) # dots can pass other args
+      if (parallel) {
+        obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
+                                                 ncores = count_cores(),
+                                                 infos.chr = obj$chr,
+                                                 seed = seed,
+                                                 ...) # dots can pass other args
+      } else {
+        obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
+                                                 infos.chr = obj$chr,
+                                                 seed = seed,
+                                                 ...) # dots can pass other args
+      }
 
       cat("\n ***************** NOTE ********************************
           \nAugust 2023: With the xgboost imputation method, there
