@@ -67,8 +67,8 @@ Now we are ready to create a `plmm_design`, which is an object with the pieces w
 # get outcome data 
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
 
-phen <- data.frame(FamID = penncath_pheno$FamID, CAD = penncath_pheno$CAD) |>
-  dplyr::mutate(FamID = as.character(FamID))
+phen <- data.frame(FamID = as.character(penncath_pheno$FamID),
+                   CAD = penncath_pheno$CAD)
 
 pen_design <- create_design(data_file = plink_data,
                             feature_id = "FID",
@@ -79,8 +79,7 @@ pen_design <- create_design(data_file = plink_data,
                             outcome_col = "CAD",
                             logfile = "design",
                             # again, overwrite if needed; use with caution
-                            overwrite = TRUE
-                            )
+                            overwrite = TRUE)
 
 # examine the design - notice the components of this object 
 pen_design_rds <- readRDS(pen_design)
