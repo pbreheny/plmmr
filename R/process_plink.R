@@ -95,7 +95,6 @@ process_plink <- function(data_dir,
   # name and count ------------------------------------
   step2 <- name_and_count_bigsnp(obj = step1,
                                  id_var = id_var,
-                                 parallel = parallel,
                                  quiet = quiet,
                                  outfile = logfile)
 
