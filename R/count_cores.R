@@ -8,7 +8,7 @@ count_cores <- function(){
   if (length(where) == 0) {
     ncores <- 1
   } else {
-    ncores <- parallel::detectCores() - 1
+    ncores <- max(1, parallel::detectCores() - 1)
   }
 
   return(ncores)
