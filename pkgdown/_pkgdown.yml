@@ -23,8 +23,6 @@ navbar:
       href: articles/delim_files.html
     - text: Notes on notation
       href: articles/notation.html
-    - text: 'In progress: PLMMs & deconfounding'
-      href: articles/deconfounding.html
   - text: News
     href: news/index.html
   right:

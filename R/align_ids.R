@@ -41,8 +41,9 @@ align_ids <- function(id_var, quiet, add_predictor, og_ids) {
                                                     by.y = id_var,
                                                     all = FALSE, # this will remove rows of add_predictor that don't correspond to rows in PLINK data
                                                     sort = FALSE)
+
   # for downstream calls, output *must* be a numeric matrix
   new_add_predictor_mat <- as.matrix(new_add_predictor[,-1])
-  rownames(new_add_predictor_mat) <- new_add_predictor[,'ID'] |> as.character()
+  rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[,'ID', with = FALSE]) |> as.character()
   return(new_add_predictor_mat)
 }

@@ -42,7 +42,7 @@ plink_data <- process_plink(data_dir = temp_dir,
                             impute_method = "mode",
                             # overwrite existing files in temp_dir
                             # (you can turn this feature off if you need to)
-                            overwrite = T,
+                            overwrite = TRUE,
                             # turning off parallelization - leaving this on causes problems knitting this vignette
                             parallel = FALSE)
 ```
@@ -61,7 +61,10 @@ any(is.na(pen$genotypes[,]))
 
 
 ## Creating a design 
+
 Now we are ready to create a `plmm_design`, which is an object with the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
+
+As a side note: in GWAS studies, it is typical to include some non-genomic factors as unpenalized covariates as part of the model. For instance, you may want to adjust for sex or age -- these are factors that you want to ensure are always included in the selected model. The `plmmr` package allows you to include these additional unpenalized predictors via the 'add_predictor' and 'predictor_id' options, both of which are passed through `create_design()` to the internal function `create_design_filebacked()`. An example with these options is included in the `create_design()` documentation. 
 
 ```{r}
 # get outcome data 
@@ -83,6 +86,7 @@ pen_design <- create_design(data_file = plink_data,
 
 # examine the design - notice the components of this object 
 pen_design_rds <- readRDS(pen_design)
+str(pen_design_rds)
 ```
 
 A key part of what `create_design()` is doing is standardizing the columns of the genotype matrix. Below is a didactic example showing that the columns of the `std_X` element in our design have mean = 0 and variance = 1. **Note again** that this is not something you should do in your analysis -- this reads the data into memory. 
@@ -112,6 +116,22 @@ We examine our model results below:
 summary(pen_fit, idx = 50)
 
 plot(pen_fit)
+```
+
+## Cross validation 
+
+To choose a tuning parameter for a model, `plmmr` offers a cross validation method: 
+
+```{r}
+cv_fit <- cv_plmm(design = pen_design,
+                return_fit = T)
+```
+
+There are plot and summary methods for CV models as well: 
+
+```{r}
+summary(cv_fit) # summary at lambda value that minimizes CV error
+plot(cv_fit)
 ```
 
 

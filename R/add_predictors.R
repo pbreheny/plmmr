@@ -41,7 +41,7 @@ add_predictors <- function(obj,
 
   if (!quiet) cat('Aligning IDs between fam and predictor files\n')
 
-  # save unpen: an index marking added columns as non-genomic predictors
+  # save unpen: an index marking added columns as *unpenalized* predictors
   unpen <- 1:ncol(add_predictor)
 
 

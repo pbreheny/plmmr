@@ -16,6 +16,7 @@ create_design_filebacked(
   na_outcome_vals = c(-9, NA_integer_),
   add_predictor = NULL,
   predictor_id = NULL,
+  unpen = NULL,
   logfile = NULL,
   overwrite = FALSE,
   quiet = FALSE
@@ -44,11 +45,14 @@ create_design_filebacked(
 
 \item{na_outcome_vals}{A vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).}
 
-\item{add_predictor}{Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+\item{add_predictor}{Optional (for PLINK data only): a matrix or data frame to be used for adding additional \strong{unpenalized} covariates/predictors/features from an external file (i.e., not a PLINK file).
 This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.}
 
-\item{predictor_id}{Optional: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
+\item{predictor_id}{Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. \strong{Required} if 'add_predictor' is supplied.
 The names will be used to subset and align this external covariate with the supplied PLINK data.}
+
+\item{unpen}{Optional (for delimited file data only): an optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+\strong{Note}: if you choose to use this option, X must have column names.}
 
 \item{logfile}{Optional: name of the '.log' file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
 

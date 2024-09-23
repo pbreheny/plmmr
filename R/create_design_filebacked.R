@@ -13,10 +13,12 @@
 #' @param outcome_id              A string specifying the name of the ID column in 'add_outcome'
 #' @param outcome_col             A string specifying the name of the phenotype column in 'add_outcome'
 #' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
-#' @param add_predictor           Optional: a matrix or data frame to be used for adding additional covariates/predictors/features from an external file (i.e., not a PLINK file).
+#' @param add_predictor           Optional (for PLINK data only): a matrix or data frame to be used for adding additional **unpenalized** covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                                This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
-#' @param predictor_id            Optional: A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
+#' @param predictor_id            Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. **Required** if 'add_predictor' is supplied.
 #'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
+#' @param unpen                   Optional (for delimited file data only): an optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+#'                                **Note**: if you choose to use this option, X must have column names.
 #' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
 #' @param logfile                 Optional: name of the '.log' file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param quiet                   Logical: should messages to be printed to the console be silenced? Defaults to FALSE
@@ -34,6 +36,7 @@ create_design_filebacked <- function(data_file,
                                      na_outcome_vals = c(-9, NA_integer_),
                                      add_predictor = NULL,
                                      predictor_id = NULL,
+                                     unpen = NULL,
                                      logfile = NULL,
                                      overwrite = FALSE,
                                      quiet = FALSE){
@@ -138,7 +141,7 @@ create_design_filebacked <- function(data_file,
     if (!inherits(feature_id, "character")) feature_id <- as.character(feature_id)
     og_ids <- feature_id
   } else {
-    stop("The feature_id argument is either misspecified or missing (see documentation for options).")
+    stop("The feature_id argument is misspecified (see documentation for options).")
   }
 
   # check for any duplicated row IDs, if applicable
@@ -218,8 +221,19 @@ create_design_filebacked <- function(data_file,
     design$unpen_colnames <- setdiff(colnames(add_predictor), predictor_id)
     gc()
   } else {
-    design$unpen<- NULL
-    design$unpen_colnames <- NULL
+    # make sure 'unpen' was not specified by mistake
+    if (is_plink & !is_plink) stop("The 'unpen' argument is only for matrix data or delimited file data.
+                                   To create unpenalized covariates with PLINK file data,
+                                   see the documentation for the 'add_predictor' argument.")
+
+    if (is.null(unpen)) {
+      design$unpen <- NULL
+      design$unpen_colnames <- NULL
+    } else {
+      design$unpen <- which(design$X_colnames %in% unpen) # this will be used to index the columns which are unpenalized
+      design$unpen_colnames <- unpen
+    }
+
     unstd_X <- obj
     unstd_X$design_matrix <- obj$X
     unstd_X$colnames <- design$X_colnames

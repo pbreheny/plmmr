@@ -1,5 +1,7 @@
 ---
 title: "If your data is in (a) delimited file(s)"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -27,6 +29,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
   rds_dir = temp_dir,
   rds_prefix = "processed_colon2",
   sep = "\t",
+  overwrite = TRUE,
   header = TRUE)
 ```
 
@@ -35,6 +38,10 @@ The output messages indicate that the data has been processed. This call created
 Note that what is returned by `process_delim()` is a character string with a filepath: `r str(colon_dat)`. 
 
 ## Create a design 
+
+Creating a design ensures that data are in a uniform format prior to analysis. For delimited files, there are two main processes happening in `create_design()`: (1) standardization of the columns and (2) the construction of the penalty factor vector. Standardization of the columns ensures that all features are evaluated in the model on a uniform scale; this is done by transforming each column of the design matrix to have a mean of 0 and a variance of 1. The penalty factor vector is an indicator vector in which a 0 represents a feature that will always be in the model -- such a feature is *unpenalized*. To specify columns that you want to be unpenalized, use the 'unpen' argument. Below in our example, I am choosing to make 'sex' an unpenalized covariate.  
+
+A side note on unpenalized covariates: for delimited file data, all features that you want to include in the model -- both the penalized and unpenalized features -- must be included in your delimited file. This differs from how PLINK file data are analyzed; look at the `create_design()` documentation details for examples. 
 
 ```{r}
 # prepare outcome data
@@ -47,6 +54,7 @@ colon_design <- create_design(data_file = colon_dat,
                               add_outcome = colon_outcome,
                               outcome_id = "ID",
                               outcome_col = "y",
+                              unpen = "sex", # this will keep 'sex' in the final model
                               logfile = "colon_design")
 ```
 
