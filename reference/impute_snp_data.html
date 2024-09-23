@@ -52,6 +52,7 @@
 <span>  <span class="va">X</span>,</span>
 <span>  <span class="va">impute</span>,</span>
 <span>  <span class="va">impute_method</span>,</span>
+<span>  <span class="va">parallel</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
 <span>  <span class="va">quiet</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -80,14 +81,25 @@
 <li><p>random: Imputes sampling according to allele frequencies.</p></li>
 <li><p>mean0: Imputes the rounded mean.</p></li>
 <li><p>mean2: Imputes the mean rounded to 2 decimal places.</p></li>
-<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.
-@param seed Numeric value to be passed as the seed for <code>impute_method = 'xgboost'</code>. Defaults to <code>as.numeric(Sys.Date())</code>
-\@param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></li>
+<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
 </ul></dd>
+
+
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>Logical: should the computations within this function be run in parallel? Defaults to TRUE. See <code><a href="count_cores.html">count_cores()</a></code> and <code><a href="https://rdrr.io/pkg/bigparallelr/man/assert_cores.html" class="external-link">?bigparallelr::assert_cores</a></code> for more details.
+In particular, the user should be aware that too much parallelization can make computations <em>slower</em>.</p></dd>
+
+
+<dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
+<dd><p>Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>Numeric value to be passed as the seed for <code>impute_method = 'xgboost'</code>. Defaults to <code>as.numeric(Sys.Date())</code></p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

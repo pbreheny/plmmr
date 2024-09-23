@@ -47,7 +47,15 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_plink_files</span><span class="op">(</span><span class="va">data_dir</span>, <span class="va">data_prefix</span>, <span class="va">rds_dir</span>, <span class="va">outfile</span>, <span class="va">overwrite</span>, <span class="va">quiet</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_plink_files</span><span class="op">(</span></span>
+<span>  <span class="va">data_dir</span>,</span>
+<span>  <span class="va">data_prefix</span>,</span>
+<span>  <span class="va">rds_dir</span>,</span>
+<span>  <span class="va">outfile</span>,</span>
+<span>  <span class="va">parallel</span>,</span>
+<span>  <span class="va">overwrite</span>,</span>
+<span>  <span class="va">quiet</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,6 +76,11 @@
 
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
 <dd><p>Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
+
+
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>Logical: should the computations within this function be run in parallel? Defaults to TRUE. See <code><a href="count_cores.html">count_cores()</a></code> and <code><a href="https://rdrr.io/pkg/bigparallelr/man/assert_cores.html" class="external-link">?bigparallelr::assert_cores</a></code> for more details.
+In particular, the user should be aware that too much parallelization can make computations <em>slower</em>.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>

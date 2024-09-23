@@ -56,6 +56,7 @@
 <span>  impute <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  impute_method <span class="op">=</span> <span class="st">"mode"</span>,</span>
 <span>  id_var <span class="op">=</span> <span class="st">"IID"</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -103,6 +104,11 @@ Note: if you supply a file path in this argument, it will error out with a "file
 
 <dt id="arg-id-var">id_var<a class="anchor" aria-label="anchor" href="#arg-id-var"></a></dt>
 <dd><p>String specifying which column of the PLINK <code>.fam</code> file has the unique sample identifiers. Options are "IID" (default) and "FID"</p></dd>
+
+
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>Logical: should the computations within this function be run in parallel? Defaults to TRUE. See <code><a href="count_cores.html">count_cores()</a></code> and <code><a href="https://rdrr.io/pkg/bigparallelr/man/assert_cores.html" class="external-link">?bigparallelr::assert_cores</a></code> for more details.
+In particular, the user should be aware that too much parallelization can make computations <em>slower</em>.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
