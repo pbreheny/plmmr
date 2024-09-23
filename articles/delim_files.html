@@ -40,7 +40,6 @@
     <li><a class="dropdown-item" href="../articles/plink_files.html">If your data is in PLINK files</a></li>
     <li><a class="dropdown-item" href="../articles/delim_files.html">If your data is in (a) delimited file(s)</a></li>
     <li><a class="dropdown-item" href="../articles/notation.html">Notes on notation</a></li>
-    <li><a class="dropdown-item" href="../articles/deconfounding.html">In progress: PLMMs &amp; deconfounding</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -90,13 +89,14 @@ a design, and (3) fit a model.</p>
 <span>  rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span>
 <span>  rds_prefix <span class="op">=</span> <span class="st">"processed_colon2"</span>,</span>
 <span>  sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; There are 62 observations and 2001 features in the specified data files.</span></span>
 <span><span class="co">#&gt; At this time, plmmr::process_delim() does not not handle missing values in delimited data.</span></span>
 <span><span class="co">#&gt;       Please make sure you have addressed missingness before you proceed.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmpujd2Uc/processed_colon2.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp2qdHiK/processed_colon2.rds</span></span></code></pre></div>
 <p>The output messages indicate that the data has been processed. This
 call created 2 files, one <code>.rds</code> file and a corresponding
 <code>.bk</code> file. The <code>.bk</code> file is a special type of
@@ -109,6 +109,23 @@ character string with a filepath: .</p>
 <div class="section level2">
 <h2 id="create-a-design">Create a design<a class="anchor" aria-label="anchor" href="#create-a-design"></a>
 </h2>
+<p>Creating a design ensures that data are in a uniform format prior to
+analysis. For delimited files, there are two main processes happening in
+<code><a href="../reference/create_design.html">create_design()</a></code>: (1) standardization of the columns and (2)
+the construction of the penalty factor vector. Standardization of the
+columns ensures that all features are evaluated in the model on a
+uniform scale; this is done by transforming each column of the design
+matrix to have a mean of 0 and a variance of 1. The penalty factor
+vector is an indicator vector in which a 0 represents a feature that
+will always be in the model – such a feature is <em>unpenalized</em>. To
+specify columns that you want to be unpenalized, use the ‘unpen’
+argument. Below in our example, I am choosing to make ‘sex’ an
+unpenalized covariate.</p>
+<p>A side note on unpenalized covariates: for delimited file data, all
+features that you want to include in the model – both the penalized and
+unpenalized features – must be included in your delimited file. This
+differs from how PLINK file data are analyzed; look at the
+<code><a href="../reference/create_design.html">create_design()</a></code> documentation details for examples.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># prepare outcome data</span></span>
 <span><span class="va">colon_outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="../reference/find_example_data.html">find_example_data</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"colon2_outcome.txt"</span><span class="op">)</span><span class="op">)</span></span>
@@ -120,12 +137,13 @@ character string with a filepath: .</p>
 <span>                              add_outcome <span class="op">=</span> <span class="va">colon_outcome</span>,</span>
 <span>                              outcome_id <span class="op">=</span> <span class="st">"ID"</span>,</span>
 <span>                              outcome_col <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span>                              unpen <span class="op">=</span> <span class="st">"sex"</span>, <span class="co"># this will keep 'sex' in the final model</span></span>
 <span>                              logfile <span class="op">=</span> <span class="st">"colon_design"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; No feature_id supplied; will assume data X are in same row-order as add_outcome.</span></span>
 <span><span class="co">#&gt; There are 0 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2024-09-23 16:07:06</span></span>
+<span><span class="co">#&gt; Standardization completed at 2024-09-23 18:31:23</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span></code></pre></div>
 <p>As with <code><a href="../reference/process_delim.html">process_delim()</a></code>, the
 <code><a href="../reference/create_design.html">create_design()</a></code> function returns a filepath: . The output
@@ -137,7 +155,7 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <code class="sourceCode R"><span><span class="co"># look at the results</span></span>
 <span><span class="va">colon_rds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_design</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">colon_rds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 15</span></span>
+<span><span class="co">#&gt; List of 17</span></span>
 <span><span class="co">#&gt;  $ X_colnames    : chr [1:2001] "sex" "Hsa.3004" "Hsa.13491" "Hsa.13491.1" ...</span></span>
 <span><span class="co">#&gt;  $ X_rownames    : chr [1:62] "row1" "row2" "row3" "row4" ...</span></span>
 <span><span class="co">#&gt;  $ n             : num 62</span></span>
@@ -145,13 +163,15 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;  $ outcome_idx   : int [1:62] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
 <span><span class="co">#&gt;  $ y             : int [1:62] 1 0 1 0 1 0 1 0 1 0 ...</span></span>
 <span><span class="co">#&gt;  $ std_X_rownames: chr [1:62] "row1" "row2" "row3" "row4" ...</span></span>
+<span><span class="co">#&gt;  $ unpen         : int 1</span></span>
+<span><span class="co">#&gt;  $ unpen_colnames: chr "sex"</span></span>
 <span><span class="co">#&gt;  $ ns            : int [1:2001] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
 <span><span class="co">#&gt;  $ std_X_colnames: chr [1:2001] "sex" "Hsa.3004" "Hsa.13491" "Hsa.13491.1" ...</span></span>
 <span><span class="co">#&gt;  $ std_X         :Formal class 'big.matrix.descriptor' [package "bigmemory"] with 1 slot</span></span>
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_colon2.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmpujd2Uc/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp2qdHiK/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 62</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 2001</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 62</span></span>
@@ -166,7 +186,7 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;  $ std_X_p       : num 2001</span></span>
 <span><span class="co">#&gt;  $ std_X_center  : num [1:2001] 1.47 7015.79 4966.96 4094.73 3987.79 ...</span></span>
 <span><span class="co">#&gt;  $ std_X_scale   : num [1:2001] 0.499 3067.926 2171.166 1803.359 2002.738 ...</span></span>
-<span><span class="co">#&gt;  $ penalty_factor: num [1:2001] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ penalty_factor: num [1:2001] 0 1 1 1 1 1 1 1 1 1 ...</span></span>
 <span><span class="co">#&gt;  - attr(*, "class")= chr "plmm_design"</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -177,18 +197,18 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <code class="sourceCode R"><span><span class="va">colon_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">colon_design</span>, return_fit <span class="op">=</span> <span class="cn">TRUE</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2024-09-23 16:07:07</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2024-09-23 18:31:23</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2024-09-23 16:07:07</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2024-09-23 18:31:23</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-09-23 16:07:07</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-09-23 18:31:23</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-09-23 16:07:07 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-09-23 18:31:24 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2024-09-23 16:07:07</span></span></code></pre></div>
+<span><span class="co">#&gt; Model ready at  2024-09-23 18:31:24</span></span></code></pre></div>
 <p>Notice the messages that are printed out – this documentation may be
 optionally saved to another <code>.log</code> file using the
 <code>logfile</code> argument.</p>
@@ -197,11 +217,11 @@ optionally saved to another <code>.log</code> file using the
 value:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">colon_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=62, p=2002 at lambda=0.0630</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=62, p=2003 at lambda=0.0594</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  23 </span></span>
+<span><span class="co">#&gt; # of non-zero coefficients:  30 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
 <p>We may also plot of the paths of the estimated coefficients:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
