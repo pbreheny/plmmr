@@ -7,8 +7,7 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE # will get this working eventually
+  comment = "#>"
 )
 ```
 
