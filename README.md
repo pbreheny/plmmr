@@ -8,8 +8,6 @@
 
 The `plmmr` (**p**enalized **l**inear **m**ixed **m**odels in **R**) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects.
 
-🚧🛠️ **Note**: this package is still under construction 🛠️🚧, as both the package and its underlying methodology are the core of my (Tabitha's 👷‍♀️) in-progress dissertation work. Will keep this page updated as I make progress. The dream is for this package to be able to fit penalized regression models in GWAS-scale data. 
-
 ## Installation 
 
 To install the latest version of the package: 
@@ -28,8 +26,6 @@ The branches of this repo are organized in the following way:
     
   - `gh_pages` is where we are keeping all the documentation for `plmmr`
   
-  - `sign_flip` is an **archived** branch where we have examined the issues caused by +/- signs being flipped as part of truncated SVD.
-  
-  - `gwas_scale` is an **archived** branch that contains the development version of the package I used to run my dissertation analysis. 
+  - `gwas_scale` is an **archived** branch that contains the development version of the package I used to run my dissertation analysis. Will delete this eventually. 
 
   

@@ -17,7 +17,7 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
 \item{y}{Continuous outcome vector.}
 
-\item{rot_y}{Optional: if y has already been rotated, then this can be supplied. This option is designed for the \code{log_lik()} call within \code{gic()}, where a \code{fit} object is being supplied.}
+\item{rot_y}{Optional: if y has already been rotated, then this can be supplied.}
 }
 \description{
 This function allows you to evaluate the negative log-likelihood of a linear mixed model under the assumption of a null model in order to estimate the variance parameter, eta.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/find_example_data.R
 \name{unzip_example_data}
 \alias{unzip_example_data}
-\title{a companion function to unzip the .gz files that ship with the package
-\emph{Note}: for Linux/Unix and MacOS only}
+\title{For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the \code{plmmr} package}
 \usage{
 unzip_example_data(outdir)
 }
@@ -11,6 +10,9 @@ unzip_example_data(outdir)
 \item{outdir}{The file path to the directory to which the .gz files should be written}
 }
 \description{
-a companion function to unzip the .gz files that ship with the package
-\emph{Note}: for Linux/Unix and MacOS only
+For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the \code{plmmr} package
+}
+\details{
+For an example of this function, look at \code{vignette('plink_files', package = "plmmr")}.
+Note again: this function will not work on Windows systems - only for Linux/Unix and MacOS.
 }

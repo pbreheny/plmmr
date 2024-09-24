@@ -10,29 +10,8 @@
 #' *  'ns': A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0.
 #' * 'center': If standardize = TRUE, a vector of values for centering each column in X is returned
 #' * 'scale': If standardize = TRUE, a vector of values for scaling each column in X is returned
-#' @export
+#' @keywords internal
 #'
-#' @details This function is a wrapper combining `get_data()` and `fbm2bm()`
-#'
-#' @examples
-#' \dontrun{
-#' my_folder <- paste0(tempdir(),"/") # change this to be the directory of your choice...
-#'
-#' process_plink(
-#'   data_dir = find_example_data(parent = TRUE), # assumes you have unzipped the data
-#'   rds_dir = my_folder,
-#'   prefix = "penncath_lite",
-#'   outfile = "process_penncath",
-#'   # overwrite = TRUE, # uncomment if needed
-#'   impute_method = "mode") # this takes a few seconds...
-#'
-#'   my_path <- paste0(my_folder, "/std_penncath_lite")
-#'   bm_data <- get_bm_from_plink(my_path)
-#'   str(bm_data)
-#' }
-#' # for more details and examples, see the article on analyzing filebacked data:
-#' # https://pbreheny.github.io/plmmr/articles/filebacking.html
-
 get_bm_from_plink <- function(path, standardize = TRUE){
 
   rds <- get_data(path = path, returnX = FALSE)

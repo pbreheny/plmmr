@@ -19,9 +19,9 @@ process_delim(
 \arguments{
 \item{data_dir}{The directory to the file.}
 
-\item{data_file}{The file to be read in, without the filepath. This should be a file of numeric values, no header row!
-Headers should be taken out of the file and supplied to the \code{col_names} argument in \code{plmm()}
-Example: use \code{data_file = "myfile.txt"}, not \code{data_file = "~/mydirectory/myfile.txt"}}
+\item{data_file}{The file to be read in, without the filepath. This should be a file of numeric values.
+Example: use \code{data_file = "myfile.txt"}, not \code{data_file = "~/mydirectory/myfile.txt"}
+Note: if your file has headers/column names, set 'header = TRUE' -- this will be passed into \code{bigmemory::read.big.matrix()}.}
 
 \item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.}
 

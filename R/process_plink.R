@@ -44,7 +44,7 @@
 #'
 #' @export
 #'
-#' @details See vignette on processing PLINK files
+#' @details For an example, see vignette on processing PLINK files
 #'
 process_plink <- function(data_dir,
                           data_prefix,

@@ -18,3 +18,7 @@ with the full file path
 \description{
 A function to help with accessing example PLINK files
 }
+\examples{
+find_example_data(parent = TRUE)
+
+}

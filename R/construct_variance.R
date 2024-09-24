@@ -4,7 +4,7 @@
 #' @param eta An optional numeric value between 0 and 1; if `fit` is not supplied, then this option must be specified.
 #' @returns Sigma_hat, a matrix representing the estimated variance
 #'
-#' @export
+#' @keywords internal
 #'
 construct_variance <- function(fit, K = NULL, eta = NULL){
 

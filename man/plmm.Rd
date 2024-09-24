@@ -2,7 +2,7 @@
 % Please edit documentation in R/plmm.R
 \name{plmm}
 \alias{plmm}
-\title{Fit a linear mixed model with non-convex regularization}
+\title{Fit a linear mixed model via non-convex penalized maximum likelihood.}
 \usage{
 plmm(
   design,
@@ -49,7 +49,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{(\strong{Future idea; not yet incorporated}): Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
@@ -61,7 +61,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{(future idea; not yet incorporated)Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
+\item{convex}{(\strong{Future idea; not yet incorporated}): Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
@@ -102,8 +102,7 @@ A list which includes:
 }
 }
 \description{
-This function allows you to fit a linear mixed model via non-convex penalized maximum likelihood.
-NB: this function is simply a wrapper for plmm_prep -> plmm_fit -> plmm_format
+Fit a linear mixed model via non-convex penalized maximum likelihood.
 }
 \examples{
 # using admix data

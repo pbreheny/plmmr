@@ -7,11 +7,17 @@
 #' @param vertical.line Logical to indicate whether vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.
 #' @param col Color for vertical line, if plotted. Defaults to "red."
 #' @param ... Additional arguments.
-#' 
+#'
 #' @returns Nothing is returned; instead, a plot is drawn representing the relationship
 #' between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).
-#' 
+#'
 #' @export
+#'
+#' @examples
+#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' cvfit <- cv_plmm(design = admix_design)
+#' plot(cvfit)
+#'
 
 ## from cv.ncvreg
 plot.cv_plmm <- function(x, log.l=TRUE, type=c("cve", "rsq", "scale", "snr", "all"), selected=TRUE, vertical.line=TRUE, col="red", ...) {

@@ -76,5 +76,5 @@ backingfile that stores the numeric data of the genotype matrix
 Note that \code{process_plink()} need only be run once for a given set of PLINK
 files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
 
-See vignette on processing PLINK files
+For an example, see vignette on processing PLINK files
 }

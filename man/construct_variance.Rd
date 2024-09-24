@@ -19,3 +19,4 @@ Sigma_hat, a matrix representing the estimated variance
 \description{
 a function to create the estimated variance matrix from a PLMM fit
 }
+\keyword{internal}

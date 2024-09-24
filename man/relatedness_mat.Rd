@@ -10,7 +10,7 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 \item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data).
 Note: This matrix should \emph{not} include non-genetic features.}
 
-\item{std}{Logical: should X be standardized? If you set this to FALSE, you should know exactly why that is appropriate... standardization is a best practice, and this will impact results.}
+\item{std}{Logical: should X be standardized? If you set this to FALSE (which can only be done if data are stored in memory), you should know exactly why that is appropriate... standardization is a best practice, and this will impact results.}
 
 \item{fbm}{Logical: is X stored as an FBM? Defaults to FALSE}
 
@@ -21,12 +21,14 @@ Note: This matrix should \emph{not} include non-genetic features.}
 \value{
 An n x n numeric matrix capturing the genomic relatedness of the
 samples represented in \code{X}. In our notation, we call this matrix K for 'kinship';
-this matrix is also sometimes called the GRM for 'genomic relatedness matrix'
+this matrix is also sometimes called the GRM for 'genomic relatedness matrix'.
 }
 \description{
-This function allows you to generate an n by n genetic relatedness matrix. If a numeric matrix is supplied, the RRM (Hayes, 2009) is used
+This function allows you to generate an n by n genetic relatedness matrix.
+If a numeric matrix is supplied, the RRM \href{https://doi.org/10.1017/S0016672308009981}{(Hayes, 2009)} is used
 and is computed XX'/p, where X is standardized.
 }
 \examples{
 RRM <- relatedness_mat(X = admix$X)
+RRM[1:5, 1:5]
 }

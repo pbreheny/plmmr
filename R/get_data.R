@@ -12,28 +12,7 @@
 #'  * center: A vector of values for centering each column in X
 #'  * scale: A vector of values for scaling each column in X
 #'
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' temp_dir <- paste0(tempdir()) # using a temporary directory here
-#' process_plink(data_dir = find_example_data(parent = TRUE), # reads data that ships with plmmr
-#'               rds_dir = temp_dir,
-#'               prefix = "penncath_lite",
-#'               gz = TRUE,
-#'               outfile = "process_penncath",
-#'               overwrite = TRUE,
-#'               impute_method = "mode")
-#'
-#'  pen <- get_data(file.path(temp_dir, "std_penncath_lite"))
-#'  str(pen)
-#' }
-#'
-#' @details
-#' The .rds object should have an 'std_X' element - this is what will be used as the design matrix for analysis. This design matrix should *not* include an intercept column (this will be added later in `plmm_fit`()).
-#'
-#' In the returned list, the `fam` data will be sorted by family and by individual, as in `dplyr::arrange(family.ID, sample.ID)`.
-#' The rows of `X` will be sorted to align in the same order as in `fam`, where rownames of `X` will be sample ID.
+#' @keywords internal
 #'
 #'
 get_data <- function(path, returnX = FALSE, trace = TRUE){
