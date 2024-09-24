@@ -28,7 +28,10 @@ passed to \code{create_design_filebacked()}. Defaults to NULL (this argument doe
 See the documentation for those helper functions for details.}
 }
 \value{
-An object of class \code{plmm_design}
+A filepath to an object of class \code{plmm_design}, which is a named list with the design matrix,
+outcome, penalty factor vector, and other details needed for fitting a model. This list is stored as an .rds
+file for filebacked data, so in the filebacked case a string with the path to that file is returned. For in-memory data,
+the list itself is returned.
 }
 \description{
 a function to create a design for PLMM modeling
@@ -103,7 +106,7 @@ colon_rds <- readRDS(colon_design)
 str(colon_rds)
 
 ## Example 3: PLINK data ##
-\dontrun{
+\donttest{
 # process PLINK data
 temp_dir <- tempdir()
 unzip_example_data(outdir = temp_dir)

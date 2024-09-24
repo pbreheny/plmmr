@@ -4,6 +4,7 @@
 #' @param ...       Not used
 #' @keywords internal
 #'
+#' @returns Nothing is returned, intead a text file with the suffix .log is created.
 create_log <- function(outfile, ...) {
   if (missing(outfile)) {
     stop("You must specify a name for the output file(s) via the outfile argument.")

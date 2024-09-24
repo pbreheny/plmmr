@@ -10,6 +10,8 @@
 #' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @keywords internal
 #'
+#' @returns a numeric vector of lambda values, equally spaced on the log scale
+#'
 setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor, intercept = TRUE) {
 
   # make sure alpha is neither missing nor zero

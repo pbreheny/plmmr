@@ -1,10 +1,10 @@
 #' A function to rotate filebacked data
 #'
-#'@returns a list with 4 items:
-#'  * rot_X" `X` on the rotated scale, without re-standardizing (an FBM)
+#' @returns a list with 4 items:
+#'  * stdrot_X: `X` on the rotated and re-standardized scale
 #'  * rot_y: `y` on the rotated scale (a numeric vector)
-#'  * stdrot_X: `X` on the rotated scale, re-standardized (an FBM)
-#'  * stdrot_X_scale: numeric vector of values used to standardize `rot_X`
+#'  * stdrot_X_center: numeric vector of values used to center `rot_X`
+#'  * stdrot_X_scale: numeric vector of values used to scale `rot_X`
 #'
 #' @keywords internal
 #'

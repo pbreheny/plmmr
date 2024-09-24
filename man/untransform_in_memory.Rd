@@ -15,6 +15,9 @@ untransform_in_memory(std_scale_beta, p, std_X_details, use_names = TRUE)
 
 \item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as 'ns' will vary within CV folds.}
 }
+\value{
+a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
+}
 \description{
 This function unwinds the initial standardization of the data to obtain
 coefficient values on their original scale. It is called by plmm_format().

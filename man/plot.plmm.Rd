@@ -21,7 +21,7 @@
 }
 \value{
 Nothing is returned; instead, a plot of the coefficient paths is drawn
-at each value of lambda (one 'path' for each value of lambda).
+at each value of lambda (one 'path' for each coefficient).
 }
 \description{
 Plot method for plmm class

@@ -1,11 +1,10 @@
 #' A helper function to support `process_plink()`
-#' This function is called by another helper, `add_predictors_to_bigsnp()`
 #' @param id_var String specifying the variable name of the ID column
 #' @param quiet Logical: should a message be printed?
 #' @param add_predictor External data to include in design matrix. This is the add_predictors... arg in `process_plink()`
 #' @param og_ids Character vector with the PLINK ids (FID or IID) from the *original* data (i.e., the data before any subsetting from handling missing phenotypes)
 #'
-#' @return An object of the same type as add_predictor
+#' @return A matrix with the same dimensions as add_predictor
 #' @keywords internal
 align_ids <- function(id_var, quiet, add_predictor, og_ids) {
 

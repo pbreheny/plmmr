@@ -2,6 +2,7 @@
 #' @param fit An object returned by `plmm()`
 #' @param K An optional matrix
 #' @param eta An optional numeric value between 0 and 1; if `fit` is not supplied, then this option must be specified.
+#'
 #' @returns Sigma_hat, a matrix representing the estimated variance
 #'
 #' @keywords internal

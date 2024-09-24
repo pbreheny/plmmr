@@ -18,8 +18,8 @@ get_data(path, returnX = FALSE, trace = TRUE)
 A list with these components:
 \itemize{
 \item std_X, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
-\item fam, a data frame containing the pedigree information (like a .fam file in PLINK)
-\item map, a data frame containing the feature information (like a .bim file in PLINK)
+\item (if PLINK data) fam, a data frame containing the pedigree information (like a .fam file in PLINK)
+\item (if PLINK data) map, a data frame containing the feature information (like a .bim file in PLINK)
 \item ns: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0.
 \item center: A vector of values for centering each column in X
 \item scale: A vector of values for scaling each column in X

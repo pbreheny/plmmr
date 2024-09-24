@@ -9,6 +9,8 @@
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked?
 #' @param use_names Logical: should names be added? Defaults to TRUE. Set to FALSE inside of `cvf()` helper, as 'ns' will vary within CV folds.
 #' @keywords internal
+#'
+#' @returns a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
 
 
 untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, use_names = TRUE) {

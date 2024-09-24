@@ -27,6 +27,7 @@
 #' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
 #'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
+#'
 #' @returns A list which includes:
 #'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.

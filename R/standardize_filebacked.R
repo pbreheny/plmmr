@@ -1,4 +1,4 @@
-#' A helper function to standardize a `bigSNP`
+#' A helper function to standardize a filebacked matrix
 #'
 #' @param X           A list that includes:
 #'                       (1) subset_X: a `big.matrix` object that has been subset &/or had any additional predictors appended as columns
@@ -13,7 +13,8 @@
 #' List also includes several other indices/meta-data on the standardized matrix
 #' @keywords internal
 #'
-standardize_bigsnp <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
+#'
+standardize_filebacked <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
                                outfile, quiet, overwrite){
 
   # standardization ------------------------------------------------

@@ -9,6 +9,9 @@ unzip_example_data(outdir)
 \arguments{
 \item{outdir}{The file path to the directory to which the .gz files should be written}
 }
+\value{
+Nothing is returned; the PLINK files that ship with the \code{plmmr} package are stored in the directory specified by 'outdir'
+}
 \description{
 For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the \code{plmmr} package
 }

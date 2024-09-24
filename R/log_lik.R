@@ -7,7 +7,10 @@
 #' @param U The left-singular vectors of the *standardized* design matrix
 #' @param y Continuous outcome vector.
 #' @param rot_y Optional: if y has already been rotated, then this can be supplied.
+#'
 #' @keywords internal
+#'
+#' @returns the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
 #'
 log_lik <- function(eta, n, s, U, y, rot_y = NULL){
 

@@ -15,6 +15,9 @@ lasso(z, l1, l2, v)
 
 \item{v}{the 'xtx' term}
 }
+\value{
+numeric vector of the lasso-penalized coefficient estimates within the given bounds
+}
 \description{
 helper function to implement lasso penalty
 }

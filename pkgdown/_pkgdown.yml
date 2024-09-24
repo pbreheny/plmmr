@@ -56,11 +56,11 @@ reference:
   - title: Plotting, summarizing, and formatting
     contents:
     - summary.plmm
-    - print.summary.plmm
-    - plot.plmm
     - summary.cv_plmm
-    - print.summary.cv_plmm
+    - plot.plmm
     - plot.cv_plmm
+    - print.summary.cv_plmm
+    - print.summary.plmm
 
   - title: Prediction
     contents:
@@ -83,17 +83,15 @@ reference:
     - create_design_in_memory
     - create_log
     - cvf
-    - delta
     - eigen_K
     - estimate_eta
     - fbm2bm
     - file_sans_ext
-    - get_bm_from_plink
     - get_data
     - get_hostname
     - impute_snp_data
-    - index_std_X
     - index_samples
+    - index_std_X
     - lam_names
     - lasso
     - log_lik
@@ -110,13 +108,12 @@ reference:
     - rotate_filebacked
     - SCAD
     - setup_lambda
-    - standardize_bigsnp
-    - standardize_matrix
-    - subset_bigsnp
+    - standardize_filebacked
+    - standardize_in_memory
+    - subset_filebacked
     - untransform
     - untransform_in_memory
     - untransform_filebacked
-    - varp
 
 
 

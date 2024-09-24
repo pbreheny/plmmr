@@ -19,6 +19,9 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
 \item{rot_y}{Optional: if y has already been rotated, then this can be supplied.}
 }
+\value{
+the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
+}
 \description{
 This function allows you to evaluate the negative log-likelihood of a linear mixed model under the assumption of a null model in order to estimate the variance parameter, eta.
 }

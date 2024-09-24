@@ -48,6 +48,9 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{...}{Additional arguments to \code{get_data()}}
 }
+\value{
+A list of parameters to pass on to model fitting. The list includes the standardized design matrix, the outcome, and meta-data
+}
 \description{
 plmm_checks
 }

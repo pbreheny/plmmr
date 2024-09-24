@@ -71,19 +71,10 @@ plmm_fit(
 \value{
 A list with these components:
 \itemize{
-\item n: # of rows in X
-\item p: # of columns in X (including constant features)
-\item y: outcome on original scale
-\item std_X_details: list with 'center' and 'scale' vectors, same as \code{plmm_prep()}
-\item s: eigenvalues of K
-\item U: eigenvectors of K
-\item rot_X: X on the rotated (i.e., transformed) scale.
-Note that the dimensions of \code{rot_X} are likely to be different than those of X.
-\item rot_y: y on the rotated scale
-\item stdrot_X: X on the rotated scale once it has been re-standardized.
-\item lambda: vector of tuning parameter values
-\item stdrot_scale_beta: the coefficients estimated on the scale of \code{stdrot_X}
 \item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
+\item centered_y: the y-values that are 'centered' to have mean 0
+\item s and U, the values and vectors from the eigendecomposition of K
+\item lambda: vector of tuning parameter values
 \item linear_predictors: the product of \code{stdrot_X} and \code{b}
 (linear predictors on the transformed and restandardized scale)
 \item eta: a number (double) between 0 and 1 representing the estimated

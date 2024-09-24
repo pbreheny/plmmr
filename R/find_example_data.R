@@ -29,6 +29,8 @@ find_example_data <- function(path, parent=FALSE) {
 #' @details For an example of this function, look at `vignette('plink_files', package = "plmmr")`.
 #' Note again: this function will not work on Windows systems - only for Linux/Unix and MacOS.
 #'
+#' @returns Nothing is returned; the PLINK files that ship with the `plmmr` package are stored in the directory specified by 'outdir'
+#'
 unzip_example_data <- function(outdir){
 
   # Check if the operating system is Windows

@@ -6,6 +6,9 @@
 \usage{
 pretty_time()
 }
+\value{
+A string with the formatted current date and time
+}
 \description{
 a function to format the time
 }

@@ -25,6 +25,9 @@
 #'
 #' @keywords internal
 #'
+#' @returns A filepath to the created .rds file containing all the information
+#' for model fitting, including a standardized X and model design information
+#'
 create_design_filebacked <- function(data_file,
                                      rds_dir,
                                      obj,
@@ -253,7 +256,7 @@ create_design_filebacked <- function(data_file,
                                        quiet = quiet)
   gc()
   # subsetting -----------------------------------------------------------------
-  subset_res <- subset_bigsnp(X = unstd_X$design_matrix,
+  subset_res <- subset_filebacked(X = unstd_X$design_matrix,
                               complete_samples = design$outcome_idx,
                               ns = design$ns,
                               rds_dir = rds_dir,
@@ -266,7 +269,7 @@ create_design_filebacked <- function(data_file,
   rm(unstd_X)
   gc()
   # standardization ------------------------------------------------------------
-  std_res <- standardize_bigsnp(X = subset_res$subset_X,
+  std_res <- standardize_filebacked(X = subset_res$subset_X,
                                 new_file = new_file,
                                 rds_dir = rds_dir,
                                 outfile = logfile,

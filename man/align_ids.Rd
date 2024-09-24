@@ -2,8 +2,7 @@
 % Please edit documentation in R/align_ids.R
 \name{align_ids}
 \alias{align_ids}
-\title{A helper function to support \code{process_plink()}
-This function is called by another helper, \code{add_predictors_to_bigsnp()}}
+\title{A helper function to support \code{process_plink()}}
 \usage{
 align_ids(id_var, quiet, add_predictor, og_ids)
 }
@@ -17,10 +16,9 @@ align_ids(id_var, quiet, add_predictor, og_ids)
 \item{og_ids}{Character vector with the PLINK ids (FID or IID) from the \emph{original} data (i.e., the data before any subsetting from handling missing phenotypes)}
 }
 \value{
-An object of the same type as add_predictor
+A matrix with the same dimensions as add_predictor
 }
 \description{
 A helper function to support \code{process_plink()}
-This function is called by another helper, \code{add_predictors_to_bigsnp()}
 }
 \keyword{internal}

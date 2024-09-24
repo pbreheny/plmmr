@@ -55,20 +55,12 @@ plmm_prep(
 \value{
 List with these components:
 \itemize{
-\item n: the number of rows in the original design matrix
-\item p: the number of columns in the original design matrix
 \item centered_y: The vector of centered outcomes
 \item std_X: standardized design matrix
-\item std_X_details: a list with 2 vectors:
-\itemize{
-\item 'center' (values used to center X)
-\item 'scale' (values used to scale X)
-}
-\item s: vector with the eigenvalues of K
-\item U: the eigenvectors of K (same as left singular values of X).
-\item ns: the indices for the nonsingular values of X
-\item penalty_factor: the penalty factors for the penalized non-singular values
-\item feature_names: formatted column names of the design matrix
+\item K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
+and (2) U: the eigenvectors of K (same as left singular values of X).
+\item eta: the numeric value of the estimated eta parameter
+\item trace: logical.
 }
 }
 \description{

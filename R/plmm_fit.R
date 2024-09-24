@@ -20,20 +20,12 @@
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
+#'
 #' @returns  A list with these components:
-#'   * n: # of rows in X
-#'   * p: # of columns in X (including constant features)
-#'   * y: outcome on original scale
-#'   * std_X_details: list with 'center' and 'scale' vectors, same as `plmm_prep()`
-#'   * s: eigenvalues of K
-#'   * U: eigenvectors of K
-#'   * rot_X: X on the rotated (i.e., transformed) scale.
-#'    Note that the dimensions of `rot_X` are likely to be different than those of X.
-#'   * rot_y: y on the rotated scale
-#'   * stdrot_X: X on the rotated scale once it has been re-standardized.
-#'   * lambda: vector of tuning parameter values
-#'   * stdrot_scale_beta: the coefficients estimated on the scale of `stdrot_X`
 #'   * std_scale_beta: the coefficients estimated on the scale of `std_X`
+#'   * centered_y: the y-values that are 'centered' to have mean 0
+#'   * s and U, the values and vectors from the eigendecomposition of K
+#'   * lambda: vector of tuning parameter values
 #'   * linear_predictors: the product of `stdrot_X` and `b`
 #'    (linear predictors on the transformed and restandardized scale)
 #'   * eta: a number (double) between 0 and 1 representing the estimated
@@ -101,7 +93,7 @@ plmm_fit <- function(prep,
     rot_y <- wUt %*% prep$centered_y # remember: prep$y is the centered outcome vector
 
     # re-standardize rot_X
-    stdrot_info <- standardize_matrix(rot_X)
+    stdrot_info <- standardize_in_memory(rot_X)
     stdrot_X <- stdrot_info$std_X
     stdrot_X_details <- stdrot_info$std_X_details
 

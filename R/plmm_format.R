@@ -10,7 +10,6 @@
 #'
 #' @returns A list with the components:
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
-#'  * `rotated_scale_beta_vals`: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
 #'  * `lambda`: a numeric vector of the lasso tuning parameter values used in model fitting.
 #'  * `eta`: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
 #'  * `s`: a vectof of the eigenvalues of relatedness matrix `K`; see `relatedness_mat()` for details.
@@ -22,9 +21,7 @@
 #'  * `alpha`: numeric value indicating the elastic net tuning parameter.
 #'  * `loss`: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
 #'  * `penalty_factor`: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-#'  * `ns_idx`: vector with the indicesof predictors which were constant features (i.e., had no variation).
-#'  * `p`: the number of features
-#'  * `n`: the number of observations (instances)
+#'  * `ns_idx`: vector with the indices of predictors which were nonsingular features (i.e., had variation).
 #'  * `iter`: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
 #'  * `converged`: vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #'

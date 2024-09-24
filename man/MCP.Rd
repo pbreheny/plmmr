@@ -2,7 +2,8 @@
 % Please edit documentation in R/penalties.R
 \name{MCP}
 \alias{MCP}
-\title{helper function to implement MCP penalty}
+\title{helper function to implement MCP penalty
+The helper functions to implement each penalty.}
 \usage{
 MCP(z, l1, l2, gamma, v)
 }
@@ -17,7 +18,11 @@ MCP(z, l1, l2, gamma, v)
 
 \item{v}{the 'xtx' term}
 }
+\value{
+numeric vector of the MCP-penalized coefficient estimates within the given bounds
+}
 \description{
 helper function to implement MCP penalty
+The helper functions to implement each penalty.
 }
 \keyword{internal}

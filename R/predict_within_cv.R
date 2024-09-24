@@ -18,6 +18,8 @@
 #' @param Sigma_21 Covariance matrix between the training and the testing data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
 #' @param ... Additional optional arguments
 #'
+#' @returns A numeric vector of predicted values
+#'
 #' @details
 #' Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for `type` are as follows:
 #'  * 'lp' (default): uses the linear predictor (i.e., product of test data and estimated coefficients) to predict test values of the outcome.

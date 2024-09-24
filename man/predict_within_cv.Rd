@@ -51,6 +51,9 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{...}{Additional optional arguments}
 }
+\value{
+A numeric vector of predicted values
+}
 \description{
 Predict method to use in cross-validation (within \code{cvf})
 }

@@ -29,6 +29,9 @@ setup_lambda(
 
 \item{intercept}{Logical: does X contain an intercept column? Defaults to TRUE.}
 }
+\value{
+a numeric vector of lambda values, equally spaced on the log scale
+}
 \description{
 This function allows you compute a sequence of lambda values for plmm models.
 }

@@ -10,8 +10,12 @@
 #' @param na_outcome_vals A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
 #' @param outfile   A string with the name of the filepath for the log file
 #' @param quiet     Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...
+
 #' @keywords        internal
 #'
+#' @returns a list with two items:
+#' * a data.table with rows corresponding to the samples for which both genotype and phenotype are available.
+#' * a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)
 index_samples <- function(obj,
                           rds_dir,
                           indiv_id,

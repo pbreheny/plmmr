@@ -8,8 +8,8 @@
 #' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
 #' @param use_names Logical: should names be added? Defaults to TRUE. Set to FALSE inside of `cvf()` helper, as 'ns' will vary within CV folds.
 #' @keywords internal
-
-
+#'
+#' @returns a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
 untransform_filebacked <- function(std_scale_beta, p, std_X_details, use_names = TRUE) {
 
   # goal: reverse the PRE-ROTATION standardization #

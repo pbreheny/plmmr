@@ -11,6 +11,9 @@ create_log(outfile, ...)
 
 \item{...}{Not used}
 }
+\value{
+Nothing is returned, intead a text file with the suffix .log is created.
+}
 \description{
 create_log_file
 }

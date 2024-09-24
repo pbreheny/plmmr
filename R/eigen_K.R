@@ -3,7 +3,9 @@
 #'
 #' @param std_X The *standardized* design matrix, stored as big.matrix object.
 #' @param fbm_flag Logical: is std_X an FBM obejct? Passed from `plmm()`.
+#'
 #' @return A list with the eigenvectors and eigenvalues of K
+#'
 #' @keywords internal
 #'
 eigen_K <- function(std_X, fbm_flag){

@@ -17,18 +17,12 @@
 #' @param ... Not used yet
 #'
 #' @returns List with these components:
-#' * n: the number of rows in the original design matrix
-#' * p: the number of columns in the original design matrix
 #' * centered_y: The vector of centered outcomes
 #' * std_X: standardized design matrix
-#' * std_X_details: a list with 2 vectors:
-#'    * 'center' (values used to center X)
-#'    * 'scale' (values used to scale X)
-#' * s: vector with the eigenvalues of K
-#' * U: the eigenvectors of K (same as left singular values of X).
-#' * ns: the indices for the nonsingular values of X
-#' * penalty_factor: the penalty factors for the penalized non-singular values
-#' * feature_names: formatted column names of the design matrix
+#' * K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
+#'  and (2) U: the eigenvectors of K (same as left singular values of X).
+#' * eta: the numeric value of the estimated eta parameter
+#' * trace: logical.
 #'
 #' @keywords internal
 

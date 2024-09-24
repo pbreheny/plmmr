@@ -7,6 +7,7 @@
 #'
 #' @return C, filled in with all column values of A and B combined
 #' @keywords internal
+#'
 big_cbind <- function(A, B, C, quiet){
   if (!quiet) {
     cat("Column-wise combining data sets\n")

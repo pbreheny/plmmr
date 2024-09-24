@@ -12,10 +12,10 @@
 #' @param idx       Vector of indices of the penalty parameter \code{lambda} at which
 #'                  predictions are required. By default, all indices are returned.
 #' @param X         Original design matrix (not including intercept column)
-#'                  from object. Required if \code{type == 'blup'} and object is too large to be
-#'                  returned in `plmm` object. Again, **columns must be named!**
+#'                  from object. Required only if \code{type == 'blup'} and object is too large to be
+#'                  returned in `plmm` object.
 #' @param y         Original continuous outcome vector from object.
-#'                  Required if \code{type == 'blup'}.
+#'                  Required only if \code{type == 'blup'}.
 #' @param ...       Additional optional arguments
 #'
 #' @details
@@ -29,7 +29,7 @@
 #'
 #'  * 'coefficients': returns the estimated beta-hat
 #'
-#'  * 'vars': returns the _indicies_ of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
+#'  * 'vars': returns the _indices_ of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
 #'
 #'  * 'nvars': returns the _number_ of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
 #'
@@ -37,7 +37,6 @@
 #' @rdname predict.plmm
 #'
 #' @returns Depends on the `type` - see Details
-#'
 #'
 #' @export
 #'

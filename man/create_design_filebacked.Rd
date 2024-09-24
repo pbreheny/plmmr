@@ -60,6 +60,10 @@ The names will be used to subset and align this external covariate with the supp
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 }
+\value{
+A filepath to the created .rds file containing all the information
+for model fitting, including a standardized X and model design information
+}
 \description{
 A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 }

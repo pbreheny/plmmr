@@ -10,6 +10,12 @@
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
+#'
+#' @returns a list with three elements:
+#' * a numeric vector with the loss at each value of lambda
+#' * a numeric value indicating the number of lambda values used
+#' * a numeric value with the predicted outcome (y hat) values at each lambda
+#'
 cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
@@ -83,7 +89,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     #   to become constant features in the training data. The following lines address this issue
 
     # re-standardize training data & check for singularity
-    std_info <- standardize_matrix(fold_args$std_X)
+    std_info <- standardize_in_memory(fold_args$std_X)
     fold_args$std_X <- std_info$std_X
     fold_args$std_X_details <- std_info$std_X_details
 

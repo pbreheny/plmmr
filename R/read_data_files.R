@@ -9,7 +9,9 @@
 #' @param overwrite Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #' @param quiet     Logical: should messages be printed to the console? Defaults to TRUE
 #' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: 'sep' is an option to pass here.
+#'
 #' @returns '.rds', '.bk', and '.desc' files are created in `data_dir`, and `obj` (a filebacked `bigmemory big.matrix` object) is returned. See `bigmemory` documentation for more info on the `big.matrix` class.
+#'
 #' @keywords internal
 #'
 read_data_files <- function(data_file, data_dir, rds_dir, rds_prefix,

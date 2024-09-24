@@ -3,6 +3,7 @@
 #' @param object A \code{cv_plmm} object
 #' @param lambda The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min.'
 #' @param ...  Not used
+#'
 #' @return The return value is an object with S3 class `summary.cv_plmm`. The class has its own print method and contains the following list elements:
 #' * `lambda_min`: The lambda value at the minimum cross validation error
 #' * `lambda.1se`: The maximum lambda value within 1 standard error of the minimum cross validation error

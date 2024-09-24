@@ -36,6 +36,13 @@ element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' 
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...}
 }
+\value{
+a list with two items:
+\itemize{
+\item a data.table with rows corresponding to the samples for which both genotype and phenotype are available.
+\item a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)
+}
+}
 \description{
 A function to align genotype and phenotype data
 }

@@ -17,6 +17,7 @@
 #'                      To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param quiet         Logical: should the messages printed to the console be silenced? Defaults to FALSE.
 #' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: 'sep' is an option to pass here, as is 'header'.
+#'
 #' @return The file path to the newly created '.rds' file
 #'
 #' @export

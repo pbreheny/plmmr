@@ -16,6 +16,9 @@ estimate_eta(n, s, U, y, eta_star)
 
 \item{y}{Continuous outcome vector.}
 }
+\value{
+a numeric value with the estimated value of eta, the variance parameter
+}
 \description{
 Estimate eta (to be used in rotating the data)
 This function is called internally by \code{plmm()}

@@ -17,6 +17,7 @@
 #' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return Nothing is returned, but the `obj$genotypes` is overwritten with the imputed version of the data
+#'
 #' @keywords internal
 #'
 impute_snp_data <- function(obj, X, impute, impute_method,

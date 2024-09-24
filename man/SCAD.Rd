@@ -17,6 +17,9 @@ SCAD(z, l1, l2, gamma, v)
 
 \item{v}{the 'xtx' term}
 }
+\value{
+numeric vector of the SCAD-penalized coefficient estimates within the given bounds
+}
 \description{
 helper function to implement SCAD penalty
 }

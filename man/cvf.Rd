@@ -19,6 +19,14 @@ cvf(i, fold, type, cv_args, estimated_Sigma, ...)
 
 \item{...}{Optional arguments to \code{predict_within_cv}}
 }
+\value{
+a list with three elements:
+\itemize{
+\item a numeric vector with the loss at each value of lambda
+\item a numeric value indicating the number of lambda values used
+\item a numeric value with the predicted outcome (y hat) values at each lambda
+}
+}
 \description{
 Internal function for cv_plmm which calls plmm on a fold subset of the original data.
 }

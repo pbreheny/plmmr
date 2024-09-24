@@ -24,7 +24,6 @@ plmm_format(fit, p, std_X_details, fbm_flag)
 A list with the components:
 \itemize{
 \item \code{beta_vals}: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
-\item \code{rotated_scale_beta_vals}: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
 \item \code{s}: a vectof of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
@@ -36,9 +35,7 @@ A list with the components:
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
 \item \code{loss}: vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
 \item \code{penalty_factor}: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-\item \code{ns_idx}: vector with the indicesof predictors which were constant features (i.e., had no variation).
-\item \code{p}: the number of features
-\item \code{n}: the number of observations (instances)
+\item \code{ns_idx}: vector with the indices of predictors which were nonsingular features (i.e., had variation).
 \item \code{iter}: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}
 \item \code{converged}: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
 }
