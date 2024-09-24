@@ -79,14 +79,14 @@ report inference for the 10th value of <code>lambda</code> along the regularizat
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The return value is an object with S3 class <code>summary.plmm</code>. The class has its own print method and contains the following list elements:</p><ul><li><p><code>penalty</code>: The penalty used by <code>plmm</code> (e.g. SCAD, MCP, lasso)</p></li>
 <li><p><code>n</code>: Number of instances/observations</p></li>
+<li><p><code>std_X_n</code>: the number of observations in the standardized data;
+the only time this would differ from 'n' is if data are from PLINK and the external data does not include all the same samples</p></li>
 <li><p><code>p</code>: Number of regression coefficients (not including the intercept)</p></li>
 <li><p><code>converged</code>: Logical indicator for whether the model converged</p></li>
 <li><p><code>lambda</code>: The <code>lambda</code> value at which inference is being reported</p></li>
 <li><p><code>lambda_char</code>: A formatted character string indicating the lambda value</p></li>
 <li><p><code>nvars</code>: The number of nonzero coefficients (again, not including the intercept) at that value of <code>lambda</code></p></li>
 <li><p><code>nonzero</code>: The column names indicating the nonzero coefficients in the model at the specified value of <code>lambda</code></p></li>
-<li><p><code>constant_features</code>: A character vector with the names of any columns in the design matrix
-whose values are constant in the whole sample (e.g., monomorphic SNPs in a genetics context)</p></li>
 </ul></div>
 
     <div class="section level2">

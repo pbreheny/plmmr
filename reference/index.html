@@ -54,9 +54,9 @@
           <code><a href="plmm.html">plmm()</a></code>
 
         </dt>
-        <dd>Fit a linear mixed model with non-convex regularization</dd>
+        <dd>Fit a linear mixed model via non-convex penalized maximum likelihood.</dd>
       </dl></div><div class="section level2">
-      <h2 id="loss-information-and-cross-validation-for-plmms">Loss, information, and cross-validation for PLMMs<a class="anchor" aria-label="anchor" href="#loss-information-and-cross-validation-for-plmms"></a></h2>
+      <h2 id="loss-and-cross-validation-for-plmms">Loss and cross-validation for PLMMs<a class="anchor" aria-label="anchor" href="#loss-and-cross-validation-for-plmms"></a></h2>
 
 
 
@@ -78,12 +78,6 @@
 
         </dt>
         <dd>Loss method for "plmm" class</dd>
-      </dl><dl><dt>
-
-          <code><a href="log_lik.html">log_lik()</a></code>
-
-        </dt>
-        <dd>Evaluate the negative log-likelihood of an intercept-only Gaussian plmm model</dd>
       </dl></div><div class="section level2">
       <h2 id="coefficient-methods-for-plmms">Coefficient methods for PLMMs<a class="anchor" aria-label="anchor" href="#coefficient-methods-for-plmms"></a></h2>
 
@@ -108,23 +102,6 @@
         </dt>
         <dd>Coef method for "plmm" class</dd>
       </dl></div><div class="section level2">
-      <h2 id="other-model-fitting-methods-and-some-helper-functions-">Other model fitting methods (and some helper functions)<a class="anchor" aria-label="anchor" href="#other-model-fitting-methods-and-some-helper-functions-"></a></h2>
-
-
-
-
-    </div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="construct_variance.html">construct_variance()</a></code>
-
-        </dt>
-        <dd>a function to create the estimated variance matrix from a PLMM fit</dd>
-      </dl></div><div class="section level2">
       <h2 id="data-pre-processing-and-wrangling">Data (pre)processing and wrangling<a class="anchor" aria-label="anchor" href="#data-pre-processing-and-wrangling"></a></h2>
 
 
@@ -143,22 +120,10 @@
         <dd>a function to create a design for PLMM modeling</dd>
       </dl><dl><dt>
 
-          <code><a href="get_data.html">get_data()</a></code>
-
-        </dt>
-        <dd>Read in processed data This function is intended to be called after either <code><a href="../reference/process_plink.html">process_plink()</a></code> or <code><a href="../reference/process_delim.html">process_delim()</a></code> has been called once.</dd>
-      </dl><dl><dt>
-
           <code><a href="find_example_data.html">find_example_data()</a></code>
 
         </dt>
         <dd>A function to help with accessing example PLINK files</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_bm_from_plink.html">get_bm_from_plink()</a></code>
-
-        </dt>
-        <dd>A function to convert the output of <code><a href="../reference/process_plink.html">process_plink()</a></code> into a <code>big.matrix</code> (such as could be passed to <code><a href="https://rdrr.io/pkg/biglasso/man/biglasso.html" class="external-link">biglasso::biglasso()</a></code>)</dd>
       </dl><dl><dt>
 
           <code><a href="process_plink.html">process_plink()</a></code>
@@ -182,7 +147,7 @@
           <code><a href="unzip_example_data.html">unzip_example_data()</a></code>
 
         </dt>
-        <dd>a companion function to unzip the .gz files that ship with the package <em>Note</em>: for Linux/Unix and MacOS only</dd>
+        <dd>For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the <code>plmmr</code> package</dd>
       </dl></div><div class="section level2">
       <h2 id="plotting-summarizing-and-formatting">Plotting, summarizing, and formatting<a class="anchor" aria-label="anchor" href="#plotting-summarizing-and-formatting"></a></h2>
 
@@ -202,10 +167,10 @@
         <dd>A summary method for the plmm objects</dd>
       </dl><dl><dt>
 
-          <code><a href="print.summary.plmm.html">print(<i>&lt;summary.plmm&gt;</i>)</a></code>
+          <code><a href="summary.cv_plmm.html">summary(<i>&lt;cv_plmm&gt;</i>)</a></code>
 
         </dt>
-        <dd>A function to print the summary of a <code>plmm</code> model</dd>
+        <dd>A summary function for cv_plmm objects</dd>
       </dl><dl><dt>
 
           <code><a href="plot.plmm.html">plot(<i>&lt;plmm&gt;</i>)</a></code>
@@ -214,10 +179,10 @@
         <dd>Plot method for plmm class</dd>
       </dl><dl><dt>
 
-          <code><a href="summary.cv_plmm.html">summary(<i>&lt;cv_plmm&gt;</i>)</a></code>
+          <code><a href="plot.cv_plmm.html">plot(<i>&lt;cv_plmm&gt;</i>)</a></code>
 
         </dt>
-        <dd>A summary function for cv_plmm objects</dd>
+        <dd>Plot method for cv_plmm class</dd>
       </dl><dl><dt>
 
           <code><a href="print.summary.cv_plmm.html">print(<i>&lt;summary.cv_plmm&gt;</i>)</a></code>
@@ -226,10 +191,10 @@
         <dd>Print method for summary.cv_plmm objects</dd>
       </dl><dl><dt>
 
-          <code><a href="plot.cv_plmm.html">plot(<i>&lt;cv_plmm&gt;</i>)</a></code>
+          <code><a href="print.summary.plmm.html">print(<i>&lt;summary.plmm&gt;</i>)</a></code>
 
         </dt>
-        <dd>Plot method for cv_plmm class</dd>
+        <dd>A function to print the summary of a <code>plmm</code> model</dd>
       </dl></div><div class="section level2">
       <h2 id="prediction">Prediction<a class="anchor" aria-label="anchor" href="#prediction"></a></h2>
 
@@ -264,12 +229,6 @@
 
         </dt>
         <dd>Admix: Semi-simulated SNP data</dd>
-      </dl><dl><dt>
-
-          <code><a href="pedigree.html">pedigree</a></code>
-
-        </dt>
-        <dd>Pedigree: mock genotype data from a family-based design.</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

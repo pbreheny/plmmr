@@ -27,13 +27,11 @@
 <url><loc>/reference/create_log.html</loc></url>
 <url><loc>/reference/cv_plmm.html</loc></url>
 <url><loc>/reference/cvf.html</loc></url>
-<url><loc>/reference/delta.html</loc></url>
 <url><loc>/reference/eigen_K.html</loc></url>
 <url><loc>/reference/estimate_eta.html</loc></url>
 <url><loc>/reference/fbm2bm.html</loc></url>
 <url><loc>/reference/file_sans_ext.html</loc></url>
 <url><loc>/reference/find_example_data.html</loc></url>
-<url><loc>/reference/get_bm_from_plink.html</loc></url>
 <url><loc>/reference/get_data.html</loc></url>
 <url><loc>/reference/get_hostname.html</loc></url>
 <url><loc>/reference/impute_snp_data.html</loc></url>
@@ -44,7 +42,6 @@
 <url><loc>/reference/lasso.html</loc></url>
 <url><loc>/reference/log_lik.html</loc></url>
 <url><loc>/reference/name_and_count_bigsnp.html</loc></url>
-<url><loc>/reference/pedigree.html</loc></url>
 <url><loc>/reference/plmm.html</loc></url>
 <url><loc>/reference/plmm_checks.html</loc></url>
 <url><loc>/reference/plmm_fit.html</loc></url>
@@ -66,15 +63,14 @@
 <url><loc>/reference/relatedness_mat.html</loc></url>
 <url><loc>/reference/rotate_filebacked.html</loc></url>
 <url><loc>/reference/setup_lambda.html</loc></url>
-<url><loc>/reference/standardize_bigsnp.html</loc></url>
-<url><loc>/reference/standardize_matrix.html</loc></url>
-<url><loc>/reference/subset_bigsnp.html</loc></url>
+<url><loc>/reference/standardize_filebacked.html</loc></url>
+<url><loc>/reference/standardize_in_memory.html</loc></url>
+<url><loc>/reference/subset_filebacked.html</loc></url>
 <url><loc>/reference/summary.cv_plmm.html</loc></url>
 <url><loc>/reference/summary.plmm.html</loc></url>
 <url><loc>/reference/untransform.html</loc></url>
 <url><loc>/reference/untransform_filebacked.html</loc></url>
 <url><loc>/reference/untransform_in_memory.html</loc></url>
 <url><loc>/reference/unzip_example_data.html</loc></url>
-<url><loc>/reference/varp.html</loc></url>
 </urlset>
 

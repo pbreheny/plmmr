@@ -75,7 +75,6 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with the components:</p><ul><li><p><code>beta_vals</code>: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of <code>lambda</code></p></li>
-<li><p><code>rotated_scale_beta_vals</code>: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.</p></li>
 <li><p><code>lambda</code>: a numeric vector of the lasso tuning parameter values used in model fitting.</p></li>
 <li><p><code>eta</code>: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.</p></li>
 <li><p><code>s</code>: a vectof of the eigenvalues of relatedness matrix <code>K</code>; see <code><a href="relatedness_mat.html">relatedness_mat()</a></code> for details.</p></li>
@@ -87,9 +86,7 @@
 <li><p><code>alpha</code>: numeric value indicating the elastic net tuning parameter.</p></li>
 <li><p><code>loss</code>: vector with the numeric values of the loss at each value of <code>lambda</code> (calculated on the ~rotated~ scale)</p></li>
 <li><p><code>penalty_factor</code>: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.</p></li>
-<li><p><code>ns_idx</code>: vector with the indicesof predictors which were constant features (i.e., had no variation).</p></li>
-<li><p><code>p</code>: the number of features</p></li>
-<li><p><code>n</code>: the number of observations (instances)</p></li>
+<li><p><code>ns_idx</code>: vector with the indices of predictors which were nonsingular features (i.e., had variation).</p></li>
 <li><p><code>iter</code>: numeric vector with the number of iterations needed in model fitting for each value of <code>lambda</code></p></li>
 <li><p><code>converged</code>: vector of logical values indicating whether the model fitting converged at each value of <code>lambda</code></p></li>
 </ul></div>

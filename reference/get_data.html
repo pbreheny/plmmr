@@ -71,41 +71,13 @@ This function is intended to be called after either <code><a href="process_plink
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with these components:</p><ul><li><p>std_X, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See <code><a href="https://privefl.github.io/bigstatsr/reference/FBM-class.html" class="external-link">bigstatsr::FBM()</a></code> and <code>bigsnpr::bigSnp-class</code> documentation for details.</p></li>
-<li><p>fam, a data frame containing the pedigree information (like a .fam file in PLINK)</p></li>
-<li><p>map, a data frame containing the feature information (like a .bim file in PLINK)</p></li>
+<li><p>(if PLINK data) fam, a data frame containing the pedigree information (like a .fam file in PLINK)</p></li>
+<li><p>(if PLINK data) map, a data frame containing the feature information (like a .bim file in PLINK)</p></li>
 <li><p>ns: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0.</p></li>
 <li><p>center: A vector of values for centering each column in X</p></li>
 <li><p>scale: A vector of values for scaling each column in X</p></li>
 </ul></div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The .rds object should have an 'std_X' element - this is what will be used as the design matrix for analysis. This design matrix should <em>not</em> include an intercept column (this will be added later in <code>plmm_fit</code>()).</p>
-<p>In the returned list, the <code>fam</code> data will be sorted by family and by individual, as in <code>dplyr::arrange(family.ID, sample.ID)</code>.
-The rows of <code>X</code> will be sorted to align in the same order as in <code>fam</code>, where rownames of <code>X</code> will be sample ID.</p>
-    </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># using a temporary directory here</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="process_plink.html">process_plink</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="fu"><a href="find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="co"># reads data that ships with plmmr</span></span></span>
-<span class="r-in"><span>              rds_dir <span class="op">=</span> <span class="va">temp_dir</span>,</span></span>
-<span class="r-in"><span>              prefix <span class="op">=</span> <span class="st">"penncath_lite"</span>,</span></span>
-<span class="r-in"><span>              gz <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>              outfile <span class="op">=</span> <span class="st">"process_penncath"</span>,</span></span>
-<span class="r-in"><span>              overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>              impute_method <span class="op">=</span> <span class="st">"mode"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in process_plink(data_dir = find_example_data(parent = TRUE), rds_dir = temp_dir,     prefix = "penncath_lite", gz = TRUE, outfile = "process_penncath",     overwrite = TRUE, impute_method = "mode"):</span> argument "rds_prefix" is missing, with no default</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="va">pen</span> <span class="op">&lt;-</span> <span class="fu">get_data</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"std_penncath_lite"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '/tmp/RtmpTMMrps/std_penncath_lite.rds', probable reason 'No such file or directory'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pen</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'pen' not found</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

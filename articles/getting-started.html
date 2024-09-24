@@ -77,7 +77,7 @@ Peter</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><code>plmmr</code> (I say it as “PLUM-are”) is a package for fitting
+<p><code>plmmr</code> is a package for fitting
 <strong>P</strong>enalized <strong>L</strong>inear
 <strong>M</strong>ixed <strong>M</strong>odels in <strong>R</strong>.
 This package was created for the purpose of fitting penalized regression
@@ -94,19 +94,20 @@ start.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Integration</strong>: <code>plmmr</code> combines the
 functionality of several packages in order to do quality control, model
-fitting/analysis, and data visualization all in one package.
-<code>plmmr</code> will take you from PLINK files all the way to a list
-of SNPs for downstream analysis.</p></li>
+fitting/analysis, and data visualization all in one package. For
+example, if you have GWAS data, <code>plmmr</code> will take you from
+PLINK files all the way to a list of SNPs for downstream
+analysis.</p></li>
 <li><p><strong>Accessibility</strong>: <code>plmmr</code> can be run
-from an <code>R</code> session on a typical desktop/laptop machine. The
-user does not need access to a supercomputer or experience with the
-command line in order to fit models <code>plmmr</code>.</p></li>
+from an <code>R</code> session on a typical desktop or laptop computer.
+The user does not need access to a supercomputer or have experience with
+the command line in order to fit models <code>plmmr</code>.</p></li>
 <li><p><strong>Handling correlation</strong>: <code>plmmr</code> uses a
-transformation that addresses correlation among samples and uses this
-correlation to improve predictions (via the best linear unbiased
-predictor, or BLUP). This means that in <code><a href="../reference/plmm.html">plmm()</a></code>, there’s no
-need to filter data down to a ‘maximum subset of unrelated
-individuals.’</p></li>
+transformation that (1) measures correlation among samples and (2) uses
+this correlation measurement to improve predictions (via the best linear
+unbiased predictor, or BLUP). This means that in <code><a href="../reference/plmm.html">plmm()</a></code>,
+there’s no need to filter data down to a ‘maximum subset of unrelated
+samples.’</p></li>
 </ol>
 </div>
 <div class="section level2">
@@ -122,7 +123,13 @@ such large datasets, <code>plmmr</code> is equipped to analyze data
 using <em>filebacking</em> - a strategy that lets R ‘point’ to a file on
 disk, rather than reading the file into the R session. Many other
 packages use this technique - <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> and <a href="https://github.com/pbreheny/biglasso" class="external-link">biglasso</a> are two
-examples of packages that use filebacking.</p>
+examples of packages that use the filebacking technique. The package
+that <code>plmmr</code> uses to create and store filebacked objects is
+<a href="https://cran.r-project.org/web/packages/bigmemory/bigmemory.pdf" class="external-link">bigmemory</a>.
+The filebacked computation relies on the <code>biglasso</code> <a href="https://github.com/pbreheny/biglasso" class="external-link">package</a> by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
+Zeng</a> et al. and on <a href="https://cran.r-project.org/web/packages/bigalgebra/bigalgebra.pdf" class="external-link">bigalgebra</a>
+by Michael Kane et al. For processing PLINK files, we use methods from
+the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="numeric-outcomes-only">Numeric outcomes only<a class="anchor" aria-label="anchor" href="#numeric-outcomes-only"></a>
@@ -131,9 +138,9 @@ examples of packages that use filebacking.</p>
 that is, we are considering only continuous (numeric) outcomes. We
 maintain that treating binary outcomes as numeric values is appropriate
 in some contexts, as described by Hastie et al. in the <a href="https://hastie.su.domains/Papers/ESLII.pdf" class="external-link">Elements of
-Statistical Learning</a>. In the future, we would like to extend this
-package to handle dichotomous outcomes via logistic regression; the
-theoretical work underlying this is an open problem.</p>
+Statistical Learning</a>, chapter 4. In the future, we would like to
+extend this package to handle dichotomous outcomes via logistic
+regression; the theoretical work underlying this is an open problem.</p>
 </div>
 <div class="section level3">
 <h3 id="types-of-penalization">3 types of penalization<a class="anchor" aria-label="anchor" href="#types-of-penalization"></a>
@@ -141,13 +148,10 @@ theoretical work underlying this is an open problem.</p>
 <p>Since we are focused on penalized regression in this package,
 <code>plmmr</code> offers 3 choices of penalty: the minimax concave
 (MCP), the smoothly clipped absolute deviation (SCAD), and the least
-absolute shrinkage and selection operator (LASSO). Much of the work in
-this package is built on the concepts/techniques provided in the
+absolute shrinkage and selection operator (LASSO). The implementation of
+these penalties is built on the concepts/techniques provided in the
 <code>ncvreg</code> <a href="https://github.com/pbreheny/ncvreg" class="external-link">package</a> by Patrick
-Breheny. The filebacked computation relies on the <code>biglasso</code>
-<a href="https://github.com/pbreheny/biglasso" class="external-link">package</a> by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
-Zeng</a> &amp; colleagues. For processing PLINK files, we use methods
-from the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a>.</p>
+Breheny.</p>
 </div>
 <div class="section level3">
 <h3 id="data-size-and-dimensionality">Data size and dimensionality<a class="anchor" aria-label="anchor" href="#data-size-and-dimensionality"></a>
@@ -166,10 +170,9 @@ perform best when there are a high number of features relative to the
 number of observations.</p>
 <p><code>plmmr</code> is also designed to accommodate data that is too
 large to analyze in-memory. We accommodate such data through
-file-backing (as described above). This approach works well for data
-with files up to about 40 Gb in size – our current methods are not
-optimized for data larger that 40 Gb. In practice, this means that
-<code>plmmr</code> is equipped to analyze GWAS data, but not
+file-backing (as described above). Our current analysis pipeline works
+well for data files up to about 40 Gb in size. In practice, this means
+that <code>plmmr</code> is equipped to analyze GWAS data, but not
 biobank-sized data.</p>
 </div>
 </div>
@@ -201,20 +204,20 @@ available in
 <li><p>The <code>penncath_lite</code> data is our example of PLINK input
 data. <code>penncath_lite</code> (data on coronary artery disease from
 the <a href="https://pubmed.ncbi.nlm.nih.gov/21239051/" class="external-link">PennCath
-study</a>) is a mid-sized, high dimensional data set (1401 observations,
-4217 SNPs) with several health outcomes as well as age and sex
-information. This data set is a subset of a much larger data set (the
-original data has over 800K SNPs). For for information on this data set,
-refer to the <a href="https://pubmed.ncbi.nlm.nih.gov/21239051/" class="external-link">original
+study</a>) is a high dimensional data set (1401 observations, 4217 SNPs)
+with several health outcomes as well as age and sex information. The
+features in this data set represent a small subset of a much larger GWAS
+data set (the original data has over 800K SNPs). For for information on
+this data set, refer to the <a href="https://pubmed.ncbi.nlm.nih.gov/21239051/" class="external-link">original
 publication</a>. An example analysis with the <code>penncath_lite</code>
 data is available in
 <code>vignette('plink_files', package = "plmmr")</code>.</p></li>
 <li><p>The <code>colon2</code> data is our example of delimited-file
 input data. <code>colon2</code> is a variation of the <code>colon</code>
-data included in the <a href="LINK"><code>biglasso</code> package</a>.
-<code>colon2</code> has 62 observations and 2,001 features representing
-a study of colon disease. 2000 features are original to the data, and
-the ‘sex’ feature is simulated. An example analysis with the
+data included in the <a href="https://github.com/pbreheny/biglasso" class="external-link"><code>biglasso</code>
+package</a>. <code>colon2</code> has 62 observations and 2,001 features
+representing a study of colon disease. 2000 features are original to the
+data, and the ‘sex’ feature is simulated. An example analysis with the
 <code>colon2</code> data is available in
 <code>vignette('delim_files', package = "plmmr")</code>.</p></li>
 </ul>

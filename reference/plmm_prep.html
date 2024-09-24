@@ -130,18 +130,12 @@ This is an internal function for <code>cv_plmm</code></p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List with these components:</p><ul><li><p>n: the number of rows in the original design matrix</p></li>
-<li><p>p: the number of columns in the original design matrix</p></li>
-<li><p>centered_y: The vector of centered outcomes</p></li>
+    <p>List with these components:</p><ul><li><p>centered_y: The vector of centered outcomes</p></li>
 <li><p>std_X: standardized design matrix</p></li>
-<li><p>std_X_details: a list with 2 vectors:</p><ul><li><p>'center' (values used to center X)</p></li>
-<li><p>'scale' (values used to scale X)</p></li>
-</ul></li>
-<li><p>s: vector with the eigenvalues of K</p></li>
-<li><p>U: the eigenvectors of K (same as left singular values of X).</p></li>
-<li><p>ns: the indices for the nonsingular values of X</p></li>
-<li><p>penalty_factor: the penalty factors for the penalized non-singular values</p></li>
-<li><p>feature_names: formatted column names of the design matrix</p></li>
+<li><p>K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
+and (2) U: the eigenvectors of K (same as left singular values of X).</p></li>
+<li><p>eta: the numeric value of the estimated eta parameter</p></li>
+<li><p>trace: logical.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

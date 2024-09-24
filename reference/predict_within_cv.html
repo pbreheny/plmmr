@@ -120,6 +120,10 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p><
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A numeric vector of predicted values</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for <code>type</code> are as follows:</p><ul><li><p>'lp' (default): uses the linear predictor (i.e., product of test data and estimated coefficients) to predict test values of the outcome.
 Note that this approach does not incorporate the correlation structure of the data.</p></li>

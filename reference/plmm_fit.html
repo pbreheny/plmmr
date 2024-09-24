@@ -156,19 +156,10 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with these components:</p><ul><li><p>n: # of rows in X</p></li>
-<li><p>p: # of columns in X (including constant features)</p></li>
-<li><p>y: outcome on original scale</p></li>
-<li><p>std_X_details: list with 'center' and 'scale' vectors, same as <code><a href="plmm_prep.html">plmm_prep()</a></code></p></li>
-<li><p>s: eigenvalues of K</p></li>
-<li><p>U: eigenvectors of K</p></li>
-<li><p>rot_X: X on the rotated (i.e., transformed) scale.
-Note that the dimensions of <code>rot_X</code> are likely to be different than those of X.</p></li>
-<li><p>rot_y: y on the rotated scale</p></li>
-<li><p>stdrot_X: X on the rotated scale once it has been re-standardized.</p></li>
+    <p>A list with these components:</p><ul><li><p>std_scale_beta: the coefficients estimated on the scale of <code>std_X</code></p></li>
+<li><p>centered_y: the y-values that are 'centered' to have mean 0</p></li>
+<li><p>s and U, the values and vectors from the eigendecomposition of K</p></li>
 <li><p>lambda: vector of tuning parameter values</p></li>
-<li><p>stdrot_scale_beta: the coefficients estimated on the scale of <code>stdrot_X</code></p></li>
-<li><p>std_scale_beta: the coefficients estimated on the scale of <code>std_X</code></p></li>
 <li><p>linear_predictors: the product of <code>stdrot_X</code> and <code>b</code>
 (linear predictors on the transformed and restandardized scale)</p></li>
 <li><p>eta: a number (double) between 0 and 1 representing the estimated
