@@ -56,8 +56,9 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9">
+<!-- badges: end -->
 <div class="section level2">
-<h2 id="plmmr-">plmmr <img src="reference/figures/plmmr_hex_sticker.png" align="right" alt="" width="150"><a class="anchor" aria-label="anchor" href="#plmmr-"></a>
+<h2 id="plmmr-">plmmr <img src="reference/figures/plmmr_hex_sticker.png" align="right" width="150"><a class="anchor" aria-label="anchor" href="#plmmr-"></a>
 </h2>
 <p>The <code>plmmr</code> (<strong>p</strong>enalized <strong>l</strong>inear <strong>m</strong>ixed <strong>m</strong>odels in <strong>R</strong>) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects.</p>
 </div>
@@ -68,6 +69,12 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"pbreheny/plmmr"</span><span class="op">)</span></span></code></pre></div>
 <p>For a description of the motivation of the functions in this package (along with examples) refer to the second module of <a href="https://pbreheny.github.io/adv-gwas-tutorial/index.html" class="external-link">this GWAS data tutorial</a></p>
+</div>
+<div class="section level2">
+<h2 id="so-how-fast-is-plmmr-and-how-well-does-it-scale">So how fast is <code>plmmr</code>? And how well does it scale?<a class="anchor" aria-label="anchor" href="#so-how-fast-is-plmmr-and-how-well-does-it-scale"></a>
+</h2>
+<p>To illustrate these important questions, I created a separate <a href="https://github.com/tabpeter/demo_plmmr/tree/master" class="external-link">GitHub repository</a> that has all the scripts for a <code>plmmr</code> workflow using publicly-available genome-wide association (GWAS) data. The main takeaway: using GWAS data from a study with 1,400 samples and 800,000 SNPs, a full <code>plmmr</code> analysis will run in about half an hour using a single core on a laptop.</p>
+<p>Three smaller datasets ship with <code>plmmr</code>, and tutorials walking through how to analyze these data sets are documented in the <a href="https://pbreheny.github.io/plmmr/" class="external-link">documentation site</a>. While these datasets are useful for didactic purposes, they are not large enough to really highlight the computational scalability of <code>plmmr</code> – this is what motivated the creation of the separate repository for a GWAS workflow.</p>
 </div>
 <div class="section level2">
 <h2 id="note-on-branches">Note on branches<a class="anchor" aria-label="anchor" href="#note-on-branches"></a>
