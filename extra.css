@@ -428,3 +428,7 @@
   background: inherit;
   color: #fff;
 }
+
+.dropdown-item {
+  --bs-dropdown-link-color: #bbb;
+}

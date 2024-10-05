@@ -6,12 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>If your data is in PLINK files • plmmr</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><link href="../deps/KaTex-0.16.10/katex.min.css" rel="stylesheet">
+<script src="../deps/KaTex-0.16.10/katex.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="If your data is in PLINK files">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,14 +65,14 @@
       <h1>If your data is in PLINK files</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/master/vignettes/articles/plink_files.Rmd" class="external-link"><code>vignettes/articles/plink_files.Rmd</code></a></small>
       <div class="d-none name"><code>plink_files.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">plmmr</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/plmmr/">plmmr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: bigalgebra</span></span>
 <span><span class="co">#&gt; Loading required package: bigmemory</span></span></code></pre></div>
 <p>A widely-used format for storing data from genome-wide association
@@ -94,7 +97,7 @@ Creating a design involves standardizing the input of the features,
 outcome, and penalty factor into the modeling functions
 <code><a href="../reference/plmm.html">plmm()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>.</p>
 <div class="section level2">
-<h2 id="procesing-plink-files">Procesing PLINK files<a class="anchor" aria-label="anchor" href="#procesing-plink-files"></a>
+<h2 id="processing-plink-files">Processing PLINK files<a class="anchor" aria-label="anchor" href="#processing-plink-files"></a>
 </h2>
 <p>First, unzip your PLINK files if they are zipped. Our example data,
 <code>penncath_lite</code> data that ships with <code>plmmr</code> is
@@ -103,11 +106,11 @@ unzip:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># using a temp dir -- change to fit your preference</span></span>
 <span><span class="fu"><a href="../reference/unzip_example_data.html">unzip_example_data</a></span><span class="op">(</span>outdir <span class="op">=</span> <span class="va">temp_dir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Unzipped files are saved in /tmp/RtmpLtX3ve</span></span></code></pre></div>
+<span><span class="co">#&gt; Unzipped files are saved in /tmp/Rtmpin6NCN</span></span></code></pre></div>
 <p>For GWAS data, we have to tell <code>plmmr</code> how to combine
 information across all three PLINK files (the <code>.bed</code>,
 <code>.bim</code>, and <code>.fam</code> files). We do this with
-<code>process_plinkk()</code>.</p>
+<code><a href="../reference/process_plink.html">process_plink()</a></code>.</p>
 <p>Here, we will create the files we want in a temporary directory just
 for the sake of example. Users can specify the folder of their choice
 for <code>rds_dir</code>, as shown below:</p>
@@ -135,7 +138,7 @@ for <code>rds_dir</code>, as shown below:</p>
 <span><span class="co">#&gt; Imputing the missing (genotype) values using mode method</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/RtmpLtX3ve/imputed_penncath_lite.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmpin6NCN/imputed_penncath_lite.rds</span></span></code></pre></div>
 <p>You’ll see a lot of messages printed to the console here … the result
 of all this is the creation of 3 files:
 <code>imputed_penncath_lite.rds</code> and
@@ -158,7 +161,7 @@ illustration):</p>
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpLtX3ve/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmpin6NCN/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4367</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -194,12 +197,9 @@ illustration):</p>
 <h2 id="creating-a-design">Creating a design<a class="anchor" aria-label="anchor" href="#creating-a-design"></a>
 </h2>
 <p>Now we are ready to create a <code>plmm_design</code>, which is an
-object with the pieces we need for our model: a design matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐗</mi><annotation encoding="application/x-tex">\mathbf{X}</annotation></semantics></math>,
-an outcome vector
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐲</mi><annotation encoding="application/x-tex">\mathbf{y}</annotation></semantics></math>,
-and a the vector with the penalty factor indicators (1 = feature will be
-penalized, 0 = feature will not be penalized).</p>
+object with the pieces we need for our model: a design matrix <span class="math inline">\mathbf{X}</span>, an outcome vector <span class="math inline">\mathbf{y}</span>, and a the vector with the penalty
+factor indicators (1 = feature will be penalized, 0 = feature will not
+be penalized).</p>
 <p>As a side note: in GWAS studies, it is typical to include some
 non-genomic factors as unpenalized covariates as part of the model. For
 instance, you may want to adjust for sex or age – these are factors that
@@ -230,7 +230,7 @@ example with these options is included in the
 <span><span class="co">#&gt; There are 62 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2024-10-01 01:14:18</span></span>
+<span><span class="co">#&gt; Standardization completed at 2024-10-05 16:10:42</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span>
 <span></span>
 <span><span class="co"># examine the design - notice the components of this object </span></span>
@@ -251,7 +251,7 @@ example with these options is included in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpLtX3ve/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmpin6NCN/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4305</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -298,18 +298,18 @@ you want to return the model fitting results, set
 <span>                return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2024-10-01 01:14:19</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2024-10-05 16:10:43</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2024-10-01 01:14:20</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2024-10-05 16:10:45</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-10-01 01:14:20</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-10-05 16:10:45</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-10-01 01:14:24 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-10-05 16:10:48 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2024-10-01 01:14:24</span></span>
+<span><span class="co">#&gt; Model ready at  2024-10-05 16:10:49</span></span>
 <span><span class="co"># you can turn off the trace messages by letting trace = F (default)</span></span></code></pre></div>
 <p>We examine our model results below:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
