@@ -86,11 +86,11 @@ Under these assumptions, we may write $\mathbf{y} \sim N(\dot{\mathbf{X}}\dot{\b
 
 -   $\tilde{\mathbf{y}} \equiv \mathbf{\Sigma}^{-1/2}\mathbf{y}$ is the outcome on the rotated scale.
 
--   $\ddot{\tilde{\mathbf{X}}}$ is the **standardized** rotated data. Note: This standardization involves scaling, but not centering. This post-rotation standardization impacts the estimated coefficients as well; we define ${\ddot{\boldsymbol{\beta}}}$ as the estimated coefficients on this scale.
+-   $\tilde{\ddot{\mathbf{X}}}$ is the **standardized** rotated data. Note: This standardization involves scaling, but not centering. This post-rotation standardization impacts the estimated coefficients as well; we define ${\ddot{\boldsymbol{\beta}}}$ as the estimated coefficients on this scale.
 
 ### Model fitting with penalization
 
-We fit $\tilde{\mathbf{y}} \sim \ddot{\tilde{\mathbf{X}}}$ using a penalized linear mixed model, and obtain $\hat{\ddot{\boldsymbol{\beta}}}$ as our estimated coefficients. The penalty parameter values (e.g., values of the lasso tuning parameter) are indexed by $\lambda_l \in 1,..., t$.
+We fit $\tilde{\mathbf{y}} \sim \tilde{\ddot{\mathbf{X}}}$ using a penalized linear mixed model, and obtain $\hat{\ddot{\boldsymbol{\beta}}}$ as our estimated coefficients. The penalty parameter values (e.g., values of the lasso tuning parameter) are indexed by $\lambda_l \in 1,..., t$.
 
 ### Rescaling results (format)
 

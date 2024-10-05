@@ -19,7 +19,7 @@ A widely-used format for storing data from genome-wide association studies (GWAS
 
 The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. Processing the data means that we take the feature data and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). Creating a design involves standardizing the input of the features, outcome, and penalty factor into the modeling functions `plmm()` and `cv_plmm()`. 
 
-## Procesing PLINK files 
+## Processing PLINK files 
 
 First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; if you are on MacOS or Linux, you can run this command to unzip: 
 
@@ -28,7 +28,7 @@ temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
 ```
 
-For GWAS data, we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files). We do this with `process_plinkk()`. 
+For GWAS data, we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files). We do this with `process_plink()`. 
 
 Here, we will create the files we want in a temporary directory just for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
 

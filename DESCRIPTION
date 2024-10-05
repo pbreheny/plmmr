@@ -1,7 +1,7 @@
 Package: plmmr
-Title: Penalized Linear Mixed Models For Correlated Data
-Version: 3.2.0.0
-Date: 2024-09-19
+Title: Penalized Linear Mixed Models for Correlated Data
+Version: 4.0.0
+Date: 2024-10-05
 Authors@R: c(
     person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),
@@ -23,6 +23,7 @@ Description: Fits penalized linear mixed models that correct for
     files are also supplied. For examples, see the package homepage.
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
+URL: https://pbreheny.github.io/plmmr/, https://github.com/pbreheny/plmmr/
 Depends: 
     bigalgebra,
     bigmemory,
@@ -54,4 +55,4 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

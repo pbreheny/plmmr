@@ -102,7 +102,7 @@
 #'   impute_method = "mode",
 #'   # overwrite existing files in temp_dir
 #'   # (you can turn this feature off if you need to)
-#'   overwrite = T,
+#'   overwrite = TRUE,
 #'   # turning off parallelization - leaving this on causes problems knitting this vignette
 #'   parallel = FALSE)
 #'
