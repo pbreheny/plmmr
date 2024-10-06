@@ -90,8 +90,7 @@ context of genetics (<em>e.g.</em>, GWAS dealing with population
 structure/family structure).</p>
 <p>For more information on the theoretical context of penalized
 regression, check out <a href="https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html" class="external-link">these online
-course notes</a> from Prof. <a href="https://myweb.uiowa.edu/pbreheny/" class="external-link">Patrick Breheny</a> (the PI of
-our lab). The section on ‘ridge regression’ may be a good place to
+course notes</a>; the section on ridge regression may be a good place to
 start.</p>
 <p>The novelties of <code>plmmr</code> are:</p>
 <ol style="list-style-type: decimal">
@@ -121,18 +120,19 @@ samples.’</p></li>
 </h3>
 <p>In many applications of high dimensional data analysis, the dataset
 is too large to read into R – the session will crash for lack of memory.
-This is almost always an issue with analyzing genetic data from <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> files. To analyze
-such large datasets, <code>plmmr</code> is equipped to analyze data
-using <em>filebacking</em> - a strategy that lets R ‘point’ to a file on
-disk, rather than reading the file into the R session. Many other
-packages use this technique - <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> and <a href="https://github.com/pbreheny/biglasso" class="external-link">biglasso</a> are two
+This is particularly common when analyzing data from genome-wide
+association studies (GWAS). To analyze such large datasets,
+<code>plmmr</code> is equipped to analyze data using
+<em>filebacking</em> - a strategy that lets R ‘point’ to a file on disk,
+rather than reading the file into the R session. Many other packages use
+this technique - <a href="https://privefl.github.io/bigstatsr/" class="external-link">bigstatsr</a> and <a href="https://pbreheny.github.io/biglasso/" class="external-link">biglasso</a> are two
 examples of packages that use the filebacking technique. The package
 that <code>plmmr</code> uses to create and store filebacked objects is
-<a href="https://cran.r-project.org/web/packages/bigmemory/bigmemory.pdf" class="external-link">bigmemory</a>.
-The filebacked computation relies on the <code>biglasso</code> <a href="https://github.com/pbreheny/biglasso" class="external-link">package</a> by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
-Zeng</a> et al. and on <a href="https://cran.r-project.org/web/packages/bigalgebra/bigalgebra.pdf" class="external-link">bigalgebra</a>
-by Michael Kane et al. For processing PLINK files, we use methods from
-the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a>.</p>
+<a href="https://CRAN.R-project.org/package=bigmemory" class="external-link">bigmemory</a>.
+The filebacked computation relies on the <a href="https://pbreheny.github.io/biglasso/" class="external-link">biglasso</a> package by <a href="https://scholar.google.com/citations?user=jpEmf04AAAAJ&amp;hl=en" class="external-link">Yaohui
+Zeng</a> et al. and on <a href="https://CRAN.R-project.org/package=bigalgebra" class="external-link">bigalgebra</a> by
+Michael Kane et al. For processing <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> files, we use
+methods from the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="external-link">package</a> by <a href="https://privefl.github.io/" class="external-link">Florian Privé</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="numeric-outcomes-only">Numeric outcomes only<a class="anchor" aria-label="anchor" href="#numeric-outcomes-only"></a>
@@ -140,10 +140,10 @@ the <code>bigsnpr</code> <a href="https://privefl.github.io/bigsnpr/" class="ext
 <p>At this time, the package is designed for linear regression only –
 that is, we are considering only continuous (numeric) outcomes. We
 maintain that treating binary outcomes as numeric values is appropriate
-in some contexts, as described by Hastie et al. in the <a href="https://hastie.su.domains/Papers/ESLII.pdf" class="external-link">Elements of
-Statistical Learning</a>, chapter 4. In the future, we would like to
-extend this package to handle dichotomous outcomes via logistic
-regression; the theoretical work underlying this is an open problem.</p>
+in some contexts, as described by Hastie et al. in the <a href="https://hastie.su.domains/ElemStatLearn/" class="external-link">Elements of Statistical
+Learning</a>, chapter 4. In the future, we would like to extend this
+package to handle dichotomous outcomes via logistic regression; the
+theoretical work underlying this is an open problem.</p>
 </div>
 <div class="section level3">
 <h3 id="types-of-penalization">3 types of penalization<a class="anchor" aria-label="anchor" href="#types-of-penalization"></a>
@@ -152,9 +152,7 @@ regression; the theoretical work underlying this is an open problem.</p>
 <code>plmmr</code> offers 3 choices of penalty: the minimax concave
 (MCP), the smoothly clipped absolute deviation (SCAD), and the least
 absolute shrinkage and selection operator (LASSO). The implementation of
-these penalties is built on the concepts/techniques provided in the
-<code>ncvreg</code> <a href="https://github.com/pbreheny/ncvreg" class="external-link">package</a> by Patrick
-Breheny.</p>
+these penalties is built on the concepts/techniques provided in the <a href="https://pbreheny.github.io/ncvreg/" class="external-link">ncvreg</a> package.</p>
 </div>
 <div class="section level3">
 <h3 id="data-size-and-dimensionality">Data size and dimensionality<a class="anchor" aria-label="anchor" href="#data-size-and-dimensionality"></a>
@@ -217,10 +215,10 @@ data is available in
 <code>vignette('plink_files', package = "plmmr")</code>.</p></li>
 <li><p>The <code>colon2</code> data is our example of delimited-file
 input data. <code>colon2</code> is a variation of the <code>colon</code>
-data included in the <a href="https://github.com/pbreheny/biglasso" class="external-link"><code>biglasso</code>
-package</a>. <code>colon2</code> has 62 observations and 2,001 features
-representing a study of colon disease. 2000 features are original to the
-data, and the ‘sex’ feature is simulated. An example analysis with the
+data included in the <a href="https://pbreheny.github.io/biglasso/" class="external-link">biglasso</a> package.
+<code>colon2</code> has 62 observations and 2,001 features representing
+a study of colon disease. 2000 features are original to the data, and
+the ‘sex’ feature is simulated. An example analysis with the
 <code>colon2</code> data is available in
 <code>vignette('delim_files', package = "plmmr")</code>.</p></li>
 </ul>
