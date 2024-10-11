@@ -31,11 +31,11 @@ create_design_in_memory <- function(X, outcome_col, unpen = NULL){
 
 # handle unpenalized columns
   if (is.null(unpen)) {
-    design$penalty_factor <- rep(1, length(design$std_X_colnames))
+    design$penalty_factor <- rep(1, design$std_X_p)
   } else {
     # save indices for unpenalized covariates
     design$unpen_colnames <- unpen
-    design$penalty_factor <- rep(1, length(design$std_X_colnames))
+    design$penalty_factor <- rep(1, ncol(design$std_X))
     design$unpen <- which_unpen <- which(unpen %in% design$std_X_colnames)
     design$penalty_factor[which_unpen] <- 0
   }

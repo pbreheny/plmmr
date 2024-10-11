@@ -148,6 +148,7 @@ create_design_filebacked <- function(data_file,
   }
 
   # check for any duplicated row IDs, if applicable
+  # TODO: update this syntax not to use 'exists()'
   if (exists('og_ids')) {
     if (any(duplicated(og_ids))) stop("Duplicated feature_id values detected.\n")
   }
