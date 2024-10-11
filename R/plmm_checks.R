@@ -94,7 +94,6 @@ plmm_checks <- function(design,
 
   # error checking design matrix  ---------------------------------------------
   if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
-
   if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match; something is off in the supplied design", call.=FALSE)
 
   # check K types -------------------------------------------------------
