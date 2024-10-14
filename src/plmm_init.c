@@ -18,7 +18,6 @@ extern SEXP in_mem_std(SEXP X_);
 // big_crossprod
 extern SEXP big_crossprod(SEXP X_,
                           SEXP y_,
-                          SEXP ind_col_,
                           SEXP ncore_);
 
 static const R_CallMethodDef callMethods[] = {
