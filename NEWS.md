@@ -2,9 +2,9 @@
 
 - **Major re-structuring of preprocessing pipeline:** Data from external files must now be processed with `process_plink()` or `process_delim()`. All data (including in-memory data) must be prepared for analysis via `create_design()`. This change ensures that data are funneled into a uniform format for analysis.
 
-- **Re-worked vignettes**: The vignettes/articles for the package are now all revised to include examples of the complete pipeline with the new `create_design()` syntax. There is an article for each type of data input (matrix/data.frame, delimited file, and PLINK).
+- **Documentation updated:** The vignettes for the package are now all revised to include examples of the complete pipeline with the new `create_design()` syntax. There is an article for each type of data input (matrix/data.frame, delimited file, and PLINK).
 
-- **CRAN submission**: We updated several items in the documentation in order to prepare for CRAN submission. 
+- **CRAN:** The package is on CRAN now.
 
 # plmmr 3.2.0 (2024-09-02)
 
