@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit <- plmm(design = admix_design)
 #' plot(fit)
 #' plot(fit, log.l = TRUE)

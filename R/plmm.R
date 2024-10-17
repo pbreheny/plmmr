@@ -49,7 +49,7 @@
 #'
 #' @examples
 #' # using admix data
-#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit_admix1 <- plmm(design = admix_design)
 #' s1 <- summary(fit_admix1, idx = 50)
 #' print(s1)

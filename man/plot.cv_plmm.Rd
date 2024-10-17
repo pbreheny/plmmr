@@ -37,7 +37,7 @@ between the tuning parameter 'lambda' value (x-axis) and the cross validation er
 Plot method for cv_plmm class
 }
 \examples{
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 cvfit <- cv_plmm(design = admix_design)
 plot(cvfit)
 

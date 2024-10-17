@@ -45,7 +45,7 @@
 #' train_idx <- sample(1:nrow(admix$X), 100)
 #' # Note: ^ shuffling is important here! Keeps test and train groups comparable.
 #' train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
-#' train_design <- create_design(X = train$X, outcome_col = train$y)
+#' train_design <- create_design(X = train$X, y = train$y)
 #'
 #' test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
 #' fit <- plmm(design = train_design)

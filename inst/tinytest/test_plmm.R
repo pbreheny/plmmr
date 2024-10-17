@@ -4,7 +4,7 @@
 
 # set up
 lambda0 <- c(1, 0.1, 0.01, 0.001)
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 plmm0 <- plmm(design = admix_design,
               diag_K = TRUE,
               lambda = lambda0,

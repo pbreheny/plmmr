@@ -4,12 +4,12 @@
 \alias{create_design_in_memory}
 \title{A function to create a design with an in-memory X matrix}
 \usage{
-create_design_in_memory(X, outcome_col, unpen = NULL)
+create_design_in_memory(X, y, unpen = NULL)
 }
 \arguments{
 \item{X}{A numeric matrix in which rows correspond to observations (e.g., samples) and columns correspond to features.}
 
-\item{outcome_col}{A numeric vector representing the outcome for the model.
+\item{y}{A numeric vector representing the outcome for the model.
 \strong{Note}: it is the responsibility of the user to ensure that the outcome_col and X have the same row order!}
 
 \item{unpen}{An optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).

@@ -37,7 +37,7 @@ the only time this would differ from 'n' is if data are from PLINK and the exter
 A summary method for the plmm objects
 }
 \examples{
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 fit <- plmm(design = admix_design)
 summary(fit, idx = 97)
 }

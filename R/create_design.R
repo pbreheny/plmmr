@@ -5,7 +5,7 @@
 #'                      **Note**: do not include/append the name you want for the to-be-created file -- the name is the argument `new_file`,
 #'                      passed to `create_design_filebacked()`. Defaults to NULL (this argument does not apply for in-memory data).
 #' @param X             For **in-memory data (data in a matrix or data frame)**, this is the design matrix. Defaults to NULL (this argument does not apply for filebacked data).
-#' @param outcome_col   For **in-memory data**, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).
+#' @param y             For **in-memory data**, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).
 #' @param ...           Additional arguments to pass to `create_design_filebacked()` or `create_design_in_memory()`.
 #'                      See the documentation for those helper functions for details.
 #'
@@ -55,19 +55,19 @@
 #'
 #' Additional arguments specific to **delimited file** data:
 #'    - **unpen**         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
-#'                      **Note**: if you choose to use this option, your delimited file must have column names.
+#'                      **Note**: if you choose to use this option, your delimited file **must** have column names.
 #'
 #' Additional arguments for **in-memory** data:
 #'
-#'    - **outcome_col**   A numeric vector representing the outcome for the model.
-#'                      **Note**: it is the responsibility of the user to ensure that the outcome_col and X have the same row order!
+#'    - **y**             A numeric vector representing the outcome for the model.
+#'                      **Note**: it is the responsibility of the user to ensure that the y and X have the same row order!
 #'    - **unpen**         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                      **Note**: if you choose to use this option, X must have column names.
 #'
 #' @examples
 #'
 #' ## Example 1: matrix data in-memory ##
-#' admix_design <- create_design(X = admix$X, outcome_col = admix$y, unpen = "Snp1")
+#' admix_design <- create_design(X = admix$X, y = admix$y, unpen = "Snp1")
 #'
 #' ## Example 2: delimited data ##
 #' # process delimited data
@@ -140,12 +140,12 @@
 create_design <- function(data_file = NULL,
                           rds_dir = NULL,
                           X = NULL,
-                          outcome_col = NULL,
+                          y = NULL,
                           ...) {
 
   if (is.null(data_file)) { # case 1: in-memory matrix
     processed_matrix = create_design_in_memory(X,
-                                               outcome_col,
+                                               y,
                                                ...)
   } else { # case 2: filebacked data
     obj <- readRDS(data_file)
@@ -153,12 +153,11 @@ create_design <- function(data_file = NULL,
             processed_plink = create_design_filebacked(data_file = data_file,
                                                        rds_dir = rds_dir,
                                                        obj = obj,
-                                                       outcome_col = outcome_col,
                                                        ...),
+
             processed_delim = create_design_filebacked(data_file = data_file,
                                                        rds_dir = rds_dir,
                                                        obj = obj,
-                                                       outcome_col = outcome_col,
                                                        ...)
     )
   }

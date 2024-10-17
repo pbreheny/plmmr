@@ -4,13 +4,7 @@
 \alias{create_design}
 \title{a function to create a design for PLMM modeling}
 \usage{
-create_design(
-  data_file = NULL,
-  rds_dir = NULL,
-  X = NULL,
-  outcome_col = NULL,
-  ...
-)
+create_design(data_file = NULL, rds_dir = NULL, X = NULL, y = NULL, ...)
 }
 \arguments{
 \item{data_file}{For \strong{filebacked data} (data from \code{process_plink()} or \code{process_delim()}), this is the
@@ -22,7 +16,7 @@ passed to \code{create_design_filebacked()}. Defaults to NULL (this argument doe
 
 \item{X}{For \strong{in-memory data (data in a matrix or data frame)}, this is the design matrix. Defaults to NULL (this argument does not apply for filebacked data).}
 
-\item{outcome_col}{For \strong{in-memory data}, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).}
+\item{y}{For \strong{in-memory data}, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).}
 
 \item{...}{Additional arguments to pass to \code{create_design_filebacked()} or \code{create_design_in_memory()}.
 See the documentation for those helper functions for details.}
@@ -70,13 +64,13 @@ The names will be used to subset and align this external covariate with the supp
 Additional arguments specific to \strong{delimited file} data:
 \itemize{
 \item \strong{unpen}         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
-\strong{Note}: if you choose to use this option, your delimited file must have column names.
+\strong{Note}: if you choose to use this option, your delimited file \strong{must} have column names.
 }
 
 Additional arguments for \strong{in-memory} data:
 \itemize{
-\item \strong{outcome_col}   A numeric vector representing the outcome for the model.
-\strong{Note}: it is the responsibility of the user to ensure that the outcome_col and X have the same row order!
+\item \strong{y}             A numeric vector representing the outcome for the model.
+\strong{Note}: it is the responsibility of the user to ensure that the y and X have the same row order!
 \item \strong{unpen}         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 \strong{Note}: if you choose to use this option, X must have column names.
 }
@@ -84,7 +78,7 @@ Additional arguments for \strong{in-memory} data:
 \examples{
 
 ## Example 1: matrix data in-memory ##
-admix_design <- create_design(X = admix$X, outcome_col = admix$y, unpen = "Snp1")
+admix_design <- create_design(X = admix$X, y = admix$y, unpen = "Snp1")
 
 ## Example 2: delimited data ##
 # process delimited data
