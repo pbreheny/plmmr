@@ -168,7 +168,6 @@ plmm <- function(design,
 
   # format results ---------------------------------------------------
   if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
-
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
