@@ -20,7 +20,7 @@ A function to print the summary of a \code{plmm} model
 }
 \examples{
 lam <- rev(seq(0.01, 1, length.out=20)) |> round(2) # for sake of example
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 fit <- plmm(design = admix_design, lambda = lam)
 fit2 <- plmm(design = admix_design, penalty = "SCAD", lambda = lam)
 print(summary(fit, idx = 18))

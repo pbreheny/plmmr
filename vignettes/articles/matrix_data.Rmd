@@ -26,7 +26,7 @@ str(admix)
 The first step with in-memory data is creating a **plmm_design** object, which we do with `create_design()` like this:
 
 ```{r}
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 str(admix_design)
 ```
 
@@ -71,14 +71,14 @@ colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
 
 # create a new design
 admix_design2 <- create_design(X = X_plus_ancestry,
-                               outcome_col = admix$y,
+                               y = admix$y,
                                # below, I mark ancestry variable as unpenalized
                                # we want ancestry to always be in the model
                                unpen = "ancestry")
 
 # now fit a model 
 admix_fit2 <- plmm(design = admix_design2, 
-                   outcome_col = admix$y)
+                   y = admix$y)
 ```
 
 We may compare the results from the model which includes 'ancestry' to our first model: 

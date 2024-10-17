@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' admix_design <- create_design(X = admix$X, y = admix$y)
 #' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 #' head(coef(cv_fit))
 #'

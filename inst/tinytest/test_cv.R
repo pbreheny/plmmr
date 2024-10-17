@@ -1,4 +1,4 @@
-admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+admix_design <- create_design(X = admix$X, y = admix$y)
 # Test 1 - sanity check -----------------------------------------
 # 'blup' and 'response' should not give the same result
 cv1 <- cv_plmm(design = admix_design, seed = 321, type = 'lp')

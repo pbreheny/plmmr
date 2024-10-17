@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @examples
-#' admix_design <- create_design(X = admix$X, outcome_col = admix$y)
+#' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit <- plmm(design = admix_design)
 #' summary(fit, idx = 97)
 summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
