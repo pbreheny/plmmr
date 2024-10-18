@@ -1,21 +1,21 @@
 ### plmmr log file ###
 Logging to ./cv-plmm.log 
-Host: fv-az1778-713 
+Host: fv-az1247-605 
 Current working directory: /home/runner/work/plmmr/plmmr/docs/reference 
-Start log at: 2024-10-18 20:37:34
+Start log at: 2024-10-18 20:40:59
 Call: cv_plmm(design = admix_design) 
 
-Input data passed all checks at  2024-10-18 20:37:34
+Input data passed all checks at  2024-10-18 20:40:59
 
-Eigendecomposition finished at  2024-10-18 20:37:34
+Eigendecomposition finished at  2024-10-18 20:40:59
 
-Full model fit finished at 2024-10-18 20:37:34
+Full model fit finished at 2024-10-18 20:40:59
 
-Formatting for full model finished at 2024-10-18 20:37:34
+Formatting for full model finished at 2024-10-18 20:40:59
 
-Cross validation started at:  2024-10-18 20:37:35
-Started fold 1 at 2024-10-18 20:37:35
-Started fold 2 at 2024-10-18 20:37:35
-Started fold 3 at 2024-10-18 20:37:35
-Started fold 4 at 2024-10-18 20:37:35
-Started fold 5 at 2024-10-18 20:37:35
+Cross validation started at:  2024-10-18 20:40:59
+Started fold 1 at 2024-10-18 20:40:59
+Started fold 2 at 2024-10-18 20:41:00
+Started fold 3 at 2024-10-18 20:41:00
+Started fold 4 at 2024-10-18 20:41:00
+Started fold 5 at 2024-10-18 20:41:00
