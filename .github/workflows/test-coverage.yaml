@@ -12,7 +12,7 @@ jobs:
   test-coverage:
     runs-on: ubuntu-latest
     env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}  # Corrected token name
 
     steps:
       - uses: actions/checkout@v4
@@ -33,8 +33,3 @@ jobs:
       - name: Test coverage
         run: covr::codecov(quiet=FALSE)
         shell: Rscript {0}
-
-      - name: Upload results to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
