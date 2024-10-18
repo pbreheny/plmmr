@@ -6,6 +6,7 @@
 \usage{
 plmm(
   design,
+  y = NULL,
   K = NULL,
   diag_K = NULL,
   eta_star = NULL,
@@ -29,7 +30,14 @@ plmm(
 )
 }
 \arguments{
-\item{design}{A \code{plmm_design} object (as created by \code{create_design()}) or a string with the file path to a design object (the file path must end in '.rds').}
+\item{design}{The first argument must be one of three things:
+(1) \code{plmm_design} object (as created by \code{create_design()})
+(2) a string with the file path to a design object (the file path must end in '.rds')
+(3) a \code{matrix} or \code{data.frame} object representing the design matrix of interest}
+
+\item{y}{Optional: In the case where \code{design} is a \code{matrix} or \code{data.frame}, the user must also supply
+a numeric outcome vector as the \code{y} argument. In this case, \code{design} and \code{y} will be passed
+internally to \code{create_design(X = design, y = y)}.}
 
 \item{K}{Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,

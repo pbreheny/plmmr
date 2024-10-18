@@ -35,6 +35,21 @@ The novelties of `plmmr` are:
 
 (3) **Handling correlation**: `plmmr` uses a transformation that (1) measures correlation among samples and (2) uses this correlation measurement to improve predictions (via the best linear unbiased predictor, or BLUP). This means that in `plmm()`, there's no need to filter data down to a 'maximum subset of unrelated samples.'
 
+## Minimal example
+
+Below is a minimal reproducible example of how `plmmr` can be used: 
+
+```{r}
+# library(plmmr)
+fit <- plmm(admix$X, admix$y) # admix data ships with package
+plot(fit)
+
+cvfit <- cv_plmm(admix$X, admix$y)
+plot(cvfit)
+summary(cvfit)
+```
+
+
 ## Computational capability
 
 ### File-backing
