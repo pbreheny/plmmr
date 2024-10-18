@@ -74,6 +74,20 @@
 <p>For a description of the motivation of the functions in this package (along with examples) refer to the second module of <a href="https://pbreheny.github.io/adv-gwas-tutorial/index.html" class="external-link">this GWAS data tutorial</a></p>
 </div>
 <div class="section level2">
+<h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/plmmr/">plmmr</a></span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">*</span><span class="fl">20</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plmm.html">plmm</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cvfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="so-how-fast-is-plmmr-and-how-well-does-it-scale">So how fast is <code>plmmr</code>? And how well does it scale?<a class="anchor" aria-label="anchor" href="#so-how-fast-is-plmmr-and-how-well-does-it-scale"></a>
 </h2>
 <p>To illustrate these important questions, I created a separate <a href="https://github.com/tabpeter/demo_plmmr/tree/master" class="external-link">GitHub repository</a> that has all the scripts for a <code>plmmr</code> workflow using publicly-available genome-wide association (GWAS) data. The main takeaway: using GWAS data from a study with 1,400 samples and 800,000 SNPs, a full <code>plmmr</code> analysis will run in about half an hour using a single core on a laptop.</p>

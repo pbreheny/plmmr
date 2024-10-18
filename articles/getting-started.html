@@ -113,6 +113,30 @@ samples.’</p></li>
 </ol>
 </div>
 <div class="section level2">
+<h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
+</h2>
+<p>Below is a minimal reproducible example of how <code>plmmr</code> can
+be used:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># library(plmmr)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span> <span class="co"># admix data ships with package</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">cvfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/unnamed-chunk-2-2.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; lasso-penalized model with n=197 and p=101</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2097):</span></span>
+<span><span class="co">#&gt; -------------------------------------------------</span></span>
+<span><span class="co">#&gt;   Nonzero coefficients: 8</span></span>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 2.21</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.485</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="computational-capability">Computational capability<a class="anchor" aria-label="anchor" href="#computational-capability"></a>
 </h2>
 <div class="section level3">

@@ -51,6 +51,7 @@ linear mixed models over a grid of values for the regularization parameter <code
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cv_plmm</span><span class="op">(</span></span>
 <span>  <span class="va">design</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -87,7 +88,16 @@ linear mixed models over a grid of values for the regularization parameter <code
 
 
 <dl><dt id="arg-design">design<a class="anchor" aria-label="anchor" href="#arg-design"></a></dt>
-<dd><p>Design matrix object (as created by <code><a href="create_design.html">create_design()</a></code>) or a string with the file path to a design object (the file path must end in '.rds').</p></dd>
+<dd><p>The first argument must be one of three things:
+(1) <code>plmm_design</code> object (as created by <code><a href="create_design.html">create_design()</a></code>)
+(2) a string with the file path to a design object (the file path must end in '.rds')
+(3) a <code>matrix</code> or <code>data.frame</code> object representing the design matrix of interest</p></dd>
+
+
+<dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
+<dd><p>Optional: In the case where <code>design</code> is a <code>matrix</code> or <code>data.frame</code>, the user must also supply
+a numeric outcome vector as the <code>y</code> argument. In this case, <code>design</code> and <code>y</code> will be passed
+internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 
 
 <dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
