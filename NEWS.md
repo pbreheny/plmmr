@@ -1,3 +1,12 @@
+# plmmr 4.1.0 (2024-10-18)
+
+- **Restore plmm(X,y) syntax**: Where version 4.0.0 required that `create_design()` always be called prior to `plmm()` or `cv_plmm()`; this update restores the X,y syntax consistent with other packages (e.g., `glmnet`, `ncvreg`). Note that this syntax is only available for the case where the design matrix is stored in-memory as a `matrix` or `data.frame` object. The `create_design()` function is still required for cases where the design matrix/dataset is stored in an external file. 
+
+- **Bug fix**: The 4.0.0 version of `create_design()` required `X` to have column names, and errored out with an uninformative message if no names were supplied (see issue 61). This is now fixed -- column names are not required unless the user wants to specify an argument to `unpen`. 
+
+- **Argument name change**: In `create_design()`, the argument to specify an outcome in the in-memory case has been renamed to `y`; this makes the syntax consistent, e.g., `create_design(X, y)`. Note again that this change is relevant to in-memory data only. 
+
+
 # plmmr 4.0.0 (2024-10-07)
 
 - **Major re-structuring of preprocessing pipeline:** Data from external files must now be processed with `process_plink()` or `process_delim()`. All data (including in-memory data) must be prepared for analysis via `create_design()`. This change ensures that data are funneled into a uniform format for analysis.

@@ -1,7 +1,7 @@
 <!-- badges: start -->
-
-[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=3.2.0.0&color=blue&logo=github)](https://github.com/pbreheny/plmmr) [![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions) [![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
-
+[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=3.2.0.0&color=blue&logo=github)](https://github.com/pbreheny/plmmr) 
+[![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions) 
+[![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
 <!-- badges: end -->
 
 ## plmmr <img src="man/figures/plmmr_hex_sticker.png" align="right" width="150"/>
