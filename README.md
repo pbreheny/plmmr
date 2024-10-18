@@ -18,6 +18,20 @@ devtools::install_github("pbreheny/plmmr")
 
 For a description of the motivation of the functions in this package (along with examples) refer to the second module of [this GWAS data tutorial](https://pbreheny.github.io/adv-gwas-tutorial/index.html)
 
+## Minimal example
+
+```r
+library(plmmr)
+X <- rnorm(100*20) |> matrix(100, 20)
+y <- rnorm(100)
+fit <- plmm(X, y) 
+plot(fit)
+
+cvfit <- cv_plmm(X, y)
+plot(cvfit)
+summary(cvfit)
+```
+
 ## So how fast is `plmmr`? And how well does it scale?
 
 To illustrate these important questions, I created a separate [GitHub repository](https://github.com/tabpeter/demo_plmmr/tree/master) that has all the scripts for a `plmmr` workflow using publicly-available genome-wide association (GWAS) data. The main takeaway: using GWAS data from a study with 1,400 samples and 800,000 SNPs, a full `plmmr` analysis will run in about half an hour using a single core on a laptop.

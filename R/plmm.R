@@ -1,5 +1,11 @@
 #' Fit a linear mixed model via non-convex penalized maximum likelihood.
-#' @param design                  A `plmm_design` object (as created by `create_design()`) or a string with the file path to a design object (the file path must end in '.rds').
+#' @param design                  The first argument must be one of three things:
+#'                                  (1) `plmm_design` object (as created by `create_design()`)
+#'                                  (2) a string with the file path to a design object (the file path must end in '.rds')
+#'                                  (3) a `matrix` or `data.frame` object representing the design matrix of interest
+#' @param y                       Optional: In the case where `design` is a `matrix` or `data.frame`, the user must also supply
+#'                                a numeric outcome vector as the `y` argument. In this case, `design` and `y` will be passed
+#'                                internally to `create_design(X = design, y = y)`.
 #' @param K                       Similarity matrix used to rotate the data. This should either be:
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
@@ -60,6 +66,7 @@
 #' # https://pbreheny.github.io/plmmr/articles/filebacking.html
 #'
 plmm <- function(design,
+                 y = NULL,
                  K = NULL,
                  diag_K = NULL,
                  eta_star = NULL,
@@ -97,6 +104,24 @@ plmm <- function(design,
   logfile <- create_log(outfile = ifelse(!is.null(save_rds),
                                          save_rds,
                                          "./plmm"))
+
+  # create a design if needed -------------
+  if (inherits(design, "data.frame") | inherits(design, 'matrix')) {
+    # error check: if 'design' is matrix/data.frame, user must specify 'y'
+    if (is.null(y)) {
+      stop("If you supply a matrix or data frame as 'design', you
+                         must also specify a numeric vector as the outcome of your
+                         model to the 'y' argument.")
+    }
+
+    design <- create_design_in_memory(X = design, y = y)
+
+
+  } else {
+    if (!is.null(y)) stop("If you are supplying a plmm_design object or filepath to
+                          the 'design' argument, that design already has a 'y' --
+                          please do not specify a 'y' argument here in plmm()")
+  }
 
   # run checks ------------------------------
   checked_data <- plmm_checks(design,
@@ -146,7 +171,7 @@ plmm <- function(design,
       pretty_time(),
       "\n", file = logfile, append = TRUE)
 
-    # rotate & fit -------------------------------------------------------------
+  # rotate & fit -------------------------------------------------------------
   if (is.null(dfmax)) dfmax <- checked_data$p + 1
   the_fit <- plmm_fit(prep = the_prep,
                       y = checked_data$y,
