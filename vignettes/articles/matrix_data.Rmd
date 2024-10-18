@@ -77,8 +77,7 @@ admix_design2 <- create_design(X = X_plus_ancestry,
                                unpen = "ancestry")
 
 # now fit a model 
-admix_fit2 <- plmm(design = admix_design2, 
-                   y = admix$y)
+admix_fit2 <- plmm(design = admix_design2)
 ```
 
 We may compare the results from the model which includes 'ancestry' to our first model: 
