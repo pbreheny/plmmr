@@ -20,7 +20,7 @@ For a description of the motivation of the functions in this package (along with
 
 ## Minimal example
 
-```r
+``` r
 library(plmmr)
 X <- rnorm(100*20) |> matrix(100, 20)
 y <- rnorm(100)
