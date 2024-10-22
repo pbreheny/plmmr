@@ -10,10 +10,16 @@ The `plmmr` (**p**enalized **l**inear **m**ixed **m**odels in **R**) package con
 
 ## Installation
 
-To install the latest version of the package:
+To install the latest version of the package from GitHub, use this:
 
 ``` r
 devtools::install_github("pbreheny/plmmr")
+```
+
+You can also install `plmmr` from CRAN: 
+
+```r
+install.packages('plmmr')
 ```
 
 For a description of the motivation of the functions in this package (along with examples) refer to the second module of [this GWAS data tutorial](https://pbreheny.github.io/adv-gwas-tutorial/index.html)
