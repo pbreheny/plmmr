@@ -83,61 +83,20 @@ delimited files.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">admix</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 3</span></span>
-<span><span class="co">#&gt;  $ X   : int [1:197, 1:100] 0 0 0 0 1 0 1 0 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ X       : int [1:197, 1:100] 0 0 0 0 1 0 1 0 0 0 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">#&gt;   .. ..$ : NULL</span></span>
 <span><span class="co">#&gt;   .. ..$ : chr [1:100] "Snp1" "Snp2" "Snp3" "Snp4" ...</span></span>
-<span><span class="co">#&gt;  $ y   : num [1:197, 1] 3.52 3.754 1.191 0.579 4.085 ...</span></span>
-<span><span class="co">#&gt;  $ race: num [1:197] 1 1 1 1 1 1 1 1 1 1 ...</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="preparing-data-for-analysis">Preparing data for analysis<a class="anchor" aria-label="anchor" href="#preparing-data-for-analysis"></a>
-</h2>
-<p>The first step with in-memory data is creating a
-<strong>plmm_design</strong> object, which we do with
-<code><a href="../reference/create_design.html">create_design()</a></code> like this:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">admix_design</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 12</span></span>
-<span><span class="co">#&gt;  $ std_X         : num [1:197, 1:98] -0.398 -0.398 -0.398 -0.398 2.053 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "dimnames")=List of 2</span></span>
-<span><span class="co">#&gt;   .. ..$ : NULL</span></span>
-<span><span class="co">#&gt;   .. ..$ : chr [1:98] "Snp1" "Snp2" "Snp3" "Snp4" ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "center")= num [1:100] 0.16244 0.15228 0.00508 0.30964 0.01015 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "scale")= num [1:100] 0.4081 0.3593 0.0711 0.5793 0.1002 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "nonsingular")= int [1:98] 1 2 3 4 5 6 7 9 10 11 ...</span></span>
-<span><span class="co">#&gt;  $ std_X_n       : int 197</span></span>
-<span><span class="co">#&gt;  $ std_X_p       : int 98</span></span>
-<span><span class="co">#&gt;  $ ns            : int [1:98] 1 2 3 4 5 6 7 9 10 11 ...</span></span>
-<span><span class="co">#&gt;  $ std_X_center  : num [1:100] 0.16244 0.15228 0.00508 0.30964 0.01015 ...</span></span>
-<span><span class="co">#&gt;  $ std_X_scale   : num [1:100] 0.4081 0.3593 0.0711 0.5793 0.1002 ...</span></span>
-<span><span class="co">#&gt;  $ y             : num [1:197, 1] 3.52 3.754 1.191 0.579 4.085 ...</span></span>
-<span><span class="co">#&gt;  $ X_colnames    : chr [1:100] "Snp1" "Snp2" "Snp3" "Snp4" ...</span></span>
-<span><span class="co">#&gt;  $ n             : int 197</span></span>
-<span><span class="co">#&gt;  $ p             : int 100</span></span>
-<span><span class="co">#&gt;  $ std_X_colnames: chr [1:98] "Snp1" "Snp2" "Snp3" "Snp4" ...</span></span>
-<span><span class="co">#&gt;  $ penalty_factor: num [1:98] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  - attr(*, "class")= chr "plmm_design"</span></span></code></pre></div>
-<p>‘Creating a design’ means that we take the processed data and create
-the three essential elements for data analysis: a design matrix that is
-column-standardized, an outcome vector, and a penalty factor indicator.
-In our <a href="articles/notation.html">math notation</a>, the design
-matrix is <span class="math inline">\mathbf{X}</span>, the outcome
-vector is <span class="math inline">\mathbf{y}</span>, and the penalty
-factor indicator is a vector of 1s and 0s, where 1s correspond to the
-features in <span class="math inline">\mathbf{X}</span> that will be
-penalized (and the 0s correspond to the unpenalized added predictors).
-Note that in our current <code>admix_design</code>, all features are
-penalized (i.e., the penalty factor is a vector of 1).</p>
-</div>
+<span><span class="co">#&gt;  $ y       : num [1:197, 1] 3.52 3.754 1.191 0.579 4.085 ...</span></span>
+<span><span class="co">#&gt;  $ ancestry: num [1:197] 1 1 1 1 1 1 1 1 1 1 ...</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="basic-model-fitting">Basic model fitting<a class="anchor" aria-label="anchor" href="#basic-model-fitting"></a>
 </h2>
 <p>The <code>admix</code> dataset is now ready to analyze with a call to
 <code><a href="../reference/plmm.html">plmmr::plmm()</a></code> (one of the main functions in
 <code>plmmr</code>):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">admix_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.01380</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -145,12 +104,17 @@ penalized (i.e., the penalty factor is a vector of 1).</p>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; # of non-zero coefficients:  85 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
+<p>Notice: I am passing <code>admix$X</code> as the <code>design</code>
+argument in <code><a href="../reference/plmm.html">plmm()</a></code>; internally, <code><a href="../reference/plmm.html">plmm()</a></code> has
+taken this <code>X</code> input and created a <code>plmm_design</code>
+object. You could also supply <code>X</code> and <code>y</code> to
+<code><a href="../reference/create_design.html">create_design()</a></code> to make this step explicit.</p>
 <p>The returned <code>beta_vals</code> item is a matrix whose rows are
 <span class="math inline">\hat\beta</span> coefficients and whose
 columns represent values of the penalization parameter <span class="math inline">\lambda</span>. By default, <code>plmm</code> fits
 100 values of <span class="math inline">\lambda</span> (see the
 <code>setup_lambda</code> function for details).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">admix_fit</span><span class="op">$</span><span class="va">beta_vals</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">97</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>               format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
@@ -349,7 +313,7 @@ SNP 8 has <span class="math inline">\hat \beta = 0</span>. This is
 because SNP 8 is a constant feature, a feature (i.e., a column of <span class="math inline">\mathbf{X}</span>) whose values do not vary among
 the members of this population.</p>
 <p>We can summarize our fit at the nth <span class="math inline">\lambda</span> value:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># for n = 25 </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">25</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.07896</span></span>
@@ -360,7 +324,7 @@ the members of this population.</p>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
 <p>We can also plot the path of the fit to see how model coefficients
 vary with <span class="math inline">\lambda</span>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_fit</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="matrix_data_files/figure-html/admix_plots-1.png" alt="Plot of path for model fit" width="768"><p class="caption">
@@ -370,13 +334,17 @@ Plot of path for model fit
 <p>Suppose we also know the ancestry groups with which for each person
 in the <code>admix</code> data self-identified. We would probably want
 to include this in the model as an unpenalized covariate (i.e., we would
-want ‘ancestry’ to always be in the model). Here is how that could
-look:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">X_plus_ancestry</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">race</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+want ‘ancestry’ to always be in the model). To specify an unpenalized
+covariate, we need to use the <code><a href="../reference/create_design.html">create_design()</a></code> function
+prior to calling <code><a href="../reference/plmm.html">plmm()</a></code>. Here is how that would look:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># add ancestry to design matrix</span></span>
+<span><span class="va">X_plus_ancestry</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">ancestry</span>, <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># adjust column names -- need these for designating 'unpen' argument</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">X_plus_ancestry</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ancestry"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># create a new design</span></span>
+<span><span class="co"># create a design</span></span>
 <span><span class="va">admix_design2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">X_plus_ancestry</span>,</span>
 <span>                               y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span>,</span>
 <span>                               <span class="co"># below, I mark ancestry variable as unpenalized</span></span>
@@ -387,7 +355,7 @@ look:</p>
 <span><span class="va">admix_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span><span class="op">)</span></span></code></pre></div>
 <p>We may compare the results from the model which includes ‘ancestry’
 to our first model:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit2</span>, idx <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.09986</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -396,7 +364,7 @@ to our first model:</p>
 <span><span class="co">#&gt; # of non-zero coefficients:  15 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_fit2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="matrix_data_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="matrix_data_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="cross-validation">Cross validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
@@ -405,7 +373,7 @@ to our first model:</p>
 use cross validation. Below is an example of using <code>cv_plmm</code>
 to select a <span class="math inline">\lambda</span> that minimizes
 cross-validation error:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span>, return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
@@ -417,7 +385,7 @@ cross-validation error:</p>
 <span><span class="co">#&gt;   Cross-validation error (deviance): 1.31</span></span>
 <span><span class="co">#&gt;   Scale estimate (sigma): 1.145</span></span></code></pre></div>
 <p>We can also plot the cross-validation error (CVE) versus <span class="math inline">\lambda</span> (on the log scale):</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_cv</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="matrix_data_files/figure-html/cvplot-1.png" alt="Plot of CVE" width="768"><p class="caption">
@@ -430,7 +398,7 @@ Plot of CVE
 </h2>
 <p>Below is an example of the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> methods for
 PLMMs:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># make predictions for select lambda value(s)</span></span>
 <span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">admix_fit</span>,</span>
 <span>                       newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
@@ -440,7 +408,7 @@ PLMMs:</p>
 <p>We can compare these predictions with the predictions we would get
 from an intercept-only model using mean squared prediction error (MSPE)
 – lower is better:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># intercept-only (or 'null') model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          [,1]</span></span>
