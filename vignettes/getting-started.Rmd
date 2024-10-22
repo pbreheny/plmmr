@@ -23,9 +23,7 @@ library(plmmr)
 
 ## Introduction 
 
-`plmmr` is a package for fitting **P**enalized **L**inear **M**ixed **M**odels in **R**. This package was created for the purpose of fitting penalized regression models to high dimensional data in which the observations are correlated in some complex way. For instance, this kind of data arises often in the context of genetics (*e.g.*, GWAS dealing with population structure/family structure).
-
-For more information on the theoretical context of penalized regression, check out [these online course notes](https://myweb.uiowa.edu/pbreheny/7240/s23/notes.html); the section on ridge regression may be a good place to start. 
+`plmmr` is a package for fitting **P**enalized **L**inear **M**ixed **M**odels in **R**. This package was created for the purpose of fitting penalized regression models to high dimensional data in which the observations are correlated. For instance, this kind of data arises often in the context of genetics (*e.g.*, GWAS in which there is population structure and/or family grouping).
 
 The novelties of `plmmr` are:
 

@@ -16,7 +16,9 @@ passed to \code{create_design_filebacked()}. Defaults to NULL (this argument doe
 
 \item{X}{For \strong{in-memory data (data in a matrix or data frame)}, this is the design matrix. Defaults to NULL (this argument does not apply for filebacked data).}
 
-\item{y}{For \strong{in-memory data}, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).}
+\item{y}{For \strong{in-memory data}, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).
+\strong{Note}: it is the responsibility of the user to ensure that the rows in X and the corresponding elements of y have the same row order,
+i.e., observations must be in the same order in both the design matrix and in the outcome vector.}
 
 \item{...}{Additional arguments to pass to \code{create_design_filebacked()} or \code{create_design_in_memory()}.
 See the documentation for those helper functions for details.}
@@ -69,8 +71,6 @@ Additional arguments specific to \strong{delimited file} data:
 
 Additional arguments for \strong{in-memory} data:
 \itemize{
-\item \strong{y}             A numeric vector representing the outcome for the model.
-\strong{Note}: it is the responsibility of the user to ensure that the y and X have the same row order!
 \item \strong{unpen}         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 \strong{Note}: if you choose to use this option, X must have column names.
 }

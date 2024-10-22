@@ -6,6 +6,8 @@
 #'                      passed to `create_design_filebacked()`. Defaults to NULL (this argument does not apply for in-memory data).
 #' @param X             For **in-memory data (data in a matrix or data frame)**, this is the design matrix. Defaults to NULL (this argument does not apply for filebacked data).
 #' @param y             For **in-memory data**, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).
+#'                      **Note**: it is the responsibility of the user to ensure that the rows in X and the corresponding elements of y have the same row order,
+#'                      i.e., observations must be in the same order in both the design matrix and in the outcome vector.
 #' @param ...           Additional arguments to pass to `create_design_filebacked()` or `create_design_in_memory()`.
 #'                      See the documentation for those helper functions for details.
 #'
@@ -59,8 +61,6 @@
 #'
 #' Additional arguments for **in-memory** data:
 #'
-#'    - **y**             A numeric vector representing the outcome for the model.
-#'                      **Note**: it is the responsibility of the user to ensure that the y and X have the same row order!
 #'    - **unpen**         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                      **Note**: if you choose to use this option, X must have column names.
 #'

@@ -40,9 +40,10 @@ X <- admix_raw |>
   as.matrix()
 
 # create a list with the data needed for analyses
+# note: 'ancestry' is a more appropriate word choice than 'Race'
 admix <- list(X = X,
               y = y,
-              race = admix_raw$Race
+              ancestry = admix_raw$Race
 )
 
 usethis::use_data(admix, overwrite = TRUE)

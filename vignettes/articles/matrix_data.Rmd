@@ -21,25 +21,16 @@ Examine what we have in the `admix` data:
 str(admix)
 ```
 
-## Preparing data for analysis 
-
-The first step with in-memory data is creating a **plmm_design** object, which we do with `create_design()` like this:
-
-```{r}
-admix_design <- create_design(X = admix$X, y = admix$y)
-str(admix_design)
-```
-
-'Creating a design' means that we take the processed data and create the three essential elements for data analysis: a design matrix that is column-standardized, an outcome vector, and a penalty factor indicator. In our [math notation](articles/notation.html), the design matrix is $\mathbf{X}$, the outcome vector is $\mathbf{y}$, and the penalty factor indicator is a vector of 1s and 0s, where 1s correspond to the features in $\mathbf{X}$ that will be penalized (and the 0s correspond to the unpenalized added predictors). Note that in our current `admix_design`, all features are penalized (i.e., the penalty factor is a vector of 1). 
-
 ## Basic model fitting 
 
 The `admix` dataset is now ready to analyze with a call to `plmmr::plmm()` (one of the main functions in `plmmr`):
 
 ```{r admix_fit}
-admix_fit <- plmm(design = admix_design)
+admix_fit <- plmm(admix$X, admix$y)
 summary(admix_fit, lambda = admix_fit$lambda[50])
 ```
+
+Notice: I am passing `admix$X` as the `design` argument in `plmm()`; internally, `plmm()` has taken this `X` input and created a `plmm_design` object. You could also supply `X` and `y` to `create_design()` to make this step explicit. 
 
 The returned `beta_vals` item is a matrix whose rows are $\hat\beta$ coefficients and whose columns represent values of the penalization parameter $\lambda$. By default, `plmm` fits 100 values of $\lambda$ (see the `setup_lambda` function for details). 
 
@@ -63,13 +54,17 @@ We can also plot the path of the fit to see how model coefficients vary with $\l
 ```{r admix_plots, fig.align='center', fig.width=8, fig.cap="Plot of path for model fit"}
 plot(admix_fit)
 ```
-Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). Here is how that could look: 
+
+Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). To specify an unpenalized covariate, we need to use the `create_design()` function prior to calling `plmm()`. Here is how that would look: 
 
 ```{r}
-X_plus_ancestry <- cbind(admix$race, admix$X)
+# add ancestry to design matrix
+X_plus_ancestry <- cbind(admix$ancestry, admix$X)
+
+# adjust column names -- need these for designating 'unpen' argument
 colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
 
-# create a new design
+# create a design
 admix_design2 <- create_design(X = X_plus_ancestry,
                                y = admix$y,
                                # below, I mark ancestry variable as unpenalized
