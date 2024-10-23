@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,10 +40,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.1.0" id="plmmr-410-2024-10-18">plmmr 4.1.0 (2024-10-18)<a class="anchor" aria-label="anchor" href="#plmmr-410-2024-10-18"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.1.0" id="plmmr-410-2024-10-23">plmmr 4.1.0 (2024-10-23)<a class="anchor" aria-label="anchor" href="#plmmr-410-2024-10-23"></a></h2>
 <ul><li><p><strong>Restore plmm(X,y) syntax</strong>: Where version 4.0.0 required that <code><a href="../reference/create_design.html">create_design()</a></code> always be called prior to <code><a href="../reference/plmm.html">plmm()</a></code> or <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>; this update restores the X,y syntax consistent with other packages (e.g., <code>glmnet</code>, <code>ncvreg</code>). Note that this syntax is only available for the case where the design matrix is stored in-memory as a <code>matrix</code> or <code>data.frame</code> object. The <code><a href="../reference/create_design.html">create_design()</a></code> function is still required for cases where the design matrix/dataset is stored in an external file.</p></li>
 <li><p><strong>Bug fix</strong>: The 4.0.0 version of <code><a href="../reference/create_design.html">create_design()</a></code> required <code>X</code> to have column names, and errored out with an uninformative message if no names were supplied (see issue 61). This is now fixed – column names are not required unless the user wants to specify an argument to <code>unpen</code>.</p></li>
 <li><p><strong>Argument name change</strong>: In <code><a href="../reference/create_design.html">create_design()</a></code>, the argument to specify an outcome in the in-memory case has been renamed to <code>y</code>; this makes the syntax consistent, e.g., <code>create_design(X, y)</code>. Note again that this change is relevant to in-memory data only.</p></li>
+<li><p><strong>Internal:</strong> Fixed LTO type mismatch bug.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.0.0" id="plmmr-400-2024-10-07">plmmr 4.0.0 (2024-10-07)<a class="anchor" aria-label="anchor" href="#plmmr-400-2024-10-07"></a></h2><p class="text-muted">CRAN release: 2024-10-11</p>
