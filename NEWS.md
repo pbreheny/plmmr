@@ -1,4 +1,4 @@
-# plmmr 4.1.0 (2024-10-18)
+# plmmr 4.1.0 (2024-10-23)
 
 - **Restore plmm(X,y) syntax**: Where version 4.0.0 required that `create_design()` always be called prior to `plmm()` or `cv_plmm()`; this update restores the X,y syntax consistent with other packages (e.g., `glmnet`, `ncvreg`). Note that this syntax is only available for the case where the design matrix is stored in-memory as a `matrix` or `data.frame` object. The `create_design()` function is still required for cases where the design matrix/dataset is stored in an external file. 
 
@@ -6,6 +6,7 @@
 
 - **Argument name change**: In `create_design()`, the argument to specify an outcome in the in-memory case has been renamed to `y`; this makes the syntax consistent, e.g., `create_design(X, y)`. Note again that this change is relevant to in-memory data only. 
 
+* **Internal:** Fixed LTO type mismatch bug.
 
 # plmmr 4.0.0 (2024-10-07)
 
