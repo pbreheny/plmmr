@@ -81,10 +81,10 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
-    # covariance comes from selected rows and columns from estimated_Sigma that is generated in the overall fit (Sigma_11, Sigma_21)
-    # test1 <- Sigma_21 %*% chol2inv(chol(Sigma_11)) # true
+    # covariance comes from selected rows and columns from estimated_Sigma that
+    #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
-    b_train <- og_scale_beta[-1,,drop=FALSE] # this may or may not be equal to b...
+    b_train <- og_scale_beta[-1,,drop=FALSE] # this may have more columns than b, depending on whether the
     Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_train)

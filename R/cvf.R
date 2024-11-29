@@ -80,16 +80,14 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   } else {
 
-    # subset training data (we will need 2 copies: a copy to pass into the
-    #   fitting function via the 'fold_args' list, and a copy to use
-    #   for prediction. The latter is 'train_X')
-    fold_args$std_X <- train_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    # subset training data
+    train_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
 
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
 
     # re-standardize training data & check for singularity
-    std_info <- standardize_in_memory(fold_args$std_X)
+    std_info <- standardize_in_memory(train_X)
     fold_args$std_X <- std_info$std_X
     fold_args$std_X_details <- std_info$std_X_details
 
@@ -98,11 +96,14 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
 
   }
-  # re-center y
-  fold_args$centered_y <- full_cv_prep$centered_y[fold!=i] |> scale(scale=FALSE) |> drop()
 
   # subset outcome vector to include outcomes for training data only
   fold_args$y <- y[fold!=i]
+
+  # center the training outcome
+  fold_args$centered_y <- fold_args$y |>
+    scale(scale=FALSE) |>
+    drop()
 
   # extract test set --------------------------------------
   # this comes from cv prep on full data
@@ -119,7 +120,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
   }
 
   # subset outcome for test set
-  test_y <- y[fold==i]
+  test_y <- full_cv_prep$centered_y[fold==i]
 
   # decomposition for current fold ------------------------------
   if (cv_args$prep$trace) {
@@ -160,12 +161,11 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     convex = fold_args$convex,
                     dfmax = ncol(train_X) + 1)
 
-if (any(is.nan(fit.i$std_scale_beta))) browser()
-# if (nrow(fit.i$std_scale_beta) - 1 != length(fold_args$std_X_details$ns)) browser()
-  # get beta values back in original scale
+
+  # first, get beta hat back on the scale of the training data
   og_betas.i <- untransform(
     std_scale_beta = fit.i$std_scale_beta,
-    p = nrow(fit.i$std_scale_beta)-1, # take off 1 for intercept
+    p = nrow(fit.i$std_scale_beta)-1, # take off intercept
     std_X_details = fold_args$std_X_details,
     fbm_flag = fold_args$fbm_flag,
     use_names = FALSE)
