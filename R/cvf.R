@@ -120,7 +120,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
   }
 
   # subset outcome for test set
-  test_y <- full_cv_prep$centered_y[fold==i]
+  test_y <- y[fold!=i]
 
   # decomposition for current fold ------------------------------
   if (cv_args$prep$trace) {
