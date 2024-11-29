@@ -90,7 +90,7 @@ plmm_fit <- function(prep,
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- wUt %*% prep$std_X
-    rot_y <- wUt %*% prep$centered_y # remember: prep$y is the centered outcome vector
+    rot_y <- wUt %*% prep$centered_y # remember: we're using the centered outcome vector
 
     # re-standardize rot_X
     stdrot_info <- standardize_in_memory(rot_X)
@@ -242,7 +242,7 @@ plmm_fit <- function(prep,
 
   ret <- structure(list(
     std_scale_beta = std_scale_beta,
-    centered_y = prep$centered_y, # note: this is the centered outcome vector
+    centered_y = prep$centered_y, # the centered outcome vector
     s = prep$s,
     U = prep$U,
     lambda = lambda,
