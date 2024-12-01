@@ -52,6 +52,8 @@
 #'
 #' # make predictions for all lambda values
 #'  pred1 <- predict(object = fit, newX = test$X, type = "lp")
+#'  pred2 <- predict(object = fit, newX = test$X, type = "blup",
+#'   X = train$X, y = train$y)
 #'
 #' # look at mean squared prediction error
 #' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})

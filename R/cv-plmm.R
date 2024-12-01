@@ -73,7 +73,7 @@
 #'
 #' @examples
 #' admix_design <- create_design(X = admix$X, y = admix$y)
-#' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
+#' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE, type = 'lp')
 #' print(summary(cv_fit))
 #' plot(cv_fit)
 #'
@@ -255,7 +255,6 @@ cv_plmm <- function(design,
   # initialize objects to hold CV results
   n <- checked_data$std_X_n
   E <- Y <- matrix(NA, nrow=n, ncol=length(fit$lambda))
-
 
   # set up folds for cross validation
   if (!missing(seed)) {
