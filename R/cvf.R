@@ -91,7 +91,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     fold_args$std_X <- std_info$std_X
     fold_args$std_X_details <- std_info$std_X_details
 
-    # do not fit a model on these singular features!
+    # do not fit a model on these (near) singular features!
     singular <- fold_args$std_X_details$scale < 1e-3
     if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
 
@@ -117,10 +117,15 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
+
+    # use center/scale values from train_X to standardize test_X
+    std_test_X <- scale(test_X,
+                        center = fold_args$std_X_details$center,
+                        scale = fold_args$std_X_details$scale)
   }
 
   # subset outcome for test set
-  test_y <- y[fold!=i]
+  test_y <- y[fold==i]
 
   # decomposition for current fold ------------------------------
   if (cv_args$prep$trace) {
@@ -163,32 +168,51 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
 
   # first, get beta hat back on the scale of the training data
-  og_betas.i <- untransform(
-    std_scale_beta = fit.i$std_scale_beta,
-    p = nrow(fit.i$std_scale_beta)-1, # take off intercept
-    std_X_details = fold_args$std_X_details,
-    fbm_flag = fold_args$fbm_flag,
-    use_names = FALSE)
+  # og_betas.i <- untransform(
+  #   std_scale_beta = fit.i$std_scale_beta,
+  #   p = nrow(fit.i$std_scale_beta)-1, # take off intercept
+  #   std_X_details = fold_args$std_X_details,
+  #   fbm_flag = fold_args$fbm_flag,
+  #   use_names = FALSE)
 
   if(type == "lp"){
+    # yhat <- predict_within_cv(fit = fit.i,
+    #                           trainX = train_X,
+    #                           testX = test_X,
+    #                           og_scale_beta = og_betas.i,
+    #                           type = 'lp',
+    #                           fbm = cv_args$fbm_flag)
+
+    # a working idea... what if predictions were on the scale of the standardized data?
     yhat <- predict_within_cv(fit = fit.i,
-                              trainX = train_X,
-                              testX = test_X,
-                              og_scale_beta = og_betas.i,
+                              trainX = NULL,
+                              testX = std_test_X,
+                              og_scale_beta = fit.i$std_scale_beta,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
     # estimated_Sigma here comes from the overall fit in cv_plmm.R, an n*n matrix
-    Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
     Sigma_11 <- estimated_Sigma[fold!=i, fold!=i, drop = FALSE]
+    Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
+
+    # yhat <- predict_within_cv(fit = fit.i,
+    #                           trainX = train_X,
+    #                           trainY = fold_args$y,
+    #                           testX = test_X,
+    #                           og_scale_beta = og_betas.i,
+    #                           std_X_details = fold_args$std_X_details,
+    #                           type = 'blup',
+    #                           fbm = cv_args$fbm_flag,
+    #                           Sigma_11 = Sigma_11,
+    #                           Sigma_21 = Sigma_21, ...)
 
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = train_X,
                               trainY = fold_args$y,
-                              testX = test_X,
-                              og_scale_beta = og_betas.i,
+                              testX = std_test_X,
+                              og_scale_beta = fit.i$std_scale_beta,
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,

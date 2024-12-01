@@ -72,7 +72,7 @@ predict_within_cv <- function(fit,
     b <- b[std_X_details$ns,]
     Xb <- sweep(testX %*% b, 2, a, "+")
   } else {
-    Xb <- sweep(testX %*% b, 2, a, "+") # testX is on the original (pre-standardization) scale
+    Xb <- sweep(testX %*% b, 2, a, "+")
   }
 
 
@@ -87,7 +87,7 @@ predict_within_cv <- function(fit,
     b_train <- og_scale_beta[-1,,drop=FALSE] # this may have more columns than b, depending on whether the
     Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
     resid_train <- (drop(trainY) - Xb_train)
-    ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_train)
+    ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
     blup <- Xb + ranef
 
     return(blup)
