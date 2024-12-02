@@ -64,6 +64,7 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
     # case 3: ns and center/scale values **do not** have same length, and ns is
     #  *NOT* equal to the number of rows of 'b'. This is a scenario that may arise
     #   in cross-validation.
+
     untransformed_b2 <- sweep(x = b[std_X_details$ns,],
                               MARGIN = 1,
                               STATS = std_X_details$scale[std_X_details$ns],
