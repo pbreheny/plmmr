@@ -88,20 +88,20 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
     # re-standardize training data & check for singularity
 
-    # std_info <- standardize_in_memory(train_X)
-    # fold_args$std_X <- std_info$std_X
-    # fold_args$std_X_details <- std_info$std_X_details
-    std_train_X <- ncvreg::std(train_X)
-    fold_args$std_X <- std_train_X
-    fold_args$std_X_details$center <- attr(std_train_X,'center')
-    fold_args$std_X_details$scale <- attr(std_train_X,'scale')
-    fold_args$std_X_details$ns <- attr(std_train_X,'nonsingular')
+    std_info <- standardize_in_memory(train_X)
+    fold_args$std_X <- std_info$std_X
+    fold_args$std_X_details <- std_info$std_X_details
+    # std_train_X <- ncvreg::std(train_X)
+    # fold_args$std_X <- std_train_X
+    # fold_args$std_X_details$center <- attr(std_train_X,'center')
+    # fold_args$std_X_details$scale <- attr(std_train_X,'scale')
+    # fold_args$std_X_details$ns <- attr(std_train_X,'nonsingular')
 
     # do not fit a model on these (near) singular features!
 
-    # singular <- fold_args$std_X_details$scale < 1e-3
-    # if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
-    fold_args$penalty_factor <- fold_args$penalty_factor[fold_args$std_X_details$ns]
+    singular <- fold_args$std_X_details$scale < 1e-3
+    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
+    # fold_args$penalty_factor <- fold_args$penalty_factor[fold_args$std_X_details$ns]
 
   }
 
@@ -127,9 +127,9 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
 
     # use center/scale values from train_X to standardize test_X
-    # std_test_X <- scale(test_X,
-    #                     center = fold_args$std_X_details$center,
-    #                     scale = fold_args$std_X_details$scale)
+    std_test_X <- scale(test_X,
+                        center = fold_args$std_X_details$center,
+                        scale = fold_args$std_X_details$scale)
   }
 
   # subset outcome for test set
@@ -202,8 +202,12 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
   if (type == 'blup'){
     # estimated_Sigma here comes from the overall fit in cv_plmm.R, an n*n matrix
-    Sigma_11 <- estimated_Sigma[fold!=i, fold!=i, drop = FALSE]
-    Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
+    # Sigma_11 <- estimated_Sigma[fold!=i, fold!=i, drop = FALSE]
+    # Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
+
+    # explicit calculation of Sigma_11 and Sigma_21
+    Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
+    Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X, fold_args$std_X)
 
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = train_X,
