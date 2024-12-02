@@ -66,15 +66,7 @@ predict_within_cv <- function(fit,
   # calculate the estimated mean values for test data
   a <- og_scale_beta[1,]
   b <- og_scale_beta[-1,,drop=FALSE]
-  if (nrow(b) != ncol(testX)) {
-    # Note: this can only happen in the in-memory case;
-    # filebacked big_std() function does not remove singular features
-    b <- b[std_X_details$ns,]
-    Xb <- sweep(testX %*% b, 2, a, "+")
-  } else {
-    Xb <- sweep(testX %*% b, 2, a, "+")
-  }
-
+  Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values
   if (type=="lp") return(drop(Xb))
@@ -84,8 +76,7 @@ predict_within_cv <- function(fit,
     # covariance comes from selected rows and columns from estimated_Sigma that
     #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
-    b_train <- og_scale_beta[-1,,drop=FALSE] # this may have more columns than b, depending on whether the
-    Xb_train <- sweep(trainX %*% b_train, 2, a, "+")
+    Xb_train <- sweep(trainX %*% b, 2, a, "+")
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
     blup <- Xb + ranef
