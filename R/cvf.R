@@ -176,28 +176,28 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
 
   # first, get beta hat back on the scale of the training data
-  og_betas.i <- untransform(
-    std_scale_beta = fit.i$std_scale_beta,
-    p = ncol(train_X),
-    std_X_details = fold_args$std_X_details,
-    fbm_flag = fold_args$fbm_flag,
-    use_names = FALSE)
+  # og_betas.i <- untransform(
+  #   std_scale_beta = fit.i$std_scale_beta,
+  #   p = ncol(train_X),
+  #   std_X_details = fold_args$std_X_details,
+  #   fbm_flag = fold_args$fbm_flag,
+  #   use_names = FALSE)
 
   if(type == "lp"){
-    yhat <- predict_within_cv(fit = fit.i,
-                              trainX = train_X,
-                              testX = test_X,
-                              og_scale_beta = og_betas.i,
-                              type = 'lp',
-                              fbm = cv_args$fbm_flag)
-
-    # # a working idea... what if predictions were on the scale of the standardized data?
     # yhat <- predict_within_cv(fit = fit.i,
-    #                           trainX = NULL,
-    #                           testX = std_test_X,
-    #                           og_scale_beta = fit.i$std_scale_beta,
+    #                           trainX = train_X,
+    #                           testX = test_X,
+    #                           og_scale_beta = og_betas.i,
     #                           type = 'lp',
     #                           fbm = cv_args$fbm_flag)
+
+    # # a working idea... what if predictions were on the scale of the standardized data?
+    yhat <- predict_within_cv(fit = fit.i,
+                              trainX = NULL,
+                              testX = std_test_X,
+                              og_scale_beta = fit.i$std_scale_beta,
+                              type = 'lp',
+                              fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
@@ -209,27 +209,27 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
     Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X, fold_args$std_X)
 
-    yhat <- predict_within_cv(fit = fit.i,
-                              trainX = train_X,
-                              trainY = fold_args$y,
-                              testX = test_X,
-                              og_scale_beta = og_betas.i,
-                              std_X_details = fold_args$std_X_details,
-                              type = 'blup',
-                              fbm = cv_args$fbm_flag,
-                              Sigma_11 = Sigma_11,
-                              Sigma_21 = Sigma_21, ...)
-
     # yhat <- predict_within_cv(fit = fit.i,
     #                           trainX = train_X,
     #                           trainY = fold_args$y,
-    #                           testX = std_test_X,
-    #                           og_scale_beta = fit.i$std_scale_beta,
+    #                           testX = test_X,
+    #                           og_scale_beta = og_betas.i,
     #                           std_X_details = fold_args$std_X_details,
     #                           type = 'blup',
     #                           fbm = cv_args$fbm_flag,
     #                           Sigma_11 = Sigma_11,
     #                           Sigma_21 = Sigma_21, ...)
+
+    yhat <- predict_within_cv(fit = fit.i,
+                              trainX = train_X,
+                              trainY = fold_args$y,
+                              testX = std_test_X,
+                              og_scale_beta = fit.i$std_scale_beta,
+                              std_X_details = fold_args$std_X_details,
+                              type = 'blup',
+                              fbm = cv_args$fbm_flag,
+                              Sigma_11 = Sigma_11,
+                              Sigma_21 = Sigma_21, ...)
 
   }
 
