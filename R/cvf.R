@@ -147,6 +147,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
                          penalty_factor = fold_args$penalty_factor,
+                         eta_star = cv_args$eta_star,
                          trace = cv_args$prep$trace)
 
   fold_args$prep <- fold_prep
@@ -165,6 +166,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     penalty = fold_args$penalty,
                     gamma = fold_args$gamma,
                     alpha = fold_args$alpha,
+                    # eta_star = cv_args$eta_star,
                     lambda_min = fold_args$lambda_min,
                     nlambda = fold_args$nlambda,
                     lambda = fold_args$lambda,
@@ -201,7 +203,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
 
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = fold_args$std_X,
-                              trainY = fold_args$centered_y,
+                              trainY = fold_args$y,
                               testX = std_test_X,
                               train_scale_beta = fit.i$std_scale_beta,
                               std_X_details = fold_args$std_X_details,
