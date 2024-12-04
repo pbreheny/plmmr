@@ -59,7 +59,7 @@
 #' min(mspe)
 #'
 #' mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
-#' min(mspe_blup)
+#' min(mspe_blup) # BLUP is better
 #'
 #' # compare the MSPE of our model to a null model, for reference
 #' # null model = intercept only -> y_hat is always mean(y)
@@ -110,7 +110,7 @@ predict.plmm <- function(object,
   # prepare other arguments
   type <- match.arg(type)
   beta_vals <- coef(object, lambda, which=idx, drop=FALSE) # includes intercept
-  p <- nrow(beta_vals)
+  p <- nrow(beta_vals)-1
   n <- nrow(object$linear_predictors)
 
   # addressing each type:
@@ -134,16 +134,26 @@ predict.plmm <- function(object,
 
     # check dimensions -- must have same number of features
     if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
+
+    # TODO: make the code below more efficient by making std_X and std_X_details
+    #   returned by plmm(); these items could be passed in via 'object'
     std_X <- ncvreg::std(X)
-    std_newX <- scale(newX,
-                      center = attr(std_X, 'center'),
-                      scale = attr(std_X, 'scale'))
-    ns <- attr(std_X, "nonsingular")
-    # PICK UP HERE: need betas to be on standardized scale?!
-    std_newX <- std_newX[,ns] # don't make predictions using singular columns
+    std_X_details <- list(center = attr(std_X, "center"),
+                          scale = attr(std_X, 'scale'),
+                          ns = attr(std_X, 'nonsingular'))
+    # below, we subset the columns to include only the nonsingular features from
+    #   the training data -- we don't have estimated beta coefs. for these features!
+    std_newX <- scale(newX[,std_X_details$ns],
+                      center = std_X_details$center[std_X_details$ns],
+                      scale = std_X_details$scale[std_X_details$ns])
+
+    a <- object$std_scale_beta[1,]
+    b <- object$std_scale_beta[-1,,drop=FALSE]
+    Xb <- sweep(std_newX %*% b, 2, a, "+")
+
     Sigma_11 <- construct_variance(fit = object)
-    Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X) # same as Sigma_21_check
-    Xb_old <- sweep(X %*% b, 2, a, "+")
+    Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
+    Xb_old <- sweep(std_X %*% object$std_scale_beta[-1,], 2, a, "+")
     resid_old <- drop(y) - Xb_old
 
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
