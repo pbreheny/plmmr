@@ -52,12 +52,14 @@
 #'
 #' # make predictions for all lambda values
 #'  pred1 <- predict(object = fit, newX = test$X, type = "lp")
-#'  pred2 <- predict(object = fit, newX = test$X, type = "blup",
-#'   X = train$X, y = train$y)
+#'  pred2 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
 #'
 #' # look at mean squared prediction error
 #' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
 #' min(mspe)
+#'
+#' mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
+#' min(mspe_blup)
 #'
 #' # compare the MSPE of our model to a null model, for reference
 #' # null model = intercept only -> y_hat is always mean(y)
@@ -132,9 +134,15 @@ predict.plmm <- function(object,
 
     # check dimensions -- must have same number of features
     if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
-
+    std_X <- ncvreg::std(X)
+    std_newX <- scale(newX,
+                      center = attr(std_X, 'center'),
+                      scale = attr(std_X, 'scale'))
+    ns <- attr(std_X, "nonsingular")
+    # PICK UP HERE: need betas to be on standardized scale?!
+    std_newX <- std_newX[,ns] # don't make predictions using singular columns
     Sigma_11 <- construct_variance(fit = object)
-    Sigma_21 <- object$eta * (1/p) * tcrossprod(newX, X) # same as Sigma_21_check
+    Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X) # same as Sigma_21_check
     Xb_old <- sweep(X %*% b, 2, a, "+")
     resid_old <- drop(y) - Xb_old
 

@@ -87,21 +87,13 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     #   to become constant features in the training data. The following lines address this issue
 
     # re-standardize training data & check for singularity
-
     std_info <- standardize_in_memory(train_X)
     fold_args$std_X <- std_info$std_X
     fold_args$std_X_details <- std_info$std_X_details
-    # std_train_X <- ncvreg::std(train_X)
-    # fold_args$std_X <- std_train_X
-    # fold_args$std_X_details$center <- attr(std_train_X,'center')
-    # fold_args$std_X_details$scale <- attr(std_train_X,'scale')
-    # fold_args$std_X_details$ns <- attr(std_train_X,'nonsingular')
 
     # do not fit a model on these (near) singular features!
-
     singular <- fold_args$std_X_details$scale < 1e-3
     if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
-    # fold_args$penalty_factor <- fold_args$penalty_factor[fold_args$std_X_details$ns]
 
   }
 
@@ -122,6 +114,14 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                                   backingfile = paste0("test_fold",i,".bk"),
                                   descriptorfile = paste0("test_fold",i,".desc"),
                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+
+    # use center/scale values from train_X to standardize test_X
+    std_test_X <- .Call("big_std",
+                        fold_args$std_X@address,
+                        as.integer(count_cores()),
+                        fold_args$std_X_details$center,
+                        fold_args$std_X_details$scale,
+                        PACKAGE = "plmmr")
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
@@ -174,57 +174,36 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                     convex = fold_args$convex,
                     dfmax = ncol(train_X) + 1)
 
-
-  # first, get beta hat back on the scale of the training data
-  # og_betas.i <- untransform(
-  #   std_scale_beta = fit.i$std_scale_beta,
-  #   p = ncol(train_X),
-  #   std_X_details = fold_args$std_X_details,
-  #   fbm_flag = fold_args$fbm_flag,
-  #   use_names = FALSE)
-
+  # note: predictions are on the scale of the standardized training data
   if(type == "lp"){
-    # yhat <- predict_within_cv(fit = fit.i,
-    #                           trainX = train_X,
-    #                           testX = test_X,
-    #                           og_scale_beta = og_betas.i,
-    #                           type = 'lp',
-    #                           fbm = cv_args$fbm_flag)
-
-    # # a working idea... what if predictions were on the scale of the standardized data?
     yhat <- predict_within_cv(fit = fit.i,
                               trainX = NULL,
                               testX = std_test_X,
-                              og_scale_beta = fit.i$std_scale_beta,
+                              train_scale_beta = fit.i$std_scale_beta,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
-    # estimated_Sigma here comes from the overall fit in cv_plmm.R, an n*n matrix
-    # Sigma_11 <- estimated_Sigma[fold!=i, fold!=i, drop = FALSE]
-    # Sigma_21 <- estimated_Sigma[fold==i, fold!=i, drop = FALSE]
-
     # explicit calculation of Sigma_11 and Sigma_21
-    Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
-    Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X, fold_args$std_X)
-
-    # yhat <- predict_within_cv(fit = fit.i,
-    #                           trainX = train_X,
-    #                           trainY = fold_args$y,
-    #                           testX = test_X,
-    #                           og_scale_beta = og_betas.i,
-    #                           std_X_details = fold_args$std_X_details,
-    #                           type = 'blup',
-    #                           fbm = cv_args$fbm_flag,
-    #                           Sigma_11 = Sigma_11,
-    #                           Sigma_21 = Sigma_21, ...)
+    if (cv_args$fbm_flag){
+      Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
+      const <- fit.i$eta*(1/ncol(train_X))
+      XXt <- bigalgebra::dgemm(TRANSA = 'N',
+                               TRANSB = 'T',
+                               A = std_X_test,
+                               B = fold_args$std_X)
+      Sigma_21 <- const*XXt
+    } else {
+      Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
+      Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X, fold_args$std_X)
+    }
 
     yhat <- predict_within_cv(fit = fit.i,
-                              trainX = train_X,
-                              trainY = fold_args$y,
+                              trainX = fold_args$std_X,
+                              trainY = fold_args$centered_y,
                               testX = std_test_X,
-                              og_scale_beta = fit.i$std_scale_beta,
+                              train_scale_beta = fit.i$std_scale_beta,
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,

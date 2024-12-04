@@ -1,7 +1,9 @@
 #include "utilities.h"
 
 RcppExport SEXP big_std(SEXP X_,
-                        SEXP ncore_){
+                        SEXP ncore_,
+                        SEXP center_ = R_NilValue,
+                        SEXP scale_ = R_NilValue){
 
 
   // *********************** NOTE ***********************
@@ -32,12 +34,22 @@ RcppExport SEXP big_std(SEXP X_,
 
   // re-center
   // Rprintf("\nCalling col_means()");
-  NumericVector center_vals = col_means(X, n, p);
+  NumericVector center_vals;
+  if (Rf_isNull(center_)) {
+    center_vals = col_means(X, n, p);
+  } else {
+    center_vals = as<NumericVector>(center_);
+  }
   center_cols(X, n, p, center_vals);
 
   // re-scale
   // Rprintf("\nCalling scaling functions");
-  NumericVector scale_vals = colwise_l2mean(X, n, p);
+  NumericVector scale_vals;
+  if (Rf_isNull(scale_)) {
+    scale_vals = colwise_l2mean(X, n, p);
+  } else {
+    scale_vals = as<NumericVector>(scale_);
+  }
   scale_cols(X, n, p, scale_vals);
 
   // save the means of the square values of each column (will pass to xtx in model fitting)

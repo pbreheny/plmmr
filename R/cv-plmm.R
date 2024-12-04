@@ -246,6 +246,7 @@ cv_plmm <- function(design,
   cv_args$warn <- FALSE
   cv_args$lambda <- fit$lambda
   cv_args$non_genomic <- checked_data$non_genomic
+  cv_args$eta_star <- fit$eta # use the same eta estimate in each fold of CV
 
   estimated_Sigma <- NULL
   if (type == 'blup') {

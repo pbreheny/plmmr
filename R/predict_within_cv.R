@@ -4,7 +4,7 @@
 #' @param trainX The training data, *pre-standardization* and *pre-rotation*
 #' @param trainY The training outcome, *not centered*. Only needed if `type = 'blup'`
 #' @param testX A design matrix used for computing predicted values (i.e, the test data).
-#' @param og_scale_beta testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
+#' @param train_scale_data testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
 #'       See `plmm_fit()` and `untransform()` for details.
 #' @param std_X_details A list with 3 items:
 #'  * 'center': the centering values for the columns of `X`
@@ -39,7 +39,7 @@ predict_within_cv <- function(fit,
                               trainX,
                               trainY = NULL,
                               testX,
-                              og_scale_beta,
+                              train_scale_data,
                               std_X_details,
                               type,
                               fbm = FALSE,
@@ -52,20 +52,20 @@ predict_within_cv <- function(fit,
   fbm_flag <- inherits(testX,"big.matrix")
 
   # get beta values (for nonsingular features) from fit
-  og_scale_beta <- og_scale_beta[,idx,drop = FALSE]
+  train_scale_data <- train_scale_data[,idx,drop = FALSE]
 
   # format dim. names
-  if(is.null(dim(og_scale_beta))) {
-    # case 1: og_scale_beta is a vector
-    names(og_scale_beta) <- lam_names(fit$lambda)
+  if(is.null(dim(train_scale_data))) {
+    # case 1: train_scale_data is a vector
+    names(train_scale_data) <- lam_names(fit$lambda)
   } else {
-    # case 2: og_scale_beta is a matrix
-    colnames(og_scale_beta) <- lam_names(fit$lambda)
+    # case 2: train_scale_data is a matrix
+    colnames(train_scale_data) <- lam_names(fit$lambda)
   }
 
   # calculate the estimated mean values for test data
-  a <- og_scale_beta[1,]
-  b <- og_scale_beta[-1,,drop=FALSE]
+  a <- train_scale_data[1,]
+  b <- train_scale_data[-1,,drop=FALSE]
   Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values
