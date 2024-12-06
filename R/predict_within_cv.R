@@ -80,7 +80,7 @@ predict_within_cv <- function(fit,
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
     blup <- Xb + ranef
-
+    if (any(is.na(blup))) browser()
     return(blup)
   }
 

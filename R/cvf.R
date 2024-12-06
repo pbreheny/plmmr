@@ -6,7 +6,6 @@
 #' @param fold n-length vector of fold-assignments.
 #' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param cv_args List of additional arguments to be passed to plmm.
-#' @param estimated_Sigma Estimated variance-covariance matrix using all observations when computing BLUP; NULL if type = "lp" in cv_plmm.
 #' @param ... Optional arguments to `predict_within_cv`
 #'
 #' @keywords internal
@@ -16,7 +15,7 @@
 #' * a numeric value indicating the number of lambda values used
 #' * a numeric value with the predicted outcome (y hat) values at each lambda
 #'
-cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
+cvf <- function(i, fold, type, cv_args, ...) {
 
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
@@ -98,7 +97,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
   }
 
   # subset outcome vector to include outcomes for training data only
-  fold_args$y <- y[fold!=i]
+  fold_args$y <- cv_args$y[fold!=i]
 
   # center the training outcome
   fold_args$centered_y <- fold_args$y |>
@@ -127,6 +126,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
 
     # use center/scale values from train_X to standardize test_X
+    fold_args$std_X_details$scale[singular] <- 1 # don't rescale columns that were singular features in std_train_X
     std_test_X <- scale(test_X,
                         center = fold_args$std_X_details$center,
                         scale = fold_args$std_X_details$scale)
@@ -149,9 +149,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                          penalty_factor = fold_args$penalty_factor,
                          eta_star = cv_args$eta_star,
                          trace = cv_args$prep$trace)
-
   fold_args$prep <- fold_prep
-
   # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
   if (cv_args$prep$trace) {
@@ -182,6 +180,7 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
                               trainX = NULL,
                               testX = std_test_X,
                               train_scale_beta = fit.i$std_scale_beta,
+                              std_X_details = fold_args$std_X_details,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
@@ -198,7 +197,9 @@ cvf <- function(i, fold, type, cv_args, estimated_Sigma, ...) {
       Sigma_21 <- const*XXt
     } else {
       Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
-      Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X, fold_args$std_X)
+      Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
+                                                         fold_args$std_X)
+      if (any(is.na(Sigma_21))) browser()
     }
 
     yhat <- predict_within_cv(fit = fit.i,
