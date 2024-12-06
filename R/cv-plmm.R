@@ -291,8 +291,7 @@ cv_plmm <- function(design,
     parallel::clusterCall(cluster, function() library(plmmr))
     fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf,
                                         design = design,
-                                        fold=fold, type=type, cv_args=cv_args,
-                                        estimated_Sigma = estimated_Sigma)
+                                        fold=fold, type=type, cv_args=cv_args)
   }
 
   # carry out CV -------------------------------------
@@ -349,6 +348,7 @@ cv_plmm <- function(design,
   # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
+  if(length(ind) == 0) browser()
   E <- E[, ind, drop=FALSE]
   Y <- Y[, ind]
   lambda <- fit$lambda[ind]
