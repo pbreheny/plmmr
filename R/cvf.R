@@ -199,7 +199,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
       Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
       Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
                                                          fold_args$std_X)
-      if (any(is.na(Sigma_21))) browser()
     }
 
     yhat <- predict_within_cv(fit = fit.i,

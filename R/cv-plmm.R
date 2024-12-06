@@ -348,7 +348,6 @@ cv_plmm <- function(design,
   # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
-  if(length(ind) == 0) browser()
   E <- E[, ind, drop=FALSE]
   Y <- Y[, ind]
   lambda <- fit$lambda[ind]
