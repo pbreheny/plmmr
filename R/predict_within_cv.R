@@ -13,7 +13,6 @@
 #' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
-#' @param idx Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.
 #' @param Sigma_11 Variance-covariance matrix of the training data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
 #' @param Sigma_21 Covariance matrix between the training and the testing data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
 #' @param ... Additional optional arguments
@@ -43,16 +42,12 @@ predict_within_cv <- function(fit,
                               std_X_details,
                               type,
                               fbm = FALSE,
-                              idx=1:length(fit$lambda),
                               Sigma_11 = NULL,
                               Sigma_21 = NULL, ...) {
 
   # make sure X is in the correct format...
   # case 1: testX is filebacked
   fbm_flag <- inherits(testX,"big.matrix")
-
-  # get beta values (for nonsingular features) from fit
-  train_scale_beta <- train_scale_beta[,idx,drop = FALSE]
 
   # format dim. names
   if(is.null(dim(train_scale_beta))) {

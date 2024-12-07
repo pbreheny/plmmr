@@ -180,6 +180,7 @@ plmm_fit <- function(prep,
       if(prep$trace){utils::setTxtProgressBar(pb, ll)}
     }
     if(prep$trace) close(pb)
+
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1,

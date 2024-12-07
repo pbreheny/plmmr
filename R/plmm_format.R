@@ -46,6 +46,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag){
 structure(list(
   beta_vals = og_scale_beta,
   std_scale_beta = fit$std_scale_beta,
+  std_X_details = std_X_details,
   lambda = fit$lambda,
   eta = fit$eta,
   linear_predictors = fit$linear_predictors,

@@ -84,7 +84,6 @@ predict.plmm <- function(object,
     }
   }
 
-
   # if predictions are to be made, make sure X is in the correct format...
   if (!missing(newX)){
     # case 1: newX is an FBM
@@ -102,7 +101,7 @@ predict.plmm <- function(object,
 
   }
 
-  # check format for beta_vals
+  # check format for beta values
   ifelse(inherits(object$beta_vals, "Matrix"),
          sparse_flag <- TRUE,
          sparse_flag <- FALSE)
@@ -121,11 +120,12 @@ predict.plmm <- function(object,
 
   if (type=="vars") return(drop(apply(beta_vals[-1, , drop=FALSE]!=0, 2, FUN=which))) # don't count intercept
 
+  if (type=="lp") {
     a <- beta_vals[1,]
     b <- beta_vals[-1,,drop=FALSE]
     Xb <- sweep(newX %*% b, 2, a, "+")
-
-  if (type=="lp") return(drop(Xb))
+    return(drop(Xb))
+  }
 
   if (type == "blup"){ # assuming eta of X and newX are the same
     if (fbm_flag) stop("\nBLUP prediction outside of cross-validation is not yet implemented for filebacked data. This will be available soon.")
@@ -135,25 +135,32 @@ predict.plmm <- function(object,
     # check dimensions -- must have same number of features
     if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
 
-    # TODO: make the code below more efficient by making std_X and std_X_details
-    #   returned by plmm(); these items could be passed in via 'object'
+    # TODO: make the code below more efficient by making std_X
+    #   returned by plmm(); this could be passed in via 'object' along with std_X_details
     std_X <- ncvreg::std(X)
-    std_X_details <- list(center = attr(std_X, "center"),
-                          scale = attr(std_X, 'scale'),
-                          ns = attr(std_X, 'nonsingular'))
     # below, we subset the columns to include only the nonsingular features from
     #   the training data -- we don't have estimated beta coefs. for these features!
-    std_newX <- scale(newX[,std_X_details$ns],
-                      center = std_X_details$center[std_X_details$ns],
-                      scale = std_X_details$scale[std_X_details$ns])
+    singular <- setdiff(seq(1:length(object$std_X_details$center)),
+                        object$std_X_details$ns)
+    object$std_X_details$scale[singular] <- 1
+    # object$std_X_details$center[singular] <- 0
+    std_newX <- scale(newX,
+                      center = object$std_X_details$center,
+                      scale = object$std_X_details$scale)
 
-    a <- object$std_scale_beta[1,]
-    b <- object$std_scale_beta[-1,,drop=FALSE]
+    train_scale_beta_og_dim <- adjust_beta_dimension(object$std_scale_beta,
+                                                     p = ncol(newX),
+                                                     std_X_details = object$std_X_details,
+                                                     fbm_flag = fbm_flag)
+    a <- train_scale_beta_og_dim[1,]
+    b <- train_scale_beta_og_dim[-1,,drop=FALSE]
     Xb <- sweep(std_newX %*% b, 2, a, "+")
 
     Sigma_11 <- construct_variance(fit = object)
-    Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
-    Xb_old <- sweep(std_X %*% object$std_scale_beta[-1,], 2, a, "+")
+    Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX[,object$std_X_details$ns],
+                                              std_X)
+    Xb_old <- sweep(std_X %*% object$std_scale_beta[-1,], 2,
+                    object$std_scale_beta[1,], "+")
     resid_old <- drop(y) - Xb_old
 
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
