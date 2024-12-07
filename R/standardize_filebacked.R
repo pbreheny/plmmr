@@ -19,12 +19,13 @@ standardize_filebacked <- function(X, new_file, rds_dir, non_gen, complete_outco
 
   # standardization ------------------------------------------------
   if (!quiet) {cat("Column-standardizing the design matrix...\n")}
-
   # centering & scaling
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call("big_std",
                    X@address,
                    as.integer(count_cores()),
+                   NULL, # no center values to pass here -- will calculate these
+                   NULL, # no scaling values to pass -- will calculate these
                    PACKAGE = "plmmr")
 X@address <- std_res$std_X # saves standardized .bk
 # TODO: pick up here -- what to do about file names here... the same .bk is being modified..
