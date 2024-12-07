@@ -42,22 +42,26 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag){
   colnames(og_scale_beta) <- colnames(fit$linear_predictors) <- lam_names(fit$lambda)
 
 
-# output
-structure(list(
-  beta_vals = og_scale_beta,
-  std_scale_beta = fit$std_scale_beta,
-  std_X_details = std_X_details,
-  lambda = fit$lambda,
-  eta = fit$eta,
-  linear_predictors = fit$linear_predictors,
-  penalty = fit$penalty,
-  gamma = fit$gamma,
-  alpha = fit$alpha,
-  loss = fit$loss,
-  penalty_factor = fit$penalty_factor,
-  ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
-  iter = fit$iter,
-  converged = fit$converged,
-  K = list(s = fit$s, U = fit$U)),
-  class = "plmm")
+  # output
+  out <- list(
+    beta_vals = og_scale_beta,
+    std_scale_beta = fit$std_scale_beta,
+    std_X_details = std_X_details,
+    y = fit$y,
+    lambda = fit$lambda,
+    eta = fit$eta,
+    linear_predictors = fit$linear_predictors,
+    penalty = fit$penalty,
+    gamma = fit$gamma,
+    alpha = fit$alpha,
+    loss = fit$loss,
+    penalty_factor = fit$penalty_factor,
+    ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
+    iter = fit$iter,
+    converged = fit$converged,
+    K = list(s = fit$s, U = fit$U))
+
+  if (!fbm_flag) out$std_X <- fit$std_X
+
+  structure(out, class = "plmm")
 }

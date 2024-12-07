@@ -243,6 +243,8 @@ plmm_fit <- function(prep,
 
   ret <- structure(list(
     std_scale_beta = std_scale_beta,
+    std_X = prep$std_X,
+    y = y,
     centered_y = prep$centered_y, # the centered outcome vector
     s = prep$s,
     U = prep$U,
