@@ -11,11 +11,6 @@
 #'                  at which predictions are requested.
 #' @param idx       Vector of indices of the penalty parameter \code{lambda} at which
 #'                  predictions are required. By default, all indices are returned.
-#' @param X         Original design matrix (not including intercept column)
-#'                  from object. Required only if \code{type == 'blup'} and object is too large to be
-#'                  returned in `plmm` object.
-#' @param y         Original continuous outcome vector from object.
-#'                  Required only if \code{type == 'blup'}.
 #' @param ...       Additional optional arguments
 #'
 #' @details
@@ -52,7 +47,7 @@
 #'
 #' # make predictions for all lambda values
 #'  pred1 <- predict(object = fit, newX = test$X, type = "lp")
-#'  pred2 <- predict(object = fit, newX = test$X, type = "blup", X = train$X, y = train$y)
+#'  pred2 <- predict(object = fit, newX = test$X, type = "blup")
 #'
 #' # look at mean squared prediction error
 #' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
@@ -71,18 +66,7 @@ predict.plmm <- function(object,
                          type=c("lp", "coefficients", "vars", "nvars", "blup"),
                          lambda,
                          idx=1:length(object$lambda),
-                         X,
-                         y,
                          ...) {
-
-  # object type checks
-  if (!missing(X)){
-    if (!identical(class(X), class(newX))) {
-      stop("\nFor now, the classes of X and newX must match (we plan to extend/enhance this
-           further in the future). bigstatsr::as_FBM() and/or bigmemory::as.big.matrix()
-           if you need to convert the type of one of your matrices.")
-    }
-  }
 
   # if predictions are to be made, make sure X is in the correct format...
   if (!missing(newX)){
@@ -127,17 +111,11 @@ predict.plmm <- function(object,
     return(drop(Xb))
   }
 
-  if (type == "blup"){ # assuming eta of X and newX are the same
+  if (type == "blup"){
     if (fbm_flag) stop("\nBLUP prediction outside of cross-validation is not yet implemented for filebacked data. This will be available soon.")
-    if (missing(X)) stop("The design matrix is required for BLUP calculation. Please supply the no-intercept design matrix to the X argument.")
-    if (missing(y)) stop("The vector of outcomes is required for BLUP calculation. Please either supply it to the y argument")
+    # check dimensions -- must have same number of features in test & train data
+    if (length(object$std_X_details$center) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
 
-    # check dimensions -- must have same number of features
-    if (ncol(X) != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
-
-    # TODO: make the code below more efficient by making std_X
-    #   returned by plmm(); this could be passed in via 'object' along with std_X_details
-    std_X <- ncvreg::std(X)
     # below, we subset the columns to include only the nonsingular features from
     #   the training data -- we don't have estimated beta coefs. for these features!
     singular <- setdiff(seq(1:length(object$std_X_details$center)),
@@ -158,10 +136,10 @@ predict.plmm <- function(object,
 
     Sigma_11 <- construct_variance(fit = object)
     Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX[,object$std_X_details$ns],
-                                              std_X)
-    Xb_old <- sweep(std_X %*% object$std_scale_beta[-1,], 2,
+                                              object$std_X)
+    Xb_old <- sweep(object$std_X %*% object$std_scale_beta[-1,], 2,
                     object$std_scale_beta[1,], "+")
-    resid_old <- drop(y) - Xb_old
+    resid_old <- drop(object$y) - Xb_old
 
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
     blup <- drop(Xb + ranef)
