@@ -125,8 +125,11 @@ cvf <- function(i, fold, type, cv_args, ...) {
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
 
+    # don't rescale columns that were singular features in std_train_X;
+    #   these features will have an estimated beta of 0 anyway
+    fold_args$std_X_details$scale[singular] <- 1
+
     # use center/scale values from train_X to standardize test_X
-    fold_args$std_X_details$scale[singular] <- 1 # don't rescale columns that were singular features in std_train_X
     std_test_X <- scale(test_X,
                         center = fold_args$std_X_details$center,
                         scale = fold_args$std_X_details$scale)
