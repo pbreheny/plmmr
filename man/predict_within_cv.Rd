@@ -9,11 +9,10 @@ predict_within_cv(
   trainX,
   trainY = NULL,
   testX,
-  og_scale_beta,
+  train_scale_beta,
   std_X_details,
   type,
   fbm = FALSE,
-  idx = 1:length(fit$lambda),
   Sigma_11 = NULL,
   Sigma_21 = NULL,
   ...
@@ -28,7 +27,7 @@ predict_within_cv(
 
 \item{testX}{A design matrix used for computing predicted values (i.e, the test data).}
 
-\item{og_scale_beta}{testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
+\item{train_scale_beta}{testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
 See \code{plmm_fit()} and \code{untransform()} for details.}
 
 \item{std_X_details}{A list with 3 items:
@@ -42,8 +41,6 @@ See \code{plmm_fit()} and \code{untransform()} for details.}
 Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{fbm}{Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.}
-
-\item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 
 \item{Sigma_11}{Variance-covariance matrix of the training data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
 

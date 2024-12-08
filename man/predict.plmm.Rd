@@ -10,8 +10,6 @@
   type = c("lp", "coefficients", "vars", "nvars", "blup"),
   lambda,
   idx = 1:length(object$lambda),
-  X,
-  y,
   ...
 )
 }
@@ -31,13 +29,6 @@ at which predictions are requested.}
 
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which
 predictions are required. By default, all indices are returned.}
-
-\item{X}{Original design matrix (not including intercept column)
-from object. Required only if \code{type == 'blup'} and object is too large to be
-returned in \code{plmm} object.}
-
-\item{y}{Original continuous outcome vector from object.
-Required only if \code{type == 'blup'}.}
 
 \item{...}{Additional optional arguments}
 }
@@ -71,10 +62,14 @@ fit <- plmm(design = train_design)
 
 # make predictions for all lambda values
  pred1 <- predict(object = fit, newX = test$X, type = "lp")
+ pred2 <- predict(object = fit, newX = test$X, type = "blup")
 
 # look at mean squared prediction error
 mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
 min(mspe)
+
+mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
+min(mspe_blup) # BLUP is better
 
 # compare the MSPE of our model to a null model, for reference
 # null model = intercept only -> y_hat is always mean(y)

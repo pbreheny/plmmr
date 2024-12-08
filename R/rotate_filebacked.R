@@ -24,6 +24,8 @@ rotate_filebacked <- function(prep, ...){
   std_rot <- .Call("big_std",
                    rot_X@address,
                    as.integer(count_cores()),
+                   NULL,
+                   NULL,
                    PACKAGE = "plmmr")
   stdrot_X@address <- std_rot[[1]]
 
