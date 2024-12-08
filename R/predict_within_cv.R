@@ -57,21 +57,30 @@ predict_within_cv <- function(fit,
     # case 2: train_scale_beta is a matrix
     colnames(train_scale_beta) <- lam_names(fit$lambda)
   }
+  browser()
 
-  # calculate the estimated mean values for test data
+  # calculate the estimated mean values for test data (on the *standardized* scale)
+  train_scale_b_og_dim <- adjust_beta_dimension(std_scale_beta = train_scale_beta,
+                                                p = ncol(testX),
+                                                std_X_details = std_X_details,
+                                                fbm_flag = fbm_flag)
   a <- train_scale_beta[1,]
   b <- train_scale_beta[-1,,drop=FALSE]
   Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values
-  if (type=="lp") return(drop(Xb))
+  if (type=="lp") {
+    return(drop(Xb))
+  }
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
     # covariance comes from selected rows and columns from estimated_Sigma that
     #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
-    Xb_train <- sweep(trainX %*% b, 2, a, "+")
+    aa <- train_scale_beta[1,]
+    bb <- train_scale_beta[-1,]
+    Xb_train <- sweep(trainX %*% bb, 2, aa, "+")
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
     blup <- Xb + ranef

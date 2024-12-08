@@ -66,6 +66,8 @@ cvf <- function(i, fold, type, cv_args, ...) {
     train_data <- .Call("big_std",
                         fold_args$std_X@address,
                         as.integer(count_cores()),
+                        NULL,
+                        NULL,
                         PACKAGE = "plmmr")
 
     fold_args$std_X@address <- train_data$std_X
@@ -103,11 +105,11 @@ cvf <- function(i, fold, type, cv_args, ...) {
   fold_args$centered_y <- fold_args$y |>
     scale(scale=FALSE) |>
     drop()
-
+browser()
   # extract test set --------------------------------------
   # this comes from cv prep on full data
   if (cv_args$fbm_flag){
-    test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+    std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
                                   rows = which(fold==i),
                                   type = "double",
                                   backingfile = paste0("test_fold",i,".bk"),
@@ -115,12 +117,13 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
     # use center/scale values from train_X to standardize test_X
-    std_test_X <- .Call("big_std",
-                        fold_args$std_X@address,
+    std_test_info <- .Call("big_std",
+                        std_test_X@address,
                         as.integer(count_cores()),
                         fold_args$std_X_details$center,
                         fold_args$std_X_details$scale,
                         PACKAGE = "plmmr")
+    std_test_X@address <- std_test_info$std_X
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
@@ -167,7 +170,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     penalty = fold_args$penalty,
                     gamma = fold_args$gamma,
                     alpha = fold_args$alpha,
-                    # eta_star = cv_args$eta_star,
+                    eta_star = cv_args$eta_star,
                     lambda_min = fold_args$lambda_min,
                     nlambda = fold_args$nlambda,
                     lambda = fold_args$lambda,
