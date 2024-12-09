@@ -47,7 +47,9 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag){
     beta_vals = og_scale_beta,
     std_scale_beta = fit$std_scale_beta,
     std_X_details = std_X_details,
+    std_X = fit$std_X,
     y = fit$y,
+    p = p, # need to hold onto the total number of features in the original data
     lambda = fit$lambda,
     eta = fit$eta,
     linear_predictors = fit$linear_predictors,
@@ -60,8 +62,6 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag){
     iter = fit$iter,
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U))
-
-  if (!fbm_flag) out$std_X <- fit$std_X
 
   structure(out, class = "plmm")
 }
