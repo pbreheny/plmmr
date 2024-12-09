@@ -43,7 +43,8 @@ plink_data <- process_plink(data_dir = temp_dir,
                             # overwrite existing files in temp_dir
                             # (you can turn this feature off if you need to)
                             overwrite = TRUE,
-                            # turning off parallelization - leaving this on causes problems knitting this vignette
+                            # turning off parallelization - 
+                            #   leaving this on causes problems knitting this vignette
                             parallel = FALSE)
 ```
 
@@ -113,7 +114,8 @@ pen_fit <- plmm(design = pen_design,
 We examine our model results below:
 
 ```{r}
-summary(pen_fit, idx = 50)
+summary(pen_fit,
+        idx = 50)
 
 plot(pen_fit)
 ```

@@ -91,3 +91,13 @@ We may also plot of the paths of the estimated coefficients:
 plot(colon_fit)
 ```
 
+## Prediction for filebacked data
+
+This example shows an experimental option, wherein we are working to add a prediction method for filebacked outside of cross-validation. 
+
+```{r}
+predict(object = colon_fit,
+        newX = attach.big.matrix(colon$X),
+        type = "blup")
+```
+
