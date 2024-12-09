@@ -196,7 +196,8 @@ plmm <- function(design,
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
-                                   fbm_flag = checked_data$fbm_flag)
+                                   fbm_flag = checked_data$fbm_flag,
+                                   plink_flag = checked_data$plink_flag)
 
   if (trace)(cat("Model ready at ",
                  pretty_time()))

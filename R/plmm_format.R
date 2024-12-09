@@ -3,11 +3,17 @@
 #' @param fit A list of parameters describing the output of a model constructed with \code{plmm_fit}
 #' @param p The number of features in the original data (including constant features)
 #' @param std_X_details A list with 3 items:
-#'  * 'center': the centering values for the columns of `X`
-#'  * 'scale': the scaling values for the non-singular columns of `X`
-#'  * 'ns': indicesof nonsingular columns in `std_X`
+#'                    * 'center': the centering values for the columns of `X`
+#'                    * 'scale': the scaling values for the non-singular columns of `X`
+#'                    * 'ns': indicesof nonsingular columns in `std_X`
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`.
-#'
+#' @param plink_flag Logical: did these data come from PLINK files?
+#'                    **Note**: This flag matters because of how non-genomic features
+#'                    are handled for PLINK files -- in data from PLINK files,
+#'                    unpenalized columns are *not* counted in the `p` argument. For delimited
+#'                    files, `p` does include unpenalized columns. This difference has
+#'                    implications for how the `untransform()` function determines the
+#'                    appropriate dimensions for the estimated coefficient matrix it returns.
 #' @returns A list with the components:
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `lambda`: a numeric vector of the lasso tuning parameter values used in model fitting.
@@ -27,14 +33,14 @@
 #'
 #' @keywords internal
 
-plmm_format <- function(fit, p, std_X_details, fbm_flag){
-
+plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
   og_scale_beta <- untransform(
     std_scale_beta = fit$std_scale_beta,
     p = p,
     std_X_details = std_X_details,
-    fbm_flag = fbm_flag)
+    fbm_flag = fbm_flag,
+    plink_flag = plink_flag)
 
   # give the matrix of beta_values readable names
   # features on the rows, lambda values on the columns
