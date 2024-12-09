@@ -29,7 +29,7 @@ adjust_beta_dimension <- function(std_scale_beta, p, std_X_details, fbm_flag){
     if (nrow(b) != (nrow(std_scale_b_og_dim)-1)) {
       std_scale_b_og_dim[std_X_details$ns+1,] <- b
     } else {
-      std_scale_b_og_dim <- b
+      std_scale_b_og_dim[-1,] <- b
     }
     std_scale_b_og_dim[1,] <- a
   } else {

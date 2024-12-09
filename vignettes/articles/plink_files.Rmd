@@ -124,8 +124,9 @@ To choose a tuning parameter for a model, `plmmr` offers a cross validation meth
 
 ```{r}
 cv_fit <- cv_plmm(design = pen_design,
-                return_fit = T,
-                trace = T)
+                  type = "blup",
+                  return_fit = T,
+                  trace = T)
 ```
 
 There are plot and summary methods for CV models as well: 

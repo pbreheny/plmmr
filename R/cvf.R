@@ -105,7 +105,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
   fold_args$centered_y <- fold_args$y |>
     scale(scale=FALSE) |>
     drop()
-browser()
   # extract test set --------------------------------------
   # this comes from cv prep on full data
   if (cv_args$fbm_flag){
@@ -115,6 +114,10 @@ browser()
                                   backingfile = paste0("test_fold",i,".bk"),
                                   descriptorfile = paste0("test_fold",i,".desc"),
                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+
+    # don't rescale columns that were singular features in std_train_X;
+    #   these features will have an estimated beta of 0 anyway
+    fold_args$std_X_details$scale[singular] <- 1
 
     # use center/scale values from train_X to standardize test_X
     std_test_info <- .Call("big_std",
@@ -195,12 +198,13 @@ browser()
     # explicit calculation of Sigma_11 and Sigma_21
     if (cv_args$fbm_flag){
       Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
-      const <- fit.i$eta*(1/ncol(train_X))
+      const <- (fit.i$eta/ncol(train_X))
       XXt <- bigalgebra::dgemm(TRANSA = 'N',
                                TRANSB = 'T',
-                               A = std_X_test,
+                               A = std_test_X,
                                B = fold_args$std_X)
       Sigma_21 <- const*XXt
+      Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
       Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
       Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
@@ -211,7 +215,6 @@ browser()
                               trainX = fold_args$std_X,
                               trainY = fold_args$y,
                               testX = std_test_X,
-                              train_scale_beta = fit.i$std_scale_beta,
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
