@@ -4,12 +4,10 @@
 #' @param trainX The training data, *pre-standardization* and *pre-rotation*
 #' @param trainY The training outcome, *not centered*. Only needed if `type = 'blup'`
 #' @param testX A design matrix used for computing predicted values (i.e, the test data).
-#' @param train_scale_beta testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
-#'       See `plmm_fit()` and `untransform()` for details.
 #' @param std_X_details A list with 3 items:
 #'  * 'center': the centering values for the columns of `X`
 #'  * 'scale': the scaling values for the non-singular columns of `X`
-#'  * 'ns': indicesof nonsingular columns in `std_X`
+#'  * 'ns': indices of nonsingular columns in `std_X`. Note: this is the vector we really need here!
 #' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
@@ -33,12 +31,10 @@
 #' makes predictions on the scale of X (the original scale)
 #'
 #' @keywords internal
-
 predict_within_cv <- function(fit,
                               trainX,
                               trainY = NULL,
                               testX,
-                              train_scale_beta,
                               std_X_details,
                               type,
                               fbm = FALSE,
@@ -49,23 +45,25 @@ predict_within_cv <- function(fit,
   # case 1: testX is filebacked
   fbm_flag <- inherits(testX,"big.matrix")
 
-  # format dim. names
-  if(is.null(dim(train_scale_beta))) {
-    # case 1: train_scale_beta is a vector
-    names(train_scale_beta) <- lam_names(fit$lambda)
-  } else {
-    # case 2: train_scale_beta is a matrix
-    colnames(train_scale_beta) <- lam_names(fit$lambda)
-  }
-  browser()
+  train_scale_beta <- fit$std_scale_beta
 
-  # calculate the estimated mean values for test data (on the *standardized* scale)
-  train_scale_b_og_dim <- adjust_beta_dimension(std_scale_beta = train_scale_beta,
+  # format dim. names
+  if(is.null(dim(fit$std_scale_beta))) {
+    # case 1: fit$std_scale_beta is a vector
+    names(fit$std_scale_beta) <- lam_names(fit$lambda)
+  } else {
+    # case 2: fit$std_scale_beta is a matrix
+    colnames(fit$std_scale_beta) <- lam_names(fit$lambda)
+  }
+
+  # adjust the dimension of the estimated coefficients
+  train_scale_b_og_dim <- adjust_beta_dimension(std_scale_beta = fit$std_scale_beta,
                                                 p = ncol(testX),
                                                 std_X_details = std_X_details,
                                                 fbm_flag = fbm_flag)
-  a <- train_scale_beta[1,]
-  b <- train_scale_beta[-1,,drop=FALSE]
+  # calculate the estimated mean values for test data (on the *standardized* scale)
+  a <- train_scale_b_og_dim[1,]
+  b <- train_scale_b_og_dim[-1,,drop=FALSE]
   Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values
@@ -78,8 +76,8 @@ predict_within_cv <- function(fit,
     # covariance comes from selected rows and columns from estimated_Sigma that
     #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
-    aa <- train_scale_beta[1,]
-    bb <- train_scale_beta[-1,]
+    aa <- fit$std_scale_beta[1,]
+    bb <- fit$std_scale_beta[-1,]
     Xb_train <- sweep(trainX %*% bb, 2, aa, "+")
     resid_train <- (drop(trainY) - Xb_train)
     ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
