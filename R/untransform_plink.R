@@ -10,7 +10,8 @@
 #' @keywords internal
 #'
 #' @returns a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
-untransform_filebacked <- function(std_scale_beta, p, std_X_details, use_names = TRUE) {
+untransform_plink <- function(std_scale_beta, p, std_X_details, plink_flag,
+                                   use_names = TRUE) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -19,7 +20,6 @@ untransform_filebacked <- function(std_scale_beta, p, std_X_details, use_names =
 
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
-
   untransformed_beta <- Matrix::Matrix(0,
                                        nrow = (p + length(std_X_details$unpen) + 1), # + 1 is for the intercept; see note below
                                        ncol = ncol(std_scale_beta), # this is the number of lambda values

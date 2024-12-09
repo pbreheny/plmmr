@@ -178,6 +178,9 @@ create_design_filebacked <- function(data_file,
   design$n <- obj$n
   design$p <- obj$p # Note: p = # of features, not including any additional predictors!
 
+  # note whether data are from PLINK
+  design$is_plink <- is_plink
+
   # index samples for subsetting ------------
   # Note: this step uses the outcome (from external file) to determine which
   #   samples/observations should be pruned out; observations with no feature
@@ -287,7 +290,6 @@ create_design_filebacked <- function(data_file,
   design$std_X_scale <- std_res$std_X_scale
   design$penalty_factor <- c(rep(0, length(design$unpen)),
                              rep(1, design$std_X_p - length(design$unpen)))
-
 
   #TODO: future work can add nuance to the way penalty.factor options are given
   #   below is one idea to hold onto...
