@@ -31,6 +31,9 @@ colon_dat <- process_delim(data_file = "colon2.txt",
   sep = "\t",
   overwrite = TRUE,
   header = TRUE)
+
+# look at what is created 
+colon <- readRDS(colon_dat)
 ```
 
 The output messages indicate that the data has been processed. This call created 2 files, one `.rds` file and a corresponding `.bk` file. The `.bk` file is a special type of binary file that can be used to store large data sets. The `.rds` file contains a pointer to the `.bk` file, along with other meta-data. 
@@ -96,8 +99,22 @@ plot(colon_fit)
 This example shows an experimental option, wherein we are working to add a prediction method for filebacked outside of cross-validation. 
 
 ```{r}
-predict(object = colon_fit,
+# linear predictor 
+yhat_lp <- predict(object = colon_fit,
+        newX = attach.big.matrix(colon$X),
+        type = "lp")
+
+# best linear unbiased predictor 
+yhat_blup <- predict(object = colon_fit,
         newX = attach.big.matrix(colon$X),
         type = "blup")
+
+# look at mean squared prediction error 
+mspe_lp <- apply(yhat_lp, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
+mspe_blup <- apply(yhat_blup, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
+min(mspe_lp)
+min(mspe_blup)
+
+# Pick up here: need to double-check the BLUP method....
 ```
 
