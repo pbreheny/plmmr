@@ -56,6 +56,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
     std_X = fit$std_X,
     y = fit$y,
     p = p, # need to hold onto the total number of features in the original data
+    plink_flag = plink_flag,
     lambda = fit$lambda,
     eta = fit$eta,
     linear_predictors = fit$linear_predictors,

@@ -106,7 +106,6 @@ predict.plmm <- function(object,
   }
 
   if (type == "blup"){
-    browser()
     # check dimensions -- must have same number of features in test & train data
     if (object$p != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
 
@@ -133,9 +132,11 @@ predict.plmm <- function(object,
     train_scale_beta_og_dim <- adjust_beta_dimension(object$std_scale_beta,
                                                      p = object$p,
                                                      std_X_details = object$std_X_details,
-                                                     fbm_flag = fbm_flag)
+                                                     fbm_flag = fbm_flag,
+                                                     plink_flag = object$plink_flag)
     a <- train_scale_beta_og_dim[1,]
     b <- train_scale_beta_og_dim[-1,,drop=FALSE]
+
     if (fbm_flag) {
       Xb <- sweep(newX %*% b, 2, a, "+")
     } else {
@@ -145,7 +146,7 @@ predict.plmm <- function(object,
 
     if (fbm_flag) {
       Sigma_11 <- construct_variance(fit = object)
-      const <- (fit.i$eta/ncol(newX))
+      const <- (object$eta/ncol(newX))
       XXt <- bigalgebra::dgemm(TRANSA = 'N',
                                TRANSB = 'T',
                                A = newX,
