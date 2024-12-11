@@ -77,7 +77,7 @@ in many applications.}
 
 \item{convex}{(future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
 
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
+\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default will be no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 

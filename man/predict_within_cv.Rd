@@ -9,10 +9,10 @@ predict_within_cv(
   trainX,
   trainY = NULL,
   testX,
-  train_scale_beta,
   std_X_details,
   type,
   fbm = FALSE,
+  plink_flag = FALSE,
   Sigma_11 = NULL,
   Sigma_21 = NULL,
   ...
@@ -27,14 +27,11 @@ predict_within_cv(
 
 \item{testX}{A design matrix used for computing predicted values (i.e, the test data).}
 
-\item{train_scale_beta}{testX is on the scale of the original data, so we need the beta_vals that are untransformed to match that scale.
-See \code{plmm_fit()} and \code{untransform()} for details.}
-
 \item{std_X_details}{A list with 3 items:
 \itemize{
 \item 'center': the centering values for the columns of \code{X}
 \item 'scale': the scaling values for the non-singular columns of \code{X}
-\item 'ns': indicesof nonsingular columns in \code{std_X}
+\item 'ns': indices of nonsingular columns in \code{std_X}. Note: this is the vector we really need here!
 }}
 
 \item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
