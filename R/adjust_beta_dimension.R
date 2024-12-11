@@ -51,7 +51,7 @@ adjust_beta_dimension <- function(std_scale_beta, p, std_X_details,
     }
     std_scale_b_og_dim[1,] <- a
   } else {
-    browser()
+
     # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
     # this will create columns of zeros for betas corresponding to singular columns
     std_scale_b_og_dim <- matrix(0,
