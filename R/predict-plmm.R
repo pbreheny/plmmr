@@ -71,7 +71,7 @@ predict.plmm <- function(object,
   # if predictions are to be made, make sure X is in the correct format...
   if (!missing(newX)){
     # case 1: newX is a big.matrix
-     if (inherits(newX, "big.matrix")){
+    if (inherits(newX, "big.matrix")){
       fbm_flag <- TRUE
     } else {
       # case 2: X is in-memory
@@ -105,10 +105,17 @@ predict.plmm <- function(object,
     return(drop(Xb))
   }
 
+  # Note: the BLUP is constructed on the scale of the standardized model-fitting data;
+  #   This is the scale at which object$K was constructed
   if (type == "blup"){
     # check dimensions -- must have same number of features in test & train data
-    if (object$p != ncol(newX)){stop("\nX and newX do not have the same number of features - please make these align")}
-
+    if (object$p != ncol(newX)){stop("the X from the model fit and newX do not have the same number of features - please make these align\n")}
+    if ((ncol(newX) != ncol(object$std_X)) & fbm_flag) stop("The old and new datasets do not have the same number of columns;
+                                               this is usually due features that are present in newX but were removed from the
+                                               X used in model fitting due to singularity.
+                                               At this time, this more complicated case is not addressed for filebacked data.
+                                               Please make sure that for filebacked data, the new data represents the same features
+                                               as the data used in model fitting (recalling that the latter excludes any constant features.)")
     # below, we subset the columns to include only the nonsingular features from
     #   the training data -- we don't have estimated beta coefs. for these features!
     singular <- setdiff(seq(1:length(object$std_X_details$center)),
@@ -129,13 +136,23 @@ predict.plmm <- function(object,
                         scale = object$std_X_details$scale)
     }
 
-    train_scale_beta_og_dim <- adjust_beta_dimension(object$std_scale_beta,
-                                                     p = object$p,
-                                                     std_X_details = object$std_X_details,
-                                                     fbm_flag = fbm_flag,
-                                                     plink_flag = object$plink_flag)
-    a <- train_scale_beta_og_dim[1,]
-    b <- train_scale_beta_og_dim[-1,,drop=FALSE]
+    # check to see if the coefficients on the standardized scale need a dimension
+    # adjustment
+    if (nrow(object$std_scale_beta) != (ncol(newX) + 1)) {
+      train_scale_beta_og_dim <- adjust_beta_dimension(std_scale_beta = object$std_scale_beta,
+                                                       p = object$p,
+                                                       std_X_details = object$std_X_details,
+                                                       fbm_flag = fbm_flag,
+                                                       plink_flag = object$plink_flag)
+
+      a <- train_scale_beta_og_dim[1,]
+      b <- train_scale_beta_og_dim[-1,,drop=FALSE]
+    } else {
+      a <- object$std_scale_beta[1,]
+      b <- object$std_scale_beta[-1,,drop=FALSE]
+    }
+
+
 
     if (fbm_flag) {
       Xb <- sweep(newX %*% b, 2, a, "+")
@@ -153,14 +170,16 @@ predict.plmm <- function(object,
                                B = object$std_X)
       Sigma_21 <- const*XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
+      # TODO: need to address the case where newX has columns that were
+      # removed from object$std_X
     } else {
       Sigma_11 <- construct_variance(fit = object)
       Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX[,object$std_X_details$ns],
                                                 object$std_X)
     }
-
-    Xb_old <- sweep(object$std_X %*% object$std_scale_beta[-1,], 2,
-                    object$std_scale_beta[1,], "+")
+    aa <- object$std_scale_beta[1,]
+    bb <- object$std_X %*% object$std_scale_beta[-1,]
+    Xb_old <- sweep(bb, 2, aa, "+")
     resid_old <- drop(object$y) - Xb_old
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
     blup <- drop(Xb + ranef)
