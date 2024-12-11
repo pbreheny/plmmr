@@ -17,7 +17,6 @@ untransform_delim <- function(std_scale_beta, p, std_X_details, plink_flag,
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- std_scale_beta[1, , drop = FALSE] # this is the intercept
   b <- std_scale_beta[-1, , drop=FALSE]
-
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
   untransformed_beta <- Matrix::Matrix(0,

@@ -22,6 +22,7 @@
 
 untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, plink_flag,
                         use_names = TRUE) {
+
   if (is.null(std_X_details$X_colnames)) use_names <- FALSE
 
   if (fbm_flag) {
