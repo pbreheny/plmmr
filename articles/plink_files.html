@@ -106,7 +106,7 @@ unzip:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># using a temp dir -- change to fit your preference</span></span>
 <span><span class="fu"><a href="../reference/unzip_example_data.html">unzip_example_data</a></span><span class="op">(</span>outdir <span class="op">=</span> <span class="va">temp_dir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Unzipped files are saved in /tmp/Rtmp1K0Xde</span></span></code></pre></div>
+<span><span class="co">#&gt; Unzipped files are saved in /tmp/RtmpNd25h7</span></span></code></pre></div>
 <p>For GWAS data, we have to tell <code>plmmr</code> how to combine
 information across all three PLINK files (the <code>.bed</code>,
 <code>.bim</code>, and <code>.fam</code> files). We do this with
@@ -139,7 +139,7 @@ for <code>rds_dir</code>, as shown below:</p>
 <span><span class="co">#&gt; Imputing the missing (genotype) values using mode method</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp1K0Xde/imputed_penncath_lite.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/RtmpNd25h7/imputed_penncath_lite.rds</span></span></code></pre></div>
 <p>You’ll see a lot of messages printed to the console here … the result
 of all this is the creation of 3 files:
 <code>imputed_penncath_lite.rds</code> and
@@ -162,7 +162,7 @@ illustration):</p>
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp1K0Xde/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpNd25h7/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4367</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -231,7 +231,7 @@ example with these options is included in the
 <span><span class="co">#&gt; There are 62 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2024-12-11 22:12:54</span></span>
+<span><span class="co">#&gt; Standardization completed at 2024-12-11 22:16:12</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span>
 <span></span>
 <span><span class="co"># examine the design - notice the components of this object </span></span>
@@ -253,7 +253,7 @@ example with these options is included in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp1K0Xde/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpNd25h7/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4305</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -300,18 +300,18 @@ you want to return the model fitting results, set
 <span>                return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2024-12-11 22:12:56</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2024-12-11 22:16:13</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2024-12-11 22:12:57</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2024-12-11 22:16:14</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:12:57</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:15</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:00 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:18 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2024-12-11 22:13:00</span></span>
+<span><span class="co">#&gt; Model ready at  2024-12-11 22:16:18</span></span>
 <span><span class="co"># you can turn off the trace messages by letting trace = F (default)</span></span></code></pre></div>
 <p>We examine our model results below:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -342,10 +342,10 @@ cross validation method:</p>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:02</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:20</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:05 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:23 </span></span>
 <span><span class="co">#&gt; 'Fold' argument is either NULL or missing; assigning folds randomly (by default).</span></span>
 <span><span class="co">#&gt;           </span></span>
 <span><span class="co">#&gt; To specify folds for each observation, supply a vector with fold assignments.</span></span>
@@ -356,42 +356,42 @@ cross validation method:</p>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Fitting model in fold  1 :</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:06</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:24</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:09 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:26 </span></span>
 <span><span class="co">#&gt;   |                                                                              |==============                                                        |  20%</span></span>
 <span><span class="co">#&gt; Beginning eigendecomposition in fold  2 :</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Fitting model in fold  2 :</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:10</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:27</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:13 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:30 </span></span>
 <span><span class="co">#&gt;   |                                                                              |============================                                          |  40%Beginning eigendecomposition in fold  3 :</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Fitting model in fold  3 :</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:14</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:31</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:16 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:33 </span></span>
 <span><span class="co">#&gt;   |                                                                              |==========================================                            |  60%Beginning eigendecomposition in fold  4 :</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Fitting model in fold  4 :</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:18</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:35</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:20 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:37 </span></span>
 <span><span class="co">#&gt;   |                                                                              |========================================================              |  80%Beginning eigendecomposition in fold  5 :</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
 <span><span class="co">#&gt; Fitting model in fold  5 :</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:21</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:16:38</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:24 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:16:41 </span></span>
 <span><span class="co">#&gt;   |                                                                              |======================================================================| 100%</span></span></code></pre></div>
 <p>There are plot and summary methods for CV models as well:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
