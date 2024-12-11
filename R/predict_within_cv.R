@@ -38,6 +38,7 @@ predict_within_cv <- function(fit,
                               std_X_details,
                               type,
                               fbm = FALSE,
+                              plink_flag = FALSE,
                               Sigma_11 = NULL,
                               Sigma_21 = NULL, ...) {
 
@@ -56,14 +57,17 @@ predict_within_cv <- function(fit,
     colnames(fit$std_scale_beta) <- lam_names(fit$lambda)
   }
 
-  # adjust the dimension of the estimated coefficients
-  train_scale_b_og_dim <- adjust_beta_dimension(std_scale_beta = fit$std_scale_beta,
-                                                p = ncol(testX),
-                                                std_X_details = std_X_details,
-                                                fbm_flag = fbm_flag)
+  # adjust the dimension of the estimated coefficients, if needed
+  if (ncol(testX) > (ncol(train_scale_beta)-1)){
+    train_scale_beta <- adjust_beta_dimension(std_scale_beta = fit$std_scale_beta,
+                                              p = ncol(testX),
+                                              std_X_details = std_X_details,
+                                              fbm_flag = fbm_flag,
+                                              plink_flag = plink_flag)
+  }
   # calculate the estimated mean values for test data (on the *standardized* scale)
-  a <- train_scale_b_og_dim[1,]
-  b <- train_scale_b_og_dim[-1,,drop=FALSE]
+  a <- train_scale_beta[1,]
+  b <- train_scale_beta[-1,,drop=FALSE]
   Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values

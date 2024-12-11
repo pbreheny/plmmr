@@ -54,7 +54,6 @@ plmm_checks <- function(design,
 
   std_X_n <- design$std_X_n
   std_X_p <- design$std_X_p
-  # genomic <- index_std_X(std_X_p = design$std_X_p, non_genomic = design$non_gen)
 
   # create a list that captures the centering/scaling for std_X;
   # will need this later, see `untransform()`
@@ -131,7 +130,7 @@ plmm_checks <- function(design,
     K = K,
     diag_K = diag_K,
     fbm_flag = fbm_flag,
-    plink_flag = design$is_plink,
+    plink_flag = ifelse(is.null(design$is_plink), FALSE, TRUE), # if null, then not from PLINK
     penalty = penalty,
     penalty_factor = penalty_factor,
     gamma = gamma,
