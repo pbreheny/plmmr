@@ -114,7 +114,5 @@ mspe_lp <- apply(yhat_lp, 2, function(c){crossprod(colon_outcome$y - c)/length(c
 mspe_blup <- apply(yhat_blup, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
 min(mspe_lp)
 min(mspe_blup)
-
-# Pick up here: need to double-check the BLUP method....
 ```
 

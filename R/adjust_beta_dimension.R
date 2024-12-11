@@ -1,5 +1,7 @@
 #' An internal function to adjust the dimensions of a matrix of estimated coefficients
-#'  returned by plmm_fit(). This function is designed for use in BLUP prediction.
+#'  returned by plmm_fit().
+#'
+#'  This function is designed for use in BLUP prediction.
 #'  The objective here is to get a matrix of estimated beta coefficients that
 #'  are on the standardized scale, but have the dimension of the original/training data.
 #'  We do this by adding rows of 0s to the std_scale_beta matrix corresponding to
