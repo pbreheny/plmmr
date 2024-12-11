@@ -8,8 +8,8 @@
 <title>If your data is in PLINK files • plmmr</title>
 <script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><link href="../deps/KaTex-0.16.10/katex.min.css" rel="stylesheet">
 <script src="../deps/KaTex-0.16.10/katex.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="If your data is in PLINK files">
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,7 +106,7 @@ unzip:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># using a temp dir -- change to fit your preference</span></span>
 <span><span class="fu"><a href="../reference/unzip_example_data.html">unzip_example_data</a></span><span class="op">(</span>outdir <span class="op">=</span> <span class="va">temp_dir</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Unzipped files are saved in /tmp/Rtmp7yTm6J</span></span></code></pre></div>
+<span><span class="co">#&gt; Unzipped files are saved in /tmp/Rtmp1K0Xde</span></span></code></pre></div>
 <p>For GWAS data, we have to tell <code>plmmr</code> how to combine
 information across all three PLINK files (the <code>.bed</code>,
 <code>.bim</code>, and <code>.fam</code> files). We do this with
@@ -125,7 +125,8 @@ for <code>rds_dir</code>, as shown below:</p>
 <span>                            <span class="co"># overwrite existing files in temp_dir</span></span>
 <span>                            <span class="co"># (you can turn this feature off if you need to)</span></span>
 <span>                            overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                            <span class="co"># turning off parallelization - leaving this on causes problems knitting this vignette</span></span>
+<span>                            <span class="co"># turning off parallelization - </span></span>
+<span>                            <span class="co">#   leaving this on causes problems knitting this vignette</span></span>
 <span>                            parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Preprocessing penncath_lite data:</span></span>
@@ -138,7 +139,7 @@ for <code>rds_dir</code>, as shown below:</p>
 <span><span class="co">#&gt; Imputing the missing (genotype) values using mode method</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp7yTm6J/imputed_penncath_lite.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp1K0Xde/imputed_penncath_lite.rds</span></span></code></pre></div>
 <p>You’ll see a lot of messages printed to the console here … the result
 of all this is the creation of 3 files:
 <code>imputed_penncath_lite.rds</code> and
@@ -161,7 +162,7 @@ illustration):</p>
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp7yTm6J/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp1K0Xde/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4367</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -230,17 +231,18 @@ example with these options is included in the
 <span><span class="co">#&gt; There are 62 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2024-10-23 22:07:33</span></span>
+<span><span class="co">#&gt; Standardization completed at 2024-12-11 22:12:54</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span>
 <span></span>
 <span><span class="co"># examine the design - notice the components of this object </span></span>
 <span><span class="va">pen_design_rds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">pen_design</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pen_design_rds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 15</span></span>
+<span><span class="co">#&gt; List of 16</span></span>
 <span><span class="co">#&gt;  $ X_colnames    : chr [1:4367] "rs3107153" "rs2455124" "rs10915476" "rs4592237" ...</span></span>
 <span><span class="co">#&gt;  $ X_rownames    : chr [1:1401] "10002" "10004" "10005" "10007" ...</span></span>
 <span><span class="co">#&gt;  $ n             : int 1401</span></span>
 <span><span class="co">#&gt;  $ p             : int 4367</span></span>
+<span><span class="co">#&gt;  $ is_plink      : logi TRUE</span></span>
 <span><span class="co">#&gt;  $ outcome_idx   : int [1:1401] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
 <span><span class="co">#&gt;  $ y             : Named int [1:1401] 1 1 1 1 1 1 1 1 1 0 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "names")= chr [1:1401] "CAD1" "CAD2" "CAD3" "CAD4" ...</span></span>
@@ -251,7 +253,7 @@ example with these options is included in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_penncath_lite.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp7yTm6J/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp1K0Xde/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 1401</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 4305</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 1401</span></span>
@@ -298,27 +300,28 @@ you want to return the model fitting results, set
 <span>                return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2024-10-23 22:07:34</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2024-12-11 22:12:56</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2024-10-23 22:07:36</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2024-12-11 22:12:57</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-10-23 22:07:36</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:12:57</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-10-23 22:07:39 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:00 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2024-10-23 22:07:40</span></span>
+<span><span class="co">#&gt; Model ready at  2024-12-11 22:13:00</span></span>
 <span><span class="co"># you can turn off the trace messages by letting trace = F (default)</span></span></code></pre></div>
 <p>We examine our model results below:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pen_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=1401, p=4368 at lambda=0.01217</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pen_fit</span>,</span>
+<span>        idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=1401, p=4368 at lambda=0.01211</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  534 </span></span>
+<span><span class="co">#&gt; # of non-zero coefficients:  537 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pen_fit</span><span class="op">)</span></span></code></pre></div>
@@ -331,14 +334,72 @@ you want to return the model fitting results, set
 cross validation method:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">pen_design</span>,</span>
-<span>                return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
+<span>                  type <span class="op">=</span> <span class="st">"blup"</span>,</span>
+<span>                  return_fit <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                  trace <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
+<span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:02</span></span>
+<span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:05 </span></span>
+<span><span class="co">#&gt; 'Fold' argument is either NULL or missing; assigning folds randomly (by default).</span></span>
+<span><span class="co">#&gt;           </span></span>
+<span><span class="co">#&gt; To specify folds for each observation, supply a vector with fold assignments.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Starting cross validation</span></span>
+<span><span class="co">#&gt;   |                                                                              |                                                                      |   0%Beginning eigendecomposition in fold  1 :</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Fitting model in fold  1 :</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:06</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:09 </span></span>
+<span><span class="co">#&gt;   |                                                                              |==============                                                        |  20%</span></span>
+<span><span class="co">#&gt; Beginning eigendecomposition in fold  2 :</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Fitting model in fold  2 :</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:10</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:13 </span></span>
+<span><span class="co">#&gt;   |                                                                              |============================                                          |  40%Beginning eigendecomposition in fold  3 :</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Fitting model in fold  3 :</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:14</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:16 </span></span>
+<span><span class="co">#&gt;   |                                                                              |==========================================                            |  60%Beginning eigendecomposition in fold  4 :</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Fitting model in fold  4 :</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:18</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:20 </span></span>
+<span><span class="co">#&gt;   |                                                                              |========================================================              |  80%Beginning eigendecomposition in fold  5 :</span></span>
+<span><span class="co">#&gt; Starting decomposition.</span></span>
+<span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
+<span><span class="co">#&gt; Fitting model in fold  5 :</span></span>
+<span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:13:21</span></span>
+<span><span class="co">#&gt; Beginning model fitting.</span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:13:24 </span></span>
+<span><span class="co">#&gt;   |                                                                              |======================================================================| 100%</span></span></code></pre></div>
 <p>There are plot and summary methods for CV models as well:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span> <span class="co"># summary at lambda value that minimizes CV error</span></span>
 <span><span class="co">#&gt; lasso-penalized model with n=1401 and p=4368</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.0408):</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.0406):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt;   Nonzero coefficients: 5</span></span>
+<span><span class="co">#&gt;   Nonzero coefficients: 6</span></span>
 <span><span class="co">#&gt;   Cross-validation error (deviance): 0.22</span></span>
 <span><span class="co">#&gt;   Scale estimate (sigma): 0.471</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span></span></code></pre></div>

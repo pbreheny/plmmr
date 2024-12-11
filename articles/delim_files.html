@@ -8,8 +8,8 @@
 <title>If your data is in a delimited file • plmmr</title>
 <script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><link href="../deps/KaTex-0.16.10/katex.min.css" rel="stylesheet">
 <script src="../deps/KaTex-0.16.10/katex.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="If your data is in a delimited file">
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,10 @@ a design, and (3) fit a model.</p>
 <span><span class="co">#&gt;       Please make sure you have addressed missingness before you proceed.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp5Tt3MK/processed_colon2.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/RtmpqtI2r7/processed_colon2.rds</span></span>
+<span></span>
+<span><span class="co"># look at what is created </span></span>
+<span><span class="va">colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_dat</span><span class="op">)</span></span></code></pre></div>
 <p>The output messages indicate that the data has been processed. This
 call created 2 files, one <code>.rds</code> file and a corresponding
 <code>.bk</code> file. The <code>.bk</code> file is a special type of
@@ -146,7 +149,7 @@ differs from how PLINK file data are analyzed; look at the
 <span><span class="co">#&gt; There are 0 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2024-10-23 22:07:16</span></span>
+<span><span class="co">#&gt; Standardization completed at 2024-12-11 22:12:38</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span></code></pre></div>
 <p>As with <code><a href="../reference/process_delim.html">process_delim()</a></code>, the
 <code><a href="../reference/create_design.html">create_design()</a></code> function returns a filepath: . The output
@@ -158,11 +161,12 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <code class="sourceCode R"><span><span class="co"># look at the results</span></span>
 <span><span class="va">colon_rds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_design</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">colon_rds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 17</span></span>
+<span><span class="co">#&gt; List of 18</span></span>
 <span><span class="co">#&gt;  $ X_colnames    : chr [1:2001] "sex" "Hsa.3004" "Hsa.13491" "Hsa.13491.1" ...</span></span>
 <span><span class="co">#&gt;  $ X_rownames    : chr [1:62] "row1" "row2" "row3" "row4" ...</span></span>
 <span><span class="co">#&gt;  $ n             : num 62</span></span>
 <span><span class="co">#&gt;  $ p             : num 2001</span></span>
+<span><span class="co">#&gt;  $ is_plink      : logi FALSE</span></span>
 <span><span class="co">#&gt;  $ outcome_idx   : int [1:62] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
 <span><span class="co">#&gt;  $ y             : int [1:62] 1 0 1 0 1 0 1 0 1 0 ...</span></span>
 <span><span class="co">#&gt;  $ std_X_rownames: chr [1:62] "row1" "row2" "row3" "row4" ...</span></span>
@@ -174,7 +178,7 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_colon2.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp5Tt3MK/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpqtI2r7/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 62</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 2001</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 62</span></span>
@@ -200,25 +204,25 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <code class="sourceCode R"><span><span class="va">colon_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">colon_design</span>, return_fit <span class="op">=</span> <span class="cn">TRUE</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2024-10-23 22:07:16</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2024-12-11 22:12:39</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2024-10-23 22:07:16</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2024-12-11 22:12:39</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-10-23 22:07:16</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2024-12-11 22:12:39</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2024-10-23 22:07:17 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2024-12-11 22:12:39 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2024-10-23 22:07:17</span></span></code></pre></div>
+<span><span class="co">#&gt; Model ready at  2024-12-11 22:12:39</span></span></code></pre></div>
 <p>Notice the messages that are printed out – this documentation may be
 optionally saved to another <code>.log</code> file using the
 <code>logfile</code> argument.</p>
 <p>We can examine the results at a specific <span class="math inline">\lambda</span> value:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">colon_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=62, p=2003 at lambda=0.0594</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=62, p=2002 at lambda=0.0597</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -228,6 +232,30 @@ optionally saved to another <code>.log</code> file using the
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">colon_fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="delim_files_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="prediction-for-filebacked-data">Prediction for filebacked data<a class="anchor" aria-label="anchor" href="#prediction-for-filebacked-data"></a>
+</h2>
+<p>This example shows an experimental option, wherein we are working to
+add a prediction method for filebacked outside of cross-validation.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># linear predictor </span></span>
+<span><span class="va">yhat_lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">colon_fit</span>,</span>
+<span>        newX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">colon</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span>
+<span>        type <span class="op">=</span> <span class="st">"lp"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># best linear unbiased predictor </span></span>
+<span><span class="va">yhat_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">colon_fit</span>,</span>
+<span>        newX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">colon</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span>
+<span>        type <span class="op">=</span> <span class="st">"blup"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># look at mean squared prediction error </span></span>
+<span><span class="va">mspe_lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_lp</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">mspe_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_blup</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe_lp</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.007659158</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe_blup</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.00617254</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
