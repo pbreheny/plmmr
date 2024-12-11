@@ -26,6 +26,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # make list to hold the data for this particular fold:
   fold_args <- list(std_X_details = list(),
                     fbm_flag = cv_args$fbm_flag,
+                    plink_flag = cv_args$plink_flag,
                     penalty = cv_args$penalty,
                     penalty_factor = cv_args$penalty_factor,
                     gamma = cv_args$gamma,
@@ -191,7 +192,8 @@ cvf <- function(i, fold, type, cv_args, ...) {
                               train_scale_beta = fit.i$std_scale_beta,
                               std_X_details = fold_args$std_X_details,
                               type = 'lp',
-                              fbm = cv_args$fbm_flag)
+                              fbm = cv_args$fbm_flag,
+                              plink_flag = cv_args$plink_flag)
   }
 
   if (type == 'blup'){
@@ -218,6 +220,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                               std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
+                              plink_flag = cv_args$plink_flag,
                               Sigma_11 = Sigma_11,
                               Sigma_21 = Sigma_21, ...)
 

@@ -218,7 +218,8 @@ cv_plmm <- function(design,
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
                                std_X_details = checked_data$std_X_details,
-                               fbm_flag = checked_data$fbm_flag)
+                               fbm_flag = checked_data$fbm_flag,
+                               plink_flag = checked_data$plink_flag)
 
   cat("\nFormatting for full model finished at",
       pretty_time(),
@@ -247,6 +248,7 @@ cv_plmm <- function(design,
   cv_args$lambda <- fit$lambda
   cv_args$non_genomic <- checked_data$non_genomic
   cv_args$eta_star <- fit$eta # use the same eta estimate in each fold of CV
+  cv_args$plink_flag <- checked_data$plink_flag
 
   estimated_Sigma <- NULL
   if (type == 'blup') {
