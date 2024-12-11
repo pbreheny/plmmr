@@ -23,7 +23,7 @@
 #' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
 #' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
+#' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default will be no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are

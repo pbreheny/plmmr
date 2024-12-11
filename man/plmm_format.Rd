@@ -4,7 +4,7 @@
 \alias{plmm_format}
 \title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
 \usage{
-plmm_format(fit, p, std_X_details, fbm_flag)
+plmm_format(fit, p, std_X_details, fbm_flag, plink_flag)
 }
 \arguments{
 \item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
@@ -12,13 +12,19 @@ plmm_format(fit, p, std_X_details, fbm_flag)
 \item{p}{The number of features in the original data (including constant features)}
 
 \item{std_X_details}{A list with 3 items:
-\itemize{
-\item 'center': the centering values for the columns of \code{X}
-\item 'scale': the scaling values for the non-singular columns of \code{X}
-\item 'ns': indicesof nonsingular columns in \code{std_X}
-}}
+* 'center': the centering values for the columns of \code{X}
+* 'scale': the scaling values for the non-singular columns of \code{X}
+* 'ns': indicesof nonsingular columns in \code{std_X}}
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
+
+\item{plink_flag}{Logical: did these data come from PLINK files?
+\strong{Note}: This flag matters because of how non-genomic features
+are handled for PLINK files -- in data from PLINK files,
+unpenalized columns are \emph{not} counted in the \code{p} argument. For delimited
+files, \code{p} does include unpenalized columns. This difference has
+implications for how the \code{untransform()} function determines the
+appropriate dimensions for the estimated coefficient matrix it returns.}
 }
 \value{
 A list with the components:

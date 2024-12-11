@@ -7,7 +7,7 @@
 \method{predict}{plmm}(
   object,
   newX,
-  type = c("lp", "coefficients", "vars", "nvars", "blup"),
+  type = c("blup", "coefficients", "vars", "nvars", "lp"),
   lambda,
   idx = 1:length(object$lambda),
   ...

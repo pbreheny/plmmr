@@ -3,13 +3,9 @@
 \name{adjust_beta_dimension}
 \alias{adjust_beta_dimension}
 \title{An internal function to adjust the dimensions of a matrix of estimated coefficients
-returned by plmm_fit(). This function is designed for use in BLUP prediction.
-The objective here is to get a matrix of estimated beta coefficients that
-are on the standardized scale, but have the dimension of the original/training data.
-We do this by adding rows of 0s to the std_scale_beta matrix corresponding to
-the singular features of X.}
+returned by plmm_fit().}
 \usage{
-adjust_beta_dimension(std_scale_beta, p, std_X_details, fbm_flag)
+adjust_beta_dimension(std_scale_beta, p, std_X_details, fbm_flag, plink_flag)
 }
 \arguments{
 \item{std_scale_beta}{A matrix of estimated beta coefficients on the scale of the standardized original/training data
@@ -20,13 +16,20 @@ Note: the rows of this matrix represent the \emph{nonsingular} columns of the de
 \item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'}
 
 \item{fbm_flag}{Logical: was this model fit filebacked?}
+
+\item{plink_flag}{Logical: did these data come from PLINK files?
+\strong{Note}: This flag matters because of how non-genomic features
+are handled for PLINK files -- in data from PLINK files,
+unpenalized columns are \emph{not} counted in the \code{p} argument. For delimited
+files, \code{p} does include unpenalized columns. This difference has
+implications for how the \code{untransform()} function determines the
+appropriate dimensions for the estimated coefficient matrix it returns.}
 }
 \value{
 std_scale_b_og_dim: a matrix of estimated beta coefs. that is still on the scale of std_X, but has the dimension of X
 }
 \description{
-An internal function to adjust the dimensions of a matrix of estimated coefficients
-returned by plmm_fit(). This function is designed for use in BLUP prediction.
+This function is designed for use in BLUP prediction.
 The objective here is to get a matrix of estimated beta coefficients that
 are on the standardized scale, but have the dimension of the original/training data.
 We do this by adding rows of 0s to the std_scale_beta matrix corresponding to
