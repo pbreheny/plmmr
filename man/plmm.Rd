@@ -78,7 +78,7 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Defaults to NULL, which does not save the result.}
 
-\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', one with the linear predictors, and one with everything else (see below).
 Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session.
@@ -87,10 +87,17 @@ Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
 \item{...}{Additional optional arguments to \code{plmm_checks()}}
 }
 \value{
-A list which includes:
+A list which includes 19 items:
 \itemize{
 \item beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
-\item rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
+\item std_scale_beta: the matrix of estimated coefficients on the ~standardized~ scale. These are not returned if \code{compact_save = TRUE}.
+\item std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
+of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
+\item std_X: The standardized design matrix; if data is filebacked, this object will be a \code{filebacked.big.matrix} from the bigmemory package.
+Note: \code{std_X} is not saved/returned when \code{return_fit = FALSE}.
+\item y: the outcome vector used in model fitting.
+\item p: the total number of columns in the design matrix (including singular columns).
+\item plink_flag: a logical flag: did the data come from PLINK files?
 \item lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
 \item linear_predictors: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.

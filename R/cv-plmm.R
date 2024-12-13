@@ -239,7 +239,7 @@ cv_plmm <- function(design,
           pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(the_final_product[c(3, 6:9, 11:18)], paste0(save_rds, "full_fit_details.rds"))
+      saveRDS(fit_to_return[c(3, 6:9, 11:18)], paste0(save_rds, "full_fit_details.rds"))
       cat("All other results (center/scale values from standardization, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)

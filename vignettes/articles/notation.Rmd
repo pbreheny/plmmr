@@ -76,7 +76,7 @@ Under these assumptions, we may write $\mathbf{y} \sim N(\dot{\mathbf{X}}\dot{\b
 
 -   $\eta$ is the ratio $\frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}$. We estimate $\hat{\eta}$ from a null model (more details to come).
 
--   $\mathbf{\Sigma}$ is the variance of the outcome, where $\mathbb{V}({\mathbf{y}}) = \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n$.
+-   $\mathbf{\Sigma}$ is the variance of the outcome, where $\mathbb{V}({\mathbf{y}}) \propto \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n$.
 
 -   $\mathbf{w}$ is the vector of weights defined as $(\eta\mathbf{\mathbf{s}} + (1-\eta))^{-1/2}$. The values in $\mathbf{w}$ are the nonzero values of the diagonal matrix $\mathbf{W} \equiv (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}$.
 
