@@ -163,7 +163,7 @@ Defaults to NULL, which does not save the result.</p></dd>
 
 
 <dt id="arg-compact-save">compact_save<a class="anchor" aria-label="anchor" href="#arg-compact-save"></a></dt>
-<dd><p>Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
+<dd><p>Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', one with the linear predictors, and one with everything else (see below).
 Defaults to FALSE. <strong>Note</strong>: you must specify <code>save_rds</code> for this argument to be called.</p></dd>
 
 
@@ -178,8 +178,15 @@ Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.<
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list which includes:</p><ul><li><p>beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of <code>lambda</code></p></li>
-<li><p>rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.</p></li>
+    <p>A list which includes 19 items:</p><ul><li><p>beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of <code>lambda</code></p></li>
+<li><p>std_scale_beta: the matrix of estimated coefficients on the ~standardized~ scale. These are not returned if <code>compact_save = TRUE</code>.</p></li>
+<li><p>std_X_details: a list with 3 items: the center &amp; scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
+of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.</p></li>
+<li><p>std_X: The standardized design matrix; if data is filebacked, this object will be a <code>filebacked.big.matrix</code> from the bigmemory package.
+Note: <code>std_X</code> is not saved/returned when <code>return_fit = FALSE</code>.</p></li>
+<li><p>y: the outcome vector used in model fitting.</p></li>
+<li><p>p: the total number of columns in the design matrix (including singular columns).</p></li>
+<li><p>plink_flag: a logical flag: did the data come from PLINK files?</p></li>
 <li><p>lambda: a numeric vector of the lasso tuning parameter values used in model fitting.</p></li>
 <li><p>eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure</p></li>
 <li><p>linear_predictors: the matrix resulting from the product of <code>stdrot_X</code> and the estimated coefficients on the ~rotated~ scale.</p></li>
