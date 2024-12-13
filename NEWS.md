@@ -10,7 +10,7 @@ We have recently caught a couple of bugs in our model fitting functions -- we ap
 
 ## Other changes
 
--   **Change of default settings**: The default prediction method in both `predict()` and `cv_plmm()` is now 'blup' (best linear unbiased prediction).
+-   **Change of default settings for prediction**: The default prediction method in both `predict()` and `cv_plmm()` is now 'blup' (best linear unbiased prediction).
 -   **Change in objects returned by default in** `plmm()`: By default, the main model fitting function `plmm()` now returns `std_X` (a copy of the standardized design matrix) , `y` (the outcome vector used to fit the model), and `std_scale_beta` (the estimated coefficients on the standardized scale). These components are used to construct the best linear unbiased predictor. The user can opt not to return these items by using the `return_fit = FALSE` and `compact_save` options.
 -   **Change in arguments passed to** `predict()`: In tandem with the change in what is returned by `plmm()` by default, the `predict()` method no longer needs a separate `X` and `y` argument to be supplied for `type = 'blup'`. The components needed for BLUP are returned by default in `plmm`. Note that `predict()` is still in its early stages of development for filebacked data; given the complexities and particularities of how filebacked data are processed (particularly data with constant features), there are edge cases that the `predict()` method does not handle yet. We continue to work on developing this method; for now, an example of `predict()` for filebacked data is in the vignette for delimited data. Note in particular that in the example from the delimited data, there are no constant features in the design matrix.
 
