@@ -142,7 +142,7 @@ linear mixed models over a grid of values for the regularization parameter \code
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)
-cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE, type = 'blup')
+cv_fit <- cv_plmm(design = admix_design)
 print(summary(cv_fit))
 plot(cv_fit)
 

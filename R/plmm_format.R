@@ -48,14 +48,14 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
   colnames(og_scale_beta) <- colnames(fit$linear_predictors) <- lam_names(fit$lambda)
 
 
-  # output
+  # output (19 items)
   out <- list(
     beta_vals = og_scale_beta,
     std_scale_beta = fit$std_scale_beta,
     std_X_details = std_X_details,
     std_X = fit$std_X,
     y = fit$y,
-    p = p, # need to hold onto the total number of features in the original data
+    p = p, # (need to hold onto the total number of features in the original data)
     plink_flag = plink_flag,
     lambda = fit$lambda,
     eta = fit$eta,
@@ -65,7 +65,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
     alpha = fit$alpha,
     loss = fit$loss,
     penalty_factor = fit$penalty_factor,
-    ns_idx = c(1, 1 + fit$ns), # PAY ATTENTION HERE!
+    ns_idx = c(1, 1 + fit$ns), # NOTE: this indexing is *very* important
     iter = fit$iter,
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U))

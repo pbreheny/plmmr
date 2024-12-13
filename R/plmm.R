@@ -28,15 +28,22 @@
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                                Defaults to NULL, which does not save the result.
+#' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', one with the linear predictors, and one with everything else (see below).
+#'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
 #'                                Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.
-#' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
-#'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #'
-#' @returns A list which includes:
+#' @returns A list which includes 19 items:
 #'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
-#'  * rotated_scale_beta_vals: the matrix of estimated coefficients on the ~rotated~ scale. This is the scale on which the model was fit.
+#'  * std_scale_beta: the matrix of estimated coefficients on the ~standardized~ scale. These are not returned if `compact_save = TRUE`.
+#'  * std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
+#'                  of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
+#'  * std_X: The standardized design matrix; if data is filebacked, this object will be a `filebacked.big.matrix` from the bigmemory package.
+#'           Note: `std_X` is not saved/returned when `return_fit = FALSE`.
+#'  * y: the outcome vector used in model fitting.
+#'  * p: the total number of columns in the design matrix (including singular columns).
+#'  * plink_flag: a logical flag: did the data come from PLINK files?
 #'  * lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
 #'  * eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
 #'  * linear_predictors: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
@@ -224,14 +231,14 @@ plmm <- function(design,
           pretty_time(),
           file = logfile, append = TRUE)
 
-      saveRDS(the_final_product[c(2:3, 5:12)], paste0(save_rds, "_details.rds"))
-      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
+      saveRDS(the_final_product[c(3, 6:9, 11:18)], paste0(save_rds, "_details.rds"))
+      cat("All other results (center/scale values from standardization, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)
 
     } else {
-      # save all output in one file (default)
-      saveRDS(the_final_product, paste0(save_rds, ".rds"))
+      # save all output in one file (default); *not* including std_X
+      saveRDS(the_final_product[c(1:3, 5:19)], paste0(save_rds, ".rds"))
       cat("Results saved to:", paste0(save_rds, ".rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)

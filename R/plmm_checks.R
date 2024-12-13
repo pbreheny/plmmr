@@ -116,6 +116,15 @@ plmm_checks <- function(design,
 
   }
 
+  # for in in-memory designs, set plink flag to FALSE
+  if(is.null(design$is_plink)){
+    plink_flag <- FALSE
+  } else if (design$is_plink) {
+    plink_flag <- TRUE
+  } else {
+    plink_flag <- FALSE
+  }
+
   # return list for model preparation ---------------------------------
   ret <- list(
     std_X = std_X,
@@ -130,7 +139,7 @@ plmm_checks <- function(design,
     K = K,
     diag_K = diag_K,
     fbm_flag = fbm_flag,
-    plink_flag = ifelse(is.null(design$is_plink), FALSE, TRUE), # if null, then not from PLINK
+    plink_flag = plink_flag,
     penalty = penalty,
     penalty_factor = penalty_factor,
     gamma = gamma,
