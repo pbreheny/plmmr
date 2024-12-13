@@ -238,6 +238,11 @@ cv_plmm <- function(design,
       cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)
+
+      saveRDS(the_final_product[c(3, 6:9, 11:18)], paste0(save_rds, "full_fit_details.rds"))
+      cat("All other results (center/scale values from standardization, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
+          pretty_time(),
+          file = logfile, append = TRUE)
     }
   }
   gc()
@@ -408,11 +413,6 @@ cv_plmm <- function(design,
 
       saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
       cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(fit_to_return[c(2:3, 5:12)], paste0(save_rds, "_full_fit_details.rds"))
-      cat("All other results (loss, # of iterations, ...) saved to:", paste0(save_rds, "_full_fit_details.rds"), "at",
           pretty_time(),
           file = logfile, append = TRUE)
 
