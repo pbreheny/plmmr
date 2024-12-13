@@ -320,7 +320,6 @@ cv_plmm <- function(design,
       # case 2: cluster NOT user specified (this is the typical use case)
       cat("Started fold", i, "at", pretty_time(),
           file = logfile, append = TRUE)
-
       res <- cvf(i = i,
                  fold = fold,
                  type = type,

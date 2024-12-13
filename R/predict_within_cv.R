@@ -58,7 +58,7 @@ predict_within_cv <- function(fit,
   }
 
   # adjust the dimension of the estimated coefficients, if needed
-  if (ncol(testX) > (ncol(train_scale_beta)-1)){
+  if (ncol(testX) > (nrow(train_scale_beta)-1)){
     train_scale_beta <- adjust_beta_dimension(std_scale_beta = fit$std_scale_beta,
                                               p = ncol(testX),
                                               std_X_details = std_X_details,
@@ -77,6 +77,7 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
+
     # covariance comes from selected rows and columns from estimated_Sigma that
     #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
