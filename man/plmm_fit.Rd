@@ -19,11 +19,8 @@ plmm_fit(
   lambda,
   eps = 1e-04,
   max_iter = 10000,
-  convex = TRUE,
-  dfmax = NULL,
   init = NULL,
   warn = TRUE,
-  returnX = TRUE,
   ...
 )
 }
@@ -56,52 +53,11 @@ plmm_fit(
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{(future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
-
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
-
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
-\item{returnX}{Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.}
-
 \item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
-}
-\value{
-A list with these components:
-\itemize{
-\item std_scale_beta: the coefficients estimated on the scale of \code{std_X}
-\item centered_y: the y-values that are 'centered' to have mean 0
-\item s and U, the values and vectors from the eigendecomposition of K
-\item lambda: vector of tuning parameter values
-\item linear_predictors: the product of \code{stdrot_X} and \code{b}
-(linear predictors on the transformed and restandardized scale)
-\item eta: a number (double) between 0 and 1 representing the estimated
-proportion of the variance in the outcome attributable to population/correlation
-structure.
-\item iter: numeric vector with the number of iterations needed in model fitting
-for each value of \code{lambda}
-\item converged: vector of logical values indicating whether the model fitting
-converged at each value of \code{lambda}
-\item loss: vector with the numeric values of the loss at each value of \code{lambda}
-(calculated on the ~rotated~ scale)
-\item penalty: character string indicating the penalty with which the model was
-fit (e.g., 'MCP')
-\item penalty_factor: vector of indicators corresponding to each predictor,
-where 1 = predictor was penalized.
-\item gamma: numeric value indicating the tuning parameter used for the SCAD or
-lasso penalties was used. Not relevant for lasso models.
-\item alpha: numeric value indicating the elastic net tuning parameter.
-\item ns: the indices for the nonsingular values of X
-\item feature_names: formatted column names of the design matrix
-\item nlambda: number of lambda values used in model fitting
-\item eps: tolerance ('epsilon') used for model fitting
-\item max_iter: max. number of iterations per model fit
-\item warn: logical - should warnings be given if model fit does not converge?
-\item init: initial values for model fitting
-\item trace: logical - should messages be printed to the console while models are fit?
-}
 }
 \description{
 PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()

@@ -13,7 +13,6 @@ plmm_checks(
   init = NULL,
   gamma,
   alpha = 1,
-  dfmax = NULL,
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
@@ -37,8 +36,6 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
-
-\item{dfmax}{Option to be added soon: Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 

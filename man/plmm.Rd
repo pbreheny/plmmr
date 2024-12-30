@@ -14,17 +14,14 @@ plmm(
   init = NULL,
   gamma,
   alpha = 1,
-  dfmax = NULL,
   lambda_min,
   nlambda = 100,
   lambda,
   eps = 1e-04,
   max_iter = 10000,
-  convex = TRUE,
   warn = TRUE,
   trace = FALSE,
   save_rds = NULL,
-  compact_save = FALSE,
   return_fit = NULL,
   ...
 )
@@ -57,8 +54,6 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{dfmax}{(\strong{Future idea; not yet incorporated}): Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
-
 \item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
@@ -69,17 +64,13 @@ Note: plmm() does not check to see if a matrix is diagonal. If you want to use a
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{(\strong{Future idea; not yet incorporated}): Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
-
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
 \item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
-Defaults to NULL, which does not save the result.}
-
-\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', one with the linear predictors, and one with everything else (see below).
-Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
+Accompanying the RDS file is a log file for documentation, e.g., "~/dir/my_results.log".
+Defaults to NULL, which does not save any RDS or log files.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session.
 Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
@@ -90,11 +81,11 @@ Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.}
 A list which includes 19 items:
 \itemize{
 \item beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
-\item std_scale_beta: the matrix of estimated coefficients on the ~standardized~ scale. These are not returned if \code{compact_save = TRUE}.
+\item std_Xbeta: a matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of \code{lambda}.
+\strong{Note}: std_Xbeta will not include rows for the intercept or for constant features.
 \item std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
 of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
-\item std_X: The standardized design matrix; if data is filebacked, this object will be a \code{filebacked.big.matrix} from the bigmemory package.
-Note: \code{std_X} is not saved/returned when \code{return_fit = FALSE}.
+\item std_X: if design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}
 \item y: the outcome vector used in model fitting.
 \item p: the total number of columns in the design matrix (including singular columns).
 \item plink_flag: a logical flag: did the data come from PLINK files?

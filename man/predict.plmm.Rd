@@ -8,6 +8,7 @@
   object,
   newX,
   type = c("blup", "coefficients", "vars", "nvars", "lp"),
+  X = NULL,
   lambda,
   idx = 1:length(object$lambda),
   ...
@@ -23,6 +24,10 @@ This can be either a FBM object or a 'matrix' object.
 
 \item{type}{A character argument indicating what type of prediction should be
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
+
+\item{X}{Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
+This design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please \strong{do not} standardize this matrix before supplying here.
+\strong{Note}: If the model was fit file-backed, then the filepath to the .bk file with this matrix is returned as 'std_X' in the fit supplied to 'object'.}
 
 \item{lambda}{A numeric vector of regularization parameter \code{lambda} values
 at which predictions are requested.}
@@ -62,7 +67,7 @@ fit <- plmm(design = train_design)
 
 # make predictions for all lambda values
  pred1 <- predict(object = fit, newX = test$X, type = "lp")
- pred2 <- predict(object = fit, newX = test$X, type = "blup")
+ pred2 <- predict(object = fit, newX = test$X, type = "blup", X = train$X)
 
 # look at mean squared prediction error
 mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
