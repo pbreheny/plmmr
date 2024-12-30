@@ -152,6 +152,7 @@ plmm_fit <- function(prep,
 
     # calculate linear predictors on the scale of std_X
     std_Xbeta <- prep$std_X %*% bb
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1,], "+")
 
   } else {
     res <- biglasso::biglasso_path(
@@ -189,6 +190,7 @@ plmm_fit <- function(prep,
 
     # calculate linear predictors on the scale of std_X
     std_Xbeta <- prep$std_X %*% bb
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1,], "+")
   }
 
   if (prep$trace) {
@@ -204,9 +206,6 @@ plmm_fit <- function(prep,
   if (warn & sum(iter) == max_iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
-    std_X = ifelse(fbm_flag,
-               file.path(dir.name(prep$std_X), file.name(prep$std_X)),
-               prep$std_X),
     y = y,
     std_scale_beta = std_scale_beta,
     std_Xbeta = std_Xbeta,
@@ -227,6 +226,10 @@ plmm_fit <- function(prep,
     max_iter = max_iter,
     warn = warn,
     trace = prep$trace))
+
+  if (fbm_flag){
+    res$std_X <- file.path(dir.name(prep$std_X), file.name(prep$std_X))
+  }
 
   return(ret)
 }

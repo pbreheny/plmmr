@@ -33,10 +33,10 @@
 #'
 #' @returns A list which includes 19 items:
 #'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
+#'  * std_Xbeta: a matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of `lambda`.
+#'              **Note**: std_Xbeta will not include rows for the intercept or for constant features.
 #'  * std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
 #'                  of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
-#'  * std_X: If the design matrix is filebacked, this object will be a filepath to the `filebacked.big.matrix` object containing the standardized design matrix.
-#'           If the design matrix is in-memory, then the standardized design matrix is returned.
 #'  * y: the outcome vector used in model fitting.
 #'  * p: the total number of columns in the design matrix (including singular columns).
 #'  * plink_flag: a logical flag: did the data come from PLINK files?
@@ -172,7 +172,6 @@ plmm <- function(design,
 
 
   # rotate & fit -------------------------------------------------------------
-  if (is.null(dfmax)) dfmax <- checked_data$p + 1
   the_fit <- plmm_fit(prep = the_prep,
                       y = checked_data$y,
                       std_X_details = checked_data$std_X_details,

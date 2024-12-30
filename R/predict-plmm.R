@@ -7,6 +7,9 @@
 #'                  **Note**: Columns of this argument must be named!
 #' @param type      A character argument indicating what type of prediction should be
 #'                  returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
+#' @param X         Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
+#'                  This design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please **do not** standardize this matrix before supplying here.
+#'                  **Note**: If the model was fit file-backed, then the filepath to the .bk file with this matrix is returned as 'std_X' in the fit supplied to 'object'.
 #' @param lambda    A numeric vector of regularization parameter \code{lambda} values
 #'                  at which predictions are requested.
 #' @param idx       Vector of indices of the penalty parameter \code{lambda} at which
@@ -47,7 +50,7 @@
 #'
 #' # make predictions for all lambda values
 #'  pred1 <- predict(object = fit, newX = test$X, type = "lp")
-#'  pred2 <- predict(object = fit, newX = test$X, type = "blup")
+#'  pred2 <- predict(object = fit, newX = test$X, type = "blup", X = train$X)
 #'
 #' # look at mean squared prediction error
 #' mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
@@ -64,6 +67,7 @@
 predict.plmm <- function(object,
                          newX,
                          type=c("blup", "coefficients", "vars", "nvars", "lp"),
+                         X = NULL,
                          lambda,
                          idx=1:length(object$lambda),
                          ...) {
@@ -98,10 +102,12 @@ predict.plmm <- function(object,
 
   if (type=="vars") return(drop(apply(beta_vals[-1, , drop=FALSE]!=0, 2, FUN=which))) # don't count intercept
 
+  # calculate linear predictors with new data
+  a <- beta_vals[1,]
+  b <- beta_vals[-1,,drop=FALSE]
+  Xb <- sweep(newX %*% b, 2, a, "+")
+
   if (type=="lp") {
-    a <- beta_vals[1,]
-    b <- beta_vals[-1,,drop=FALSE]
-    Xb <- sweep(newX %*% b, 2, a, "+")
     return(drop(Xb))
   }
 
@@ -110,19 +116,17 @@ predict.plmm <- function(object,
   if (type == "blup"){
     # check dimensions -- must have same number of features in test & train data
     if (object$p != ncol(newX)){stop("the X from the model fit and newX do not have the same number of features - please make these align\n")}
-    if ((ncol(newX) != ncol(object$std_X)) & fbm_flag) stop("The old and new datasets do not have the same number of columns;
-                                               this is usually due features that are present in newX but were removed from the
-                                               X used in model fitting due to singularity.
-                                               At this time, this more complicated case is not addressed for filebacked data.
-                                               Please make sure that for filebacked data, the new data represents the same features
-                                               as the data used in model fitting (recalling that the latter excludes any constant features.)")
-    # below, we subset the columns to include only the nonsingular features from
-    #   the training data -- we don't have estimated beta coefs. for these features!
+
+   # check for singularity -- this keeps us from scaling by a 0 value
     singular <- setdiff(seq(1:length(object$std_X_details$center)),
                         object$std_X_details$ns)
     if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
+
+    # use center/scale values from the X in the model fit to standardize both X and newX
+    std_X <- scale(X,
+                   center = object$std_X_details$center,
+                   scale = object$std_X_details$scale)
     if (fbm_flag) {
-      # use center/scale values from the X in the model fit to standardize newX
       std_test_info <- .Call("big_std",
                              newX@address,
                              as.integer(count_cores()),
@@ -135,31 +139,6 @@ predict.plmm <- function(object,
                         center = object$std_X_details$center,
                         scale = object$std_X_details$scale)
     }
-
-    # check to see if the coefficients on the standardized scale need a dimension
-    # adjustment
-    if (nrow(object$std_scale_beta) != (ncol(newX) + 1)) {
-      train_scale_beta_og_dim <- adjust_beta_dimension(std_scale_beta = object$std_scale_beta,
-                                                       p = object$p,
-                                                       std_X_details = object$std_X_details,
-                                                       fbm_flag = fbm_flag,
-                                                       plink_flag = object$plink_flag)
-
-      a <- train_scale_beta_og_dim[1,]
-      b <- train_scale_beta_og_dim[-1,,drop=FALSE]
-    } else {
-      a <- object$std_scale_beta[1,]
-      b <- object$std_scale_beta[-1,,drop=FALSE]
-    }
-
-
-
-    if (fbm_flag) {
-      Xb <- sweep(newX %*% b, 2, a, "+")
-    } else {
-      Xb <- sweep(std_newX %*% b, 2, a, "+")
-    }
-
 
     if (fbm_flag) {
       Sigma_11 <- construct_variance(fit = object)
@@ -174,13 +153,9 @@ predict.plmm <- function(object,
       # removed from object$std_X
     } else {
       Sigma_11 <- construct_variance(fit = object)
-      Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX[,object$std_X_details$ns],
-                                                object$std_X)
+      Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX, std_X)
     }
-    aa <- object$std_scale_beta[1,]
-    bb <- object$std_X %*% object$std_scale_beta[-1,]
-    Xb_old <- sweep(bb, 2, aa, "+")
-    resid_old <- drop(object$y) - Xb_old
+    resid_old <- drop(object$y) - object$std_Xbeta
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
     blup <- drop(Xb + ranef)
 

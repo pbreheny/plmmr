@@ -108,8 +108,7 @@ Below is an example of the `predict()` methods for PLMMs:
 y_hat <- predict(object = admix_fit,
                        newX = admix$X,
                        type = "blup",
-                       X = admix$X,
-                       y = admix$y)
+                       X = admix$X)
 
 ```
 
