@@ -14,11 +14,8 @@
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max_iter Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex (future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
-#' @param returnX Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
 #'
 #' @keywords internal
@@ -38,11 +35,8 @@ plmm_fit <- function(prep,
                      lambda,
                      eps = 1e-04,
                      max_iter = 10000,
-                     convex = TRUE,
-                     dfmax = NULL,
                      init = NULL,
                      warn = TRUE,
-                     returnX = TRUE,
                      ...){
 
   # error checking ------------------------------------------------------------
@@ -135,7 +129,6 @@ plmm_fit <- function(prep,
                             eps = eps,
                             max.iter = max_iter,
                             penalty.factor = penalty_factor,
-                            # dfmax = dfmax,
                             warn = warn)
 
       stdrot_scale_beta[, ll] <- init <- res$beta
@@ -174,7 +167,6 @@ plmm_fit <- function(prep,
       eps = eps,
       max.iter = max_iter,
       penalty.factor = penalty_factor,
-      # dfmax = dfmax,
       ...)
 
     stdrot_scale_beta <- res$beta

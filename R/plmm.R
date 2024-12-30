@@ -17,13 +17,11 @@
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma                   The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha                   Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param dfmax                   (**Future idea; not yet incorporated**): Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param lambda_min              The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda                 Length of the sequence of lambda. Default is 100.
 #' @param lambda                  A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps                     Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max_iter                Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex                  (**Future idea; not yet incorporated**): Calculate index for which objective function ceases to be locally convex? Default is TRUE.
 #' @param warn                    Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
@@ -79,13 +77,11 @@ plmm <- function(design,
                  init = NULL,
                  gamma,
                  alpha = 1,
-                 dfmax = NULL,
                  lambda_min, # passed to internal function setup_lambda()
                  nlambda = 100,
                  lambda,
                  eps = 1e-04,
                  max_iter = 10000,
-                 convex = TRUE,
                  warn = TRUE,
                  trace = FALSE,
                  save_rds = NULL,
@@ -131,7 +127,6 @@ plmm <- function(design,
                               eta_star = eta_star,
                               penalty = penalty,
                               init = init,
-                              dfmax = dfmax,
                               gamma = gamma,
                               alpha = alpha,
                               trace = trace,
