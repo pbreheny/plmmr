@@ -37,6 +37,7 @@
 #'              **Note**: std_Xbeta will not include rows for the intercept or for constant features.
 #'  * std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
 #'                  of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
+#'  * std_X: if design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}
 #'  * y: the outcome vector used in model fitting.
 #'  * p: the total number of columns in the design matrix (including singular columns).
 #'  * plink_flag: a logical flag: did the data come from PLINK files?

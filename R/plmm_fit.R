@@ -228,7 +228,7 @@ plmm_fit <- function(prep,
     trace = prep$trace))
 
   if (fbm_flag){
-    res$std_X <- file.path(dir.name(prep$std_X), file.name(prep$std_X))
+    ret$std_X <- describe(prep$std_X)
   }
 
   return(ret)

@@ -82,6 +82,8 @@ predict.plmm <- function(object,
       fbm_flag <- FALSE
     }
 
+    # check for missing arguments
+    if (!fbm_flag & type == "blup") stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
   }
   # check format for beta values
   ifelse(inherits(object$beta_vals, "Matrix"),
@@ -92,7 +94,7 @@ predict.plmm <- function(object,
   type <- match.arg(type)
   beta_vals <- coef(object, lambda, which=idx, drop=FALSE) # includes intercept
   p <- nrow(beta_vals)-1
-  n <- nrow(object$linear_predictors)
+  n <- nrow(object$std_Xbeta)
 
   # addressing each type:
 
@@ -123,10 +125,8 @@ predict.plmm <- function(object,
     if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
 
     # use center/scale values from the X in the model fit to standardize both X and newX
-    std_X <- scale(X,
-                   center = object$std_X_details$center,
-                   scale = object$std_X_details$scale)
     if (fbm_flag) {
+      std_X <- attach.big.matrix(object$std_X)
       std_test_info <- .Call("big_std",
                              newX@address,
                              as.integer(count_cores()),
@@ -135,6 +135,9 @@ predict.plmm <- function(object,
                              PACKAGE = "plmmr")
       newX@address <- std_test_info$std_X # now, newX is standardized
     } else {
+      std_X <- scale(X,
+                     center = object$std_X_details$center,
+                     scale = object$std_X_details$scale)
       std_newX <- scale(newX,
                         center = object$std_X_details$center,
                         scale = object$std_X_details$scale)
@@ -146,11 +149,9 @@ predict.plmm <- function(object,
       XXt <- bigalgebra::dgemm(TRANSA = 'N',
                                TRANSB = 'T',
                                A = newX,
-                               B = object$std_X)
+                               B = std_X)
       Sigma_21 <- const*XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
-      # TODO: need to address the case where newX has columns that were
-      # removed from object$std_X
     } else {
       Sigma_11 <- construct_variance(fit = object)
       Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX, std_X)
