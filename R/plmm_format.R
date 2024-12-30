@@ -44,14 +44,12 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
 
   # give the matrix of beta_values readable names
   # features on the rows, lambda values on the columns
-
-  colnames(og_scale_beta) <- colnames(fit$linear_predictors) <- lam_names(fit$lambda)
-
+  colnames(og_scale_beta) <- colnames(fit$std_Xbeta) <- lam_names(fit$lambda)
 
   # output (19 items)
   out <- list(
     beta_vals = og_scale_beta,
-    std_scale_beta = fit$std_scale_beta,
+    std_Xbeta = fit$std_Xbeta,
     std_X_details = std_X_details,
     std_X = fit$std_X,
     y = fit$y,

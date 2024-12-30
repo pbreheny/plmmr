@@ -27,20 +27,18 @@
 #' @param warn                    Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
-#'                                Defaults to NULL, which does not save the result.
-#' @param compact_save            Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', one with the linear predictors, and one with everything else (see below).
-#'                                Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
+#'                                Accompanying the RDS file is a log file for documentation, e.g., "~/dir/my_results.log".
+#'                                Defaults to NULL, which does not save any RDS or log files.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
 #'                                Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #'
 #' @returns A list which includes 19 items:
 #'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
-#'  * std_scale_beta: the matrix of estimated coefficients on the ~standardized~ scale. These are not returned if `compact_save = TRUE`.
 #'  * std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
 #'                  of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
-#'  * std_X: The standardized design matrix; if data is filebacked, this object will be a `filebacked.big.matrix` from the bigmemory package.
-#'           Note: `std_X` is not saved/returned when `return_fit = FALSE`.
+#'  * std_X: If the design matrix is filebacked, this object will be a filepath to the `filebacked.big.matrix` object containing the standardized design matrix.
+#'           If the design matrix is in-memory, then the standardized design matrix is returned.
 #'  * y: the outcome vector used in model fitting.
 #'  * p: the total number of columns in the design matrix (including singular columns).
 #'  * plink_flag: a logical flag: did the data come from PLINK files?
@@ -91,26 +89,22 @@ plmm <- function(design,
                  warn = TRUE,
                  trace = FALSE,
                  save_rds = NULL,
-                 compact_save = FALSE,
                  return_fit = NULL,
                  ...) {
 
-  # check filepaths for saving results ------------------------------
-
-  if (compact_save & is.null(save_rds)) {
-    stop("You have set 'compact_save = TRUE', but no argument was supplied to 'save_rds'.
-          \nPlease specify a filepath (as a string) to 'save_rds'")
-  }
+  # check filepaths for saving results, if requested  --------------------------
 
   if (!is.null(save_rds)) {
     save_rds <- check_for_file_extension(save_rds)
     # ^^ internally, we need to take off the extension from the file name
+
+    # start the log file
+    logfile <- create_log(outfile = ifelse(!is.null(save_rds),
+                                           save_rds,
+                                           "./plmm"))
+
   }
 
-  # start the log -----------------------
-  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                         save_rds,
-                                         "./plmm"))
 
   # create a design if needed -------------
   if (inherits(design, "data.frame") | inherits(design, 'matrix')) {
@@ -155,10 +149,11 @@ plmm <- function(design,
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",
                 pretty_time())}
-
+  if (!is.null(save_rds)) {
   cat("Input data passed all checks at ",
       pretty_time(),
       "\n", file = logfile, append = TRUE)
+  }
 
   the_prep <- plmm_prep(std_X = checked_data$std_X,
                         std_X_n = checked_data$std_X_n,
@@ -174,9 +169,12 @@ plmm <- function(design,
   if (trace)(cat("Eigendecomposition finished at ",
                  pretty_time()))
 
-  cat("Eigendecomposition finished at ",
-      pretty_time(),
-      "\n", file = logfile, append = TRUE)
+  if (!is.null(save_rds)) {
+    cat("Eigendecomposition finished at ",
+        pretty_time(),
+        "\n", file = logfile, append = TRUE)
+  }
+
 
   # rotate & fit -------------------------------------------------------------
   if (is.null(dfmax)) dfmax <- checked_data$p + 1
@@ -208,55 +206,30 @@ plmm <- function(design,
 
   if (trace)(cat("Model ready at ",
                  pretty_time()))
-  cat("Model ready at ",
-      pretty_time(),
-      file = logfile, append = TRUE)
+
+  if (!is.null(save_rds)){
+    cat("Model ready at ",
+        pretty_time(),
+        file = logfile, append = TRUE)
+  }
 
   # handle output
   if (!is.null(save_rds)){
-    if (compact_save) {
-      # save output across multiple files
-      saveRDS(the_final_product$beta_vals, paste0(save_rds, "_coefficients.rds"))
-      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(the_final_product$K, paste0(save_rds, "_K.rds"))
-      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(the_final_product$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
-      cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(the_final_product[c(3, 6:9, 11:18)], paste0(save_rds, "_details.rds"))
-      cat("All other results (center/scale values from standardization, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-    } else {
-      # save all output in one file (default); *not* including std_X
-      saveRDS(the_final_product[c(1:3, 5:19)], paste0(save_rds, ".rds"))
-      cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-    }
-
-
+    # save all output in one file (default); *not* including std_X
+    saveRDS(the_final_product[c(1:3, 5:19)],
+            paste0(save_rds, ".rds"))
+    cat("Results saved to:", paste0(save_rds, ".rds"), "at",
+        pretty_time(),
+        file = logfile, append = TRUE)
   }
 
-  if (is.null(save_rds) & !return_fit){
-    cat("You accidentally left save_rds NULL while setting return_fit = FALSE;
-        to prevent you from losing your work, I am saving the output as plmm_results.rds
-        in your current working directory (current folder).\n
-        Next time, make sure to specify your own filepath to the save_rds argument.\n",
-        file = logfile, append = TRUE)
 
-    rdsfile <- paste0(getwd(),"/plmm_results.rds")
-    saveRDS(the_final_product, rdsfile)
-    cat("Results saved to:", rdsfile, file = logfile, append = TRUE)
+  # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
+  if (is.null(save_rds) & !return_fit){
+    cat("You accidentally left save_rds = NULL and return_fit = FALSE;
+        to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
+
+    return_fit <- TRUE
   }
 
   if (return_fit){
