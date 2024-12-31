@@ -28,42 +28,49 @@
 #'                                Accompanying the RDS file is a log file for documentation, e.g., "~/dir/my_results.log".
 #'                                Defaults to NULL, which does not save any RDS or log files.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
-#'                                Defaults to TRUE for in-memory data, and defaults to FALSE for filebacked data.
+#'                                Defaults to TRUE.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #'
 #' @returns A list which includes 19 items:
-#'  * beta_vals: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
-#'  * std_Xbeta: a matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of `lambda`.
+#'  * beta_vals: The matrix of estimated coefficients. Rows are predictors (with the first row being the intercept), and columns are values of `lambda`.
+#'  * std_Xbeta: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of `lambda`.
 #'              **Note**: std_Xbeta will not include rows for the intercept or for constant features.
-#'  * std_X_details: a list with 3 items: the center & scale values used to center/scale the data, and a vector ('ns') of the nonsingular columns
-#'                  of the original data. Nonsingular columns cannot be standardized (by definition), and so were removed from analysis.
-#'  * std_X: if design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}
-#'  * y: the outcome vector used in model fitting.
-#'  * p: the total number of columns in the design matrix (including singular columns).
-#'  * plink_flag: a logical flag: did the data come from PLINK files?
-#'  * lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
-#'  * eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
-#'  * std_Xbeta: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
-#'  * penalty: character string indicating the penalty with which the model was fit (e.g., 'MCP')
-#'  * gamma: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
-#'  * alpha: numeric value indicating the elastic net tuning parameter.
-#'  * loss: vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
-#'  * penalty_factor: vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
-#'  * ns_idx: vector with the indices of predictors which were non-singular features (i.e., features which had variation).
-#'  * iter: numeric vector with the number of iterations needed in model fitting for each value of `lambda`
-#'  * converged: vector of logical values indicating whether the model fitting converged at each value of `lambda`
+#'  * std_X_details: A list with 9 items:
+#'                  - center: The center values used to center the columns of the design matrix
+#'                  - scale: The scaling values used to scale the columns of the design matrix
+#'                  - ns: An integer vector of the nonsingular columns of the original data
+#'                  - unpen: An integer vector of indices of the unpenalized features, if any were specified in the design
+#'                  - unpen_colnames: A charater vector of the column names of ay unpenalized features.
+#'                  - X_colnames: A character vector with the column names of all features in the original design matrix
+#'                  - X_rownames: A character vector with the row names of all features in the original design matrix; if none were provided, these are named 'row1', 'row2', etc.
+#'                  - std_X_colnames: A subset of X_colnames representing only nonsignular columns (i.e., the columns indexed by 'ns')
+#'                  - std_X_rownames: A subset of X_rownames representing rows that passed QC filtering & and are represented in both the genotype and phenotype data sets (this only applies to PLINK data)
+#'  * std_X: If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}. If the the data were stored in-memory, nothing is returned (std_X is NULL).
+#'  * y: The outcome vector used in model fitting.
+#'  * p: The total number of columns in the design matrix (including any singular columns, excluding the intercept).
+#'  * plink_flag: Logical - did the data come from PLINK files?
+#'  * lambda: A numeric vector of the tuning parameter values used in model fitting.
+#'  * eta: A double between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
+#'  * penalty: A character string indicating the penalty with which the model was fit (e.g., 'MCP')
+#'  * gamma: A numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
+#'  * alpha: A numeric value indicating the elastic net tuning parameter.
+#'  * loss: A vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
+#'  * penalty_factor: A vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+#'  * ns_idx: An integer vector with the indices of predictors which were non-singular features (i.e., features which had variation), where feature 1 is the intercept.
+#'  * iter: An integer vector with the number of iterations needed in model fitting for each value of `lambda`
+#'  * converged: A vector of logical values indicating whether the model fitting converged at each value of `lambda`
 #'  * K: a list with 2 elements, `s` and `U` ---
-#'    * s: a vector of the eigenvalues of the relatedness matrix; see `relatedness_mat()` for details.
-#'    * U: a matrix of the eigenvectors of the relatedness matrix
+#'    - s: a vector of the eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)
+#'    - U: a matrix of the eigenvectors of the relatedness matrix
 #' @export
 #'
 #' @examples
 #' # using admix data
 #' admix_design <- create_design(X = admix$X, y = admix$y)
-#' fit_admix1 <- plmm(design = admix_design)
-#' s1 <- summary(fit_admix1, idx = 50)
-#' print(s1)
-#' plot(fit_admix1)
+#' fit <- plmm(design = admix_design)
+#' s <- summary(fit, idx = 50)
+#' print(s)
+#' plot(fit)
 #'
 #' # Note: for examples with large data that are too big to fit in memory,
 #' # see the article "PLINK files/file-backed matrices" on our website
@@ -86,7 +93,7 @@ plmm <- function(design,
                  warn = TRUE,
                  trace = FALSE,
                  save_rds = NULL,
-                 return_fit = NULL,
+                 return_fit = TRUE,
                  ...) {
 
   # check filepaths for saving results, if requested  --------------------------
@@ -132,15 +139,6 @@ plmm <- function(design,
                               alpha = alpha,
                               trace = trace,
                               ...)
-
-  # set defaults for returning fit
-  if (is.null(return_fit)) {
-    if (checked_data$fbm_flag) {
-      return_fit <- FALSE
-    } else {
-      return_fit <- TRUE
-    }
-  }
 
   # prep (SVD)-------------------------------------------------
   if(trace){cat("Input data passed all checks at ",

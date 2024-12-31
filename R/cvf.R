@@ -62,18 +62,18 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                            backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
     # re-scale data & check for singularity
-    train_data <- .Call("big_std",
+    std_trainX_info <- .Call("big_std",
                         fold_args$std_X@address,
                         as.integer(count_cores()),
                         NULL,
                         NULL,
                         PACKAGE = "plmmr")
 
-    fold_args$std_X@address <- train_data$std_X
-    fold_args$std_X_details$center <- train_data$std_X_center
-    fold_args$std_X_details$scale <- train_data$std_X_scale
-    fold_args$std_X_details$ns <- which(train_data$std_X_scale > 1e-3)
-    singular <- train_data$std_X_scale < 1e-3
+    fold_args$std_X@address <- std_trainX_info$std_X
+    fold_args$std_X_details$center <- std_trainX_info$std_X_center
+    fold_args$std_X_details$scale <- std_trainX_info$std_X_scale
+    fold_args$std_X_details$ns <- which(std_trainX_info$std_X_scale > 1e-3)
+    singular <- std_trainX_info$std_X_scale < 1e-3
 
     # do not fit a model on singular features!
     if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
@@ -107,7 +107,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # extract test set --------------------------------------
   # this comes from cv prep on full data
   if (cv_args$fbm_flag){
-    std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+    test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
                                   rows = which(fold==i),
                                   type = "double",
                                   backingfile = paste0("test_fold",i,".bk"),
@@ -117,15 +117,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
     # don't rescale columns that were singular features in std_train_X;
     #   these features will have an estimated beta of 0 anyway
     fold_args$std_X_details$scale[singular] <- 1
-
-    # use center/scale values from train_X to standardize test_X
-    std_test_info <- .Call("big_std",
-                        std_test_X@address,
-                        as.integer(count_cores()),
-                        fold_args$std_X_details$center,
-                        fold_args$std_X_details$scale,
-                        PACKAGE = "plmmr")
-    std_test_X@address <- std_test_info$std_X
 
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
@@ -154,7 +145,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
                          p = ncol(full_cv_prep$std_X),
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
-                         penalty_factor = fold_args$penalty_factor,
                          eta_star = cv_args$eta_star,
                          trace = cv_args$prep$trace)
   fold_args$prep <- fold_prep
@@ -186,18 +176,35 @@ cvf <- function(i, fold, type, cv_args, ...) {
                           fbm_flag = fold_args$fbm_flag,
                           plink_flag = fold_args$plink_flag)
 
+  # prediction ---------------------------------------------------
   # note: predictions are on the scale of the standardized training data
   if(type == "lp"){
     yhat <- predict_within_cv(fit = format.i,
-                              testX = std_test_X,
+                              testX = test_X,
                               type = 'lp',
                               fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
-    # explicit calculation of Sigma_11 and Sigma_21
+    Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
     if (cv_args$fbm_flag){
-      Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
+      # we will need a copy of the testing data that is standardized
+      std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
+                                    rows = which(fold==i),
+                                    type = "double",
+                                    backingfile = paste0("test_fold",i,".bk"),
+                                    descriptorfile = paste0("test_fold",i,".desc"),
+                                    backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+
+      # use center/scale values from train_X to standardize test_X
+      std_test_info <- .Call("big_std",
+                             std_test_X@address,
+                             as.integer(count_cores()),
+                             fold_args$std_X_details$center,
+                             fold_args$std_X_details$scale,
+                             PACKAGE = "plmmr")
+      std_test_X@address <- std_test_info$std_X
+
       const <- (fit.i$eta/ncol(train_X))
       XXt <- bigalgebra::dgemm(TRANSA = 'N',
                                TRANSB = 'T',
@@ -206,13 +213,12 @@ cvf <- function(i, fold, type, cv_args, ...) {
       Sigma_21 <- const*XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
-      Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
       Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
                                                          fold_args$std_X)
     }
 
     yhat <- predict_within_cv(fit = format.i,
-                              testX = std_test_X,
+                              testX = test_X,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
                               Sigma_11 = Sigma_11,

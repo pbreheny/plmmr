@@ -8,8 +8,8 @@
 #' @param type      A character argument indicating what type of prediction should be
 #'                  returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param X         Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
-#'                  This design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please **do not** standardize this matrix before supplying here.
-#'                  **Note**: If the model was fit file-backed, then the filepath to the .bk file with this matrix is returned as 'std_X' in the fit supplied to 'object'.
+#'                  When supplied, this design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please **do not** standardize this matrix before supplying here.
+#'                  **Note**: If the model was fit file-backed, then the filepath to the .bk file with this standardized design matrix is returned as 'std_X' in the fit supplied to 'object'.
 #' @param lambda    A numeric vector of regularization parameter \code{lambda} values
 #'                  at which predictions are requested.
 #' @param idx       Vector of indices of the penalty parameter \code{lambda} at which
@@ -113,20 +113,19 @@ predict.plmm <- function(object,
   # Note: the BLUP is constructed on the scale of the standardized model-fitting data;
   #   This is the scale at which object$K was constructed
   if (type == "blup"){
-    # check dimensions -- must have same number of features in test & train data
-    if (object$p != ncol(newX)){stop("the X from the model fit and newX do not have the same number of features - please make these align\n")}
-
     # check for missing arguments
     if (!fbm_flag & is.null(X)) stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
 
-    # check for singularity -- this keeps us from scaling by a 0 value
+    # Check for singularity -- this keeps us from scaling by a 0 value
+    # Note: singular values have estimated coefficients of 0 at all values of lambda,
+    #  so these columns are not included in the predictions
     singular <- setdiff(seq(1:length(object$std_X_details$center)),
                         object$std_X_details$ns)
     if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
 
     # Use center/scale values from the X in the model fit to standardize both X and newX -
-    # This is *key* -- the components of Sigma must be consistently scaled, and
-    # Sigma_11 is estimated using K, which was calculated using *standardized* data.
+    # This is *key* -- the components of the estimated Sigma must be consistently scaled, and
+    # Sigma_11 is always calculated using *standardized* data.
 
     if (fbm_flag) {
       std_X <- attach.big.matrix(object$std_X)
@@ -146,8 +145,8 @@ predict.plmm <- function(object,
                         scale = object$std_X_details$scale)
     }
 
+    Sigma_11 <- construct_variance(fit = object)
     if (fbm_flag) {
-      Sigma_11 <- construct_variance(fit = object)
       const <- (object$eta/ncol(newX))
       XXt <- bigalgebra::dgemm(TRANSA = 'N',
                                TRANSB = 'T',
@@ -156,8 +155,7 @@ predict.plmm <- function(object,
       Sigma_21 <- const*XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
-      Sigma_11 <- construct_variance(fit = object)
-      Sigma_21 <- object$eta * (1/p)*tcrossprod(std_newX, std_X)
+      Sigma_21 <- object$eta*(1/p)*tcrossprod(std_newX, std_X)
     }
     resid_old <- drop(object$y) - object$std_Xbeta
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
