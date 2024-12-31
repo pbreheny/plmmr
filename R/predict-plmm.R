@@ -126,9 +126,8 @@ predict.plmm <- function(object,
     # Use center/scale values from the X in the model fit to standardize both X and newX -
     # This is *key* -- the components of the estimated Sigma must be consistently scaled, and
     # Sigma_11 is always calculated using *standardized* data.
-
     if (fbm_flag) {
-      std_X <- attach.big.matrix(object$std_X)
+      std_X <- bigmemory::attach.big.matrix(object$std_X)
       std_test_info <- .Call("big_std",
                              newX@address,
                              as.integer(count_cores()),

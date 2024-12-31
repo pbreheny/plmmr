@@ -66,5 +66,9 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U))
 
+  if (fbm_flag){
+    out$std_X <- fit$std_X
+  }
+
   structure(out, class = "plmm")
 }
