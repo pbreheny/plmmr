@@ -9,7 +9,7 @@ linear mixed models over a grid of values for the regularization parameter lambd
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,21 +64,15 @@ linear mixed models over a grid of values for the regularization parameter <code
 <span>  <span class="va">lambda</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">10000</span>,</span>
-<span>  convex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cluster</span>,</span>
 <span>  nfolds <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  <span class="va">seed</span>,</span>
 <span>  fold <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  returnY <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  returnBiasDetails <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  save_fold_res <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  compact_save <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -152,14 +146,6 @@ in many applications.</p></dd>
 <dd><p>Maximum number of iterations (total across entire path). Default is 10000.</p></dd>
 
 
-<dt id="arg-convex">convex<a class="anchor" aria-label="anchor" href="#arg-convex"></a></dt>
-<dd><p>(future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.</p></dd>
-
-
-<dt id="arg-dfmax">dfmax<a class="anchor" aria-label="anchor" href="#arg-dfmax"></a></dt>
-<dd><p>(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default will be no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
-
-
 <dt id="arg-warn">warn<a class="anchor" aria-label="anchor" href="#arg-warn"></a></dt>
 <dd><p>Return warning messages for failures to converge and model saturation? Default is TRUE.</p></dd>
 
@@ -185,39 +171,19 @@ advance using parallel::makeCluster(). The cluster must then be passed to cv_plm
 <dd><p>Which fold each observation belongs to. By default, the observations are randomly assigned.</p></dd>
 
 
-<dt id="arg-returny">returnY<a class="anchor" aria-label="anchor" href="#arg-returny"></a></dt>
-<dd><p>Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE,
-this will return a matrix in which the element for row i, column j is the fitted value for observation i from
-the fold in which observation i was excluded from the fit, at the jth value of lambda.</p></dd>
-
-
-<dt id="arg-returnbiasdetails">returnBiasDetails<a class="anchor" aria-label="anchor" href="#arg-returnbiasdetails"></a></dt>
-<dd><p>Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.</p></dd>
-
-
 <dt id="arg-trace">trace<a class="anchor" aria-label="anchor" href="#arg-trace"></a></dt>
 <dd><p>If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.</p></dd>
 
 
 <dt id="arg-save-rds">save_rds<a class="anchor" aria-label="anchor" href="#arg-save-rds"></a></dt>
 <dd><p>Optional: if a filepath and name <em>without</em> the '.rds' suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
-Defaults to NULL, which does not save the result.</p></dd>
-
-
-<dt id="arg-save-fold-res">save_fold_res<a class="anchor" aria-label="anchor" href="#arg-save-fold-res"></a></dt>
-<dd><p>Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
-If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
-Both files will be updated after each fold is done.
-Defaults to FALSE.</p></dd>
+Defaults to NULL, which does not save the result.
+<strong>Note</strong>: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.</p></dd>
 
 
 <dt id="arg-return-fit">return_fit<a class="anchor" aria-label="anchor" href="#arg-return-fit"></a></dt>
 <dd><p>Optional: a logical value indicating whether the fitted model should be returned as a <code>plmm</code> object in the current (assumed interactive) session. Defaults to TRUE.</p></dd>
-
-
-<dt id="arg-compact-save">compact_save<a class="anchor" aria-label="anchor" href="#arg-compact-save"></a></dt>
-<dd><p>Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
-Defaults to FALSE. <strong>Note</strong>: you must specify <code>save_rds</code> for this argument to be called.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

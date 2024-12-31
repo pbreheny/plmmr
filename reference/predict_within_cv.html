@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,16 +48,11 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict_within_cv</span><span class="op">(</span></span>
 <span>  <span class="va">fit</span>,</span>
-<span>  <span class="va">trainX</span>,</span>
-<span>  trainY <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">testX</span>,</span>
-<span>  <span class="va">std_X_details</span>,</span>
 <span>  <span class="va">type</span>,</span>
 <span>  fbm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  plink_flag <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  Sigma_11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Sigma_21 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  Sigma_21 <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -69,23 +64,8 @@
 <dd><p>A list with the components returned by <code>plmm_fit</code>.</p></dd>
 
 
-<dt id="arg-trainx">trainX<a class="anchor" aria-label="anchor" href="#arg-trainx"></a></dt>
-<dd><p>The training data, <em>pre-standardization</em> and <em>pre-rotation</em></p></dd>
-
-
-<dt id="arg-trainy">trainY<a class="anchor" aria-label="anchor" href="#arg-trainy"></a></dt>
-<dd><p>The training outcome, <em>not centered</em>. Only needed if <code>type = 'blup'</code></p></dd>
-
-
 <dt id="arg-testx">testX<a class="anchor" aria-label="anchor" href="#arg-testx"></a></dt>
 <dd><p>A design matrix used for computing predicted values (i.e, the test data).</p></dd>
-
-
-<dt id="arg-std-x-details">std_X_details<a class="anchor" aria-label="anchor" href="#arg-std-x-details"></a></dt>
-<dd><p>A list with 3 items:</p><ul><li><p>'center': the centering values for the columns of <code>X</code></p></li>
-<li><p>'scale': the scaling values for the non-singular columns of <code>X</code></p></li>
-<li><p>'ns': indices of nonsingular columns in <code>std_X</code>. Note: this is the vector we really need here!</p></li>
-</ul></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -104,10 +84,6 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p><
 <dt id="arg-sigma-">Sigma_21<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
 <dd><p>Covariance matrix between the training and the testing data. Extracted from <code>estimated_Sigma</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
 
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional optional arguments</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -120,9 +96,7 @@ Note that this approach does not incorporate the correlation structure of the da
 <li><p>'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
 This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.</p></li>
 </ul><p>Note: the main difference between this function and the <code><a href="predict.plmm.html">predict.plmm()</a></code> method is that
-here in CV, predictions are made on the <em>standardized</em> scale (i.e., both
-the trainX and testX data come from std_X). The <code><a href="predict.plmm.html">predict.plmm()</a></code> method
-makes predictions on the scale of X (the original scale)</p>
+here in CV, the standardized testing data (std_test_X), Sigma_11, and Sigma_21 are calculated in <code><a href="cvf.html">cvf()</a></code> instead of the function defined here.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

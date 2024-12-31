@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,7 @@
 <span>  <span class="va">object</span>,</span>
 <span>  <span class="va">newX</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blup"</span>, <span class="st">"coefficients"</span>, <span class="st">"vars"</span>, <span class="st">"nvars"</span>, <span class="st">"lp"</span><span class="op">)</span>,</span>
+<span>  X <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">lambda</span>,</span>
 <span>  idx <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">object</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -75,6 +76,12 @@ This can be either a FBM object or a 'matrix' object.
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>A character argument indicating what type of prediction should be
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p></dd>
+
+
+<dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>Optional: if <code>type = 'blup'</code> and the model was fit in-memory, the design matrix used to fit the model represented in <code>object</code> must be supplied.
+When supplied, this design matrix will be standardized using the center/scale values in <code>object$std_X_details</code>, so please <strong>do not</strong> standardize this matrix before supplying here.
+<strong>Note</strong>: If the model was fit file-backed, then the filepath to the .bk file with this standardized design matrix is returned as 'std_X' in the fit supplied to 'object'.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
@@ -119,7 +126,7 @@ the estimated correlation structure of data into our prediction of the outcome.<
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># make predictions for all lambda values</span></span></span>
 <span class="r-in"><span> <span class="va">pred1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"lp"</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="va">pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"blup"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, newX <span class="op">=</span> <span class="va">test</span><span class="op">$</span><span class="va">X</span>, type <span class="op">=</span> <span class="st">"blup"</span>, X <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># look at mean squared prediction error</span></span></span>
 <span class="r-in"><span><span class="va">mspe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">pred1</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>

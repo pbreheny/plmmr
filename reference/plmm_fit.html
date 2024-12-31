@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,11 +61,8 @@
 <span>  <span class="va">lambda</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">10000</span>,</span>
-<span>  convex <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  returnX <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -130,14 +127,6 @@
 <dd><p>Maximum number of iterations (total across entire path). Default is 10000.</p></dd>
 
 
-<dt id="arg-convex">convex<a class="anchor" aria-label="anchor" href="#arg-convex"></a></dt>
-<dd><p>(future idea; not yet incorporated) convex Calculate index for which objective function ceases to be locally convex? Default is TRUE.</p></dd>
-
-
-<dt id="arg-dfmax">dfmax<a class="anchor" aria-label="anchor" href="#arg-dfmax"></a></dt>
-<dd><p>(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default is no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.</p></dd>
-
-
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
 <dd><p>Initial values for coefficients. Default is 0 for all columns of X.</p></dd>
 
@@ -146,47 +135,10 @@
 <dd><p>Return warning messages for failures to converge and model saturation? Default is TRUE.</p></dd>
 
 
-<dt id="arg-returnx">returnX<a class="anchor" aria-label="anchor" href="#arg-returnx"></a></dt>
-<dd><p>Return the standardized design matrix along with the fit? By default, this option is turned on if X is under 100 MB, but turned off for larger matrices to preserve memory.</p></dd>
-
-
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments that can be passed to <code>biglasso::biglasso_simple_path()</code></p></dd>
 
 </dl></div>
-    <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with these components:</p><ul><li><p>std_scale_beta: the coefficients estimated on the scale of <code>std_X</code></p></li>
-<li><p>centered_y: the y-values that are 'centered' to have mean 0</p></li>
-<li><p>s and U, the values and vectors from the eigendecomposition of K</p></li>
-<li><p>lambda: vector of tuning parameter values</p></li>
-<li><p>linear_predictors: the product of <code>stdrot_X</code> and <code>b</code>
-(linear predictors on the transformed and restandardized scale)</p></li>
-<li><p>eta: a number (double) between 0 and 1 representing the estimated
-proportion of the variance in the outcome attributable to population/correlation
-structure.</p></li>
-<li><p>iter: numeric vector with the number of iterations needed in model fitting
-for each value of <code>lambda</code></p></li>
-<li><p>converged: vector of logical values indicating whether the model fitting
-converged at each value of <code>lambda</code></p></li>
-<li><p>loss: vector with the numeric values of the loss at each value of <code>lambda</code>
-(calculated on the ~rotated~ scale)</p></li>
-<li><p>penalty: character string indicating the penalty with which the model was
-fit (e.g., 'MCP')</p></li>
-<li><p>penalty_factor: vector of indicators corresponding to each predictor,
-where 1 = predictor was penalized.</p></li>
-<li><p>gamma: numeric value indicating the tuning parameter used for the SCAD or
-lasso penalties was used. Not relevant for lasso models.</p></li>
-<li><p>alpha: numeric value indicating the elastic net tuning parameter.</p></li>
-<li><p>ns: the indices for the nonsingular values of X</p></li>
-<li><p>feature_names: formatted column names of the design matrix</p></li>
-<li><p>nlambda: number of lambda values used in model fitting</p></li>
-<li><p>eps: tolerance ('epsilon') used for model fitting</p></li>
-<li><p>max_iter: max. number of iterations per model fit</p></li>
-<li><p>warn: logical - should warnings be given if model fit does not converge?</p></li>
-<li><p>init: initial values for model fitting</p></li>
-<li><p>trace: logical - should messages be printed to the console while models are fit?</p></li>
-</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

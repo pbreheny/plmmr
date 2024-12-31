@@ -9,7 +9,7 @@ This is an internal function for cv_plmm"><link rel="stylesheet" href="https://c
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,6 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  <span class="va">std_X</span>,</span>
 <span>  <span class="va">std_X_n</span>,</span>
 <span>  <span class="va">std_X_p</span>,</span>
-<span>  genomic <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">std_X_p</span>,</span>
 <span>  <span class="va">n</span>,</span>
 <span>  <span class="va">p</span>,</span>
 <span>  <span class="va">centered_y</span>,</span>
@@ -62,7 +61,6 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
-<span>  penalty_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">std_X</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -82,10 +80,6 @@ This is an internal function for <code>cv_plmm</code></p>
 
 <dt id="arg-std-x-p">std_X_p<a class="anchor" aria-label="anchor" href="#arg-std-x-p"></a></dt>
 <dd><p>The number of features in std_X (integer)</p></dd>
-
-
-<dt id="arg-genomic">genomic<a class="anchor" aria-label="anchor" href="#arg-genomic"></a></dt>
-<dd><p>A numeric vector of indices indicating which columns in the standardized X are genomic covariates. Defaults to all columns.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>

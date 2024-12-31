@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -401,10 +401,9 @@ PLMMs:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># make predictions for select lambda value(s)</span></span>
 <span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">admix_fit</span>,</span>
-<span>                       newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
-<span>                       type <span class="op">=</span> <span class="st">"blup"</span>,</span>
-<span>                       X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
-<span>                       y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></code></pre></div>
+<span>                 newX <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>,</span>
+<span>                 type <span class="op">=</span> <span class="st">"blup"</span>,</span>
+<span>                 X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span><span class="op">)</span></span></code></pre></div>
 <p>We can compare these predictions with the predictions we would get
 from an intercept-only model using mean squared prediction error (MSPE)
 – lower is better:</p>
