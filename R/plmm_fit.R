@@ -228,7 +228,7 @@ plmm_fit <- function(prep,
     trace = prep$trace))
 
   if (fbm_flag){
-    ret$std_X <- describe(prep$std_X)
+    ret$std_X <- bigmemory::describe(prep$std_X)
   }
 
   return(ret)

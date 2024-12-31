@@ -114,9 +114,7 @@ pen_fit <- plmm(design = pen_design,
 We examine our model results below:
 
 ```{r}
-summary(pen_fit,
-        idx = 50)
-
+summary(pen_fit, idx = 50)
 plot(pen_fit)
 ```
 

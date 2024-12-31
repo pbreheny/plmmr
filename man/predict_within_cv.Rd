@@ -6,33 +6,17 @@
 \usage{
 predict_within_cv(
   fit,
-  trainX,
-  trainY = NULL,
   testX,
-  std_X_details,
   type,
   fbm = FALSE,
-  plink_flag = FALSE,
   Sigma_11 = NULL,
-  Sigma_21 = NULL,
-  ...
+  Sigma_21 = NULL
 )
 }
 \arguments{
 \item{fit}{A list with the components returned by \code{plmm_fit}.}
 
-\item{trainX}{The training data, \emph{pre-standardization} and \emph{pre-rotation}}
-
-\item{trainY}{The training outcome, \emph{not centered}. Only needed if \code{type = 'blup'}}
-
 \item{testX}{A design matrix used for computing predicted values (i.e, the test data).}
-
-\item{std_X_details}{A list with 3 items:
-\itemize{
-\item 'center': the centering values for the columns of \code{X}
-\item 'scale': the scaling values for the non-singular columns of \code{X}
-\item 'ns': indices of nonsingular columns in \code{std_X}. Note: this is the vector we really need here!
-}}
 
 \item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
 Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
@@ -42,8 +26,6 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 \item{Sigma_11}{Variance-covariance matrix of the training data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
 
 \item{Sigma_21}{Covariance matrix between the training and the testing data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
-
-\item{...}{Additional optional arguments}
 }
 \value{
 A numeric vector of predicted values
@@ -61,8 +43,6 @@ This addition is a way of incorporating the estimated correlation structure of d
 }
 
 Note: the main difference between this function and the \code{predict.plmm()} method is that
-here in CV, predictions are made on the \emph{standardized} scale (i.e., both
-the trainX and testX data come from std_X). The \code{predict.plmm()} method
-makes predictions on the scale of X (the original scale)
+here in CV, the standardized testing data (std_test_X), Sigma_11, and Sigma_21 are calculated in \code{cvf()} instead of the function defined here.
 }
 \keyword{internal}

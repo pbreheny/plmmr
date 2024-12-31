@@ -36,8 +36,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     max_iter = cv_args$max_iter,
                     eps = cv_args$eps,
                     warn = cv_args$warn,
-                    convex = cv_args$convex,
-                    dfmax = cv_args$dfmax,
                     lambda = cv_args$lambda)
 
   # subset std_X, U, and y to match fold indices ------------------------
@@ -180,20 +178,20 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     lambda = fold_args$lambda,
                     eps = fold_args$eps,
                     max_iter = fold_args$max_iter,
-                    warn = fold_args$warn,
-                    convex = fold_args$convex,
-                    dfmax = ncol(train_X) + 1)
+                    warn = fold_args$warn)
+
+  format.i <- plmm_format(fit = fit.i,
+                          p = ncol(full_cv_prep$std_X),
+                          std_X_details = fold_args$std_X_details,
+                          fbm_flag = fold_args$fbm_flag,
+                          plink_flag = fold_args$plink_flag)
 
   # note: predictions are on the scale of the standardized training data
   if(type == "lp"){
-    yhat <- predict_within_cv(fit = fit.i,
-                              trainX = NULL,
+    yhat <- predict_within_cv(fit = format.i,
                               testX = std_test_X,
-                              train_scale_beta = fit.i$std_scale_beta,
-                              std_X_details = fold_args$std_X_details,
                               type = 'lp',
-                              fbm = cv_args$fbm_flag,
-                              plink_flag = cv_args$plink_flag)
+                              fbm = cv_args$fbm_flag)
   }
 
   if (type == 'blup'){
@@ -213,16 +211,12 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                                          fold_args$std_X)
     }
 
-    yhat <- predict_within_cv(fit = fit.i,
-                              trainX = fold_args$std_X,
-                              trainY = fold_args$y,
+    yhat <- predict_within_cv(fit = format.i,
                               testX = std_test_X,
-                              std_X_details = fold_args$std_X_details,
                               type = 'blup',
                               fbm = cv_args$fbm_flag,
-                              plink_flag = cv_args$plink_flag,
                               Sigma_11 = Sigma_11,
-                              Sigma_21 = Sigma_21, ...)
+                              Sigma_21 = Sigma_21)
 
   }
 

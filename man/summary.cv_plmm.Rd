@@ -25,7 +25,7 @@ The return value is an object with S3 class \code{summary.cv_plmm}. The class ha
 \item \code{fit}: The \code{plmm} fit used in the cross validation
 }
 
-if \code{returnBiasDetails = TRUE}, two more items are returned:
+if \code{return_bias_details = TRUE}, two more items are returned:
 \itemize{
 \item \code{bias}: The mean bias of the cross validation
 \item \code{loss}: The loss at each value of \code{lambda}

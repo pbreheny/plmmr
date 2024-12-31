@@ -22,8 +22,6 @@
 #' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
 #' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
 #' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
-#' @param convex          (future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.
-#' @param dfmax           (future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default will be no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.
 #' @param init            Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
@@ -35,20 +33,12 @@
 #' @param nfolds          The number of cross-validation folds. Default is 5.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
-#' @param returnY         Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE,
-#'                        this will return a matrix in which the element for row i, column j is the fitted value for observation i from
-#'                        the fold in which observation i was excluded from the fit, at the jth value of lambda.
-#' @param returnBiasDetails Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.
 #' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
 #' @param save_rds        Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                        Defaults to NULL, which does not save the result.
-#' @param save_fold_res   Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
-#'                        If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
-#'                        Both files will be updated after each fold is done.
-#'                        Defaults to FALSE.
+#'                        **Note**: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+#'                        These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
-#' @param compact_save    Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
-#'                        Defaults to FALSE. **Note**: you must specify `save_rds` for this argument to be called.
 #' @param ...             Additional arguments to `plmm_fit`
 #'
 #' @returns a list with 12 items:
@@ -95,43 +85,27 @@ cv_plmm <- function(design,
                     lambda,
                     eps = 1e-04,
                     max_iter = 10000,
-                    convex = TRUE,
-                    dfmax = NULL,
                     warn = TRUE,
                     init = NULL,
                     cluster,
                     nfolds=5,
                     seed,
                     fold = NULL,
-                    returnY=FALSE,
-                    returnBiasDetails = FALSE,
                     trace=FALSE,
                     save_rds = NULL,
-                    save_fold_res = FALSE,
                     return_fit = TRUE,
-                    compact_save = FALSE,
                     ...) {
 
   # check filepaths for saving results ------------------------------
-  if (save_fold_res & is.null(save_rds)) {
-    stop("You have set 'save_fold_res = TRUE', but no argument was supplied to 'save_rds'.
-         \nPlease specify a filepath (as a string) to 'save_rds'")
-  }
-
-  if (compact_save & is.null(save_rds)) {
-    stop("You have set 'compact_save = TRUE', but no argument was supplied to 'save_rds'.
-          \nPlease specify a filepath (as a string) to 'save_rds'")
-  }
-
   if (!is.null(save_rds)) {
     save_rds <- check_for_file_extension(save_rds)
     # ^^ internally, we need to take off the extension from the file name
-  }
 
-  # start the log -----------------------
-  logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                         save_rds,
-                                         "./cv-plmm"))
+    # start the log
+    logfile <- create_log(outfile = ifelse(!is.null(save_rds),
+                                           save_rds,
+                                           "./cv-plmm"))
+  }
 
   # create a design if needed -------------
   if (inherits(design, "data.frame") | inherits(design, 'matrix')) {
@@ -158,15 +132,16 @@ cv_plmm <- function(design,
                               eta_star = eta_star,
                               penalty = penalty,
                               init = init,
-                              dfmax = dfmax,
                               gamma = gamma,
                               alpha = alpha,
                               trace = trace,
                               ...)
 
-  cat("\nInput data passed all checks at ",
-      pretty_time(),
-      file = logfile, append = TRUE)
+  if (!is.null(save_rds)){
+    cat("\nInput data passed all checks at ",
+        pretty_time(),
+        file = logfile, append = TRUE)
+  }
 
   # prep  ------------------------
   prep_args <- c(list(std_X = checked_data$std_X,
@@ -182,9 +157,12 @@ cv_plmm <- function(design,
                       trace = trace))
 
   prep <- do.call('plmm_prep', prep_args)
-  cat("\nEigendecomposition finished at ",
-      pretty_time(),
-      file = logfile, append = TRUE)
+
+  if (!is.null(save_rds)){
+    cat("\nEigendecomposition finished at ",
+        pretty_time(),
+        file = logfile, append = TRUE)
+  }
 
   # full model fit ----------------------------------
   fit_args <- c(list(
@@ -200,9 +178,7 @@ cv_plmm <- function(design,
     nlambda = nlambda,
     max_iter = max_iter,
     eps = eps,
-    warn = warn,
-    convex = convex,
-    dfmax = dfmax))
+    warn = warn))
 
   if (!missing(lambda_min)){
     fit_args$lambda_min <- lambda_min
@@ -210,9 +186,11 @@ cv_plmm <- function(design,
 
   fit <- do.call('plmm_fit', fit_args)
 
-  cat("\nFull model fit finished at",
-      pretty_time(),
-      file = logfile, append = TRUE)
+  if (!is.null(save_rds)){
+    cat("\nFull model fit finished at",
+        pretty_time(),
+        file = logfile, append = TRUE)
+  }
 
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
@@ -220,29 +198,17 @@ cv_plmm <- function(design,
                                fbm_flag = checked_data$fbm_flag,
                                plink_flag = checked_data$plink_flag)
 
-  cat("\nFormatting for full model finished at",
-      pretty_time(),
-      file = logfile, append = TRUE)
+  if (!is.null(save_rds)){
+    cat("\nFormatting for full model finished at",
+        pretty_time(),
+        file = logfile, append = TRUE)
+  }
 
   if (!is.null(save_rds)) {
-    if (compact_save) {
-      # go ahead and save the most important results from the full model fit
-
-      saveRDS(fit_to_return$beta_vals, paste0(save_rds, "_coefficients.rds"))
-      cat("Coefficients (estimated beta values) saved to:", paste0(save_rds, "_coefficients.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(fit_to_return$K, paste0(save_rds, "_K.rds"))
-      cat("K (eigendecomposition) saved to:", paste0(save_rds, "_K.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(fit_to_return[c(3, 6:9, 11:18)], paste0(save_rds, "full_fit_details.rds"))
-      cat("All other results (center/scale values from standardization, # of iterations, ...) saved to:", paste0(save_rds, "_details.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-    }
+    saveRDS(fit_to_return, paste0(save_rds, ".rds"))
+    cat("Results saved to:", paste0(save_rds, ".rds"), "at",
+        pretty_time(),
+        file = logfile, append = TRUE)
   }
   gc()
 
@@ -250,8 +216,7 @@ cv_plmm <- function(design,
   cv_args <- fit_args
   cv_args$warn <- FALSE
   cv_args$lambda <- fit$lambda
-  cv_args$non_genomic <- checked_data$non_genomic
-  cv_args$eta_star <- fit$eta # use the same eta estimate in each fold of CV
+  cv_args$eta_star <- fit$eta # note: here we use the same eta estimate in each fold of CV
   cv_args$plink_flag <- checked_data$plink_flag
 
   estimated_Sigma <- NULL
@@ -268,13 +233,6 @@ cv_plmm <- function(design,
     original_seed <- .GlobalEnv$.Random.seed
     on.exit(.GlobalEnv$.Random.seed <- original_seed)
     set.seed(seed)
-  } else {
-    # TODO: determine how, if at all, the random seed should be documented
-    # cat("Random seed:",
-    #     .GlobalEnv$.Random.seed[1],
-    #     "\n",
-    #     file = logfile,
-    #     append = TRUE)
   }
 
   sde <- sqrt(.Machine$double.eps)
@@ -302,10 +260,13 @@ cv_plmm <- function(design,
 
   # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")
-  cat("\nCross validation started at: ",
-      pretty_time(),
-      file = logfile,
-      append = TRUE)
+
+  if (!is.null(save_rds)){
+    cat("\nCross validation started at: ",
+        pretty_time(),
+        file = logfile,
+        append = TRUE)
+  }
 
   # set up progress bar -- this can take a while
   if(trace){pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)}
@@ -316,9 +277,12 @@ cv_plmm <- function(design,
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     } else {
-      # case 2: cluster NOT user specified (this is the typical use case)
-      cat("Started fold", i, "at", pretty_time(),
-          file = logfile, append = TRUE)
+      # case 2: cluster NOT user specified
+      if (!is.null(save_rds)){
+        cat("Started fold", i, "at", pretty_time(),
+            file = logfile, append = TRUE)
+      }
+
       res <- cvf(i = i,
                  fold = fold,
                  type = type,
@@ -338,7 +302,7 @@ cv_plmm <- function(design,
     }
     Y[fold==i, 1:res$nl] <- res$yhat
 
-    if (save_fold_res) {
+    if (!is.null(save_rds)) {
       saveRDS(E, paste0(save_rds, "_loss.rds"))
       cat("Loss saved to:", paste0(save_rds, "_loss.rds"), "at", pretty_time(),
           file = logfile, append = TRUE)
@@ -382,59 +346,29 @@ cv_plmm <- function(design,
               lambda_min=lambda[min],
               min1se = min1se,
               lambda.1se = lambda[min1se],
-              null.dev=mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))))
-
-  if (returnY) val$Y <- Y
-  if (returnBiasDetails){
-    val$Bias <- Bias
-    val$Loss <- E
-  }
+              null.dev=mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))),
+              Y = Y,
+              bias = Bias,
+              loss = E)
 
   if (type == "blup"){
     val$estimated_Sigma = estimated_Sigma
   }
 
-  # handle output
+  # save output
   if (!is.null(save_rds)){
-    if (compact_save) {
-      # save the rest of the output across multiple files
-      saveRDS(val[c(1:5, 7:11)], paste0(save_rds, "_cv_details.rds"))
-      cat("CV details (CVE, fold assignments, etc) saved to:",
-          paste0(save_rds, "_cv_details.rds"),
-          "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-      saveRDS(estimated_Sigma, paste0(save_rds, "_estimated_Sigma.rds"))
-      cat("Estimated variance matrix saved to:", paste0(save_rds, "_estimated_Sigma.rds"),
-          "at", pretty_time(), file = logfile, append = TRUE)
-
-      saveRDS(fit_to_return$linear_predictors, paste0(save_rds, "_linear_predictors.rds"))
-      cat("Linear predictors (on rotated scale) saved to:", paste0(save_rds, "_linear_predictors.rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-
-    } else {
-      # save all output in one file (default)
-      saveRDS(val, paste0(save_rds, ".rds"))
-      cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-          pretty_time(),
-          file = logfile, append = TRUE)
-    }
-
-
+    saveRDS(val, paste0(save_rds, ".rds"))
+    cat("Results saved to:", paste0(save_rds, ".rds"), "at",
+        pretty_time(),
+        file = logfile, append = TRUE)
   }
 
+  # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
   if (is.null(save_rds) & !return_fit){
-    cat("\nYou accidentally left save_rds NULL while setting return_fit = FALSE;
-        to prevent you from losing your work, I am saving the output as cv_plmm_results.rds
-        in your current working directory (current folder).
-        \nNext time, make sure to specify your own filepath to the save_rds argument.")
+    cat("You accidentally left save_rds = NULL and return_fit = FALSE;
+        to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
 
-    rdsfile <- paste0(getwd(),"/cv_plmm_results.rds")
-    saveRDS(val, rdsfile)
-    cat("Results saved in", rdsfile, "at", pretty_time(),
-        file = logfile, append = TRUE)
+    return_fit <- TRUE
   }
 
   # release pointer

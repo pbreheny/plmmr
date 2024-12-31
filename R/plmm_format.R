@@ -57,7 +57,6 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
     plink_flag = plink_flag,
     lambda = fit$lambda,
     eta = fit$eta,
-    linear_predictors = fit$linear_predictors,
     penalty = fit$penalty,
     gamma = fit$gamma,
     alpha = fit$alpha,

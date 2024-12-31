@@ -43,7 +43,7 @@
 #'  * plink_flag: a logical flag: did the data come from PLINK files?
 #'  * lambda: a numeric vector of the lasso tuning parameter values used in model fitting.
 #'  * eta: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure
-#'  * linear_predictors: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
+#'  * std_Xbeta: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.
 #'  * penalty: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 #'  * gamma: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 #'  * alpha: numeric value indicating the elastic net tuning parameter.

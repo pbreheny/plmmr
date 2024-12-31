@@ -81,9 +81,6 @@ predict.plmm <- function(object,
       # case 2: X is in-memory
       fbm_flag <- FALSE
     }
-
-    # check for missing arguments
-    if (!fbm_flag & type == "blup") stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
   }
   # check format for beta values
   ifelse(inherits(object$beta_vals, "Matrix"),
@@ -119,12 +116,18 @@ predict.plmm <- function(object,
     # check dimensions -- must have same number of features in test & train data
     if (object$p != ncol(newX)){stop("the X from the model fit and newX do not have the same number of features - please make these align\n")}
 
-   # check for singularity -- this keeps us from scaling by a 0 value
+    # check for missing arguments
+    if (!fbm_flag & is.null(X)) stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
+
+    # check for singularity -- this keeps us from scaling by a 0 value
     singular <- setdiff(seq(1:length(object$std_X_details$center)),
                         object$std_X_details$ns)
     if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
 
-    # use center/scale values from the X in the model fit to standardize both X and newX
+    # Use center/scale values from the X in the model fit to standardize both X and newX -
+    # This is *key* -- the components of Sigma must be consistently scaled, and
+    # Sigma_11 is estimated using K, which was calculated using *standardized* data.
+
     if (fbm_flag) {
       std_X <- attach.big.matrix(object$std_X)
       std_test_info <- .Call("big_std",

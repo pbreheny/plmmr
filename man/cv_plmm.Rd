@@ -19,21 +19,15 @@ cv_plmm(
   lambda,
   eps = 1e-04,
   max_iter = 10000,
-  convex = TRUE,
-  dfmax = NULL,
   warn = TRUE,
   init = NULL,
   cluster,
   nfolds = 5,
   seed,
   fold = NULL,
-  returnY = FALSE,
-  returnBiasDetails = FALSE,
   trace = FALSE,
   save_rds = NULL,
-  save_fold_res = FALSE,
   return_fit = TRUE,
-  compact_save = FALSE,
   ...
 )
 }
@@ -75,10 +69,6 @@ in many applications.}
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
-\item{convex}{(future idea; not yet incorporated) Calculate index for which objective function ceases to be locally convex? Default is TRUE.}
-
-\item{dfmax}{(future idea; not yet incorporated) Upper bound for the number of nonzero coefficients. Default will be no upper bound. However, for large data sets, computational burden may be heavy for models with a large number of nonzero coefficients.}
-
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
@@ -92,26 +82,14 @@ advance using parallel::makeCluster(). The cluster must then be passed to cv_plm
 
 \item{fold}{Which fold each observation belongs to. By default, the observations are randomly assigned.}
 
-\item{returnY}{Should cv_plmm() return the linear predictors from the cross-validation folds? Default is FALSE; if TRUE,
-this will return a matrix in which the element for row i, column j is the fitted value for observation i from
-the fold in which observation i was excluded from the fit, at the jth value of lambda.}
-
-\item{returnBiasDetails}{Logical: should the cross-validation bias (numeric value) and loss (n x p matrix) be returned? Defaults to FALSE.}
-
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.}
 
 \item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
-Defaults to NULL, which does not save the result.}
-
-\item{save_fold_res}{Optional: a logical value indicating whether the results (loss and predicted values) from each CV fold should be saved?
-If TRUE, then two '.rds' files will be saved ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
-Both files will be updated after each fold is done.
-Defaults to FALSE.}
+Defaults to NULL, which does not save the result.
+\strong{Note}: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
-
-\item{compact_save}{Optional: if TRUE, three separate .rds files will saved: one with the 'beta_vals', one with 'K', and one with everything else (see below).
-Defaults to FALSE. \strong{Note}: you must specify \code{save_rds} for this argument to be called.}
 
 \item{...}{Additional arguments to \code{plmm_fit}}
 }

@@ -13,7 +13,7 @@
 #' * `min`: The minimum cross validation error
 #' * `fit`: The \code{plmm} fit used in the cross validation
 #'
-#' if `returnBiasDetails = TRUE`, two more items are returned:
+#' if `return_bias_details = TRUE`, two more items are returned:
 #' * `bias`: The mean bias of the cross validation
 #' * `loss`: The loss at each value of `lambda`
 #'
