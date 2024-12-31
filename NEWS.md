@@ -1,4 +1,4 @@
-# plmmr 4.2.0 (2024-12-13)
+# plmmr 4.1.0.3 (2024-12-31)
 
 ## Bug fixes
 
@@ -11,8 +11,9 @@ We have recently caught a couple of bugs in our model fitting functions -- we ap
 ## Other changes
 
 -   **Change of default settings for prediction**: The default prediction method in both `predict()` and `cv_plmm()` is now 'blup' (best linear unbiased prediction).
--   **Change in objects returned by default in** `plmm()`: By default, the main model fitting function `plmm()` now returns `std_X` (a copy of the standardized design matrix) , `y` (the outcome vector used to fit the model), and `std_scale_beta` (the estimated coefficients on the standardized scale). These components are used to construct the best linear unbiased predictor. The user can opt not to return these items by using the `return_fit = FALSE` and `compact_save` options.
--   **Change in arguments passed to** `predict()`: In tandem with the change in what is returned by `plmm()` by default, the `predict()` method no longer needs a separate `X` and `y` argument to be supplied for `type = 'blup'`. The components needed for BLUP are returned by default in `plmm`. Note that `predict()` is still in its early stages of development for filebacked data; given the complexities and particularities of how filebacked data are processed (particularly data with constant features), there are edge cases that the `predict()` method does not handle yet. We continue to work on developing this method; for now, an example of `predict()` for filebacked data is in the vignette for delimited data. Note in particular that in the example from the delimited data, there are no constant features in the design matrix.
+-   **Change in objects returned by default in** `plmm()`: By default, the main model fitting function `plmm()` now returns the filepath for `std_X` when the design matrix is stored file-backed; `plmm()` also returns `y` (the outcome vector used to fit the model), and `std_Xbeta` (the linear predictors on the standardized scale). These components are used to construct the best linear unbiased predictor.
+-   **Change in arguments passed to** `predict()`: In tandem with the change in what is returned by `plmm()` by default, the `predict()` method no longer needs a separate `y` argument to be supplied for `type = 'blup'`.
+-   **Change in arguments supplied to** `plmm()` and `cv_plmm()`: the option `compact_save` no longer exists; instead, `save_rds` offers the option to save .rds/.log files, and `return_fit` offers the option to return the output of `plmm()` in the current R session. Note that .log files are now only constructed when `save_rds = TRUE`.
 
 # plmmr 4.1.0 (2024-10-23)
 

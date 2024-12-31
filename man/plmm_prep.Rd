@@ -17,7 +17,6 @@ plmm_prep(
   diag_K = NULL,
   eta_star = NULL,
   fbm_flag,
-  penalty_factor = rep(1, ncol(std_X)),
   trace = NULL,
   ...
 )

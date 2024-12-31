@@ -26,8 +26,8 @@ This can be either a FBM object or a 'matrix' object.
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{X}{Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
-This design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please \strong{do not} standardize this matrix before supplying here.
-\strong{Note}: If the model was fit file-backed, then the filepath to the .bk file with this matrix is returned as 'std_X' in the fit supplied to 'object'.}
+When supplied, this design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please \strong{do not} standardize this matrix before supplying here.
+\strong{Note}: If the model was fit file-backed, then the filepath to the .bk file with this standardized design matrix is returned as 'std_X' in the fit supplied to 'object'.}
 
 \item{lambda}{A numeric vector of regularization parameter \code{lambda} values
 at which predictions are requested.}

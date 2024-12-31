@@ -81,7 +81,6 @@ reference:
   - title: internal
     contents:
     - add_predictors
-    - adjust_beta_dimension
     - align_ids
     - big_cbind
     - check_for_file_extension
@@ -95,12 +94,10 @@ reference:
     - eigen_K
     - estimate_eta
     - fbm2bm
-    - file_sans_ext
     - get_data
     - get_hostname
     - impute_snp_data
     - index_samples
-    - index_std_X
     - lam_names
     - lasso
     - log_lik

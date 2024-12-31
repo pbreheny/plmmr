@@ -114,21 +114,8 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                   descriptorfile = paste0("test_fold",i,".desc"),
                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
-    # don't rescale columns that were singular features in std_train_X;
-    #   these features will have an estimated beta of 0 anyway
-    fold_args$std_X_details$scale[singular] <- 1
-
   } else {
     test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
-
-    # don't rescale columns that were singular features in std_train_X;
-    #   these features will have an estimated beta of 0 anyway
-    fold_args$std_X_details$scale[singular] <- 1
-
-    # use center/scale values from train_X to standardize test_X
-    std_test_X <- scale(test_X,
-                        center = fold_args$std_X_details$center,
-                        scale = fold_args$std_X_details$scale)
   }
 
   # subset outcome for test set
@@ -197,6 +184,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                     backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
       # use center/scale values from train_X to standardize test_X
+      if (length(singular) >= 1) fold_args$std_X_details$scale[singular] <- 1
       std_test_info <- .Call("big_std",
                              std_test_X@address,
                              as.integer(count_cores()),
@@ -213,6 +201,13 @@ cvf <- function(i, fold, type, cv_args, ...) {
       Sigma_21 <- const*XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
+      # don't rescale columns that were singular features in std_train_X;
+      #   these features will have an estimated beta of 0 anyway
+      if (length(singular) >= 1) fold_args$std_X_details$scale[singular] <- 1
+      # use center/scale values from train_X to standardize test_X
+      std_test_X <- scale(test_X,
+                          center = fold_args$std_X_details$center,
+                          scale = fold_args$std_X_details$scale)
       Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
                                                          fold_args$std_X)
     }

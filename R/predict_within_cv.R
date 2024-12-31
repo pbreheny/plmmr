@@ -43,7 +43,6 @@ predict_within_cv <- function(fit,
     colnames(fit$beta_vals) <- lam_names(fit$lambda)
   }
 
-
   # calculate the estimated mean values for test data
   a <- fit$beta_vals[1,]
   b <- fit$beta_vals[-1,,drop=FALSE]
