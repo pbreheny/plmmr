@@ -179,8 +179,8 @@ cvf <- function(i, fold, type, cv_args, ...) {
       std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
                                     rows = which(fold==i),
                                     type = "double",
-                                    backingfile = paste0("test_fold",i,".bk"),
-                                    descriptorfile = paste0("test_fold",i,".desc"),
+                                    backingfile = paste0("std_test_fold",i,".bk"),
+                                    descriptorfile = paste0("std_test_fold",i,".desc"),
                                     backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
       # use center/scale values from train_X to standardize test_X
