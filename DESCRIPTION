@@ -1,7 +1,7 @@
 Package: plmmr
 Title: Penalized Linear Mixed Models for Correlated Data
-Version: 4.1.0.3
-Date: 2024-12-31
+Version: 4.1.0.4
+Date: 2025-01-20
 Authors@R: c(
     person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),

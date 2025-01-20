@@ -286,8 +286,7 @@ cv_plmm <- function(design,
       res <- cvf(i = i,
                  fold = fold,
                  type = type,
-                 cv_args = cv_args,
-                 estimated_Sigma = estimated_Sigma)
+                 cv_args = cv_args)
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     }

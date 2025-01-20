@@ -2,7 +2,7 @@
 % Please edit documentation in R/plmm.R
 \name{plmm}
 \alias{plmm}
-\title{Fit a linear mixed model via non-convex penalized maximum likelihood.}
+\title{Fit a linear mixed model via penalized maximum likelihood.}
 \usage{
 plmm(
   design,
@@ -115,7 +115,7 @@ A list which includes 19 items:
 }
 }
 \description{
-Fit a linear mixed model via non-convex penalized maximum likelihood.
+Fit a linear mixed model via penalized maximum likelihood.
 }
 \examples{
 # using admix data

@@ -1,4 +1,4 @@
-#' Fit a linear mixed model via non-convex penalized maximum likelihood.
+#' Fit a linear mixed model via penalized maximum likelihood.
 #' @param design                  The first argument must be one of three things:
 #'                                  (1) `plmm_design` object (as created by `create_design()`)
 #'                                  (2) a string with the file path to a design object (the file path must end in '.rds')

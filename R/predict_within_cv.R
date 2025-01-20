@@ -55,8 +55,6 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
-    # covariance comes from selected rows and columns from estimated_Sigma that
-    #   is generated in the overall fit (Sigma_11, Sigma_21)
     # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
     resid_train <- (drop(fit$y) - fit$std_Xbeta)
     ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
