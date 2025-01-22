@@ -73,8 +73,9 @@ in many applications.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
-\item{cluster}{cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
-advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().}
+\item{cluster}{Option for \strong{in-memory data only}: cv_plmm() can be run in parallel across a cluster using the parallel package.
+The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+\strong{Note}: this option is not yet implemented for filebacked data.}
 
 \item{nfolds}{The number of cross-validation folds. Default is 5.}
 

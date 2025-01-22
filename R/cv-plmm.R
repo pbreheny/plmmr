@@ -28,8 +28,9 @@
 #'                        based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
 #'                        and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method
 #'                        in many applications.
-#' @param cluster         cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
-#'                        advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+#' @param cluster         Option for **in-memory data only**: cv_plmm() can be run in parallel across a cluster using the parallel package.
+#'                        The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+#'                        **Note**: this option is not yet implemented for filebacked data.
 #' @param nfolds          The number of cross-validation folds. Default is 5.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
@@ -250,12 +251,34 @@ cv_plmm <- function(design,
 
   # set up cluster if user-specified ---------------------------------------
   if (!missing(cluster)) {
+
+    # error check: parallelization is not yet implemented for filebacked data
+    if (checked_data$fbm_flag) stop("Parallelization is not yet implemented for filebacked data.
+                                    You cannot specify a 'cluster' argument if data are stored filebacked.\n.")
+
+    # check type of 'cluster' argument
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
-    parallel::clusterExport(cluster, c("design", "K", "fold", "type", "cv_args", "estimated_Sigma"), envir=environment())
+
+    # check if variables are defined
+    if (!exists("fold") || !exists("type") || !exists("cv_args")) {
+      stop("One or more required variables (fold, type, cv_args) are not defined", call.=FALSE)
+    }
+
+    parallel::clusterExport(cl = cluster,
+                            varlist = c("fold", "type", "cv_args"),
+                            envir = environment())
     parallel::clusterCall(cluster, function() library(plmmr))
-    fold.results <- parallel::parLapply(cl=cluster, X=1:max(fold), fun=cvf,
+    fold_results <- parallel::parLapply(cl=cluster,
+                                        X=1:max(fold),
+                                        fun=cvf,
                                         design = design,
-                                        fold=fold, type=type, cv_args=cv_args)
+                                        fold=fold,
+                                        type=type,
+                                        cv_args=cv_args)
+
+    # stop the cluster when done
+    parallel::stopCluster(cluster)
+
   }
 
   # carry out CV -------------------------------------
@@ -273,7 +296,7 @@ cv_plmm <- function(design,
   for (i in 1:nfolds) {
     # case 1: user-specified cluster
     if (!missing(cluster)) {
-      res <- fold.results[[i]] # refers to lines from above
+      res <- fold_results[[i]] # refers to lines from above
       if (trace) {utils::setTxtProgressBar(pb, i)}
 
     } else {

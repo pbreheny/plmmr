@@ -1,4 +1,4 @@
-# plmmr 4.1.0.3 (2024-12-31)
+# plmmr 4.1.0.5 (2025-01-22)
 
 ## Bug fixes
 
@@ -10,6 +10,7 @@ We have recently caught a couple of bugs in our model fitting functions -- we ap
 
 ## Other changes
 
+-   **Clarification of parallelization option for cross-validation:** The `cv_plmm()` method offers parallelization through the `cluster` option – we have now clarified in our documentation that at this time, this option is only available for analyzing data stored in-memory. We have added an example that demonstrates this option at work in the article for analyzing matrix data.
 -   **Change of default settings for prediction**: The default prediction method in both `predict()` and `cv_plmm()` is now 'blup' (best linear unbiased prediction).
 -   **Change in objects returned by default in** `plmm()`: By default, the main model fitting function `plmm()` now returns the filepath for `std_X` when the design matrix is stored file-backed; `plmm()` also returns `y` (the outcome vector used to fit the model), and `std_Xbeta` (the linear predictors on the standardized scale). These components are used to construct the best linear unbiased predictor.
 -   **Change in arguments passed to** `predict()`: In tandem with the change in what is returned by `plmm()` by default, the `predict()` method no longer needs a separate `y` argument to be supplied for `type = 'blup'`.

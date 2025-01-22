@@ -99,7 +99,25 @@ We can also plot the cross-validation error (CVE) versus $\lambda$ (on the log s
 plot(admix_cv)
 ```
 
-## Predicted values 
+### Parallelization 
+
+As an option for cross-validation, with data stored in-memory you may choose to implement CV in parallel using the `cluster` argument in `cv_plmm()`. Here is an example of setting up CV in parallel: 
+
+```{r}
+# make a cluster
+num_cores <- 5 # just using 5 cores as a laptop-sized example
+cl <- parallel::makeCluster(spec = num_cores)
+print(cl) # check to see what kind of cluster you've made 
+
+cv_fit <- cv_plmm(design = admix_design2,
+                  type = "blup",
+                  cluster = cl,
+                  return_fit = T,
+                  trace = FALSE) 
+```
+
+
+## Prediction
 
 Below is an example of the `predict()` methods for PLMMs: 
 

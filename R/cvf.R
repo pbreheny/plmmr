@@ -16,7 +16,6 @@
 #' * a numeric value with the predicted outcome (y hat) values at each lambda
 #'
 cvf <- function(i, fold, type, cv_args, ...) {
-
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
 
