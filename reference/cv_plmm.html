@@ -9,7 +9,7 @@ linear mixed models over a grid of values for the regularization parameter lambd
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,8 +155,9 @@ in many applications.</p></dd>
 
 
 <dt id="arg-cluster">cluster<a class="anchor" aria-label="anchor" href="#arg-cluster"></a></dt>
-<dd><p>cv_plmm() can be run in parallel across a cluster using the parallel package. The cluster must be set up in
-advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().</p></dd>
+<dd><p>Option for <strong>in-memory data only</strong>: cv_plmm() can be run in parallel across a cluster using the parallel package.
+The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+<strong>Note</strong>: this option is not yet implemented for filebacked data.</p></dd>
 
 
 <dt id="arg-nfolds">nfolds<a class="anchor" aria-label="anchor" href="#arg-nfolds"></a></dt>
