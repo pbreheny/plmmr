@@ -7,7 +7,6 @@
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param centered_y Continuous outcome vector, centered.
-#' @param k An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to `RSpectra::svds()`. Defaults to `min(n, p) - 1`, where n and p are the dimensions of the **standardized** design matrix.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
 #' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
@@ -31,7 +30,6 @@ plmm_prep <- function(std_X,
                       n,
                       p,
                       centered_y,
-                      k = NULL,
                       K = NULL,
                       diag_K = NULL,
                       eta_star = NULL,
@@ -43,27 +41,12 @@ plmm_prep <- function(std_X,
   ## coersion
   U <- s <- eta <- NULL
 
-  if(is.null(k)){
-    trunc_flag <- FALSE
-  }
-
-  if(!is.null(k)){
-
-    if(k < min(std_X_n, std_X_p)){
-      trunc_flag <- TRUE
-    } else {
-      stop("\nk value is out of bounds.
-         \nIf specified, k must be an integer in the range from 1 to min(nrow(std_X), ncol(std_X)).
-         \nwhere std_X does not include singular columns. For help detecting singularity,
-         \nsee ncvreg::std()")
-    }
-
-  }
 
   # set default: if diag_K not specified, set to false
   if(is.null(diag_K)){diag_K <- FALSE}
 
-  # handle the cases where no decomposition is needed:
+  # First: handle the cases where no decomposition is  ------------------
+
   # case 1: K is the identity matrix
   flag1 <- diag_K & is.null(K)
   if(flag1){
@@ -90,7 +73,7 @@ plmm_prep <- function(std_X,
     }
   }
 
-  # otherwise, need to do eigendecomposition:
+  # otherwise, need to do eigendecomposition -----------------------------
   if (sum(c(flag1, flag2, flag3)) == 0) {
     if (trace) {cat("Starting decomposition.\n")}
     # set default K: if not specified and not diagonal, use realized relatedness matrix
@@ -113,23 +96,22 @@ plmm_prep <- function(std_X,
 
   }
 
-  # error check: what if the combination of args. supplied was none of the SVD cases above?
+  # error check: what if the combination of args. supplied was none of the cases above?
   if (is.null(s) | is.null(U)){
-    stop("\nSomething is wrong in the SVD/eigendecomposition.
+    stop("\nSomething is wrong in the eigendecomposition.
     \nThe combination of supplied arguments does not match any cases handled in
-         \n svd_X(), the internal function called by plmm() via plmm_prep().
+         \n plmm_prep(), the internal function called by plmm() to do this step of the modeling process.
          \n Re-examine the supplied arguments -- here are some common mistakes:
+         \n Is the K argument you supplied something other than a list, a matrix, or a filepath to an RDS file with one of those objects?
          \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'.
-         \n \t \t *If you used choose_k(), make sure you are supplying the 'svd_K' element returned from that function's result as the 'K' here.*
-         \n \tDid you intend to set diag_K = TRUE?
-         \n \tDid you set diag_K = TRUE and specifiy a k value at the same time? This combination of arguments is incompatible.")
+         \n \tDid you intend to set diag_K = TRUE?.")
   }
 
   # estimate eta if needed
   if (is.null(eta_star)) {
     eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y)
   } else {
-    # otherwise, use the user-supplied value (this option is mainly for simulation)
+    # otherwise, use the user-supplied value (this option is mainly used for simulation studies)
     eta <- eta_star
   }
 

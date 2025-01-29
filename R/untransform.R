@@ -20,8 +20,8 @@
 #' @returns a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
 
 
-untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, plink_flag,
-                        use_names = TRUE) {
+untransform <- function(std_scale_beta, p, std_X_details,
+                        fbm_flag, plink_flag, use_names = TRUE) {
 
   if (is.null(std_X_details$X_colnames)) use_names <- FALSE
 

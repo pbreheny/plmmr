@@ -103,9 +103,7 @@ cv_plmm <- function(design,
     # ^^ internally, we need to take off the extension from the file name
 
     # start the log
-    logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                           save_rds,
-                                           "./cv-plmm"))
+    logfile <- create_log(outfile = save_rds)
   }
 
   # create a design if needed -------------
