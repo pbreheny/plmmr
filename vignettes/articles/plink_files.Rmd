@@ -65,7 +65,7 @@ any(is.na(pen$genotypes[,]))
 
 Now we are ready to create a `plmm_design`, which is an object with the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
 
-As a side note: in GWAS studies, it is typical to include some non-genomic factors as unpenalized covariates as part of the model. For instance, you may want to adjust for sex or age -- these are factors that you want to ensure are always included in the selected model. The `plmmr` package allows you to include these additional unpenalized predictors via the 'add_predictor' and 'predictor_id' options, both of which are passed through `create_design()` to the internal function `create_design_filebacked()`. An example with these options is included in the `create_design()` documentation. 
+As a side note: in GWAS studies, it is typical to include some non-genomic factors as unpenalized covariates as part of the model. For instance, you may want to adjust for sex or age (as shown in the example below) -- these are factors that you want to ensure are always included in the selected model. The `plmmr` package allows you to include these additional unpenalized predictors via the 'add_predictor' and 'predictor_id' options, both of which are passed through `create_design()` to the internal function `create_design_filebacked()`. An example with these options is included in the `create_design()` documentation. 
 
 ```{r}
 # get outcome data 
@@ -74,6 +74,11 @@ penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
 phen <- data.frame(FamID = as.character(penncath_pheno$FamID),
                    CAD = penncath_pheno$CAD)
 
+# prepare a data.frame of the predictors for which we want to adjust: 
+other_predictors <- penncath_pheno |> 
+  dplyr::select('FamID', 'sex', 'age') |> 
+  dplyr::mutate(FamID = as.character(FamID))
+
 pen_design <- create_design(data_file = plink_data,
                             feature_id = "FID",
                             rds_dir = temp_dir,
@@ -81,6 +86,8 @@ pen_design <- create_design(data_file = plink_data,
                             add_outcome = phen,
                             outcome_id = "FamID",
                             outcome_col = "CAD",
+                            add_predictor = other_predictors,
+                            predictor_id = 'FamID',
                             logfile = "design",
                             # again, overwrite if needed; use with caution
                             overwrite = TRUE)

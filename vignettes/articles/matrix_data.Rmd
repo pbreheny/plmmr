@@ -87,6 +87,7 @@ plot(admix_fit2)
 To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
+
 admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
 
 admix_cv_s <- summary(admix_cv, lambda = "min")
@@ -108,12 +109,17 @@ As an option for cross-validation, with data stored in-memory you may choose to 
 num_cores <- 5 # just using 5 cores as a laptop-sized example
 cl <- parallel::makeCluster(spec = num_cores)
 print(cl) # check to see what kind of cluster you've made 
+cv_fit_parallel <- cv_plmm(design = admix_design2,
+                           type = "blup",
+                           cluster = cl,
+                           return_fit = T,
+                           trace = FALSE) 
+)
 
-cv_fit <- cv_plmm(design = admix_design2,
-                  type = "blup",
-                  cluster = cl,
-                  return_fit = T,
-                  trace = FALSE) 
+
+# note: the results closely correspond to the above
+summary(cv_fit_parallel)
+plot(cv_fit_parallel)
 ```
 
 
