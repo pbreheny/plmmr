@@ -72,7 +72,7 @@ Under these assumptions, we may write $\mathbf{y} \sim N(\dot{\mathbf{X}}\dot{\b
 
 -   $k$ represents the number of nonzero eigenvalues represented in $\mathbf{U}$ and $\mathbf{d}$, so $k \leq \text{min}(n,p)$.
 
--   Again, $\mathbf{K} \equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}$ is often referred to in the literature as the realized relatedness matrix (RRM) or genomic relatedness matrix (GRM). $\mathbf{K}$ has dimension $n \times n$. 
+-   Again, $\mathbf{K} \equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}$ is often referred to in the literature as the realized relatedness matrix (RRM) or genomic relatedness matrix (GRM). $\mathbf{K}$ has dimension $n \times n$.
 
 -   $\eta$ is the ratio $\frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}$. We estimate $\hat{\eta}$ from a null model (more details to come).
 
@@ -108,7 +108,7 @@ In the code, we denote the objects above in this way:
 
 -   $\ddot{\tilde{\mathbf{X}}}$ is `stdrot_X`
 
--   $\hat{\boldsymbol{\beta}}$ is named `og_scale_beta` in helper functions (for clarity) and returned in `plmm` objects as `beta_vals`. `beta_vals` and `og_scale_beta` are equivalent; both represent the estimated coefficients on the original scale. 
+-   $\hat{\boldsymbol{\beta}}$ is named `og_scale_beta` in helper functions (for clarity) and returned in `plmm` objects as `beta_vals`. `beta_vals` and `og_scale_beta` are equivalent; both represent the estimated coefficients on the original scale.
 
 -   $\hat{\dot{\boldsymbol{\beta}}}$ is `std_scale_beta`
 
@@ -116,8 +116,4 @@ In the code, we denote the objects above in this way:
 
 -   $\dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}}$ is `Xb`; this is equivalent to the `std_Xbeta` object returned by `plmm()`.
 
--   $\hat{\boldsymbol{\Sigma}} \equiv \hat{\eta}\mathbf{K} + (1 - \hat{\eta})\mathbf{I}$ is `estimated_Sigma`. Similarly, $\hat{\boldsymbol{\Sigma}}_{11}$ is `Sigma_11`, etc. 
-
-
-
-
+-   $\hat{\boldsymbol{\Sigma}} \propto \hat{\eta}\mathbf{K} + (1 - \hat{\eta})\mathbf{I}$ is `estimated_Sigma`. Similarly, $\hat{\boldsymbol{\Sigma}}_{11}$ is `Sigma_11`, etc.
