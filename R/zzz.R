@@ -1,5 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("This is version ", packageVersion(pkgname),
+  packageStartupMessage("This is version ", utils::packageVersion(pkgname),
                         " of ", pkgname, ".\n",
                         "Note: ", pkgname, " depends on the package bigalgebra, the current GitHub version of which is throwing some warnings for filebacked analysis.
 \n https://github.com/fbertran/bigalgebra/issues/2 \n
