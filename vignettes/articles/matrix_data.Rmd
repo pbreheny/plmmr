@@ -114,8 +114,6 @@ cv_fit_parallel <- cv_plmm(design = admix_design2,
                            cluster = cl,
                            return_fit = T,
                            trace = FALSE) 
-)
-
 
 # note: the results closely correspond to the above
 summary(cv_fit_parallel)
