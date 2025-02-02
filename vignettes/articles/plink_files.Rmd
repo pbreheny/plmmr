@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(plmmr)
-library(dplyr)
 ```
 
 A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of '.bed', '.bed', and '.fam' files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the article on analyzing data from delimited files at `vignette("delim_files", package = "plmmr")`.
@@ -76,9 +75,8 @@ phen <- data.frame(FamID = as.character(penncath_pheno$FamID),
                    CAD = penncath_pheno$CAD)
 
 # prepare a data.frame of the predictors for which we want to adjust: 
-other_predictors <- penncath_pheno |> 
- select('FamID', 'sex', 'age') |> 
- mutate(FamID = as.character(FamID))
+other_predictors <- penncath_pheno[,c('FamID', 'sex', 'age')]
+other_predictors$FamID <- as.character(other_predictors$FamID)
 
 pen_design <- create_design(data_file = plink_data,
                             feature_id = "FID",
