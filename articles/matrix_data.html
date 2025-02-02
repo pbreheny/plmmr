@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,14 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/plmmr/">plmmr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: bigalgebra</span></span>
-<span><span class="co">#&gt; Loading required package: bigmemory</span></span></code></pre></div>
+<span><span class="co">#&gt; Loading required package: bigmemory</span></span>
+<span><span class="co">#&gt; This is version 4.1.1.0 of plmmr.</span></span>
+<span><span class="co">#&gt; Note: plmmr depends on the package bigalgebra, the current GitHub version of which is throwing some warnings for filebacked analysis.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  https://github.com/fbertran/bigalgebra/issues/2 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; If you see a warning about 'stack imbalance' appear while you are fitting a model with plmm() or cv_plmm(), we recommend downloading the last stable version of bigalebra.</span></span>
+<span><span class="co">#&gt; If you are analyzing data stored in your R session memory, you can disregard this message.</span></span></code></pre></div>
 <p>In this overview, I will provide a demo of the main functions in
 <code>plmmr</code> using the <code>admix</code> data. Checkout the other
 vignettes to see examples of analyzing data from PLINK files or
@@ -374,7 +381,8 @@ use cross validation. Below is an example of using <code>cv_plmm</code>
 to select a <span class="math inline">\lambda</span> that minimizes
 cross-validation error:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span>, return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">admix_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span>, return_fit <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">admix_cv_s</span><span class="op">)</span></span>
@@ -405,12 +413,22 @@ in parallel:</p>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span>spec <span class="op">=</span> <span class="va">num_cores</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span> <span class="co"># check to see what kind of cluster you've made </span></span>
 <span><span class="co">#&gt; socket cluster with 5 nodes on host 'localhost'</span></span>
+<span><span class="va">cv_fit_parallel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span>,</span>
+<span>                           type <span class="op">=</span> <span class="st">"blup"</span>,</span>
+<span>                           cluster <span class="op">=</span> <span class="va">cl</span>,</span>
+<span>                           return_fit <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>                           trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design2</span>,</span>
-<span>                  type <span class="op">=</span> <span class="st">"blup"</span>,</span>
-<span>                  cluster <span class="op">=</span> <span class="va">cl</span>,</span>
-<span>                  return_fit <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>                  trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="co"># note: the results closely correspond to the above</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span>
+<span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.1853):</span></span>
+<span><span class="co">#&gt; -------------------------------------------------</span></span>
+<span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.30</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.138</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span></code></pre></div>
+<p><img src="matrix_data_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">

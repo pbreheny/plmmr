@@ -9,7 +9,7 @@ This is an internal function for cv_plmm"><link rel="stylesheet" href="https://c
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,6 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  <span class="va">n</span>,</span>
 <span>  <span class="va">p</span>,</span>
 <span>  <span class="va">centered_y</span>,</span>
-<span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -92,10 +91,6 @@ This is an internal function for <code>cv_plmm</code></p>
 
 <dt id="arg-centered-y">centered_y<a class="anchor" aria-label="anchor" href="#arg-centered-y"></a></dt>
 <dd><p>Continuous outcome vector, centered.</p></dd>
-
-
-<dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>An integer specifying the number of singular values to be used in the approximation of the rotated design matrix. This argument is passed to <code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">RSpectra::svds()</a></code>. Defaults to <code>min(n, p) - 1</code>, where n and p are the dimensions of the <strong>standardized</strong> design matrix.</p></dd>
 
 
 <dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
