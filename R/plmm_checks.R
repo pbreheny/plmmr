@@ -84,7 +84,7 @@ plmm_checks <- function(design,
   # set default init
   if(is.null(init)){init <- rep(0, std_X_p)}
 
-    # set default gamma (gamma not used in 'lasso' option)
+  # set default gamma (gamma not used in 'lasso' option)
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
   # error checking design matrix  ---------------------------------------------
@@ -119,6 +119,23 @@ plmm_checks <- function(design,
     plink_flag <- TRUE
   } else {
     plink_flag <- FALSE
+  }
+
+  # warn about bigalgebra issues if this is user's first call to filebacked analysis
+  # Check if the warning has been shown
+  if (!.plmmr_env$warning_shown & fbm_flag) {
+
+    warning("Note: plmmr depends on the package bigalgebra, the current GitHub \n
+            version of which is throwing some warnings for filebacked analysis. \n
+            See https://github.com/fbertran/bigalgebra/issues/2 \n
+            If you see a warning about 'stack imbalance' appear while you are \n
+            fitting a model with plmm() or cv_plmm(), we recommend downloading \n
+            the last stable version of bigalebra.\n
+            This message is displayed after your first call to fit a model \n
+            using filebacked data.\n")
+
+    # Update the state
+    .plmmr_env$warning_shown <- TRUE
   }
 
   # return list for model preparation ---------------------------------
