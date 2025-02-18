@@ -9,7 +9,7 @@ bibentry(
   title = "plmmr: an R package to fit penalized linear mixed models for genome-wide association data with complex correlation structure",
   journal = "arXiv preprint",
   year = "2025",
-  doi = "https://doi.org/10.48550/arXiv.2502.01577")
+  doi = "10.48550/arXiv.2502.01577")
 
 bibentry(
   bibtype="Article",
@@ -21,5 +21,5 @@ bibentry(
   volume = "45",
   pages = "427--444",
   number = "5",
-  url = "https://doi.org/10.1002/gepi.22384")
+  doi = "10.1002/gepi.22384")
 
