@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,59 +40,51 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.1.0.5" id="plmmr-4105-2025-01-22">plmmr 4.1.0.5 (2025-01-22)<a class="anchor" aria-label="anchor" href="#plmmr-4105-2025-01-22"></a></h2>
-<div class="section level3">
-<h3 id="bug-fixes-4-1-0-5">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-4-1-0-5"></a></h3>
-<p>We have recently caught a couple of bugs in our model fitting functions – we apologize for any errors these may have caused in downstream analysis, and we explain how we have addressed these issues below:</p>
-<ul><li><p><strong>Bug in BLUP</strong>: We caught a mathematical error in our earlier implementation of best linear unbiased prediction. The issue had to do with an inconsistency in the scaling among the terms used in constructing this predictor. This issue impacted prediction within cross-validation as well as the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method for our <code>plmm</code> class. We recommend that users who had used best linear unbiased prediction (BLUP) in previous analysis re-run their analysis using this corrected version.</p></li>
-<li><p><strong>Bug in processing delimited files</strong>: We noticed a bug in the way that models were fit to data from delimited files. The previous version was not correctly implementing the transformation of model results from the standardized scale to the original scale due to the inadvertent addition of two rows in the <code>beta_vals</code> object (only one row should be added, for the intercept). This error has been corrected. We recommend that users who have used the previous version of <strong>plmmr</strong> to analyze data from delimited files re-run their analyses.</p></li>
+<h2 class="pkg-version" data-toc-text="4.2.0" id="plmmr-420">plmmr 4.2.0<a class="anchor" aria-label="anchor" href="#plmmr-420"></a></h2>
+<ul><li><p><strong>Bug in BLUP</strong>: We caught a mathematical error in our earlier implementation of best linear unbiased prediction. The issue had to do with an inconsistency in the scaling among the terms used in constructing this predictor. This issue impacted prediction within cross-validation as well as the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method for our <code>plmm</code> class.</p></li>
+<li><p><strong>Bug in processing delimited files</strong>: We noticed a bug in the way that models were fit to data from delimited files. The previous version was not correctly implementing the transformation of model results from the standardized scale to the original scale due to the inadvertent addition of two rows in the <code>beta_vals</code> object (only one row should be added, for the intercept).</p></li>
+<li><p><strong>Clarification of parallelization option for cross-validation:</strong> The <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> method offers parallelization through the <code>cluster</code> option – we have now clarified in our documentation that at this time, this option is only available for analyzing data stored in-memory. We have added an example that demonstrates this option at work in the article for analyzing matrix data.</p></li>
+<li><p><strong>Change of default settings for prediction</strong>: The default prediction method in both <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> is now ‘blup’ (best linear unbiased prediction).</p></li>
+<li><p><strong>Change in objects returned by default in</strong> <code><a href="../reference/plmm.html">plmm()</a></code>: By default, the main model fitting function <code><a href="../reference/plmm.html">plmm()</a></code> now returns the filepath for <code>std_X</code> when the design matrix is stored file-backed; <code><a href="../reference/plmm.html">plmm()</a></code> also returns <code>y</code> (the outcome vector used to fit the model), and <code>std_Xbeta</code> (the linear predictors on the standardized scale). These components are used to construct the best linear unbiased predictor.</p></li>
+<li><p><strong>Change in arguments passed to</strong> <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>: In tandem with the change in what is returned by <code><a href="../reference/plmm.html">plmm()</a></code> by default, the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method no longer needs a separate <code>y</code> argument to be supplied for <code>type = 'blup'</code>.</p></li>
+<li><p><strong>Change in arguments supplied to</strong> <code><a href="../reference/plmm.html">plmm()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>: the option <code>compact_save</code> no longer exists; instead, <code>save_rds</code> offers the option to save .rds/.log files, and <code>return_fit</code> offers the option to return the output of <code><a href="../reference/plmm.html">plmm()</a></code> in the current R session. Note that .log files are now only constructed when <code>save_rds = TRUE</code>.</p></li>
 </ul></div>
-<div class="section level3">
-<h3 id="other-changes-4-1-0-5">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-4-1-0-5"></a></h3>
-<ul><li>
-<strong>Clarification of parallelization option for cross-validation:</strong> The <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> method offers parallelization through the <code>cluster</code> option – we have now clarified in our documentation that at this time, this option is only available for analyzing data stored in-memory. We have added an example that demonstrates this option at work in the article for analyzing matrix data.</li>
-<li>
-<strong>Change of default settings for prediction</strong>: The default prediction method in both <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> is now ‘blup’ (best linear unbiased prediction).</li>
-<li>
-<strong>Change in objects returned by default in</strong> <code><a href="../reference/plmm.html">plmm()</a></code>: By default, the main model fitting function <code><a href="../reference/plmm.html">plmm()</a></code> now returns the filepath for <code>std_X</code> when the design matrix is stored file-backed; <code><a href="../reference/plmm.html">plmm()</a></code> also returns <code>y</code> (the outcome vector used to fit the model), and <code>std_Xbeta</code> (the linear predictors on the standardized scale). These components are used to construct the best linear unbiased predictor.</li>
-<li>
-<strong>Change in arguments passed to</strong> <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>: In tandem with the change in what is returned by <code><a href="../reference/plmm.html">plmm()</a></code> by default, the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method no longer needs a separate <code>y</code> argument to be supplied for <code>type = 'blup'</code>.</li>
-<li>
-<strong>Change in arguments supplied to</strong> <code><a href="../reference/plmm.html">plmm()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>: the option <code>compact_save</code> no longer exists; instead, <code>save_rds</code> offers the option to save .rds/.log files, and <code>return_fit</code> offers the option to return the output of <code><a href="../reference/plmm.html">plmm()</a></code> in the current R session. Note that .log files are now only constructed when <code>save_rds = TRUE</code>.</li>
-</ul></div>
-</div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.1.0" id="plmmr-410-2024-10-23">plmmr 4.1.0 (2024-10-23)<a class="anchor" aria-label="anchor" href="#plmmr-410-2024-10-23"></a></h2><p class="text-muted">CRAN release: 2024-10-23</p>
+<h2 class="pkg-version" data-toc-text="4.1.0" id="plmmr-410">plmmr 4.1.0<a class="anchor" aria-label="anchor" href="#plmmr-410"></a></h2><p class="text-muted">CRAN release: 2024-10-23</p>
 <ul><li><p><strong>Restore plmm(X,y) syntax</strong>: Where version 4.0.0 required that <code><a href="../reference/create_design.html">create_design()</a></code> always be called prior to <code><a href="../reference/plmm.html">plmm()</a></code> or <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>; this update restores the X,y syntax consistent with other packages (e.g., <code>glmnet</code>, <code>ncvreg</code>). Note that this syntax is only available for the case where the design matrix is stored in-memory as a <code>matrix</code> or <code>data.frame</code> object. The <code><a href="../reference/create_design.html">create_design()</a></code> function is still required for cases where the design matrix/dataset is stored in an external file.</p></li>
 <li><p><strong>Bug fix</strong>: The 4.0.0 version of <code><a href="../reference/create_design.html">create_design()</a></code> required <code>X</code> to have column names, and errored out with an uninformative message if no names were supplied (see issue 61). This is now fixed – column names are not required unless the user wants to specify an argument to <code>unpen</code>.</p></li>
 <li><p><strong>Argument name change</strong>: In <code><a href="../reference/create_design.html">create_design()</a></code>, the argument to specify an outcome in the in-memory case has been renamed to <code>y</code>; this makes the syntax consistent, e.g., <code>create_design(X, y)</code>. Note again that this change is relevant to in-memory data only.</p></li>
 <li><p><strong>Internal:</strong> Fixed LTO type mismatch bug.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.0.0" id="plmmr-400-2024-10-07">plmmr 4.0.0 (2024-10-07)<a class="anchor" aria-label="anchor" href="#plmmr-400-2024-10-07"></a></h2><p class="text-muted">CRAN release: 2024-10-11</p>
+<h2 class="pkg-version" data-toc-text="4.0.0" id="plmmr-400">plmmr 4.0.0<a class="anchor" aria-label="anchor" href="#plmmr-400"></a></h2><p class="text-muted">CRAN release: 2024-10-11</p>
 <ul><li><p><strong>Major re-structuring of preprocessing pipeline:</strong> Data from external files must now be processed with <code><a href="../reference/process_plink.html">process_plink()</a></code> or <code><a href="../reference/process_delim.html">process_delim()</a></code>. All data (including in-memory data) must be prepared for analysis via <code><a href="../reference/create_design.html">create_design()</a></code>. This change ensures that data are funneled into a uniform format for analysis.</p></li>
 <li><p><strong>Documentation updated:</strong> The vignettes for the package are now all revised to include examples of the complete pipeline with the new <code><a href="../reference/create_design.html">create_design()</a></code> syntax. There is an article for each type of data input (matrix/data.frame, delimited file, and PLINK).</p></li>
 <li><p><strong>CRAN:</strong> The package is on CRAN now.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.2.0" id="plmmr-320-2024-09-02">plmmr 3.2.0 (2024-09-02)<a class="anchor" aria-label="anchor" href="#plmmr-320-2024-09-02"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.2.0" id="plmmr-320">plmmr 3.2.0<a class="anchor" aria-label="anchor" href="#plmmr-320"></a></h2>
+<p><em>2024-09-02</em></p>
 <ul><li><p><strong>bigsnpr now in Suggests, not Imports:</strong> The essential filebacking support is now all done with <code>bigmemory</code> and <code>bigalgebra</code>. The <code>bigsnpr</code> package is used only for processing PLINK files.</p></li>
 <li><p><strong>dev branch gwas_scale</strong> has a version of the pipeline that runs completely file-backed.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.1.0" id="plmmr-310-2024-07-13">plmmr 3.1.0 (2024-07-13)<a class="anchor" aria-label="anchor" href="#plmmr-310-2024-07-13"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.1.0" id="plmmr-310">plmmr 3.1.0<a class="anchor" aria-label="anchor" href="#plmmr-310"></a></h2>
+<p><em>2024-07-13</em></p>
 <ul><li><p><strong>Enhancement:</strong> To make <code>plmmr</code> have better functionality for writing scripts, the functions <code><a href="../reference/process_plink.html">process_plink()</a></code>, <code>plmmm()</code>, and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> now (optionally) write ‘.log’ files, as in PLINK.</p></li>
 <li><p><strong>Enhancement:</strong> In cases where users are working with large datasets, it may not be practical or desirable for all the results returned by <code>plmmm()</code> or <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> to be saved in a single ‘.rds’ file. There is now an option in both of these model fitting functions called ‘compact_save’, which gives users the option to save the output in multiple, smaller ‘.rds’ files.</p></li>
 <li><p><strong>Argument removed:</strong> Argument <code>std_needed</code> is no longer available in <code><a href="../reference/plmm.html">plmm()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> functions.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.0.0" id="plmmr-300-2024-06-27">plmmr 3.0.0 (2024-06-27)<a class="anchor" aria-label="anchor" href="#plmmr-300-2024-06-27"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.0.0" id="plmmr-300">plmmr 3.0.0<a class="anchor" aria-label="anchor" href="#plmmr-300"></a></h2>
+<p><em>2024-06-27</em></p>
 <ul><li><p><strong>Bug fix:</strong> Cross-validation implementation issues fixed. Previously, the full set of eigenvalues were used inside CV folds, which is not ideal as it involves information from outside the fold. Now, the entire modeling process is cross-validated: the standardization, the eigendecomposition of the relatedness matrix, the model fitting, and the backtransformation onto the original scale for prediction.</p></li>
 <li><p><strong>Computational speedup:</strong> The standardization and rotation of filebacked data are now much faster; <code>bigalgebra</code> and <code>bigmemory</code> are now used for these computations.</p></li>
 <li><p><strong>Internal:</strong> On the standardized scale, the intercept of the PLMM is the mean of the outcome. This derivation considerably simplifies the handling of the intercept internally during model fitting.</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.1" id="plmmr-221-2024-03-16">plmmr 2.2.1 (2024-03-16)<a class="anchor" aria-label="anchor" href="#plmmr-221-2024-03-16"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.2.1" id="plmmr-221">plmmr 2.2.1<a class="anchor" aria-label="anchor" href="#plmmr-221"></a></h2>
+<p><em>2024-03-16</em></p>
 <ul><li>
 <strong>Name change:</strong> Changed package name to <code>plmmr</code>; note that <code><a href="../reference/plmm.html">plmm()</a></code>, <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>, and other functions starting with <code>plmm_</code> have not changed names.</li>
 </ul></div>

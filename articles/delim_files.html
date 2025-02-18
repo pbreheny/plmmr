@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/plmmr/">plmmr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: bigalgebra</span></span>
-<span><span class="co">#&gt; Loading required package: bigmemory</span></span>
-<span><span class="co">#&gt; This is plmmr 4.1.1.0.</span></span></code></pre></div>
+<span><span class="co">#&gt; Loading required package: bigmemory</span></span></code></pre></div>
 <p>If you have data stored as a delimited file (e.g., a
 <code>.txt</code> file), this is the place for you to begin. To analyze
 such data, there is a 3-step procedure: (1) process the data, (2) create
@@ -100,7 +99,7 @@ a design, and (3) fit a model.</p>
 <span><span class="co">#&gt;       Please make sure you have addressed missingness before you proceed.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; process_plink() completed </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/RtmpQDqoCM/processed_colon2.rds</span></span>
+<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp1eb8G4/processed_colon2.rds</span></span>
 <span></span>
 <span><span class="co"># look at what is created </span></span>
 <span><span class="va">colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_dat</span><span class="op">)</span></span></code></pre></div>
@@ -150,7 +149,7 @@ differs from how PLINK file data are analyzed; look at the
 <span><span class="co">#&gt; There are 0 constant features in the data</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2025-02-10 00:25:01</span></span>
+<span><span class="co">#&gt; Standardization completed at 2025-02-18 17:58:59</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress</span></span></code></pre></div>
 <p>As with <code><a href="../reference/process_delim.html">process_delim()</a></code>, the
 <code><a href="../reference/create_design.html">create_design()</a></code> function returns a filepath: . The output
@@ -179,7 +178,7 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_colon2.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmpQDqoCM/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp1eb8G4/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 62</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 2001</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 62</span></span>
@@ -220,18 +219,18 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;             This message is displayed after your first call to fit a model </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;             using filebacked data.</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2025-02-10 00:25:01</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2025-02-18 17:59:00</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2025-02-10 00:25:01</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2025-02-18 17:59:00</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditiong) finished at  2025-02-10 00:25:01</span></span>
+<span><span class="co">#&gt; Rotation (preconditiong) finished at  2025-02-18 17:59:00</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2025-02-10 00:25:01 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2025-02-18 17:59:00 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2025-02-10 00:25:01</span></span></code></pre></div>
+<span><span class="co">#&gt; Model ready at  2025-02-18 17:59:00</span></span></code></pre></div>
 <p>Notice the messages that are printed out – this documentation may be
 optionally saved to another <code>.log</code> file using the
 <code>logfile</code> argument.</p>
