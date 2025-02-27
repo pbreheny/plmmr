@@ -40,7 +40,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="4.2.0" id="plmmr-420">plmmr 4.2.0<a class="anchor" aria-label="anchor" href="#plmmr-420"></a></h2>
+<h2 class="pkg-version" data-toc-text="4.2.0" id="plmmr-420">plmmr 4.2.0<a class="anchor" aria-label="anchor" href="#plmmr-420"></a></h2><p class="text-muted">CRAN release: 2025-02-18</p>
 <ul><li><p><strong>Bug in BLUP</strong>: We caught a mathematical error in our earlier implementation of best linear unbiased prediction. The issue had to do with an inconsistency in the scaling among the terms used in constructing this predictor. This issue impacted prediction within cross-validation as well as the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> method for our <code>plmm</code> class.</p></li>
 <li><p><strong>Bug in processing delimited files</strong>: We noticed a bug in the way that models were fit to data from delimited files. The previous version was not correctly implementing the transformation of model results from the standardized scale to the original scale due to the inadvertent addition of two rows in the <code>beta_vals</code> object (only one row should be added, for the intercept).</p></li>
 <li><p><strong>Clarification of parallelization option for cross-validation:</strong> The <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> method offers parallelization through the <code>cluster</code> option – we have now clarified in our documentation that at this time, this option is only available for analyzing data stored in-memory. We have added an example that demonstrates this option at work in the article for analyzing matrix data.</p></li>
