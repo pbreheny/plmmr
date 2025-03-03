@@ -1,3 +1,7 @@
+# plmmr 4.2.1
+
+- **Internal:** Fixed LTO type mismatch bug.
+
 # plmmr 4.2.0
 
 - **Bug in BLUP**: We caught a mathematical error in our earlier implementation of best linear unbiased prediction. The issue had to do with an inconsistency in the scaling among the terms used in constructing this predictor. This issue impacted prediction within cross-validation as well as the `predict()` method for our `plmm` class.
