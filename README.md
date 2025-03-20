@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![GitHub version](https://img.shields.io/static/v1?label=GitHub&message=4.1.1.0&color=blue&logo=github)](https://github.com/pbreheny/plmmr) 
+[![GitHub version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pbreheny/plmmr/master/.version.json&style=flat&logo=github)](https://github.com/pbreheny/plmmr)
 [![CRAN version](https://img.shields.io/cran/v/plmmr?logo=R)](https://cran.r-project.org/package=plmmr)
 [![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions) 
 [![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
