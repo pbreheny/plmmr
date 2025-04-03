@@ -28,7 +28,7 @@ Note: if your file has headers/column names, set 'header = TRUE' -- this will be
 \item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files
 Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create insie \code{rds_dir} folder)
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder)
 Note: 'rds_prefix' cannot be the same as 'data_prefix'}
 
 \item{logfile}{Optional: the name (character string) of the prefix of the

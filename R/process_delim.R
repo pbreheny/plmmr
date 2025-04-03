@@ -7,7 +7,7 @@
 #' @param feature_id    A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
 #' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files
 #'                      Defaults to `data_dir`
-#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create insie `rds_dir` folder)
+#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder)
 #'                      Note: 'rds_prefix' cannot be the same as 'data_prefix'
 #' @param logfile       Optional: the name (character string) of the prefix of the
 #'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.

@@ -8,7 +8,7 @@ process_plink(
   data_dir,
   data_prefix,
   rds_dir = data_dir,
-  rds_prefix,
+  rds_prefix = NULL,
   logfile = NULL,
   impute = TRUE,
   impute_method = "mode",
@@ -26,7 +26,7 @@ process_plink(
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create insie \code{rds_dir} folder)
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 Note: 'rds_prefix' cannot be the same as 'data_prefix'}
 
 \item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
@@ -35,11 +35,13 @@ Note: if you supply a file path in this argument, it will error out with a "file
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
 \item{impute_method}{If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
-* mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
-* random: Imputes sampling according to allele frequencies.
-* mean0: Imputes the rounded mean.
-* mean2: Imputes the mean rounded to 2 decimal places.
-* xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.}
+\itemize{
+\item mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
+\item random: Imputes sampling according to allele frequencies.
+\item mean0: Imputes the rounded mean.
+\item mean2: Imputes the mean rounded to 2 decimal places.
+\item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
+}}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
 
