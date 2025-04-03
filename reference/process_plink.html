@@ -50,7 +50,7 @@
 <span>  <span class="va">data_dir</span>,</span>
 <span>  <span class="va">data_prefix</span>,</span>
 <span>  rds_dir <span class="op">=</span> <span class="va">data_dir</span>,</span>
-<span>  <span class="va">rds_prefix</span>,</span>
+<span>  rds_prefix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  logfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  impute <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  impute_method <span class="op">=</span> <span class="st">"mode"</span>,</span>
@@ -79,7 +79,7 @@
 
 
 <dt id="arg-rds-prefix">rds_prefix<a class="anchor" aria-label="anchor" href="#arg-rds-prefix"></a></dt>
-<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create insie <code>rds_dir</code> folder)
+<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create inside <code>rds_dir</code> folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 Note: 'rds_prefix' cannot be the same as 'data_prefix'</p></dd>
 
 
@@ -93,12 +93,12 @@ Note: if you supply a file path in this argument, it will error out with a "file
 
 
 <dt id="arg-impute-method">impute_method<a class="anchor" aria-label="anchor" href="#arg-impute-method"></a></dt>
-<dd><p>If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
-* mode (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.
-* random: Imputes sampling according to allele frequencies.
-* mean0: Imputes the rounded mean.
-* mean2: Imputes the mean rounded to 2 decimal places.
-* xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></dd>
+<dd><p>If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:</p><ul><li><p>mode (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.</p></li>
+<li><p>random: Imputes sampling according to allele frequencies.</p></li>
+<li><p>mean0: Imputes the rounded mean.</p></li>
+<li><p>mean2: Imputes the mean rounded to 2 decimal places.</p></li>
+<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
+</ul></dd>
 
 
 <dt id="arg-id-var">id_var<a class="anchor" aria-label="anchor" href="#arg-id-var"></a></dt>
