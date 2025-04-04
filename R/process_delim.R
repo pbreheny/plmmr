@@ -39,14 +39,17 @@ process_delim <- function(data_dir,
                           logfile = NULL,
                           overwrite = FALSE,
                           quiet = FALSE,
-                          ...){
+                          ...) {
 
-  prefix <- unlist(strsplit(data_file, split = "\\."))[1]
 
-  if (identical(rds_prefix, prefix)) stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n")
+  prefix <- tools::file_path_sans_ext(data_file)
+
+  if (identical(rds_prefix, prefix)) {
+    stop("rds_prefix cannot be the same as data_prefix.", call. = FALSE)
+  }
 
   # start log ------------------------------------------
-  if(!is.null(logfile)){
+  if (!is.null(logfile)){
     logfile <- create_log(file.path(rds_dir, logfile))
     cat("\nLogging to", logfile)
     cat("Preprocessing", prefix, "data\n", file = logfile, append = TRUE)
@@ -107,7 +110,5 @@ process_delim <- function(data_dir,
       "at", pretty_time(),
       file = logfile, append = TRUE)
 
-  return(file.path(rds_dir, rds_filename))
-
-
+  file.path(rds_dir, rds_filename)
 }

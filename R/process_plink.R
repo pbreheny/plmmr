@@ -170,7 +170,7 @@ process_plink <- function(data_dir,
   # cleanup --------------------------------------------------------------------
 
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+  list.files(rds_dir, pattern = paste0('^file.*.bk'), full.names=TRUE) |>
     file.remove()
   list.files(rds_dir, pattern = paste0('^', data_prefix, ".rds"), full.names = TRUE) |>
     file.remove()
