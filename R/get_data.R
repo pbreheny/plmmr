@@ -18,7 +18,7 @@
 #'
 get_data <- function(path, returnX = FALSE, trace = TRUE){
 
- path <- check_for_file_extension(path)
+  path <- tools::file_path_sans_ext(path)
 
   rds <- paste0(path, ".rds")
   bk <- paste0(path, ".bk") # .bk will be present if RDS was created with bigsnpr methods

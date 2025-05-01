@@ -99,7 +99,7 @@ cv_plmm <- function(design,
 
   # check filepaths for saving results ------------------------------
   if (!is.null(save_rds)) {
-    save_rds <- check_for_file_extension(save_rds)
+    save_rds <- tools::file_path_sans_ext(save_rds)
     # ^^ internally, we need to take off the extension from the file name
 
     # start the log
