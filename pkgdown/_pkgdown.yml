@@ -83,7 +83,6 @@ reference:
     - add_predictors
     - align_ids
     - big_cbind
-    - check_for_file_extension
     - construct_variance
     - count_constant_features
     - count_cores
