@@ -51,11 +51,11 @@
 <span>  <span class="va">rds_dir</span>,</span>
 <span>  <span class="va">obj</span>,</span>
 <span>  <span class="va">new_file</span>,</span>
-<span>  feature_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">add_outcome</span>,</span>
 <span>  <span class="va">outcome_id</span>,</span>
 <span>  <span class="va">outcome_col</span>,</span>
 <span>  na_outcome_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">9</span>, <span class="cn">NA_integer_</span><span class="op">)</span>,</span>
+<span>  feature_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_predictor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  predictor_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  unpen <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -85,14 +85,6 @@
 <dd><p>User-specified filename (<em>without .bk/.rds extension</em>) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.</p></dd>
 
 
-<dt id="arg-feature-id">feature_id<a class="anchor" aria-label="anchor" href="#arg-feature-id"></a></dt>
-<dd><p>A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
-- for PLINK data: a string specifying an ID column of the PLINK <code>.fam</code> file. Options are "IID" (default) and "FID"
-- for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with <code><a href="process_delim.html">process_delim()</a></code>)
-- if left NULL (default), X is assumed to have the same row-order as add_outcome.
-<strong>Note</strong>: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.</p></dd>
-
-
 <dt id="arg-add-outcome">add_outcome<a class="anchor" aria-label="anchor" href="#arg-add-outcome"></a></dt>
 <dd><p>A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.</p></dd>
 
@@ -107,6 +99,14 @@
 
 <dt id="arg-na-outcome-vals">na_outcome_vals<a class="anchor" aria-label="anchor" href="#arg-na-outcome-vals"></a></dt>
 <dd><p>A vector of numeric values used to code NA values in the outcome. Defaults to <code>c(-9, NA_integer)</code> (the -9 matches PLINK conventions).</p></dd>
+
+
+<dt id="arg-feature-id">feature_id<a class="anchor" aria-label="anchor" href="#arg-feature-id"></a></dt>
+<dd><p>A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
+- for PLINK data: a string specifying an ID column of the PLINK <code>.fam</code> file. Options are "IID" (default) and "FID"
+- for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with <code><a href="process_delim.html">process_delim()</a></code>)
+- if left NULL (default), X is assumed to have the same row-order as add_outcome.
+<strong>Note</strong>: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.</p></dd>
 
 
 <dt id="arg-add-predictor">add_predictor<a class="anchor" aria-label="anchor" href="#arg-add-predictor"></a></dt>
