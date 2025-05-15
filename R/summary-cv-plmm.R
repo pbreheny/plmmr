@@ -27,24 +27,24 @@
 #' cv_fit <- cv_plmm(design = admix_design)
 #' summary(cv_fit)
 
-summary.cv_plmm <- function(object, lambda = "min", ...){
+summary.cv_plmm <- function(object, lambda = "min", ...) {
 
   # determine the number of nonzero coefficients at specified lambda value
 
-  if(lambda == "min"){
+  if (lambda == "min") {
     # nvars (tells number of non-zero coefficients)
-    nvars <- predict(object$fit, type="nvars", lambda=object$lambda_min)
+    nvars <- predict(object$fit, type = "nvars", lambda = object$lambda_min)
   }
 
-  if(lambda == "1se"){
+  if (lambda == "1se") {
     # nvars (tells number of non-zero coefficients)
-    nvars <- predict(object$fit, type="nvars", lambda=object$lambda.1se)
+    nvars <- predict(object$fit, type = "nvars", lambda = object$lambda.1se)
   }
 
-  if(is.numeric(lambda)){
-    if(!(lambda %in% object$fit$lambda)) stop("The user-specified lambda is not one of the lambda values used to fit the model.")
+  if (is.numeric(lambda)) {
+    if (!(lambda %in% object$fit$lambda)) stop("The user-specified lambda is not one of the lambda values used to fit the model.")
 
-    nvars <- predict(object$fit, type="nvars", lambda = lambda)
+    nvars <- predict(object$fit, type = "nvars", lambda = lambda)
   }
 
   # TODO: think about what else should go here
@@ -56,7 +56,7 @@ summary.cv_plmm <- function(object, lambda = "min", ...){
                         min = object$min,
                         fit = object$fit),
                    class = "summary.cv_plmm")
-  if("Bias" %in% names(object)){
+  if ("Bias" %in% names(object)) {
     out$bias <- object$Bias
     out$loss <- object$Loss
   }

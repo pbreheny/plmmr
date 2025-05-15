@@ -16,7 +16,7 @@
 #' @keywords internal
 #'
 #'
-get_data <- function(path, returnX = FALSE, trace = TRUE){
+get_data <- function(path, returnX = FALSE, trace = TRUE) {
 
   path <- tools::file_path_sans_ext(path)
 
@@ -27,13 +27,13 @@ get_data <- function(path, returnX = FALSE, trace = TRUE){
   # attach std_X
   std_X_bm <- attach.big.matrix(obj$std_X)
 
-  if(returnX){
+  if (returnX) {
     obj$std_X <- std_X_bm[,]
-  if (trace){
-    cat("Reminder: the X that is returned here is column-standardized, with constant features removed.\n")
-  }
+    if (trace) {
+      cat("Reminder: the X that is returned here is column-standardized, with constant features removed.\n")
+    }
   } else {
-    if (trace){
+    if (trace) {
       cat("Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.\n")
       cat("Reminder: the X that is returned here is column-standardized\n")
     }

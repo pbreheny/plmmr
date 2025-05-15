@@ -16,18 +16,18 @@
 #' @returns An n x n numeric matrix capturing the genomic relatedness of the
 #' samples represented in `X`. In our notation, we call this matrix K for 'kinship';
 #' this is also known as the GRM or RRM.
-#' 
+#'
 #' @examples
 #' RRM <- relatedness_mat(X = admix$X)
 #' RRM[1:5, 1:5]
 #' @export
 
-relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...){
-  if (fbm){
+relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...) {
+  if (fbm) {
     if (!std) stop("\nAt this time, standardization cannot be 'turned off' for
     filebacked data (because of the default behavior of process_plink()).")
     # cross product
-    if (length(ns) %in% 1:(ncol(X)-1)){
+    if (length(ns) %in% 1:(ncol(X) - 1)) {
       cprod <- bigstatsr::big_tcrossprodSelf(X,
                                              ind.col = ns,
                                              ...)
@@ -39,25 +39,22 @@ relatedness_mat <- function(X, std = TRUE, fbm = FALSE, ns = NULL, ...){
     rrm <- bigstatsr::FBM(cprod$nrow, cprod$ncol)
     # scale by p, the number of columns in the design matrix (including constant features)
     bigstatsr::big_apply(X = cprod,
-                         a.FUN = function(X, ind, p, res){
-                           res[,ind] <- sweep(x = X[,ind],
-                                              MARGIN = 2,
-                                              STATS = p,
-                                              FUN = "/")},
+                         a.FUN = function(X, ind, p, res) {
+                           res[, ind] <- sweep(x = X[, ind],
+                                               MARGIN = 2,
+                                               STATS = p,
+                                               FUN = "/")
+                         },
                          a.combine = cbind,
                          p = X$ncol,
                          res = rrm,
                          ncores = count_cores())
 
+  } else if (std) {
+    rrm <- tcrossprod(ncvreg::std(X)) / ncol(X)
   } else {
-    if (std){
-      rrm <- tcrossprod(ncvreg::std(X))/ncol(X)
-    } else {
-      rrm <- tcrossprod(X)/ncol(X)
-    }
-
+    rrm <- tcrossprod(X) / ncol(X)
   }
 
- return(rrm)
+  return(rrm)
 }
-

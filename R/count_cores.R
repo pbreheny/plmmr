@@ -3,8 +3,8 @@
 #' @return A number of cores to use; if `parallel` is installed, this will be `parallel::detectCores()`. Otherwise, this returns a 1.
 #' @keywords internal
 #'
-count_cores <- function(){
-  where <- find.package(package = 'parallel', quiet = T)
+count_cores <- function() {
+  where <- find.package(package = "parallel", quiet = TRUE)
   if (length(where) == 0) {
     ncores <- 1
   } else {

@@ -66,16 +66,16 @@
 #'
 predict.plmm <- function(object,
                          newX,
-                         type=c("blup", "coefficients", "vars", "nvars", "lp"),
+                         type = c("blup", "coefficients", "vars", "nvars", "lp"),
                          X = NULL,
                          lambda,
-                         idx=1:length(object$lambda),
+                         idx = seq_along(object$lambda),
                          ...) {
 
   # if predictions are to be made, make sure X is in the correct format...
-  if (!missing(newX)){
+  if (!missing(newX)) {
     # case 1: newX is a big.matrix
-    if (inherits(newX, "big.matrix")){
+    if (inherits(newX, "big.matrix")) {
       fbm_flag <- TRUE
     } else {
       # case 2: X is in-memory
@@ -89,37 +89,37 @@ predict.plmm <- function(object,
 
   # prepare other arguments
   type <- match.arg(type)
-  beta_vals <- coef(object, lambda, which=idx, drop=FALSE) # includes intercept
-  p <- nrow(beta_vals)-1
+  beta_vals <- coef(object, lambda, which = idx, drop = FALSE) # includes intercept
+  p <- nrow(beta_vals) - 1
   n <- nrow(object$std_Xbeta)
 
   # addressing each type:
 
-  if (type=="coefficients") return(beta_vals)
+  if (type == "coefficients") return(beta_vals)
 
-  if (type=="nvars") return(apply(beta_vals[-1, , drop=FALSE]!=0, 2, sum)) # don't count intercept
+  if (type == "nvars") return(apply(beta_vals[-1, , drop = FALSE] != 0, 2, sum)) # don't count intercept
 
-  if (type=="vars") return(drop(apply(beta_vals[-1, , drop=FALSE]!=0, 2, FUN=which))) # don't count intercept
+  if (type == "vars") return(drop(apply(beta_vals[-1, , drop = FALSE] != 0, 2, FUN = which))) # don't count intercept
 
   # calculate linear predictors with new data
-  a <- beta_vals[1,]
-  b <- beta_vals[-1,,drop=FALSE]
+  a <- beta_vals[1, ]
+  b <- beta_vals[-1, , drop = FALSE]
   Xb <- sweep(newX %*% b, 2, a, "+")
 
-  if (type=="lp") {
+  if (type == "lp") {
     return(drop(Xb))
   }
 
   # Note: the BLUP is constructed on the scale of the standardized model-fitting data;
   #   This is the scale at which object$K was constructed
-  if (type == "blup"){
+  if (type == "blup") {
     # check for missing arguments
-    if (!fbm_flag & is.null(X)) stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
+    if (!fbm_flag && is.null(X)) stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
 
     # Check for singularity -- this keeps us from scaling by a 0 value
     # Note: singular values have estimated coefficients of 0 at all values of lambda,
     #  so these columns are not included in the predictions
-    singular <- setdiff(seq(1:length(object$std_X_details$center)),
+    singular <- setdiff(seq_along(object$std_X_details$center),
                         object$std_X_details$ns)
     if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
 
@@ -146,15 +146,15 @@ predict.plmm <- function(object,
 
     Sigma_11 <- construct_variance(fit = object)
     if (fbm_flag) {
-      const <- (object$eta/ncol(newX))
-      XXt <- bigalgebra::dgemm(TRANSA = 'N',
-                               TRANSB = 'T',
+      const <- (object$eta / ncol(newX))
+      XXt <- bigalgebra::dgemm(TRANSA = "N",
+                               TRANSB = "T",
                                A = newX,
                                B = std_X)
-      Sigma_21 <- const*XXt
+      Sigma_21 <- const * XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
-      Sigma_21 <- object$eta*(1/p)*tcrossprod(std_newX, std_X)
+      Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
     }
     resid_old <- drop(object$y) - object$std_Xbeta
     ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)

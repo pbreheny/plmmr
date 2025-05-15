@@ -16,11 +16,11 @@
 #' The 'ns' index plays an important role in `plmm_format()` and `untransform()` (both helper functions in model fitting)
 #' @keywords internal
 #'
-subset_filebacked <- function(X, new_file, complete_samples, ns, rds_dir, outfile, quiet){
+subset_filebacked <- function(X, new_file, complete_samples, ns, rds_dir, outfile, quiet) {
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
-  if (!quiet){
+  if (!quiet) {
     cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n")
   }
   cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
@@ -32,7 +32,7 @@ subset_filebacked <- function(X, new_file, complete_samples, ns, rds_dir, outfil
                                   type = "double", # note object storage type -- this is key...
                                   backingfile = paste0(new_file, ".bk"),
                                   backingpath = rds_dir,
-                                  descriptorfile = paste0(new_file, '.desc'))
+                                  descriptorfile = paste0(new_file, ".desc"))
 
   # save ns indices as part of our object
   return(list(subset_X = subset_X, ns = ns))

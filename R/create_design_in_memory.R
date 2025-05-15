@@ -9,27 +9,27 @@
 #' @return A list with elements including a standardized X and model design information
 #' @keywords internal
 #'
-create_design_in_memory <- function(X, y, unpen = NULL){
+create_design_in_memory <- function(X, y, unpen = NULL) {
 
   # standardize X
   std_X <- ncvreg::std(X)
   design <- list(std_X = std_X,
                  std_X_n = nrow(std_X),
                  std_X_p = ncol(std_X),
-                 ns = attr(std_X, 'nonsingular'),
-                 std_X_center = attr(std_X, 'center'),
-                 std_X_scale = attr(std_X, 'scale'),
+                 ns = attr(std_X, "nonsingular"),
+                 std_X_center = attr(std_X, "center"),
+                 std_X_scale = attr(std_X, "scale"),
                  y = y)
 
   # format meta-data
-    design$X_colnames <- colnames(X)
-    design$X_rownames <- rownames(X)
-    design$n <- nrow(X)
-    design$p <- ncol(X)
-    design$std_X_rownames <- rownames(X)
-    design$std_X_colnames <- colnames(X)[design$ns]
+  design$X_colnames <- colnames(X)
+  design$X_rownames <- rownames(X)
+  design$n <- nrow(X)
+  design$p <- ncol(X)
+  design$std_X_rownames <- rownames(X)
+  design$std_X_colnames <- colnames(X)[design$ns]
 
-# handle unpenalized columns
+  # handle unpenalized columns
   if (is.null(unpen)) {
     design$penalty_factor <- rep(1, design$std_X_p)
   } else {

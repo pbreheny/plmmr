@@ -49,7 +49,7 @@ process_delim <- function(data_dir,
   }
 
   # start log ------------------------------------------
-  if (!is.null(logfile)){
+  if (!is.null(logfile)) {
     logfile <- create_log(file.path(rds_dir, logfile))
     cat("\nLogging to", logfile)
     cat("Preprocessing", prefix, "data\n", file = logfile, append = TRUE)
@@ -71,39 +71,41 @@ process_delim <- function(data_dir,
   cat("There are", nrow(X), "observations and", ncol(X), "features in the specified data files.\n",
       file = logfile, append = TRUE)
 
-  if (!quiet){
+  if (!quiet) {
     cat("There are", nrow(X), "observations and", ncol(X),
         "features in the specified data files.\n")
   }
 
   # notify about missing values ---------------------------------
-  if(!quiet){
+  if (!quiet) {
     cat("At this time, plmmr::process_delim() does not not handle missing values in delimited data.
       Please make sure you have addressed missingness before you proceed.\n")
   }
 
   # create return object --------------------------------------------
   ret <- structure(list(X = bigmemory::describe(X),
-              # save original dimensions
-              n = nrow(X),
-              p = ncol(X)), class = "processed_delim")
+                        # save original dimensions
+                        n = nrow(X),
+                        p = ncol(X)), class = "processed_delim")
 
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))
 
   # cleanup ----------------------------------------------------------
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern=paste0('^file.*.bk'), full.names=TRUE) |>
+  list.files(rds_dir, pattern = paste0("^file.*.bk"), full.names = TRUE) |>
     file.remove()
-  list.files(rds_dir, pattern = paste0('^', prefix, ".rds"), full.names = TRUE) |>
+  list.files(rds_dir, pattern = paste0("^", prefix, ".rds"), full.names = TRUE) |>
     file.remove()
-  list.files(rds_dir, pattern = paste0('^', prefix, ".bk"), full.names = TRUE) |>
+  list.files(rds_dir, pattern = paste0("^", prefix, ".bk"), full.names = TRUE) |>
     file.remove()
 
   gc()
 
-  if(!quiet){cat("\nprocess_plink() completed \nProcessed files now saved as",
-                 file.path(rds_dir, rds_filename))}
+  if (!quiet) {
+    cat("\nprocess_plink() completed \nProcessed files now saved as",
+        file.path(rds_dir, rds_filename))
+  }
 
   cat("\nprocess_plink() completed. \nProcessed files now saved as",
       file.path(rds_dir, rds_filename),

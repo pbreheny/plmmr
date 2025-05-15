@@ -43,10 +43,10 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
     # designate the training set
     train_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                   rows = which(fold!=i),
+                                   rows = which(fold != i),
                                    type = "double",
-                                   backingfile = paste0("train_fold",i,".bk"),
-                                   descriptorfile = paste0("train_fold",i,".desc"),
+                                   backingfile = paste0("train_fold", i, ".bk"),
+                                   descriptorfile = paste0("train_fold", i, ".desc"),
                                    backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
     # TODO should these fold-specific data files be created in a tempdir? Then,
@@ -54,19 +54,19 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
     # create the copy of the training data to be standardized
     fold_args$std_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                           rows = which(fold!=i),
+                                           rows = which(fold != i),
                                            type = "double",
-                                           backingfile = paste0("std_train_fold",i,".bk"),
-                                           descriptorfile = paste0("std_train_fold",i,".desc"),
+                                           backingfile = paste0("std_train_fold", i, ".bk"),
+                                           descriptorfile = paste0("std_train_fold", i, ".desc"),
                                            backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
     # re-scale data & check for singularity
     std_trainX_info <- .Call("big_std",
-                        fold_args$std_X@address,
-                        as.integer(count_cores()),
-                        NULL,
-                        NULL,
-                        PACKAGE = "plmmr")
+                             fold_args$std_X@address,
+                             as.integer(count_cores()),
+                             NULL,
+                             NULL,
+                             PACKAGE = "plmmr")
 
     fold_args$std_X@address <- std_trainX_info$std_X
     fold_args$std_X_details$center <- std_trainX_info$std_X_center
@@ -80,7 +80,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   } else {
 
     # subset training data
-    train_X <- full_cv_prep$std_X[fold!=i, ,drop=FALSE]
+    train_X <- full_cv_prep$std_X[fold != i, , drop = FALSE]
 
     # Note: subsetting the data into test/train sets may cause low variance features
     #   to become constant features in the training data. The following lines address this issue
@@ -97,28 +97,28 @@ cvf <- function(i, fold, type, cv_args, ...) {
   }
 
   # subset outcome vector to include outcomes for training data only
-  fold_args$y <- cv_args$y[fold!=i]
+  fold_args$y <- cv_args$y[fold != i]
 
   # center the training outcome
   fold_args$centered_y <- fold_args$y |>
-    scale(scale=FALSE) |>
+    scale(scale = FALSE) |>
     drop()
   # extract test set --------------------------------------
   # this comes from cv prep on full data
-  if (cv_args$fbm_flag){
+  if (cv_args$fbm_flag) {
     test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                  rows = which(fold==i),
+                                  rows = which(fold == i),
                                   type = "double",
-                                  backingfile = paste0("test_fold",i,".bk"),
-                                  descriptorfile = paste0("test_fold",i,".desc"),
+                                  backingfile = paste0("test_fold", i, ".bk"),
+                                  descriptorfile = paste0("test_fold", i, ".desc"),
                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
   } else {
-    test_X <- full_cv_prep$std_X[fold==i, , drop=FALSE]
+    test_X <- full_cv_prep$std_X[fold == i, , drop = FALSE]
   }
 
   # subset outcome for test set
-  test_y <- y[fold==i]
+  test_y <- y[fold == i]
 
   # decomposition for current fold ------------------------------
   if (cv_args$prep$trace) {
@@ -164,23 +164,23 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
   # prediction ---------------------------------------------------
   # note: predictions are on the scale of the standardized training data
-  if(type == "lp"){
+  if (type == "lp") {
     yhat <- predict_within_cv(fit = format.i,
                               testX = test_X,
-                              type = 'lp',
+                              type = "lp",
                               fbm = cv_args$fbm_flag)
   }
 
-  if (type == 'blup'){
+  if (type == "blup") {
     Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
-    if (cv_args$fbm_flag){
+    if (cv_args$fbm_flag) {
       # we will need a copy of the testing data that is standardized
       std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                    rows = which(fold==i),
-                                    type = "double",
-                                    backingfile = paste0("std_test_fold",i,".bk"),
-                                    descriptorfile = paste0("std_test_fold",i,".desc"),
-                                    backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+                                        rows = which(fold == i),
+                                        type = "double",
+                                        backingfile = paste0("std_test_fold", i, ".bk"),
+                                        descriptorfile = paste0("std_test_fold", i, ".desc"),
+                                        backingpath = bigmemory::dir.name(full_cv_prep$std_X))
 
       # use center/scale values from train_X to standardize test_X
       if (length(singular) >= 1) fold_args$std_X_details$scale[singular] <- 1
@@ -192,12 +192,12 @@ cvf <- function(i, fold, type, cv_args, ...) {
                              PACKAGE = "plmmr")
       std_test_X@address <- std_test_info$std_X
 
-      const <- (fit.i$eta/ncol(train_X))
-      XXt <- bigalgebra::dgemm(TRANSA = 'N',
-                               TRANSB = 'T',
+      const <- (fit.i$eta / ncol(train_X))
+      XXt <- bigalgebra::dgemm(TRANSA = "N",
+                               TRANSB = "T",
                                A = std_test_X,
                                B = fold_args$std_X)
-      Sigma_21 <- const*XXt
+      Sigma_21 <- const * XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
       # don't rescale columns that were singular features in std_train_X;
@@ -207,13 +207,13 @@ cvf <- function(i, fold, type, cv_args, ...) {
       std_test_X <- scale(test_X,
                           center = fold_args$std_X_details$center,
                           scale = fold_args$std_X_details$scale)
-      Sigma_21 <- fit.i$eta*(1/ncol(train_X))*tcrossprod(std_test_X,
-                                                         fold_args$std_X)
+      Sigma_21 <- fit.i$eta * (1 / ncol(train_X)) * tcrossprod(std_test_X,
+                                                               fold_args$std_X)
     }
 
     yhat <- predict_within_cv(fit = format.i,
                               testX = test_X,
-                              type = 'blup',
+                              type = "blup",
                               fbm = cv_args$fbm_flag,
                               Sigma_11 = Sigma_11,
                               Sigma_21 = Sigma_21)
@@ -224,12 +224,12 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # delete files created in cross-validation, if data is filebacked
   if (cv_args$fbm_flag) {
     list.files(path = bigmemory::dir.name(full_cv_prep$std_X),
-               pattern = paste0("fold",i),
+               pattern = paste0("fold", i),
                full.names = TRUE) |> file.remove()
     gc() # release the pointer
   }
 
   # return -----------------------------------------------------------------
-  loss <- sapply(1:ncol(yhat), function(ll) plmm_loss(test_y, yhat[,ll]))
-  list(loss=loss, nl=length(fit.i$lambda), yhat=yhat)
+  loss <- sapply(seq_len(ncol(yhat)), function(ll) plmm_loss(test_y, yhat[, ll]))
+  list(loss = loss, nl = length(fit.i$lambda), yhat = yhat)
 }

@@ -17,8 +17,8 @@ MCP <- function(z, l1, l2, gamma, v) {
   s[z < 0] <- -1
 
   ret[abs(z) <= l1] <- 0
-  ret[abs(z) <= gamma*l1*c(1 + l2)] <- s*(abs(z) - l1)/(v*c(1 + l2 - 1/gamma))
-  ret[is.na(ret)] <- z/(v*(1 + l2))
+  ret[abs(z) <= gamma * l1 * c(1 + l2)] <- s * (abs(z) - l1) / (v * c(1 + l2 - 1 / gamma))
+  ret[is.na(ret)] <- z / (v * (1 + l2))
 
   return(ret)
 }
@@ -42,7 +42,7 @@ SCAD <- function(z, l1, l2, gamma, v) {
   s[z < 0] <- -1
 
   ret[abs(z) <= l1] <- 0
-  ret[abs(z) <= (l1 *c(1 + l2) + l1)] <- s * c(abs(z) - l1) / (v * c(1 + l2))
+  ret[abs(z) <= (l1 * c(1 + l2) + l1)] <- s * c(abs(z) - l1) / (v * c(1 + l2))
   ret[abs(z) <= gamma * l1 * c(1 + l2)] <- s * c(abs(z) - gamma * l1 / (gamma - 1)) / c(v * c(1 - 1 / (gamma - 1) + l2))
 
   ret[is.na(ret)] <- z / (v * c(1 + l2))
@@ -70,6 +70,3 @@ lasso <- function(z, l1, l2, v) {
 
   return(ret)
 }
-
-
-

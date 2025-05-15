@@ -26,7 +26,7 @@ untransform <- function(std_scale_beta, p, std_X_details,
   if (is.null(std_X_details$X_colnames)) use_names <- FALSE
 
   if (fbm_flag) {
-    if (plink_flag){
+    if (plink_flag) {
       untransform_plink(std_scale_beta = std_scale_beta,
                         p = p,
                         std_X_details = std_X_details,
@@ -46,7 +46,3 @@ untransform <- function(std_scale_beta, p, std_X_details,
       use_names = use_names)
   }
 }
-
-
-
-

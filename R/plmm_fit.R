@@ -37,18 +37,20 @@ plmm_fit <- function(prep,
                      max_iter = 10000,
                      init = NULL,
                      warn = TRUE,
-                     ...){
+                     ...) {
 
   # error checking ------------------------------------------------------------
-  if (penalty=="MCP" && gamma <= 1) stop("gamma must be greater than 1 for the MC penalty", call.=FALSE)
-  if (penalty=="SCAD" && gamma <= 2) stop("gamma must be greater than 2 for the SCAD penalty", call.=FALSE)
-  if (nlambda < 2) stop("nlambda must be at least 2", call.=FALSE)
-  if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call.=FALSE)
+  if (penalty == "MCP" && gamma <= 1) stop("gamma must be greater than 1 for the MC penalty", call. = FALSE)
+  if (penalty == "SCAD" && gamma <= 2) stop("gamma must be greater than 2 for the SCAD penalty", call. = FALSE)
+  if (nlambda < 2) stop("nlambda must be at least 2", call. = FALSE)
+  if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call. = FALSE)
 
-  if(prep$trace){cat("Beginning rotation ('preconditioning').\n")}
+  if (prep$trace) {
+    cat("Beginning rotation ('preconditioning').\n")
+  }
 
   # rotate data ----------------------------------------------------------------
-  if(!fbm_flag) {
+  if (!fbm_flag) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- wUt %*% prep$std_X
@@ -68,8 +70,10 @@ plmm_fit <- function(prep,
   }
 
 
-  if (prep$trace)(cat("Rotation (preconditiong) finished at ",
-                      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+  if (prep$trace) {
+    (cat("Rotation (preconditiong) finished at ",
+         format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+  }
 
   # set up lambda -------------------------------------------------------
   if (missing(lambda)) {
@@ -83,8 +87,8 @@ plmm_fit <- function(prep,
     user.lambda <- FALSE
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
-    if (length(lambda) > 1 ) {
-      if (max(diff(lambda)) > 0) stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
+    if (length(lambda) > 1 && max(diff(lambda)) > 0) {
+      stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
     }
     nlambda <- length(lambda)
     user.lambda <- TRUE
@@ -93,15 +97,15 @@ plmm_fit <- function(prep,
   # placeholders for results ---------------------------------
   # setting up 'init' as below is not needed when this is called from plmm or cv_plmm
   # as those user-facing functions set up 'init' as a vector of zeroes
-  if (is.null(init)){
+  if (is.null(init)) {
     init <- rep(0, ncol(stdrot_X))
   }
 
-  if(!fbm_flag){
+  if (!fbm_flag) {
     r <- drop(rot_y - stdrot_X %*% init)
-    stdrot_scale_beta <- matrix(NA, nrow=ncol(stdrot_X), ncol=nlambda)
+    stdrot_scale_beta <- matrix(NA, nrow = ncol(stdrot_X), ncol = nlambda)
   } else {
-    r <- rot_y - stdrot_X%*%as.matrix(init) # again, using bigalgebra method here
+    r <- rot_y - stdrot_X %*% as.matrix(init) # again, using bigalgebra method here
   }
 
   iter <- integer(nlambda)
@@ -114,8 +118,10 @@ plmm_fit <- function(prep,
   if (prep$trace) cat("Beginning model fitting.\n")
   if (!fbm_flag) {
     # set up progress bar -- this can take a while
-    if(prep$trace){pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)}
-    for (ll in 1:nlambda){
+    if (prep$trace) {
+      pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)
+    }
+    for (ll in 1:nlambda) {
       lam <- lambda[ll]
       res <- ncvreg::ncvfit(X = stdrot_X,
                             y = rot_y,
@@ -125,7 +131,7 @@ plmm_fit <- function(prep,
                             penalty = penalty,
                             gamma = gamma,
                             alpha = alpha,
-                            lambda= lam,
+                            lambda = lam,
                             eps = eps,
                             max.iter = max_iter,
                             penalty.factor = penalty_factor,
@@ -133,12 +139,14 @@ plmm_fit <- function(prep,
 
       stdrot_scale_beta[, ll] <- init <- res$beta
       iter[ll] <- res$iter
-      converged[ll] <- ifelse(res$iter < max_iter, TRUE, FALSE)
+      converged[ll] <- res$iter < max_iter
       loss[ll] <- res$loss
       r <- res$resid
-      if(prep$trace){utils::setTxtProgressBar(pb, ll)}
+      if (prep$trace) {
+        utils::setTxtProgressBar(pb, ll)
+      }
     }
-    if(prep$trace) close(pb)
+    if (prep$trace) close(pb)
 
     # reverse the POST-ROTATION standardization on estimated betas
     std_scale_beta <- matrix(0,
@@ -146,13 +154,13 @@ plmm_fit <- function(prep,
                              ncol = ncol(stdrot_scale_beta))
 
     stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-    bb <-  stdrot_scale_beta/(stdrot_unscale)
-    std_scale_beta[-1,] <- bb
-    std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+    bb <-  stdrot_scale_beta / (stdrot_unscale)
+    std_scale_beta[-1, ] <- bb
+    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
     # calculate linear predictors on the scale of std_X
     std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1,], "+")
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
 
   } else {
     res <- biglasso::biglasso_path(
@@ -173,28 +181,28 @@ plmm_fit <- function(prep,
     stdrot_scale_beta <- res$beta
 
     iter <- res$iter
-    converged <- ifelse(iter < max_iter, TRUE, FALSE)
+    converged <- iter < max_iter
     loss <- res$loss
     r <- res$resid
 
     # reverse the POST-ROTATION standardization on estimated betas
     # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-    std_scale_beta <- Matrix::sparseMatrix(i = rep(1,ncol(stdrot_scale_beta)),
-                                           j = 1:ncol(stdrot_scale_beta),
+    std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
+                                           j = seq_len(ncol(stdrot_scale_beta)),
                                            x = mean(y),
                                            dims = c(nrow(stdrot_scale_beta) + 1,
                                                     ncol = ncol(stdrot_scale_beta)))
-    bb <-  stdrot_scale_beta/stdrot_X_details$scale
-    std_scale_beta[-1,] <- bb
-    std_scale_beta[1,] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+    bb <-  stdrot_scale_beta / stdrot_X_details$scale
+    std_scale_beta[-1, ] <- bb
+    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
     # calculate linear predictors on the scale of std_X
     std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1,], "+")
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
   }
 
   if (prep$trace) {
-    cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '\n')
+    cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
   }
 
   # eliminate saturated lambda values, if any
@@ -203,7 +211,7 @@ plmm_fit <- function(prep,
   converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
-  if (warn & sum(iter) == max_iter) warning("Maximum number of iterations reached")
+  if (warn && sum(iter) == max_iter) warning("Maximum number of iterations reached")
 
   ret <- structure(list(
     y = y,
@@ -227,7 +235,7 @@ plmm_fit <- function(prep,
     warn = warn,
     trace = prep$trace))
 
-  if (fbm_flag){
+  if (fbm_flag) {
     ret$std_X <- bigmemory::describe(prep$std_X)
   }
 

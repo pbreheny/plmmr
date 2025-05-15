@@ -26,14 +26,14 @@
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit <- plmm(design = admix_design)
 #' summary(fit, idx = 97)
-summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
+summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...) {
 
   # lambda/which
-  if(missing(lambda) & missing(idx)) stop("One of the arguments 'lambda' or 'idx' must be provided.")
-  if(missing(lambda)) lambda <- object$lambda[idx]
-  if(missing(idx)) {
+  if (missing(lambda) && missing(idx)) stop("One of the arguments 'lambda' or 'idx' must be provided.")
+  if (missing(lambda)) lambda <- object$lambda[idx]
+  if (missing(idx)) {
     idx <- which(abs(object$lambda - lambda) < eps)
-    if(sum(idx) == 0) {
+    if (sum(idx) == 0) {
       warning("The user-specified lambda value is not within epsilon of any lambda values used to fit the model. Will proceed with the fitted model lambda value closest to the user-specified lambda.")
       idx <- which.min(abs(object$lambda - lambda))
     }
@@ -41,35 +41,33 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...){
   }
 
   # nvars (tells number of non-zero coefficients)
-  nvars <- predict(object, type="nvars", lambda=lambda, idx=idx, ...)
+  nvars <- predict(object, type = "nvars", lambda = lambda, idx = idx, ...)
 
   # error checking
-  if(length(nvars) > 1) stop("You must specify a single model (i.e., a single value of lambda)", call. = FALSE)
+  if (length(nvars) > 1) stop("You must specify a single model (i.e., a single value of lambda)", call. = FALSE)
 
   lambda_char <- colnames(object$beta_vals)[idx]
 
 
   # tells WHICH variables have non-zero coefficients
-  nz <- which(object$beta_vals[,lambda_char] > .Machine$double.eps)
-  nonzero <- rownames(object$beta_vals[nz,lambda_char,drop=F])
+  nz <- which(object$beta_vals[, lambda_char] > .Machine$double.eps)
+  nonzero <- rownames(object$beta_vals[nz, lambda_char, drop = FALSE])
   # don't drop, because we need the dimnames here ^
 
 
   out <- structure(list(
-    penalty=object$penalty,
-    n=nrow(object$K$U),
+    penalty = object$penalty,
+    n = nrow(object$K$U),
     std_X_n = object$std_X_n,
-    p=nrow(object$beta_vals),
-    converged=object$converged[idx],
-    lambda=lambda,
-    lambda_char=lambda_char,
-    nvars=nvars,
-    nonzero=nonzero
+    p = nrow(object$beta_vals),
+    converged = object$converged[idx],
+    lambda = lambda,
+    lambda_char = lambda_char,
+    nvars = nvars,
+    nonzero = nonzero
   ),
   class = "summary.plmm")
 
   return(out)
 
 }
-
-

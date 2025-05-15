@@ -111,7 +111,7 @@ plmm <- function(design,
 
 
   # create a design if needed -------------
-  if (inherits(design, "data.frame") | inherits(design, 'matrix')) {
+  if (inherits(design, "data.frame") || inherits(design, "matrix")) {
     # error check: if 'design' is matrix/data.frame, user must specify 'y'
     if (is.null(y)) {
       stop("If you supply a matrix or data frame as 'design', you
@@ -122,8 +122,8 @@ plmm <- function(design,
     design <- create_design_in_memory(X = design, y = y)
 
 
-  } else {
-    if (!is.null(y)) stop("If you are supplying a plmm_design object or filepath to
+  } else if (!is.null(y)) {
+    stop("If you are supplying a plmm_design object or filepath to
                           the 'design' argument, that design already has a 'y' --
                           please do not specify a 'y' argument here in plmm()")
   }
@@ -141,12 +141,14 @@ plmm <- function(design,
                               ...)
 
   # prep (SVD)-------------------------------------------------
-  if(trace){cat("Input data passed all checks at ",
-                pretty_time())}
+  if (trace) {
+    cat("Input data passed all checks at ",
+        pretty_time())
+  }
   if (!is.null(save_rds)) {
-  cat("Input data passed all checks at ",
-      pretty_time(),
-      "\n", file = logfile, append = TRUE)
+    cat("Input data passed all checks at ",
+        pretty_time(),
+        "\n", file = logfile, append = TRUE)
   }
 
   the_prep <- plmm_prep(std_X = checked_data$std_X,
@@ -160,8 +162,7 @@ plmm <- function(design,
                         fbm_flag = checked_data$fbm_flag,
                         trace = trace)
 
-  if (trace)(cat("Eigendecomposition finished at ",
-                 pretty_time()))
+  if (trace) (cat("Eigendecomposition finished at ", pretty_time()))
 
   if (!is.null(save_rds)) {
     cat("Eigendecomposition finished at ",
@@ -190,24 +191,24 @@ plmm <- function(design,
   if (trace) cat("Beta values are estimated -- almost done!\n")
 
   # format results ---------------------------------------------------
-  if(trace){cat("Formatting results (backtransforming coefs. to original scale).\n")}
+  if (trace) cat("Formatting results (backtransforming coefs. to original scale).\n")
+
   the_final_product <- plmm_format(fit = the_fit,
                                    p = checked_data$p,
                                    std_X_details = checked_data$std_X_details,
                                    fbm_flag = checked_data$fbm_flag,
                                    plink_flag = checked_data$plink_flag)
 
-  if (trace)(cat("Model ready at ",
-                 pretty_time()))
+  if (trace) (cat("Model ready at ", pretty_time()))
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("Model ready at ",
         pretty_time(),
         file = logfile, append = TRUE)
   }
 
   # handle output
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     # save all output in one file (default); *not* including std_X
     saveRDS(the_final_product[c(1:3, 5:19)],
             paste0(save_rds, ".rds"))
@@ -218,14 +219,14 @@ plmm <- function(design,
 
 
   # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
-  if (is.null(save_rds) & !return_fit){
+  if (is.null(save_rds) && !return_fit) {
     cat("You accidentally left save_rds = NULL and return_fit = FALSE;
         to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
 
     return_fit <- TRUE
   }
 
-  if (return_fit){
+  if (return_fit) {
     return(the_final_product)
   }
 

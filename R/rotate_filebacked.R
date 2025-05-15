@@ -8,17 +8,17 @@
 #'
 #' @keywords internal
 #'
-rotate_filebacked <- function(prep, ...){
+rotate_filebacked <- function(prep, ...) {
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
   # rotate X
   std_X <- prep$std_X
-  rot_X <- wUt%*%std_X # using %*% method from bigalgebra
+  rot_X <- wUt %*% std_X # using %*% method from bigalgebra
   stdrot_X <- bigmemory::big.matrix(nrow = nrow(wUt), ncol = ncol(std_X))
 
   # rotate y
-  rot_y <- wUt%*%prep$centered_y
+  rot_y <- wUt %*% prep$centered_y
 
   # re-standardize (since std_X is big, we do this in C++)
   std_rot <- .Call("big_std",

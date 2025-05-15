@@ -24,12 +24,12 @@ index_samples <- function(obj,
                           outcome_col,
                           na_outcome_vals,
                           outfile,
-                          quiet){
+                          quiet) {
 
   # first, determine which IDs have both feature data and outcome data ---------
-  if (inherits(add_outcome, 'matrix') | inherits(add_outcome, 'data.frame')) {
-    overlap <- intersect(indiv_id, add_outcome[,outcome_id])
-  } else if (inherits(add_outcome, 'numeric')) {
+  if (inherits(add_outcome, "matrix") || inherits(add_outcome, "data.frame")) {
+    overlap <- intersect(indiv_id, add_outcome[, outcome_id])
+  } else if (inherits(add_outcome, "numeric")) {
     overlap <- intersect(indiv_id, add_outcome[[outcome_id]])
   }
 
@@ -40,9 +40,8 @@ index_samples <- function(obj,
   }
 
   id_in_both <- which(indiv_id %in% overlap)
-  overlap_df <- add_outcome[id_in_both,]
 
-  if (length(id_in_both) < nrow(obj$X)){
+  if (length(id_in_both) < nrow(obj$X)) {
 
     if (!quiet) {
       cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
@@ -59,16 +58,15 @@ index_samples <- function(obj,
   indiv_id_df <- data.table::as.data.table(as.character(indiv_id))
   colnames(indiv_id_df) <- "ID"
   complete_samples <- data.table::merge.data.table(x = indiv_id_df,
-                                                   by.x = 'ID',
+                                                   by.x = "ID",
                                                    y = data.table::as.data.table(add_outcome),
                                                    by.y = outcome_id,
                                                    sort = FALSE)
-# NB: here, 'complete samples' means samples that appear in both the outcome data
+  # NB: here, 'complete samples' means samples that appear in both the outcome data
   # *and* the feature data
 
   # keep the indices
   return(list(complete_samples = complete_samples,
-              outcome_idx = which(indiv_id %in% add_outcome[,outcome_id])))
+              outcome_idx = which(indiv_id %in% add_outcome[, outcome_id])))
 
 }
-

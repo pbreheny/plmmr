@@ -20,11 +20,10 @@
 #' coef(fit)[1:10, 41:45]
 
 
-coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TRUE, ...){
+coef.plmm <- function(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...) {
   # error check for supplied lambda value
   if (!missing(lambda)) {
-    if (max(lambda) > max(object$lambda) | min(lambda) <
-        min(object$lambda)) {
+    if (max(lambda) > max(object$lambda) || min(lambda) < min(object$lambda)) {
       stop("Supplied lambda value(s) are outside the range of the model fit.",
            call. = FALSE)
     }
@@ -32,8 +31,9 @@ coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TR
     ind <- stats::approx(object$lambda, seq(object$lambda), lambda)$y
     l <- floor(ind)
     r <- ceiling(ind)
-    w <- ind%%1
-    beta_vals <- (1 - w) * object$beta_vals[, l, drop = FALSE] + w * object$beta_vals[, r, drop = FALSE]
+    w <- ind %% 1
+    beta_vals <- (1 - w) * object$beta_vals[, l, drop = FALSE] +
+      w * object$beta_vals[, r, drop = FALSE]
 
     # format dim. names
     if (is.null(dim(beta_vals))) {
@@ -44,17 +44,13 @@ coef.plmm <- function(object, lambda, which = 1:length(object$lambda), drop = TR
       colnames(beta_vals) <- lam_names(lambda)
     }
 
+  } else {
+    beta_vals <- object$beta_vals[, which, drop = FALSE]
   }
-  else beta_vals <- object$beta_vals[, which, drop = FALSE]
 
-  if (drop){
+  if (drop) {
     return(drop(beta_vals))
-  } else{
+  } else {
     return(beta_vals)
   }
 }
-
-
-
-
-

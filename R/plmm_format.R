@@ -33,7 +33,7 @@
 #'
 #' @keywords internal
 
-plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
+plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag) {
   # get beta values back in original scale; reverse the PRE-ROTATION standardization
   og_scale_beta <- untransform(
     std_scale_beta = fit$std_scale_beta,
@@ -66,7 +66,7 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag){
     converged = fit$converged,
     K = list(s = fit$s, U = fit$U))
 
-  if (fbm_flag){
+  if (fbm_flag) {
     out$std_X <- fit$std_X
   }
 

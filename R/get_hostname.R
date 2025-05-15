@@ -6,5 +6,3 @@
 get_hostname <- function() {
   return(as.character(Sys.info()["nodename"]))
 }
-
-

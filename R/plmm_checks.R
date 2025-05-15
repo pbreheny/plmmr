@@ -28,26 +28,22 @@ plmm_checks <- function(design,
                         trace = FALSE,
                         save_rds = NULL,
                         return_fit = TRUE,
-                        ...){
+                        ...) {
 
   # read in X -----------------------------------------------------
   # TODO: maybe need to add a 'catch' here for incorrect list input...
 
-  if (!(inherits(design, 'plmm_design') | inherits(design, 'character'))) {
-    stop('Input to "design" in plmm() must be either a plmm_design object output from create_design()
-         or an .rds filepath to a saved list output from create_design()')
+  if (!(inherits(design, "plmm_design") || inherits(design, "character"))) {
+    stop("Input to 'design' in plmm() must be either a plmm_design object output from create_design()
+         or an .rds filepath to a saved list output from create_design()")
   }
-  if("character" %in% class(design)){
+  if ("character" %in% class(design)) {
     design <- get_data(path = design, trace = trace, ...)
     std_X <- design$std_X
-  } else {
-
-    if (inherits(design$std_X, "big.matrix")) {
-      std_X <- bigmemory::attach.big.matrix(design$std_X)
-    } else if (inherits(design$std_X, "matrix")) {
-      std_X <- design$std_X
-    }
-
+  } else if (inherits(design$std_X, "big.matrix")) {
+    std_X <- bigmemory::attach.big.matrix(design$std_X)
+  } else if (inherits(design$std_X, "matrix")) {
+    std_X <- design$std_X
   }
 
   std_X_n <- design$std_X_n
@@ -66,14 +62,14 @@ plmm_checks <- function(design,
     std_X_rownames = design$std_X_rownames,
     std_X_colnames =  design$std_X_colnames)
 
-  if(inherits(std_X, "big.matrix")){
+  if (inherits(std_X, "big.matrix")) {
     fbm_flag <- TRUE
   } else {
     fbm_flag <- FALSE
   }
 
-  if (inherits(design$y, "matrix") | inherits(design$y, "data.frame")) {
-    y <- design$y[,1] |> unlist() # design$y will have one column
+  if (inherits(design$y, "matrix") || inherits(design$y, "data.frame")) {
+    y <- unlist(design$y[, 1]) # design$y will have one column
   } else {
     y <- design$y
   }
@@ -82,29 +78,33 @@ plmm_checks <- function(design,
 
   # set up defaults --------------------------------------------------
   # set default init
-  if(is.null(init)){init <- rep(0, std_X_p)}
+  if (is.null(init)) {
+    init <- rep(0, std_X_p)
+    }
 
   # set default gamma (gamma not used in 'lasso' option)
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
   # error checking design matrix  ---------------------------------------------
   if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call.=FALSE)
-  if (length(penalty_factor)!=std_X_p) stop("Dimensions of penalty_factor and X do not match; something is off in the supplied design", call.=FALSE)
+  if (length(penalty_factor) != std_X_p) stop("Dimensions of penalty_factor and X do not match; something is off in the supplied design", call.=FALSE)
 
   # check K types -------------------------------------------------------
-  if (!is.null(K)){
+  if (!is.null(K)) {
     # first, check type/class:
-    if (!inherits(K, "matrix") & !is.list(K)) {
-      tmp <- try(K <- stats::model.matrix(~0+., data=K), silent=TRUE)
+    if (!inherits(K, "matrix") && !is.list(K)) {
+      tmp <- try(K <- stats::model.matrix(~0+., data = K), silent = TRUE)
       if (inherits(tmp, "try-error")) stop("K must be either (1) able to be coerced to a matrix or (2) be a list.", call.=FALSE)
     }
-    if (typeof(K)=="integer") storage.mode(std_X) <- "double" # change K to X
-    if (typeof(K)=="character") stop("K must be a numeric matrix", call.=FALSE)
+    if (typeof(K) == "integer") storage.mode(std_X) <- "double" # change K to X
+    if (typeof(K) == "character") stop("K must be a numeric matrix", call. = FALSE)
     if (is.list(K)) {
-      if(!('s' %in% names(K) & 'U' %in% names(K))){stop('Components s and U not both found in list supplied for K.')}
+      if(!("s" %in% names(K) & "U" %in% names(K))) {
+        stop("Components s and U not both found in list supplied for K.")
+        }
     }
     # last check: look at dimensions
-    if (is.matrix(K)){
+    if (is.matrix(K)) {
       if (dim(K)[1] != std_X_n || dim(K)[2] != std_X_n) stop("Dimensions of K and X do not match", call.=FALSE)
     } else if (is.list(K)) {
       if (std_X_n != nrow(K$U)) stop("Dimensions of K and X do not match.")
@@ -113,7 +113,7 @@ plmm_checks <- function(design,
   }
 
   # for in in-memory designs, set plink flag to FALSE
-  if(is.null(design$is_plink)){
+  if (is.null(design$is_plink)) {
     plink_flag <- FALSE
   } else if (design$is_plink) {
     plink_flag <- TRUE
@@ -123,7 +123,7 @@ plmm_checks <- function(design,
 
   # warn about bigalgebra issues if this is user's first call to filebacked analysis
   # Check if the warning has been shown
-  if (!.plmmr_env$warning_shown & fbm_flag) {
+  if (!.plmmr_env$warning_shown && fbm_flag) {
 
     warning("Note: plmmr depends on the package bigalgebra, the current GitHub \n
             version of which is throwing some warnings for filebacked analysis. \n
@@ -159,7 +159,9 @@ plmm_checks <- function(design,
     p = design$p
   )
 
-  if (trace & !is.null(save_rds)){cat("Your results will be saved to ", save_rds, "\n")}
+  if (trace && !is.null(save_rds)) {
+    cat("Your results will be saved to ", save_rds, "\n")
+  }
 
   return(ret)
 

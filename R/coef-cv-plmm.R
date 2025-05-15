@@ -18,6 +18,6 @@
 #' cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
 #' head(coef(cv_fit))
 #'
-coef.cv_plmm <- function(object, lambda, which = object$min, ...){
+coef.cv_plmm <- function(object, lambda, which = object$min, ...) {
   coef(object$fit, lambda = lambda, which = which, ...)
 }

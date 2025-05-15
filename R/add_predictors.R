@@ -15,8 +15,7 @@ add_predictors <- function(obj,
                            add_predictor,
                            id_var,
                            rds_dir,
-                           quiet){
-
+                           quiet) {
 
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
@@ -29,25 +28,27 @@ add_predictors <- function(obj,
   if (is.data.frame(add_predictor)) {
     add_predictor <- as.matrix(add_predictor)
   }
+
   # make sure types match
-  if (!is.numeric(add_predictor[,1])) {
-    stop("\nThe matrix supplied to the 'add_predictor' argument must have numeric values only.")
+  if (!is.numeric(add_predictor[, 1])) {
+    stop("\nThe matrix supplied to the 'add_predictor' argument must have numeric values only.",
+         call. = FALSE)
   }
 
-  if (any(apply(add_predictor, 2, var) <1e-4)) {
+  if (any(apply(add_predictor, 2, var) < 1e-4)) {
     stop("\nThe matrix supplied to the 'add_predictor' argument has at least one
-             constant column (a column that does not vary over the given samples).")
+             constant column (a column that does not vary over the given samples).",
+         call. = FALSE)
   }
 
-  if (!quiet) cat('Aligning IDs between fam and predictor files\n')
+  if (!quiet) cat("Aligning IDs between fam and predictor files\n")
 
   # save unpen: an index marking added columns as *unpenalized* predictors
-  unpen <- 1:ncol(add_predictor)
-
+  unpen <- seq_len(ncol(add_predictor))
 
   design_matrix <- big.matrix(nrow = nrow(obj$X),
                               ncol = ncol(obj$X) + length(unpen),
-                              type = 'double',
+                              type = "double",
                               backingfile = "unstd_design_matrix.bk",
                               backingpath = rds_dir,
                               descriptorfile = "unstd_design_matrix.desc")
@@ -58,10 +59,10 @@ add_predictors <- function(obj,
                              quiet = quiet)
 
   ret <- list(design_matrix = design_matrix, unpen = unpen)
-  # adjust colnames if applicable
-  if (!is.null(colnames(add_predictor))){
-    ret$colnames <- c(colnames(add_predictor), obj$colnames)
 
+  # adjust colnames if applicable
+  if (!is.null(colnames(add_predictor))) {
+    ret$colnames <- c(colnames(add_predictor), obj$colnames)
 
     return(ret)
 

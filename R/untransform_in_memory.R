@@ -16,7 +16,7 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
   a <- std_scale_beta[1, , drop = FALSE] # this is the intercept
-  b <- std_scale_beta[-1, , drop=FALSE]
+  b <- std_scale_beta[-1, , drop = FALSE]
 
   # initialize beta with zeros; nrow = # of predictors, ncol = # of lambda values
   # this will create columns of zeros for betas corresponding to singular columns
@@ -36,7 +36,7 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
   # passed around varies depending on whether data are stored filebacked,
   # hence, the division into cases below:
   # in-memory cases
-  if (length(std_X_details$ns) == length(std_X_details$scale)){
+  if (length(std_X_details$ns) == length(std_X_details$scale)) {
     # case 1: ns and center/scale values have same length
     untransformed_b2 <- sweep(x = b,
                               MARGIN = 1,
@@ -44,11 +44,11 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
                               FUN = "/")
 
     # fill in the un-transformed values
-    untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$center,
-                                            untransformed_b2)
-  } else if ((length(std_X_details$ns) != length(std_X_details$scale)) &
-             (length(std_X_details$ns) == nrow(b))){
+    untransformed_beta[std_X_details$ns + 1, ] <- untransformed_b2 # again, the + 1 is for the intercept
+    untransformed_beta[1, ] <- a - crossprod(std_X_details$center,
+                                             untransformed_b2)
+  } else if ((length(std_X_details$ns) != length(std_X_details$scale)) &&
+             (length(std_X_details$ns) == nrow(b))) {
     # case 2: ns and center/scale values **do not** have same length, but ns is
     #   equal to the number of rows of 'b'
     untransformed_b2 <- sweep(x = b,
@@ -57,22 +57,22 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
                               FUN = "/")
 
     # fill in the un-transformed values
-    untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$center[std_X_details$ns],
-                                            untransformed_b2)
+    untransformed_beta[std_X_details$ns + 1, ] <- untransformed_b2 # again, the + 1 is for the intercept
+    untransformed_beta[1, ] <- a - crossprod(std_X_details$center[std_X_details$ns],
+                                             untransformed_b2)
   } else {
     # case 3: ns and center/scale values **do not** have same length, and ns is
     #  *NOT* equal to the number of rows of 'b'. This is a scenario that may arise
     #   in cross-validation.
 
-    untransformed_b2 <- sweep(x = b[std_X_details$ns,],
+    untransformed_b2 <- sweep(x = b[std_X_details$ns, ],
                               MARGIN = 1,
                               STATS = std_X_details$scale[std_X_details$ns],
                               FUN = "/")
     # fill in the un-transformed values
-    untransformed_beta[std_X_details$ns+1,] <- untransformed_b2 # again, the + 1 is for the intercept
-    untransformed_beta[1,] <- a - crossprod(std_X_details$center[std_X_details$ns],
-                                            untransformed_b2)
+    untransformed_beta[std_X_details$ns + 1, ] <- untransformed_b2 # again, the + 1 is for the intercept
+    untransformed_beta[1, ] <- a - crossprod(std_X_details$center[std_X_details$ns],
+                                             untransformed_b2)
   }
 
   if (use_names) {
@@ -86,4 +86,3 @@ untransform_in_memory <- function(std_scale_beta, p, std_X_details, use_names = 
   # Final step: return un-transformed beta values
   return(untransformed_beta)
 }
-

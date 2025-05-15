@@ -8,9 +8,9 @@
 #' @keywords internal
 #'
 #' @returns a numeric value with the estimated value of eta, the variance parameter
-estimate_eta <- function(n, s, U, y, eta_star){
+estimate_eta <- function(n, s, U, y, eta_star) {
 
-  opt <- stats::optimize(f=log_lik,
+  opt <- stats::optimize(f = log_lik,
                          c(0.01, 0.99),
                          n = n,
                          s = s,

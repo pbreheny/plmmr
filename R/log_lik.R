@@ -12,13 +12,13 @@
 #'
 #' @returns the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
 #'
-log_lik <- function(eta, n, s, U, y, rot_y = NULL){
+log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
 
   # first, the constant (comes from 1st term in derivation)
-  constant <- n*log(2*pi)
+  constant <- n * log(2 * pi)
 
   # we will need the sum of the nonzero values from the diagonal matrix of weights
-  w2 <- ((eta*s) + (1 - eta))
+  w2 <- ((eta * s) + (1 - eta))
 
   # get w2 on the log scale
   sum_det_log <- sum(log(w2))
@@ -28,7 +28,7 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL){
   wUt <- sweep(x = t(U), MARGIN = 1, STATS = w, FUN = "*")
 
 
-  if(is.null(rot_y) & !(missing(y))){
+  if (is.null(rot_y) && !(missing(y))) {
     rot_y <- wUt %*% y
   }
 
@@ -39,16 +39,16 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL){
   # calculate the term representing the \hat\beta(\eta) MLE
   intcpt_crossprod <- crossprod(rot_intcpt)
   intcpt_y_crossprod <- crossprod(rot_intcpt, rot_y)
-  hat_beta_mle <- drop(intcpt_y_crossprod/intcpt_crossprod)
+  hat_beta_mle <- drop(intcpt_y_crossprod / intcpt_crossprod)
 
   # using hat_beta_mle, calculate the quadratic term from the log likelihood
-  rot_e <- rot_y - (rot_intcpt*hat_beta_mle) # e = 'error', y - mean
+  rot_e <- rot_y - (rot_intcpt * hat_beta_mle) # e = 'error', y - mean
   rot_sqe <- crossprod(rot_e) # mse = sq. error
-  quad_term <- (1/n)*rot_sqe/sum(w2)
+  quad_term <- (1/n) * rot_sqe/sum(w2)
 
   # put all the pieces together -- evaluate the **negative** log likelihood
   # NB: keep constant here to be consistent with log_lik.lm() method
-  nLL <- 0.5*(constant + n*log(quad_term) + sum_det_log + n)
+  nLL <- 0.5 * (constant + n * log(quad_term) + sum_det_log + n)
 
   return(drop(nLL))
 

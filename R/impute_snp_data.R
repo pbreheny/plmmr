@@ -22,22 +22,23 @@
 #'
 impute_snp_data <- function(obj, X, impute, impute_method,
                             parallel, outfile, quiet,
-                            seed = as.numeric(Sys.Date()),...){
+                            seed = as.numeric(Sys.Date()),
+                            ...) {
 
-  if(!quiet & impute){
+  if (!quiet && impute) {
     # catch for misspellings
-    if(!(impute_method %in% c('mode', 'random', 'mean0', 'mean2', 'xgboost'))){
+    if (!(impute_method %in% c("mode", "random", "mean0", "mean2", "xgboost"))) {
       stop("\nImpute method is misspecified or misspelled. Please use one of the
            \n5 options listed in the documentation.")
     }
     cat("\nImputing the missing (genotype) values using", impute_method, "method\n")
   }
 
-  if(impute){
+  if (impute) {
     cat("Imputing the missing values using", impute_method, "method\n",
         file = outfile, append = TRUE)
 
-    if(impute_method %in% c('mode', 'random', 'mean0', 'mean2')){
+    if (impute_method %in% c("mode", "random", "mean0", "mean2")) {
 
       if (parallel) {
         obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
@@ -48,7 +49,7 @@ impute_snp_data <- function(obj, X, impute, impute_method,
                                                        method = impute_method)
       }
 
-    } else if (impute_method == "xgboost"){
+    } else if (impute_method == "xgboost") {
 
       if (parallel) {
         obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,

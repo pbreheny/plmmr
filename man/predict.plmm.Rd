@@ -10,7 +10,7 @@
   type = c("blup", "coefficients", "vars", "nvars", "lp"),
   X = NULL,
   lambda,
-  idx = 1:length(object$lambda),
+  idx = seq_along(object$lambda),
   ...
 )
 }

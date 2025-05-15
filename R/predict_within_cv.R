@@ -32,10 +32,10 @@ predict_within_cv <- function(fit,
 
   # make sure X is in the correct format...
   # case 1: testX is filebacked
-  fbm_flag <- inherits(testX,"big.matrix")
+  fbm_flag <- inherits(testX, "big.matrix")
 
   # format dim. names
-  if(is.null(dim(fit$beta_vals))) {
+  if (is.null(dim(fit$beta_vals))) {
     # case 1: fit$beta_vals is a vector
     names(fit$beta_vals) <- lam_names(fit$lambda)
   } else {
@@ -44,12 +44,12 @@ predict_within_cv <- function(fit,
   }
 
   # calculate the estimated mean values for test data
-  a <- fit$beta_vals[1,]
-  b <- fit$beta_vals[-1,,drop=FALSE]
+  a <- fit$beta_vals[1, ]
+  b <- fit$beta_vals[-1, , drop = FALSE]
   Xb <- sweep(testX %*% b, 2, a, "+")
 
   # for linear predictor, return mean values
-  if (type=="lp") {
+  if (type == "lp") {
     return(drop(Xb))
   }
 

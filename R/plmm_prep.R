@@ -35,7 +35,7 @@ plmm_prep <- function(std_X,
                       eta_star = NULL,
                       fbm_flag,
                       trace = NULL,
-                      ...){
+                      ...) {
 
 
   ## coersion
@@ -43,30 +43,38 @@ plmm_prep <- function(std_X,
 
 
   # set default: if diag_K not specified, set to false
-  if(is.null(diag_K)){diag_K <- FALSE}
+  if (is.null(diag_K)) {
+    diag_K <- FALSE
+  }
 
   # First: handle the cases where no decomposition is  ------------------
 
   # case 1: K is the identity matrix
   flag1 <- diag_K & is.null(K)
-  if(flag1){
-    if (trace) {(cat("Using identity matrix for K.\n"))}
+  if (flag1) {
+    if (trace) {
+      (cat("Using identity matrix for K.\n"))
+    }
     s <- rep(1, n)
     U <- diag(nrow = n)
   }
   # case 2: K is user-supplied diagonal matrix (like a weighted lm())
-  flag2 <- diag_K & !is.null(K) & ('matrix' %in% class(K))
-  if(flag2){
-    if (trace) {(cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n"))}
+  flag2 <- diag_K & !is.null(K) & ("matrix" %in% class(K))
+  if (flag2) {
+    if (trace) {
+      (cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n"))
+    }
     s <- sort(diag(K), decreasing = TRUE)
-    U <- diag(nrow = n)[,order(diag(K), decreasing = TRUE)]
+    U <- diag(nrow = n)[, order(diag(K), decreasing = TRUE)]
   }
   # case 3: K is a user-supplied list
-  flag3 <- !is.null(K) & ('list' %in% class(K))
-  if( flag3) {
-    if (trace) {cat("K is a list; will pass U,s components from list to model fitting.\n")}
+  flag3 <- !is.null(K) & ("list" %in% class(K))
+  if (flag3) {
+    if (trace) {
+      cat("K is a list; will pass U,s components from list to model fitting.\n")
+    }
     s <- K$s # no need to adjust singular values by p
-    if ('FBM' %in% class(K$U)){
+    if ("FBM" %in% class(K$U)) {
       U <- K$U[,]
     } else {
       U <- K$U
@@ -75,9 +83,11 @@ plmm_prep <- function(std_X,
 
   # otherwise, need to do eigendecomposition -----------------------------
   if (sum(c(flag1, flag2, flag3)) == 0) {
-    if (trace) {cat("Starting decomposition.\n")}
+    if (trace) {
+      cat("Starting decomposition.\n")
+    }
     # set default K: if not specified and not diagonal, use realized relatedness matrix
-    if (is.null(K) & is.null(s)) {
+    if (is.null(K) && is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
       if (trace) cat("Calculating the eigendecomposition of K\n")
@@ -89,7 +99,7 @@ plmm_prep <- function(std_X,
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K)
-      s <- eigen_res$values*(1/std_X_p)
+      s <- eigen_res$values * (1 / std_X_p)
       # note: our definition of the RRM averages over the number of features used to calculate K
       U <- eigen_res$vectors
     }
@@ -97,7 +107,7 @@ plmm_prep <- function(std_X,
   }
 
   # error check: what if the combination of args. supplied was none of the cases above?
-  if (is.null(s) | is.null(U)){
+  if (is.null(s) || is.null(U)) {
     stop("\nSomething is wrong in the eigendecomposition.
     \nThe combination of supplied arguments does not match any cases handled in
          \n plmm_prep(), the internal function called by plmm() to do this step of the modeling process.

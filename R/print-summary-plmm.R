@@ -17,17 +17,17 @@
 #' fit2 <- plmm(design = admix_design, penalty = "SCAD", lambda = lam)
 #' print(summary(fit, idx = 18))
 #' print(summary(fit2, idx = 18))
-print.summary.plmm <- function(x, ...){
-  cat(x$penalty, "-penalized regression model with n=", x$n, ", p=", x$p, sep="")
-  cat(" at lambda=", x$lambda_char, "\n", sep="")
+print.summary.plmm <- function(x, ...) {
+  cat(x$penalty, "-penalized regression model with n=", x$n, ", p=", x$p, sep = "")
+  cat(" at lambda=", x$lambda_char, "\n", sep = "")
   cat("-------------------------------------------------\n")
 
   # did the model converge?
-  if(x$converged){
-      cat("The model converged", "\n")
-    } else {
-      cat("The model did not converge - max. number of iterations reached", "\n")
-    }
+  if (x$converged) {
+    cat("The model converged", "\n")
+  } else {
+    cat("The model did not converge - max. number of iterations reached", "\n")
+  }
 
   cat("-------------------------------------------------\n")
   # nonzero coefficients

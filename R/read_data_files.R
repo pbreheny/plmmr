@@ -15,21 +15,21 @@
 #' @keywords internal
 #'
 read_data_files <- function(data_file, data_dir, rds_dir, rds_prefix,
-                            outfile, overwrite, quiet, ...){
+                            outfile, overwrite, quiet, ...) {
 
   rds_path <- file.path(rds_dir,  paste0(rds_prefix, ".rds"))
   bk_path <- file.path(rds_dir, paste0(rds_prefix, ".bk"))
   desc_path <- file.path(rds_dir, paste0(rds_prefix, ".desc"))
 
   # check for overwrite:
-  if (file.exists(bk_path)){
-    if (overwrite){
+  if (file.exists(bk_path)) {
+    if (overwrite) {
       # notify
       cat("\nOverwriting existing files:", rds_prefix, ".bk/.rds/.desc\n",
-          file = outfile, append = TRUE, sep='')
+          file = outfile, append = TRUE, sep = "")
 
-      if (!quiet){
-        cat("\nOverwriting existing files:", rds_prefix, ".bk/.rds/.desc\n", sep='')
+      if (!quiet) {
+        cat("\nOverwriting existing files:", rds_prefix, ".bk/.rds/.desc\n", sep = "")
       }
       file.remove(bk_path)
       file.remove(rds_path)
@@ -43,11 +43,11 @@ read_data_files <- function(data_file, data_dir, rds_dir, rds_prefix,
 
   # create the bk file ------------------------
   obj <- bigmemory::read.big.matrix(filename = file.path(data_dir, data_file),
-                             backingfile = paste0(rds_prefix, ".bk"),
-                             backingpath = rds_dir,
-                             descriptorfile = paste0(rds_prefix, ".desc"),
-                             type = 'double',
-                             ...)
+                                    backingfile = paste0(rds_prefix, ".bk"),
+                                    backingpath = rds_dir,
+                                    descriptorfile = paste0(rds_prefix, ".desc"),
+                                    type = "double",
+                                    ...)
 
   return(obj)
 

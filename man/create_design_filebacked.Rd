@@ -9,11 +9,11 @@ create_design_filebacked(
   rds_dir,
   obj,
   new_file,
-  feature_id = NULL,
   add_outcome,
   outcome_id,
   outcome_col,
   na_outcome_vals = c(-9, NA_integer_),
+  feature_id = NULL,
   add_predictor = NULL,
   predictor_id = NULL,
   unpen = NULL,
@@ -31,12 +31,6 @@ create_design_filebacked(
 
 \item{new_file}{User-specified filename (\emph{without .bk/.rds extension}) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.}
 
-\item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
-- for PLINK data: a string specifying an ID column of the PLINK \code{.fam} file. Options are "IID" (default) and "FID"
-- for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with \code{process_delim()})
-- if left NULL (default), X is assumed to have the same row-order as add_outcome.
-\strong{Note}: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.}
-
 \item{add_outcome}{A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.}
 
 \item{outcome_id}{A string specifying the name of the ID column in 'add_outcome'}
@@ -44,6 +38,12 @@ create_design_filebacked(
 \item{outcome_col}{A string specifying the name of the phenotype column in 'add_outcome'}
 
 \item{na_outcome_vals}{A vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).}
+
+\item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
+- for PLINK data: a string specifying an ID column of the PLINK \code{.fam} file. Options are "IID" (default) and "FID"
+- for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with \code{process_delim()})
+- if left NULL (default), X is assumed to have the same row-order as add_outcome.
+\strong{Note}: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.}
 
 \item{add_predictor}{Optional (for PLINK data only): a matrix or data frame to be used for adding additional \strong{unpenalized} covariates/predictors/features from an external file (i.e., not a PLINK file).
 This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.}

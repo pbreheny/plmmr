@@ -4,7 +4,7 @@
 \alias{coef.plmm}
 \title{Coef method for "plmm" class}
 \usage{
-\method{coef}{plmm}(object, lambda, which = 1:length(object$lambda), drop = TRUE, ...)
+\method{coef}{plmm}(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...)
 }
 \arguments{
 \item{object}{An object of class "plmm."}

@@ -11,8 +11,8 @@
 #' @examples
 #' find_example_data(parent = TRUE)
 #'
-find_example_data <- function(path, parent=FALSE) {
-  if(parent){
+find_example_data <- function(path, parent = FALSE) {
+  if (parent) {
     # if parent option selected, will return path to folder
     system.file("extdata", package = "plmmr", mustWork = TRUE)
   } else {
@@ -31,7 +31,7 @@ find_example_data <- function(path, parent=FALSE) {
 #'
 #' @returns Nothing is returned; the PLINK files that ship with the `plmmr` package are stored in the directory specified by 'outdir'
 #'
-unzip_example_data <- function(outdir){
+unzip_example_data <- function(outdir) {
 
   # Check if the operating system is Windows
   if (.Platform$OS.type == "windows") {

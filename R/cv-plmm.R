@@ -78,7 +78,7 @@ cv_plmm <- function(design,
                     diag_K = NULL,
                     eta_star = NULL,
                     penalty = "lasso",
-                    type = 'blup',
+                    type = "blup",
                     gamma,
                     alpha = 1,
                     lambda_min, # passed to internal function setup_lambda()
@@ -89,10 +89,10 @@ cv_plmm <- function(design,
                     warn = TRUE,
                     init = NULL,
                     cluster,
-                    nfolds=5,
+                    nfolds = 5,
                     seed,
                     fold = NULL,
-                    trace=FALSE,
+                    trace = FALSE,
                     save_rds = NULL,
                     return_fit = TRUE,
                     ...) {
@@ -107,7 +107,7 @@ cv_plmm <- function(design,
   }
 
   # create a design if needed -------------
-  if (inherits(design, "data.frame") | inherits(design, 'matrix')) {
+  if (inherits(design, "data.frame") || inherits(design, "matrix")) {
     # error check: if 'design' is matrix/data.frame, user must specify 'y'
     if (is.null(y)) {
       stop("If you supply a matrix or data frame as 'design', you
@@ -118,8 +118,8 @@ cv_plmm <- function(design,
     design <- create_design_in_memory(X = design, y = y)
 
 
-  } else {
-    if (!is.null(y)) stop("If you are supplying a plmm_design object or filepath to
+  } else if (!is.null(y)) {
+    stop("If you are supplying a plmm_design object or filepath to
                           the 'design' argument, that design already has a 'y' --
                           please do not specify a 'y' argument here in plmm()")
   }
@@ -136,7 +136,7 @@ cv_plmm <- function(design,
                               trace = trace,
                               ...)
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("\nInput data passed all checks at ",
         pretty_time(),
         file = logfile, append = TRUE)
@@ -155,9 +155,9 @@ cv_plmm <- function(design,
                       fbm_flag = checked_data$fbm_flag,
                       trace = trace))
 
-  prep <- do.call('plmm_prep', prep_args)
+  prep <- do.call("plmm_prep", prep_args)
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("\nEigendecomposition finished at ",
         pretty_time(),
         file = logfile, append = TRUE)
@@ -179,13 +179,13 @@ cv_plmm <- function(design,
     eps = eps,
     warn = warn))
 
-  if (!missing(lambda_min)){
+  if (!missing(lambda_min)) {
     fit_args$lambda_min <- lambda_min
   }
 
-  fit <- do.call('plmm_fit', fit_args)
+  fit <- do.call("plmm_fit", fit_args)
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("\nFull model fit finished at",
         pretty_time(),
         file = logfile, append = TRUE)
@@ -197,7 +197,7 @@ cv_plmm <- function(design,
                                fbm_flag = checked_data$fbm_flag,
                                plink_flag = checked_data$plink_flag)
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("\nFormatting for full model finished at",
         pretty_time(),
         file = logfile, append = TRUE)
@@ -219,13 +219,13 @@ cv_plmm <- function(design,
   cv_args$plink_flag <- checked_data$plink_flag
 
   estimated_Sigma <- NULL
-  if (type == 'blup') {
+  if (type == "blup") {
     estimated_Sigma <- construct_variance(eta = fit$eta, K = prep$K)
   }
 
   # initialize objects to hold CV results
   n <- checked_data$std_X_n
-  E <- Y <- matrix(NA, nrow=n, ncol=length(fit$lambda))
+  E <- Y <- matrix(NA, nrow = n, ncol = length(fit$lambda))
 
   # set up folds for cross validation
   if (!missing(seed)) {
@@ -234,7 +234,7 @@ cv_plmm <- function(design,
     set.seed(seed)
   }
 
-  sde <- sqrt(.Machine$double.eps)
+  #sde <- sqrt(.Machine$double.eps)
 
   if (is.null(fold)) {
     if (trace) {
@@ -242,7 +242,7 @@ cv_plmm <- function(design,
           \nTo specify folds for each observation, supply a vector with fold assignments.\n")
     }
     fold <- sample(1:n %% nfolds)
-    fold[fold==0] <- nfolds
+    fold[fold == 0] <- nfolds
   } else {
     nfolds <- max(fold)
   }
@@ -255,24 +255,24 @@ cv_plmm <- function(design,
                                     You cannot specify a 'cluster' argument if data are stored filebacked.\n.")
 
     # check type of 'cluster' argument
-    if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call.=FALSE)
+    if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call. = FALSE)
 
     # check if variables are defined
     if (!exists("fold") || !exists("type") || !exists("cv_args")) {
-      stop("One or more required variables (fold, type, cv_args) are not defined", call.=FALSE)
+      stop("One or more required variables (fold, type, cv_args) are not defined", call. = FALSE)
     }
 
     parallel::clusterExport(cl = cluster,
                             varlist = c("fold", "type", "cv_args"),
                             envir = environment())
     parallel::clusterCall(cluster, function() library(plmmr))
-    fold_results <- parallel::parLapply(cl=cluster,
-                                        X=1:max(fold),
-                                        fun=cvf,
+    fold_results <- parallel::parLapply(cl = cluster,
+                                        X = 1:max(fold),
+                                        fun = cvf,
                                         design = design,
-                                        fold=fold,
-                                        type=type,
-                                        cv_args=cv_args)
+                                        fold = fold,
+                                        type = type,
+                                        cv_args = cv_args)
 
     # stop the cluster when done
     parallel::stopCluster(cluster)
@@ -282,7 +282,7 @@ cv_plmm <- function(design,
   # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")
 
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     cat("\nCross validation started at: ",
         pretty_time(),
         file = logfile,
@@ -290,16 +290,19 @@ cv_plmm <- function(design,
   }
 
   # set up progress bar -- this can take a while
-  if(trace){pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)}
+  if(trace) {
+    pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)
+  }
   for (i in 1:nfolds) {
     # case 1: user-specified cluster
     if (!missing(cluster)) {
       res <- fold_results[[i]] # refers to lines from above
-      if (trace) {utils::setTxtProgressBar(pb, i)}
-
+      if (trace) {
+        utils::setTxtProgressBar(pb, i)
+        }
     } else {
       # case 2: cluster NOT user specified
-      if (!is.null(save_rds)){
+      if (!is.null(save_rds)) {
         cat("Started fold", i, "at", pretty_time(),
             file = logfile, append = TRUE)
       }
@@ -308,19 +311,20 @@ cv_plmm <- function(design,
                  fold = fold,
                  type = type,
                  cv_args = cv_args)
-      if (trace) {utils::setTxtProgressBar(pb, i)}
-
+      if (trace) {
+        utils::setTxtProgressBar(pb, i)
+        }
     }
 
     if(trace) close(pb)
 
     # update E and Y
-    E[fold==i, 1:res$nl] <- res$loss
+    E[fold == i, 1:res$nl] <- res$loss
 
     if (!is.matrix(res$yhat)) {
       res$yhat <- as.matrix(res$yhat)
     }
-    Y[fold==i, 1:res$nl] <- res$yhat
+    Y[fold == i, 1:res$nl] <- res$yhat
 
     if (!is.null(save_rds)) {
       saveRDS(E, paste0(save_rds, "_loss.rds"))
@@ -337,7 +341,7 @@ cv_plmm <- function(design,
   # post-process results -----------------------------------------
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
-  E <- E[, ind, drop=FALSE]
+  E <- E[, ind, drop = FALSE]
   Y <- Y[, ind]
   lambda <- fit$lambda[ind]
 
@@ -353,30 +357,30 @@ cv_plmm <- function(design,
   min1se <- which.max(lambda %in% lambda[within1se])
 
   # bias correction
-  e <- sapply(1:nfolds, function(i) apply(E[fold==i, , drop=FALSE], 2, mean))
-  Bias <- mean(e[min,] - apply(e, 2, min))
+  e <- sapply(1:nfolds, function(i) apply(E[fold == i, , drop = FALSE], 2, mean))
+  Bias <- mean(e[min, ] - apply(e, 2, min))
 
-  val <- list(type=type,
-              cve=cve,
-              cvse=cvse,
-              fold=fold,
-              lambda=lambda,
-              fit=fit_to_return,
-              min=min,
-              lambda_min=lambda[min],
+  val <- list(type = type,
+              cve = cve,
+              cvse = cvse,
+              fold = fold,
+              lambda = lambda,
+              fit = fit_to_return,
+              min = min,
+              lambda_min = lambda[min],
               min1se = min1se,
               lambda.1se = lambda[min1se],
-              null.dev=mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))),
+              null.dev = mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))),
               Y = Y,
               bias = Bias,
               loss = E)
 
-  if (type == "blup"){
-    val$estimated_Sigma = estimated_Sigma
+  if (type == "blup") {
+    val$estimated_Sigma <- estimated_Sigma
   }
 
   # save output
-  if (!is.null(save_rds)){
+  if (!is.null(save_rds)) {
     saveRDS(val, paste0(save_rds, ".rds"))
     cat("Results saved to:", paste0(save_rds, ".rds"), "at",
         pretty_time(),
@@ -384,7 +388,7 @@ cv_plmm <- function(design,
   }
 
   # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
-  if (is.null(save_rds) & !return_fit){
+  if (is.null(save_rds) && !return_fit) {
     cat("You accidentally left save_rds = NULL and return_fit = FALSE;
         to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
 
@@ -395,8 +399,8 @@ cv_plmm <- function(design,
   gc()
 
   # return ----------------------------------------------------------------
-  if (return_fit){
-    return(structure(val, class="cv_plmm"))
+  if (return_fit) {
+    return(structure(val, class = "cv_plmm"))
   }
 
 

@@ -13,14 +13,14 @@
 #'
 #' @keywords internal
 
-name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
+name_and_count_bigsnp <- function(obj, id_var, quiet, outfile) {
 
   X <- obj$genotypes
 
   # set object names
   obj$colnames <- obj$map$marker.ID
 
-  if (id_var == "FID"){
+  if (id_var == "FID") {
     obj$rownames <- as.character(obj$fam$family.ID)
   } else if (id_var == "IID") {
     obj$rownames <- as.character(obj$fam$sample.ID)
@@ -31,7 +31,7 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
   obj$n <- X$nrow
   obj$p <- X$ncol
 
-  if(!quiet){
+  if (!quiet) {
     cat("\nThere are", obj$n, "observations and",
         obj$p, "genomic features in the specified data files, representing chromosomes",
         chr_range[1], "-", chr_range[2], "\n")
@@ -44,7 +44,7 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile){
   # save these counts
   counts <- bigstatsr::big_counts(X) # NB: this is a matrix
 
-  return(list(na_counts = counts[4,],
+  return(list(na_counts = counts[4, ],
               obj = obj,
               og_plink_ids = obj$rownames,
               chr = obj$map$chromosome,

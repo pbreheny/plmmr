@@ -52,17 +52,17 @@ process_plink <- function(data_dir,
                           rds_prefix = NULL,
                           logfile = NULL,
                           impute = TRUE,
-                          impute_method = 'mode',
+                          impute_method = "mode",
                           id_var = "IID",
                           parallel = TRUE,
                           quiet = FALSE,
                           overwrite = FALSE,
-                          ...){
+                          ...) {
 
   if (identical(rds_prefix, data_prefix)) stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n")
 
   # start log -----------------------------------------
-  if(!is.null(logfile)){
+  if (!is.null(logfile)) {
     # TODO there seems to be a bug here -- needs investigation
     logfile <- create_log(file.path(rds_dir, logfile))
     cat("\nLogging to", logfile)
@@ -71,7 +71,7 @@ process_plink <- function(data_dir,
   }
 
 
-  if(!quiet){
+  if (!quiet) {
     cat("\nPreprocessing", data_prefix, "data:")
   }
   cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
@@ -100,7 +100,7 @@ process_plink <- function(data_dir,
 
   # chromosome check ---------------------------------
   # only consider SNPs on chromosomes 1-22
-  if(step2$chr_range[1] < 1 | step2$chr_range[2] > 22){
+  if (step2$chr_range[1] < 1 || step2$chr_range[2] > 22) {
     stop("plmmr only analyzes autosomes -- please remove variants on
          chromosomes outside 1-22.
          This can be done in PLINK 1.9; see the documentation in
@@ -109,14 +109,14 @@ process_plink <- function(data_dir,
 
   # notify about missing (genotype) values ------------------------------
   na_idx <- step2$na_counts > 0
-  prop_na <- step2$na_counts/nrow(step2$X)
+  prop_na <- step2$na_counts / nrow(step2$X)
 
   cat("There are a total of", sum(na_idx), "SNPs with missing values\n",
       file = logfile, append = TRUE)
   cat("Of these,", sum(prop_na > 0.5),
       "are missing in at least 50% of the samples\n",
       file = logfile, append = TRUE)
-  if(!quiet){
+  if (!quiet) {
     cat("There are a total of", sum(na_idx), "SNPs with missing values\n")
     cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples\n")
   }
@@ -136,12 +136,12 @@ process_plink <- function(data_dir,
 
   X  <- bigmemory::deepcopy(
     x = fbm2bm(step3$genotypes),
-    row = 1:nrow(step3$genotypes),
-    col = 1:ncol(step3$genotypes),
-    type = 'double', # this is why we're making a copy -- need type 'double' downstream
+    row = seq_len(nrow(step3$genotypes)),
+    col = seq_len(ncol(step3$genotypes)),
+    type = "double", # this is why we're making a copy -- need type 'double' downstream
     backingpath = rds_dir,
-    backingfile = paste0('processed_', data_prefix, '.bk'),
-    descriptorfile = paste0('processed_', data_prefix, '.desc')
+    backingfile = paste0("processed_", data_prefix, ".bk"),
+    descriptorfile = paste0("processed_", data_prefix, ".desc")
   )
 
   ret <- structure(list(X = bigmemory::describe(X),
@@ -152,17 +152,17 @@ process_plink <- function(data_dir,
 
   # handle return format -------------------------------------------------------
 
-  if(!is.null(rds_prefix)) {
+  if (!is.null(rds_prefix)) {
     rds_filename <- paste0(rds_prefix, ".rds")
     saveRDS(ret, file = file.path(rds_dir, rds_filename))
   } else {
     # TODO: add warning if object size is greater than some threshold
     ret$X <- bigmemory::attach.big.matrix(ret$X)[,]
 
-    list.files(rds_dir, pattern = paste0('processed_', data_prefix, '.bk'),
+    list.files(rds_dir, pattern = paste0("processed_", data_prefix, ".bk"),
                full.names = TRUE) |>
       file.remove()
-    list.files(rds_dir, pattern = paste0('processed_', data_prefix, '.desc'),
+    list.files(rds_dir, pattern = paste0("processed_", data_prefix, ".desc"),
                full.names = TRUE) |>
       file.remove()
   }
@@ -170,18 +170,18 @@ process_plink <- function(data_dir,
   # cleanup --------------------------------------------------------------------
 
   # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern = paste0('^file.*.bk'), full.names=TRUE) |>
+  list.files(rds_dir, pattern = paste0("^file.*.bk"), full.names = TRUE) |>
     file.remove()
-  list.files(rds_dir, pattern = paste0('^', data_prefix, ".rds"), full.names = TRUE) |>
+  list.files(rds_dir, pattern = paste0("^", data_prefix, ".rds"), full.names = TRUE) |>
     file.remove()
-  list.files(rds_dir, pattern = paste0('^', data_prefix, ".bk"), full.names = TRUE) |>
+  list.files(rds_dir, pattern = paste0("^", data_prefix, ".bk"), full.names = TRUE) |>
     file.remove() #TODO: Determine the permissions error origin
 
   gc()
 
-  if(!quiet){cat("\nprocess_plink() completed")}
+  if (!quiet) cat("\nprocess_plink() completed")
 
-  if(!is.null(rds_prefix)) {
+  if (!is.null(rds_prefix)) {
     cat("\nProcessed files now saved as",
         file.path(rds_dir, rds_filename))
 

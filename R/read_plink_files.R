@@ -14,10 +14,10 @@
 #' @keywords internal
 #'
 read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile,
-                             parallel, overwrite, quiet){
+                             parallel, overwrite, quiet) {
 
   # check for compressed files
-  if (!file.exists(file.path(data_dir, paste0(data_prefix, ".bed")))){
+  if (!file.exists(file.path(data_dir, paste0(data_prefix, ".bed")))) {
     if (file.exists(file.path(data_dir, paste0(data_prefix, ".bed.gz")))) {
       cat("\nIt looks like your files are zipped -- please unzip them before calling process_plink().")
     } else {
@@ -30,13 +30,13 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile,
   bk_path <- file.path(rds_dir, paste0(data_prefix, ".bk"))
 
   # check for overwrite:
-  if (file.exists(bk_path)){
-    if (overwrite){
+  if (file.exists(bk_path)) {
+    if (overwrite) {
       # notify
       cat("\nOverwriting existing files: ", data_prefix, ".bk/.rds\n",
           file = outfile, append = TRUE)
 
-      if (!quiet){
+      if (!quiet) {
         cat("\nOverwriting existing files: ", data_prefix, ".bk/.rds\n")
       }
 
@@ -45,7 +45,7 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile,
       if (file.exists(path)) file.remove(path)
       gc()
       # remove old backingfile(s)
-      list.files(rds_dir, pattern=paste0('^.*.bk'), full.names=TRUE) |>
+      list.files(rds_dir, pattern = paste0("^.*.bk"), full.names = TRUE) |>
         file.remove()
       gc()
     } else {
@@ -56,9 +56,9 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, outfile,
   }
 
   # create the RDS file  ------------------------
-  if (!quiet) cat("\nCreating ", data_prefix, ".rds\n", sep='')
+  if (!quiet) cat("\nCreating ", data_prefix, ".rds\n", sep = "")
 
-  if (parallel){
+  if (parallel) {
     bigsnpr::snp_readBed2(bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
                           backingfile = file.path(rds_dir, data_prefix),
                           ncores = count_cores())

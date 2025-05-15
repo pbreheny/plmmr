@@ -7,8 +7,8 @@
 #'
 #' @keywords internal
 #'
-fbm2bm <- function(fbm, desc = FALSE){
-  if(desc){
+fbm2bm <- function(fbm, desc = FALSE) {
+  if (desc) {
     desc <- fbm$bm.desc()
     return(bigmemory::attach.big.matrix(desc))
 

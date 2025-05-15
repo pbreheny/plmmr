@@ -149,16 +149,16 @@ create_design <- function(data_file = NULL,
                                                ...)
   } else { # case 2: filebacked data
     obj <- readRDS(data_file)
-    switch (class(obj),
-            processed_plink = create_design_filebacked(data_file = data_file,
-                                                       rds_dir = rds_dir,
-                                                       obj = obj,
-                                                       ...),
+    switch(class(obj),
+           processed_plink = create_design_filebacked(data_file = data_file,
+                                                      rds_dir = rds_dir,
+                                                      obj = obj,
+                                                      ...),
 
-            processed_delim = create_design_filebacked(data_file = data_file,
-                                                       rds_dir = rds_dir,
-                                                       obj = obj,
-                                                       ...)
+           processed_delim = create_design_filebacked(data_file = data_file,
+                                                      rds_dir = rds_dir,
+                                                      obj = obj,
+                                                      ...)
     )
   }
 }

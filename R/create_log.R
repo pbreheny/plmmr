@@ -8,13 +8,12 @@
 create_log <- function(outfile, ...) {
   if (missing(outfile)) {
     stop("You must specify a name for the output file(s) via the outfile argument.")
-  } else {
-    logfile <- paste0(outfile, ".log")
   }
+
+  logfile <- paste0(outfile, ".log")
 
   # open the log file for writing
   log_con <- file(logfile)
-
 
   # write header to the log file
   cat("### plmmr log file ###\n", file = logfile)

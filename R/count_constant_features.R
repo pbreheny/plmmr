@@ -8,18 +8,18 @@
 #'
 #' @keywords internal
 #'
-count_constant_features <- function(fbm, outfile, quiet){
+count_constant_features <- function(fbm, outfile, quiet) {
 
   # NB: pruning out samples with incomplete phenotypes can make some features
   #   *become* constant!
-  colstats <- .Call('big_sd',
+  colstats <- .Call("big_sd",
                     fbm@address,
                     as.integer(count_cores()),
-                    PACKAGE = 'plmmr')
+                    PACKAGE = "plmmr")
   ns <- which(colstats$sd_vals > 1e-4)
   constants_idx <- sum(colstats$sd_vals < 1e-4)
 
-  if(!quiet){
+  if (!quiet) {
     cat("There are", sum(constants_idx), "constant features in the data\n")
   }
 
