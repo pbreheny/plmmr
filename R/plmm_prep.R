@@ -98,7 +98,7 @@ plmm_prep <- function(std_X,
 
     } else {
       # last case: K is a user-supplied matrix
-      eigen_res <- eigen(K)
+      eigen_res <- eigen(K, symmetric = TRUE)
       s <- eigen_res$values * (1 / std_X_p)
       # note: our definition of the RRM averages over the number of features used to calculate K
       U <- eigen_res$vectors

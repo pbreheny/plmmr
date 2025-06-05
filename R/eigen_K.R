@@ -26,8 +26,10 @@ eigen_K <- function(std_X, fbm_flag) {
 
   # take eigendecomposition
   # TODO: explore ways to make this faster
-  decomp <- eigen(K)
-  return(list(s = decomp$values,
-              U = decomp$vectors,
-              K = K))
+  decomp <- eigen(K, symmetric = TRUE)
+  list(
+    s = decomp$values,
+    U = decomp$vectors,
+    K = K
+  )
 }
