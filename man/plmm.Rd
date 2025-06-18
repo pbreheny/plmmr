@@ -119,8 +119,7 @@ Fit a linear mixed model via penalized maximum likelihood.
 }
 \examples{
 # using admix data
-admix_design <- create_design(X = admix$X, y = admix$y)
-fit <- plmm(design = admix_design)
+fit <- plmm(admix$X, admix$y)
 s <- summary(fit, idx = 50)
 print(s)
 plot(fit)
