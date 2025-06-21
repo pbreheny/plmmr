@@ -125,14 +125,14 @@ plmm_checks <- function(design,
   # Check if the warning has been shown
   if (!.plmmr_env$warning_shown && fbm_flag) {
 
-    warning("Note: plmmr depends on the package bigalgebra, the current GitHub \n
-            version of which is throwing some warnings for filebacked analysis. \n
-            See https://github.com/fbertran/bigalgebra/issues/2 \n
-            If you see a warning about 'stack imbalance' appear while you are \n
-            fitting a model with plmm() or cv_plmm(), we recommend downloading \n
-            the last stable version of bigalebra.\n
-            This message is displayed after your first call to fit a model \n
-            using filebacked data.\n")
+    warning("
+Note: version 1.1.2 of bigalgebra produces occasional 'stack imbalance'
+warnings; see
+https://github.com/fbertran/bigalgebra/issues/2
+These warnings don't affect the results of plmm(), although you may wish to
+download the previous version of the package to avoid these warnings:
+
+remotes::install_version(\"bigalgebra\", version = \"1.1.1\")")
 
     # Update the state
     .plmmr_env$warning_shown <- TRUE
