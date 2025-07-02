@@ -3,6 +3,7 @@
 ^docs$
 ^index.Rmd$
 ^\.github$
+^\.lintr$
 ^\.version\.json$
 ^.*\.Rproj$
 ^\.Rproj\.user$
