@@ -16,6 +16,7 @@
 #' @param max_iter Maximum number of iterations (total across entire path). Default is 10000.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param restandardize Should the X matrix be restandardized after rotation? Default is TRUE.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
 #'
 #' @keywords internal
@@ -37,6 +38,7 @@ plmm_fit <- function(prep,
                      max_iter = 10000,
                      init = NULL,
                      warn = TRUE,
+                     restandardize = TRUE,
                      ...) {
 
   # error checking ------------------------------------------------------------
@@ -56,13 +58,17 @@ plmm_fit <- function(prep,
     rot_X <- wUt %*% prep$std_X
     rot_y <- wUt %*% prep$centered_y # remember: we're using the centered outcome vector
 
-    # re-standardize rot_X
-    stdrot_info <- standardize_in_memory(rot_X)
-    stdrot_X <- stdrot_info$std_X
-    stdrot_X_details <- stdrot_info$std_X_details
+    if (restandardize) {
+      # re-standardize rot_X
+      stdrot_info <- standardize_in_memory(rot_X)
+      stdrot_X <- stdrot_info$std_X
+      stdrot_X_details <- stdrot_info$std_X_details
+    } else {
+      stdrot_X <- rot_X
+    }
 
   } else {
-    rot_res <- rotate_filebacked(prep)
+    rot_res <- rotate_filebacked(prep, restandardize = restandardize)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
     stdrot_X_details <- list(center = rot_res$stdrot_X_center,
@@ -71,7 +77,7 @@ plmm_fit <- function(prep,
 
 
   if (prep$trace) {
-    (cat("Rotation (preconditiong) finished at ",
+    (cat("Rotation (preconditioing) finished at ",
          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
   }
 
@@ -148,19 +154,25 @@ plmm_fit <- function(prep,
     }
     if (prep$trace) close(pb)
 
-    # reverse the POST-ROTATION standardization on estimated betas
-    std_scale_beta <- matrix(0,
-                             nrow = nrow(stdrot_scale_beta) + 1,
-                             ncol = ncol(stdrot_scale_beta))
+    if (restandardize) {
+      # reverse the POST-ROTATION standardization on estimated betas
+      std_scale_beta <- matrix(0,
+                               nrow = nrow(stdrot_scale_beta) + 1,
+                               ncol = ncol(stdrot_scale_beta))
 
-    stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-    bb <-  stdrot_scale_beta / (stdrot_unscale)
-    std_scale_beta[-1, ] <- bb
-    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+      stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
+      bb <- stdrot_scale_beta / (stdrot_unscale)
+      std_scale_beta[-1, ] <- bb
+      std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% bb
+      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+    } else {
+      std_scale_beta <- stdrot_scale_beta
+      std_Xbeta <- prep$std_X %*% stdrot_scale_beta[-1, ]
+      std_Xbeta <- sweep(std_Xbeta, 2, stdrot_scale_beta[1, ], "+")
+    }
 
   } else {
     res <- biglasso::biglasso_path(
@@ -185,20 +197,26 @@ plmm_fit <- function(prep,
     loss <- res$loss
     r <- res$resid
 
-    # reverse the POST-ROTATION standardization on estimated betas
-    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-    std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
-                                           j = seq_len(ncol(stdrot_scale_beta)),
-                                           x = mean(y),
-                                           dims = c(nrow(stdrot_scale_beta) + 1,
-                                                    ncol = ncol(stdrot_scale_beta)))
-    bb <-  stdrot_scale_beta / stdrot_X_details$scale
-    std_scale_beta[-1, ] <- bb
-    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+    if (restandardize) {
+      # reverse the POST-ROTATION standardization on estimated betas
+      # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
+      std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
+                                             j = seq_len(ncol(stdrot_scale_beta)),
+                                             x = mean(y),
+                                             dims = c(nrow(stdrot_scale_beta) + 1,
+                                                      ncol = ncol(stdrot_scale_beta)))
+      bb <-  stdrot_scale_beta / stdrot_X_details$scale
+      std_scale_beta[-1, ] <- bb
+      std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
 
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% bb
+      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+    } else {
+      std_scale_beta <- stdrot_scale_beta
+      std_Xbeta <- prep$std_X %*% stdrot_scale_beta[-1, ]
+      std_Xbeta <- sweep(std_Xbeta, 2, stdrot_scale_beta[1, ], "+")
+    }
   }
 
   if (prep$trace) {
