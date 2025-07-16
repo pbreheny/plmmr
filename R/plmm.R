@@ -30,6 +30,7 @@
 #'                                Defaults to NULL, which does not save any RDS or log files.
 #' @param return_fit              Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session.
 #'                                Defaults to TRUE.
+#' @param restandardize           Should the X matrix be restandardized after rotation? Default is TRUE.
 #' @param ...                     Additional optional arguments to `plmm_checks()`
 #'
 #' @return A list which includes 18 items:
@@ -90,6 +91,7 @@ plmm <- function(design,
                  trace = FALSE,
                  save_rds = NULL,
                  return_fit = TRUE,
+                 restandardize = TRUE,
                  ...) {
 
   # check filepaths for saving results, if requested  --------------------------
@@ -167,7 +169,8 @@ plmm <- function(design,
                       eps = eps,
                       max_iter = max_iter,
                       dfmax = checked_data$dfmax,
-                      warn = warn)
+                      warn = warn,
+                      restandardize = restandardize)
 
   if (trace) cat("Beta values are estimated -- almost done!\n")
 

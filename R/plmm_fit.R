@@ -16,6 +16,7 @@
 #' @param dfmax Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum).
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param restandardize Should the X matrix be restandardized after rotation? Default is TRUE.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
 #'
 #' @return A list which includes 21 items:
@@ -59,6 +60,7 @@ plmm_fit <- function(prep,
                      init = NULL,
                      dfmax = NULL,
                      warn = TRUE,
+                     restandardize = TRUE,
                      ...) {
 
   # error checking ------------------------------------------------------------
@@ -82,13 +84,17 @@ plmm_fit <- function(prep,
       rot_y <- prep$U %*% wUt %*% prep$centered_y # remember: we're using the centered outcome vector
     }
 
-    # re-standardize rot_X
-    stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
-    stdrot_X <- stdrot_info$std_X
-    stdrot_X_details <- stdrot_info$std_X_details
+    if (restandardize) {
+      # re-standardize rot_X
+      stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
+      stdrot_X <- stdrot_info$std_X
+      stdrot_X_details <- stdrot_info$std_X_details
+    } else {
+      stdrot_X <- rot_X
+    }
 
   } else {
-    rot_res <- rotate_filebacked(prep, tocenter = FALSE)
+    rot_res <- rotate_filebacked(prep, tocenter = FALSE, restandardize = restandardize)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
     stdrot_X_details <- list(center = rot_res$stdrot_X_center,
@@ -183,7 +189,6 @@ plmm_fit <- function(prep,
     lambda <- lambda[ind]
     stdrot_scale_beta <- stdrot_scale_beta[, ind, drop = FALSE]
 
-    # adjust dimensions of beta matrix based on whether the intercept was included
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
                              ncol = ncol(stdrot_scale_beta))
@@ -220,22 +225,36 @@ plmm_fit <- function(prep,
                                                     ncol = ncol(stdrot_scale_beta)))
   }
 
-  # reverse the POST-ROTATION standardization on estimated betas
-  # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
-  stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-  bb <- stdrot_scale_beta / stdrot_unscale
+  if (restandardize) {
+    # reverse the POST-ROTATION standardization on estimated betas
+    stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
+    bb <- stdrot_scale_beta / (stdrot_unscale)
 
-  if (prep$incpt_flag) {
-    std_scale_beta <- bb
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% std_scale_beta
+    if (prep$incpt_flag) {
+      std_scale_beta <- bb
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% std_scale_beta
+    } else {
+      std_scale_beta[-1, ] <- bb
+      std_scale_beta[1, ] <- mean(y)
+
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% bb
+      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+    }
   } else {
-    std_scale_beta[-1, ] <- bb
-    std_scale_beta[1, ] <- mean(y)
+    if (prep$incpt_flag) {
+      std_scale_beta <- stdrot_scale_beta
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% std_scale_beta
+    } else {
+      std_scale_beta[-1, ] <- stdrot_scale_beta
+      std_scale_beta[1, ] <- mean(y)
 
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+      # calculate linear predictors on the scale of std_X
+      std_Xbeta <- prep$std_X %*% stdrot_scale_beta
+      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+    }
   }
 
   if (prep$trace) {

@@ -2,6 +2,7 @@
 #'
 #' @param prep The object returned by `plmm_prep()`
 #' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE
+#' @param restandardize Should the X matrix be restandardized after rotation? Default is TRUE.
 #' @param ... Not used
 #'
 #' @return a list with 4 items:
@@ -12,28 +13,35 @@
 #'
 #' @keywords internal
 #'
-rotate_filebacked <- function(prep,
-                              tocenter = TRUE,
-                              ...) {
+rotate_filebacked <- function(prep, tocenter = TRUE, restandardize = TRUE, ...) {
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
   # rotate X
   std_X <- prep$std_X
-  rot_X <- prep$U %*% wUt %*% std_X # using %*% method from bigalgebra
-  stdrot_X <- bigmemory::big.matrix(nrow = nrow(prep$U), ncol = ncol(std_X))
+  rot_X <- prep$U %% wUt %*% std_X # using %*% method from bigalgebra
+
+  if (restandardize) {
+    stdrot_X <- bigmemory::big.matrix(nrow = nrow(prep$U), ncol = ncol(std_X))
+
+    # re-standardize (since std_X is big, we do this in C++)
+    std_rot <- .Call("big_std",
+                     rot_X@address,
+                     as.integer(count_cores()),
+                     tocenter,
+                     NULL,
+                     NULL,
+                     PACKAGE = "plmmr")
+    stdrot_X@address <- std_rot[[1]]
+  } else {
+    stdrot_X <- rot_X
+
+    stdrot_X[[2]] <- NULL
+    stdrod_X[[3]] <- NULL
+  }
 
   rot_y <- prep$U %*% wUt %*% prep$centered_y
 
-  # re-standardize (since std_X is big, we do this in C++)
-  std_rot <- .Call("big_std",
-                   rot_X@address,
-                   as.integer(count_cores()),
-                   tocenter,
-                   NULL,
-                   NULL,
-                   PACKAGE = "plmmr")
-  stdrot_X@address <- std_rot[[1]]
 
   list(stdrot_X = stdrot_X,
        rot_y = rot_y,

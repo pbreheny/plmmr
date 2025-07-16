@@ -20,6 +20,7 @@ plmm_fit(
   init = NULL,
   dfmax = NULL,
   warn = TRUE,
+  restandardize = TRUE,
   ...
 )
 }
@@ -54,6 +55,8 @@ However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but 
 \item{dfmax}{Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum).}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
+
+\item{restandardize}{Should the X matrix be restandardized after rotation? Default is TRUE.}
 
 \item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
 }

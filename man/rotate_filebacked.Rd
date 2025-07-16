@@ -4,12 +4,14 @@
 \alias{rotate_filebacked}
 \title{A function to rotate filebacked data}
 \usage{
-rotate_filebacked(prep, tocenter = TRUE, ...)
+rotate_filebacked(prep, tocenter = TRUE, restandardize = TRUE, ...)
 }
 \arguments{
 \item{prep}{The object returned by \code{plmm_prep()}}
 
 \item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE}
+
+\item{restandardize}{Should the X matrix be restandardized after rotation? Default is TRUE.}
 
 \item{...}{Not used}
 }
