@@ -141,8 +141,11 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-  # population var is 1 since we re-standardized (pass this arg to fit function)
-  xtx <- rep(1, ncol(stdrot_X))
+
+  if (restandardize) {
+    # population var is 1 since we re-standardized (pass this arg to fit function)
+    xtx <- rep(1, ncol(stdrot_X))
+  }
 
   # main attraction -----------------------------------------------------------
   if (prep$trace) cat("Beginning model fitting.\n")
@@ -153,19 +156,34 @@ plmm_fit <- function(prep,
     }
     for (ll in 1:nlambda) {
       lam <- lambda[ll]
-      res <- ncvreg::ncvfit(X = stdrot_X,
-                            y = rot_y,
-                            init = init,
-                            r = r,
-                            xtx = xtx,
-                            penalty = penalty,
-                            gamma = gamma,
-                            alpha = alpha,
-                            lambda = lam,
-                            eps = eps,
-                            max.iter = max_iter,
-                            penalty.factor = prep$penalty_factor,
-                            warn = warn)
+      if (restandardize) {
+        res <- ncvreg::ncvfit(X = stdrot_X,
+                              y = rot_y,
+                              init = init,
+                              r = r,
+                              xtx = xtx,
+                              penalty = penalty,
+                              gamma = gamma,
+                              alpha = alpha,
+                              lambda = lam,
+                              eps = eps,
+                              max.iter = max_iter,
+                              penalty.factor = prep$penalty_factor,
+                              warn = warn)
+      } else {
+        res <- ncvreg::ncvfit(X = stdrot_X,
+                              y = rot_y,
+                              init = init,
+                              r = r,
+                              penalty = penalty,
+                              gamma = gamma,
+                              alpha = alpha,
+                              lambda = lam,
+                              eps = eps,
+                              max.iter = max_iter,
+                              penalty.factor = prep$penalty_factor,
+                              warn = warn)
+      }
 
       stdrot_scale_beta[, ll] <- init <- res$beta
       iter[ll] <- res$iter
@@ -193,22 +211,40 @@ plmm_fit <- function(prep,
                              nrow = nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
                              ncol = ncol(stdrot_scale_beta))
   } else {
-    res <- biglasso::biglasso_path(
-      X = stdrot_X,
-      y = rot_y,
-      r = r,
-      init = init,
-      xtx = xtx,
-      penalty = penalty,
-      lambda = lambda,
-      alpha = alpha,
-      gamma = gamma,
-      eps = eps,
-      max.iter = max_iter,
-      penalty.factor = prep$penalty_factor,
-      dfmax = dfmax,
-      warn = warn,
-      ...)
+    if (restandardize) {
+      res <- biglasso::biglasso_path(
+        X = stdrot_X,
+        y = rot_y,
+        r = r,
+        init = init,
+        xtx = xtx,
+        penalty = penalty,
+        lambda = lambda,
+        alpha = alpha,
+        gamma = gamma,
+        eps = eps,
+        max.iter = max_iter,
+        penalty.factor = prep$penalty_factor,
+        dfmax = dfmax,
+        warn = warn,
+        ...)
+    } else {
+      res <- biglasso::biglasso_path(
+        X = stdrot_X,
+        y = rot_y,
+        r = r,
+        init = init,
+        penalty = penalty,
+        lambda = lambda,
+        alpha = alpha,
+        gamma = gamma,
+        eps = eps,
+        max.iter = max_iter,
+        penalty.factor = prep$penalty_factor,
+        dfmax = dfmax,
+        warn = warn,
+        ...)
+    }
 
     stdrot_scale_beta <- res$beta
 
