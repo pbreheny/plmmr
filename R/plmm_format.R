@@ -5,7 +5,7 @@
 #' @param std_X_details A list with 3 items:
 #'                    * 'center': the centering values for the columns of `X`
 #'                    * 'scale': the scaling values for the non-singular columns of `X`
-#'                    * 'ns': indicesof nonsingular columns in `std_X`
+#'                    * 'ns': indices of nonsingular columns in `std_X`
 #' @param fbm_flag Logical: is the corresponding design matrix filebacked? Passed from `plmm()`.
 #' @param plink_flag Logical: did these data come from PLINK files?
 #'                    **Note**: This flag matters because of how non-genomic features

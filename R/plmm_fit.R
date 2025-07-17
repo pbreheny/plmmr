@@ -117,8 +117,11 @@ plmm_fit <- function(prep,
   iter <- integer(nlambda)
   converged <- logical(nlambda)
   loss <- numeric(nlambda)
-  # population var is 1 since we re-standardized (pass this arg to fit function)
-  xtx <- rep(1, ncol(stdrot_X))
+
+  if (restandardize) {
+    # population var is 1 since we re-standardized (pass this arg to fit function)
+    xtx <- rep(1, ncol(stdrot_X))
+  }
 
   # main attraction -----------------------------------------------------------
   if (prep$trace) cat("Beginning model fitting.\n")
@@ -129,19 +132,35 @@ plmm_fit <- function(prep,
     }
     for (ll in 1:nlambda) {
       lam <- lambda[ll]
-      res <- ncvreg::ncvfit(X = stdrot_X,
-                            y = rot_y,
-                            init = init,
-                            r = r,
-                            xtx = xtx,
-                            penalty = penalty,
-                            gamma = gamma,
-                            alpha = alpha,
-                            lambda = lam,
-                            eps = eps,
-                            max.iter = max_iter,
-                            penalty.factor = penalty_factor,
-                            warn = warn)
+      # probably change this to do.call later for simplicity
+      if (restandardize) {
+        res <- ncvreg::ncvfit(X = stdrot_X,
+                              y = rot_y,
+                              init = init,
+                              r = r,
+                              xtx = xtx,
+                              penalty = penalty,
+                              gamma = gamma,
+                              alpha = alpha,
+                              lambda = lam,
+                              eps = eps,
+                              max.iter = max_iter,
+                              penalty.factor = penalty_factor,
+                              warn = warn)
+      } else {
+        res <- ncvreg::ncvfit(X = stdrot_X,
+                              y = rot_y,
+                              init = init,
+                              r = r,
+                              penalty = penalty,
+                              gamma = gamma,
+                              alpha = alpha,
+                              lambda = lam,
+                              eps = eps,
+                              max.iter = max_iter,
+                              penalty.factor = penalty_factor,
+                              warn = warn)
+      }
 
       stdrot_scale_beta[, ll] <- init <- res$beta
       iter[ll] <- res$iter
@@ -167,28 +186,42 @@ plmm_fit <- function(prep,
 
       # calculate linear predictors on the scale of std_X
       std_Xbeta <- prep$std_X %*% bb
-      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
     } else {
-      std_scale_beta <- stdrot_scale_beta
-      std_Xbeta <- prep$std_X %*% stdrot_scale_beta[-1, ]
-      std_Xbeta <- sweep(std_Xbeta, 2, stdrot_scale_beta[1, ], "+")
+      std_scale_beta <- rbind(mean(y), stdrot_scale_beta)
+      std_Xbeta <- prep$std_X %*% stdrot_scale_beta
     }
-
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
   } else {
-    res <- biglasso::biglasso_path(
-      X = stdrot_X,
-      y = rot_y,
-      r = r,
-      init = init,
-      xtx = xtx,
-      penalty = penalty,
-      lambda = lambda,
-      alpha = alpha,
-      gamma = gamma,
-      eps = eps,
-      max.iter = max_iter,
-      penalty.factor = penalty_factor,
-      ...)
+    if (restandardize) {
+      res <- biglasso::biglasso_path(
+        X = stdrot_X,
+        y = rot_y,
+        r = r,
+        init = init,
+        xtx = xtx,
+        penalty = penalty,
+        lambda = lambda,
+        alpha = alpha,
+        gamma = gamma,
+        eps = eps,
+        max.iter = max_iter,
+        penalty.factor = penalty_factor,
+        ...)
+    } else {
+      res <- biglasso::biglasso_path(
+        X = stdrot_X,
+        y = rot_y,
+        r = r,
+        init = init,
+        penalty = penalty,
+        lambda = lambda,
+        alpha = alpha,
+        gamma = gamma,
+        eps = eps,
+        max.iter = max_iter,
+        penalty.factor = penalty_factor,
+        ...)
+    }
 
     stdrot_scale_beta <- res$beta
 
@@ -211,12 +244,11 @@ plmm_fit <- function(prep,
 
       # calculate linear predictors on the scale of std_X
       std_Xbeta <- prep$std_X %*% bb
-      std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
     } else {
-      std_scale_beta <- stdrot_scale_beta
-      std_Xbeta <- prep$std_X %*% stdrot_scale_beta[-1, ]
-      std_Xbeta <- sweep(std_Xbeta, 2, stdrot_scale_beta[1, ], "+")
+      std_scale_beta <- rbind(mean(y), stdrot_scale_beta)
+      std_Xbeta <- prep$std_X %*% stdrot_scale_beta
     }
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
   }
 
   if (prep$trace) {

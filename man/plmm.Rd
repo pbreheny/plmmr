@@ -23,6 +23,7 @@ plmm(
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
+  restandardize = TRUE,
   ...
 )
 }
@@ -74,6 +75,8 @@ Defaults to NULL, which does not save any RDS or log files.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session.
 Defaults to TRUE.}
+
+\item{restandardize}{Should the X matrix be restandardized after rotation? Default is TRUE.}
 
 \item{...}{Additional optional arguments to \code{plmm_checks()}}
 }

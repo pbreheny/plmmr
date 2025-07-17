@@ -21,6 +21,7 @@ plmm_fit(
   max_iter = 10000,
   init = NULL,
   warn = TRUE,
+  restandardize = TRUE,
   ...
 )
 }
@@ -56,6 +57,8 @@ plmm_fit(
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
+
+\item{restandardize}{Should the X matrix be restandardized after rotation? Default is TRUE.}
 
 \item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
 }
