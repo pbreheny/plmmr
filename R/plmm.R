@@ -43,7 +43,7 @@
 #'                  - unpen_colnames: A charater vector of the column names of ay unpenalized features.
 #'                  - X_colnames: A character vector with the column names of all features in the original design matrix
 #'                  - X_rownames: A character vector with the row names of all features in the original design matrix; if none were provided, these are named 'row1', 'row2', etc.
-#'                  - std_X_colnames: A subset of X_colnames representing only nonsignular columns (i.e., the columns indexed by 'ns')
+#'                  - std_X_colnames: A subset of X_colnames representing only nonsingular columns (i.e., the columns indexed by 'ns')
 #'                  - std_X_rownames: A subset of X_rownames representing rows that passed QC filtering & and are represented in both the genotype and phenotype data sets (this only applies to PLINK data)
 #'  * std_X: If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}. If the the data were stored in-memory, nothing is returned (std_X is NULL).
 #'  * y: The outcome vector used in model fitting.

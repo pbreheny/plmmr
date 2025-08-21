@@ -42,24 +42,27 @@
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ...             Additional arguments to `plmm_fit`
 #'
-#' @returns a list with 12 items:
+#' @returns A list that includes 15 items:
 #'
-#' * type: the type of prediction used ('lp' or 'blup')
-#' * cve: numeric vector with the cross validation error (CVE) at each value of `lambda`
-#' * cvse: numeric vector with the estimated standard error associated with each value of for `cve`
-#' * fold: numeric `n` length vector of integers indicating the fold to which each observation was assigned
-#' * lambda: numeric vector of `lambda` values
-#' * fit: the overall fit of the object, including all predictors; this is a
-#'  list as returned by `plmm()`
+#' * type: The type of prediction used ('lp' or 'blup')
+#' * cve: A numeric vector with the cross validation error (CVE) at each value of `lambda`
+#' * cvse: A numeric vector with the estimated standard error associated with each value of `cve`
+#' * fold: A numeric `n` length vector of integers indicating the fold to which each observation was assigned
+#' * lambda: A numeric vector of `lambda` values
+#' * fit: The overall fit of the object, including all predictors; this is a list as returned by `plmm()`
 #' * min: The index corresponding to the value of `lambda` that minimizes `cve`
-#' * lambda_min: The `lambda` value at which `cve` is minmized
-#' * min1se: The index corresponding to the value of `lambda` within
-#' standard error of that which minimizes `cve`
-#' * lambda1se: largest value of lambda such that error is within 1 standard error of the minimum.
-#' * null.dev: numeric value representing the deviance for the
-#'  intercept-only model. If you have supplied your own `lambda` sequence,
-#'  this quantity may not be meaningful.
-#' * estimated_Sigma: an n x n matrix representing the estimated covariance matrix.
+#' * lambda_min: The `lambda` value at which `cve` is minimized
+#' * min1se: The index corresponding to the value of `lambda` within 1 standard error of
+#'   that which minimizes `cve`
+#' * lambda1se: The largest value of lambda such that `cve` is within 1 standard error of the minimum
+#' * null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+#'   your own `lambda` sequence, this quantity may not be meaningful.
+#' * Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of `lambda`.
+#'   Rows are observations, columns are values of `lambda`.
+#' * bias: A numeric value with the estimated bias of the minimized CVE.
+#' * loss: A matrix with the loss values at each value of lambda. Rows are observations,
+#'   columns are values of `lambda`.
+#' * estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
 #' @export
 #'
 #' @examples

@@ -95,24 +95,27 @@ These files contain the loss and predicted outcome values in each fold; both fil
 \item{...}{Additional arguments to \code{plmm_fit}}
 }
 \value{
-a list with 12 items:
+A list that includes 15 items:
 \itemize{
-\item type: the type of prediction used ('lp' or 'blup')
-\item cve: numeric vector with the cross validation error (CVE) at each value of \code{lambda}
-\item cvse: numeric vector with the estimated standard error associated with each value of for \code{cve}
-\item fold: numeric \code{n} length vector of integers indicating the fold to which each observation was assigned
-\item lambda: numeric vector of \code{lambda} values
-\item fit: the overall fit of the object, including all predictors; this is a
-list as returned by \code{plmm()}
+\item type: The type of prediction used ('lp' or 'blup')
+\item cve: A numeric vector with the cross validation error (CVE) at each value of \code{lambda}
+\item cvse: A numeric vector with the estimated standard error associated with each value of \code{cve}
+\item fold: A numeric \code{n} length vector of integers indicating the fold to which each observation was assigned
+\item lambda: A numeric vector of \code{lambda} values
+\item fit: The overall fit of the object, including all predictors; this is a list as returned by \code{plmm()}
 \item min: The index corresponding to the value of \code{lambda} that minimizes \code{cve}
-\item lambda_min: The \code{lambda} value at which \code{cve} is minmized
-\item min1se: The index corresponding to the value of \code{lambda} within
-standard error of that which minimizes \code{cve}
-\item lambda1se: largest value of lambda such that error is within 1 standard error of the minimum.
-\item null.dev: numeric value representing the deviance for the
-intercept-only model. If you have supplied your own \code{lambda} sequence,
-this quantity may not be meaningful.
-\item estimated_Sigma: an n x n matrix representing the estimated covariance matrix.
+\item lambda_min: The \code{lambda} value at which \code{cve} is minimized
+\item min1se: The index corresponding to the value of \code{lambda} within 1 standard error of
+that which minimizes \code{cve}
+\item lambda1se: The largest value of lambda such that \code{cve} is within 1 standard error of the minimum
+\item null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+your own \code{lambda} sequence, this quantity may not be meaningful.
+\item Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of \code{lambda}.
+Rows are observations, columns are values of \code{lambda}.
+\item bias: A numeric value with the estimated bias of the minimized CVE.
+\item loss: A matrix with the loss values at each value of lambda. Rows are observations,
+columns are values of \code{lambda}.
+\item estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
 }
 }
 \description{
