@@ -193,22 +193,25 @@ These files contain the loss and predicted outcome values in each fold; both fil
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list with 12 items:</p><ul><li><p>type: the type of prediction used ('lp' or 'blup')</p></li>
-<li><p>cve: numeric vector with the cross validation error (CVE) at each value of <code>lambda</code></p></li>
-<li><p>cvse: numeric vector with the estimated standard error associated with each value of for <code>cve</code></p></li>
-<li><p>fold: numeric <code>n</code> length vector of integers indicating the fold to which each observation was assigned</p></li>
-<li><p>lambda: numeric vector of <code>lambda</code> values</p></li>
-<li><p>fit: the overall fit of the object, including all predictors; this is a
-list as returned by <code><a href="plmm.html">plmm()</a></code></p></li>
+    <p>A list that includes 15 items:</p><ul><li><p>type: The type of prediction used ('lp' or 'blup')</p></li>
+<li><p>cve: A numeric vector with the cross validation error (CVE) at each value of <code>lambda</code></p></li>
+<li><p>cvse: A numeric vector with the estimated standard error associated with each value of <code>cve</code></p></li>
+<li><p>fold: A numeric <code>n</code> length vector of integers indicating the fold to which each observation was assigned</p></li>
+<li><p>lambda: A numeric vector of <code>lambda</code> values</p></li>
+<li><p>fit: The overall fit of the object, including all predictors; this is a list as returned by <code><a href="plmm.html">plmm()</a></code></p></li>
 <li><p>min: The index corresponding to the value of <code>lambda</code> that minimizes <code>cve</code></p></li>
-<li><p>lambda_min: The <code>lambda</code> value at which <code>cve</code> is minmized</p></li>
-<li><p>min1se: The index corresponding to the value of <code>lambda</code> within
-standard error of that which minimizes <code>cve</code></p></li>
-<li><p>lambda1se: largest value of lambda such that error is within 1 standard error of the minimum.</p></li>
-<li><p>null.dev: numeric value representing the deviance for the
-intercept-only model. If you have supplied your own <code>lambda</code> sequence,
-this quantity may not be meaningful.</p></li>
-<li><p>estimated_Sigma: an n x n matrix representing the estimated covariance matrix.</p></li>
+<li><p>lambda_min: The <code>lambda</code> value at which <code>cve</code> is minimized</p></li>
+<li><p>min1se: The index corresponding to the value of <code>lambda</code> within 1 standard error of
+that which minimizes <code>cve</code></p></li>
+<li><p>lambda1se: The largest value of lambda such that <code>cve</code> is within 1 standard error of the minimum</p></li>
+<li><p>null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+your own <code>lambda</code> sequence, this quantity may not be meaningful.</p></li>
+<li><p>Y: A matrix with the predicted outcome (\(\hat{y}\)) values at each value of <code>lambda</code>.
+Rows are observations, columns are values of <code>lambda</code>.</p></li>
+<li><p>bias: A numeric value with the estimated bias of the minimized CVE.</p></li>
+<li><p>loss: A matrix with the loss values at each value of lambda. Rows are observations,
+columns are values of <code>lambda</code>.</p></li>
+<li><p>estimated_Sigma: An n x n matrix representing the estimated covariance matrix.</p></li>
 </ul></div>
 
     <div class="section level2">
