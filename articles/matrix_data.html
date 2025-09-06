@@ -98,11 +98,11 @@ delimited files.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">admix_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.01426</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.1416</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  88 </span></span>
+<span><span class="co">#&gt; # of non-zero coefficients:  36 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
 <p>Notice: I am passing <code>admix$X</code> as the <code>design</code>
 argument in <code><a href="../reference/plmm.html">plmm()</a></code>; internally, <code><a href="../reference/plmm.html">plmm()</a></code> has
@@ -123,16 +123,16 @@ columns represent values of the penalization parameter <span class="math inline"
 <th style="text-align:left;">
 </th>
 <th style="text-align:right;">
-0.00054
+0.0342
 </th>
 <th style="text-align:right;">
-0.00050
+0.0331
 </th>
 <th style="text-align:right;">
-0.00047
+0.0322
 </th>
 <th style="text-align:right;">
-0.00044
+0.0312
 </th>
 </tr></thead>
 <tbody>
@@ -141,16 +141,16 @@ columns represent values of the penalization parameter <span class="math inline"
 (Intercept)
 </td>
 <td style="text-align:right;">
-7.037
+6.669
 </td>
 <td style="text-align:right;">
-7.038
+6.682
 </td>
 <td style="text-align:right;">
-7.038
+6.696
 </td>
 <td style="text-align:right;">
-7.039
+6.708
 </td>
 </tr>
 <tr>
@@ -158,16 +158,16 @@ columns represent values of the penalization parameter <span class="math inline"
 Snp1
 </td>
 <td style="text-align:right;">
--0.937
+-0.811
 </td>
 <td style="text-align:right;">
--0.937
+-0.813
 </td>
 <td style="text-align:right;">
--0.937
+-0.815
 </td>
 <td style="text-align:right;">
--0.937
+-0.817
 </td>
 </tr>
 <tr>
@@ -175,16 +175,16 @@ Snp1
 Snp2
 </td>
 <td style="text-align:right;">
-0.217
+0.175
 </td>
 <td style="text-align:right;">
-0.218
+0.178
 </td>
 <td style="text-align:right;">
-0.218
+0.181
 </td>
 <td style="text-align:right;">
-0.218
+0.183
 </td>
 </tr>
 <tr>
@@ -192,16 +192,16 @@ Snp2
 Snp3
 </td>
 <td style="text-align:right;">
-2.991
+2.715
 </td>
 <td style="text-align:right;">
-2.991
+2.729
 </td>
 <td style="text-align:right;">
-2.992
+2.743
 </td>
 <td style="text-align:right;">
-2.992
+2.756
 </td>
 </tr>
 <tr>
@@ -209,16 +209,16 @@ Snp3
 Snp4
 </td>
 <td style="text-align:right;">
-0.193
+0.130
 </td>
 <td style="text-align:right;">
-0.193
+0.132
 </td>
 <td style="text-align:right;">
-0.193
+0.134
 </td>
 <td style="text-align:right;">
-0.193
+0.136
 </td>
 </tr>
 <tr>
@@ -226,16 +226,16 @@ Snp4
 Snp5
 </td>
 <td style="text-align:right;">
-0.883
+0.474
 </td>
 <td style="text-align:right;">
-0.884
+0.482
 </td>
 <td style="text-align:right;">
-0.884
+0.490
 </td>
 <td style="text-align:right;">
-0.885
+0.498
 </td>
 </tr>
 <tr>
@@ -243,16 +243,16 @@ Snp5
 Snp6
 </td>
 <td style="text-align:right;">
--0.085
+-0.045
 </td>
 <td style="text-align:right;">
--0.085
+-0.047
 </td>
 <td style="text-align:right;">
--0.085
+-0.049
 </td>
 <td style="text-align:right;">
--0.085
+-0.050
 </td>
 </tr>
 <tr>
@@ -260,16 +260,16 @@ Snp6
 Snp7
 </td>
 <td style="text-align:right;">
-0.092
+0.062
 </td>
 <td style="text-align:right;">
-0.092
+0.064
 </td>
 <td style="text-align:right;">
-0.092
+0.067
 </td>
 <td style="text-align:right;">
-0.092
+0.069
 </td>
 </tr>
 <tr>
@@ -294,16 +294,16 @@ Snp8
 Snp9
 </td>
 <td style="text-align:right;">
-0.192
+0.163
 </td>
 <td style="text-align:right;">
-0.192
+0.165
 </td>
 <td style="text-align:right;">
-0.192
+0.168
 </td>
 <td style="text-align:right;">
-0.192
+0.170
 </td>
 </tr>
 </tbody>
@@ -316,11 +316,11 @@ the members of this population.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># for n = 25 </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">25</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.08163</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.3018</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  46 </span></span>
+<span><span class="co">#&gt; # of non-zero coefficients:  8 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
 <p>We can also plot the path of the fit to see how model coefficients
 vary with <span class="math inline">\lambda</span>:</p>
@@ -357,11 +357,11 @@ prior to calling <code><a href="../reference/plmm.html">plmm()</a></code>. Here 
 to our first model:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit2</span>, idx <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.09886</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.3525</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
-<span><span class="co">#&gt; # of non-zero coefficients:  14 </span></span>
+<span><span class="co">#&gt; # of non-zero coefficients:  3 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_fit2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="matrix_data_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
@@ -378,11 +378,11 @@ cross-validation error:</p>
 <span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">admix_cv_s</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.1853):</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2604):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.33</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.154</span></span></code></pre></div>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.45</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.203</span></span></code></pre></div>
 <p>We can also plot the cross-validation error (CVE) versus <span class="math inline">\lambda</span> (on the log scale):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_cv</span><span class="op">)</span></span></code></pre></div>
@@ -413,11 +413,11 @@ in parallel:</p>
 <span><span class="co"># note: the results closely correspond to the above</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.1853):</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2451):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.30</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.138</span></span>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.39</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.179</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span></code></pre></div>
 <p><img src="matrix_data_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
@@ -445,7 +445,7 @@ from an intercept-only model using mean squared prediction error (MSPE)
 <span><span class="co"># our model at its best value of lambda</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">y_hat</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">mse</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.6930826</span></span>
+<span><span class="co">#&gt; [1] 0.683498</span></span>
 <span><span class="co"># ^ across all values of lambda, our model has MSPE lower than the null model</span></span></code></pre></div>
 <p>We see our model has better predictions than the null.</p>
 </div>

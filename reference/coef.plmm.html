@@ -86,17 +86,17 @@ feature names, columns are values of <code>lambda</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">admix_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">41</span><span class="op">:</span><span class="fl">45</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  0.02673     0.02493     0.02325     0.02168     0.02022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  6.556445885  6.59257224  6.62815211  6.66317769  6.69366816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        -0.768261488 -0.78098090 -0.79310257 -0.80456803 -0.81482505</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp2         0.131945426  0.13991539  0.14735024  0.15387884  0.15929074</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3         2.826806831  2.83842545  2.84879468  2.85860151  2.86047026</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp4         0.036981534  0.04652885  0.05543821  0.06376126  0.07133592</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp5         0.546784811  0.57461391  0.60049082  0.62402782  0.64291324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp6        -0.026215632 -0.03072017 -0.03494534 -0.03889146 -0.04256362</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp7         0.009342269  0.01539705  0.02103262  0.02615358  0.03069956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp8         0.000000000  0.00000000  0.00000000  0.00000000  0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp9         0.160794660  0.16217570  0.16337102  0.16464901  0.16638663</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 0.1860     0.1804     0.1751     0.1698     0.1648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  4.7342727  4.7724928  4.8095736  4.8496524  4.8968064</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        -0.4078029 -0.4226724 -0.4370988 -0.4513161 -0.4652842</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp2         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3         0.7811067  0.8518539  0.9204924  0.9866300  1.0494011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp4         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp5         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp6         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp7         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp8         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp9         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
