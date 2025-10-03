@@ -2,8 +2,7 @@
 #'
 #' @param prep A list as returned from \code{plmm_prep}
 #' @param y    The original (not centered) outcome vector. Need this for intercept estimate
-#' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsignular columns of X)
-#' @param eta_star The ratio of variances (passed from plmm())
+#' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsingular columns of X)
 #' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
@@ -70,7 +69,7 @@ plmm_fit <- function(prep,
 
 
   if (prep$trace) {
-    (cat("Rotation (preconditiong) finished at ",
+    (cat("Rotation (preconditioning) finished at ",
          format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
   }
 
