@@ -149,6 +149,7 @@ remotes::install_version(\"bigalgebra\", version = \"1.1.1\")")
     centered_y = y - mean(y),
     K = K,
     diag_K = diag_K,
+    eta_star = eta_star,
     fbm_flag = fbm_flag,
     plink_flag = plink_flag,
     penalty = penalty,

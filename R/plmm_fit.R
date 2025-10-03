@@ -24,7 +24,6 @@
 plmm_fit <- function(prep,
                      y,
                      std_X_details,
-                     eta_star,
                      penalty_factor,
                      fbm_flag,
                      penalty,
