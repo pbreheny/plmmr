@@ -27,9 +27,10 @@ eigen_K <- function(std_X, fbm_flag) {
   # take eigendecomposition
   # TODO: explore ways to make this faster
   decomp <- eigen(K, symmetric = TRUE)
+  nz <- decomp$values > 1e-4
   list(
-    s = decomp$values,
-    U = decomp$vectors,
+    s = decomp$values[nz],
+    U = decomp$vectors[, nz],
     K = K
   )
 }

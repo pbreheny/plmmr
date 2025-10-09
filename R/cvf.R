@@ -148,7 +148,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     penalty = fold_args$penalty,
                     gamma = fold_args$gamma,
                     alpha = fold_args$alpha,
-                    eta_star = cv_args$eta_star,
                     lambda_min = fold_args$lambda_min,
                     nlambda = fold_args$nlambda,
                     lambda = fold_args$lambda,
