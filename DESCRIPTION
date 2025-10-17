@@ -3,13 +3,14 @@ Title: Penalized Linear Mixed Models for Correlated Data
 Version: 4.2.1
 Date: 2025-03-03
 Authors@R: c(
-    person("Tabitha K.", "Peter", , "tabitha-peter@uiowa.edu", role = "aut",
+    person("Tabitha K.", "Peter", , "tabitha.peter15@gmail.com", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),
+    person("Yujing", "Lu", role = "aut"),
+    person("Oscar", "Rysavy", , "oscar-rysavy@uiowa.edu",role = "aut"),
     person("Patrick J.", "Breheny", , "patrick-breheny@uiowa.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-0650-1119")),
-    person("Yujing", "Lu", role = "aut")
+           comment = c(ORCID = "0000-0002-0650-1119"))
   )
 Description: Fits penalized linear mixed models that correct for
     unobserved confounding factors. 'plmmr' infers and corrects for the
