@@ -9,7 +9,7 @@
 #' This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
 #' NOTE: this function returns a matrix **in memory**. For standardizing filebacked
 #' data, use `big_std()`  -- see src/big_standardize.cpp
-standardize_in_memory <- function(X) {
+standardize_in_memory <- function(X, tocenter = TRUE) {
 
   if (typeof(X) == "integer") storage.mode(X) <- "double"
   if (!inherits(X, "matrix")) {
@@ -21,7 +21,7 @@ standardize_in_memory <- function(X) {
     }
   }
 
-  standardization <- .Call("in_mem_std", X, PACKAGE = "plmmr")
+  standardization <- .Call("in_mem_std", X, tocenter, PACKAGE = "plmmr")
   dimnames(standardization[[1]]) <- dimnames(X)
   ns <- which(standardization[[3]] > 1e-6)
   std_X <- standardization[[1]]

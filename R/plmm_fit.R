@@ -55,12 +55,12 @@ plmm_fit <- function(prep,
     rot_y <- wUt %*% prep$centered_y # remember: we're using the centered outcome vector
 
     # re-standardize rot_X
-    stdrot_info <- standardize_in_memory(rot_X)
+    stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
     stdrot_X <- stdrot_info$std_X
     stdrot_X_details <- stdrot_info$std_X_details
 
   } else {
-    rot_res <- rotate_filebacked(prep)
+    rot_res <- rotate_filebacked(prep, tocenter = FALSE)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
     stdrot_X_details <- list(center = rot_res$stdrot_X_center,

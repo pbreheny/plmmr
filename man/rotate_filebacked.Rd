@@ -4,7 +4,7 @@
 \alias{rotate_filebacked}
 \title{A function to rotate filebacked data}
 \usage{
-rotate_filebacked(prep, ...)
+rotate_filebacked(prep, tocenter = TRUE, ...)
 }
 \value{
 a list with 4 items:

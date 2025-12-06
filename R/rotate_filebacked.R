@@ -8,7 +8,9 @@
 #'
 #' @keywords internal
 #'
-rotate_filebacked <- function(prep, ...) {
+rotate_filebacked <- function(prep,
+                              tocenter = TRUE,
+                              ...) {
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
@@ -24,6 +26,7 @@ rotate_filebacked <- function(prep, ...) {
   std_rot <- .Call("big_std",
                    rot_X@address,
                    as.integer(count_cores()),
+                   tocenter,
                    NULL,
                    NULL,
                    PACKAGE = "plmmr")

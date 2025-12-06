@@ -15,7 +15,7 @@
 #'
 #'
 standardize_filebacked <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
-                                   outfile, quiet, overwrite) {
+                                   outfile, quiet, overwrite, tocenter = TRUE) {
 
   # standardization ------------------------------------------------
   if (!quiet) {
@@ -26,6 +26,7 @@ standardize_filebacked <- function(X, new_file, rds_dir, non_gen, complete_outco
   std_res <- .Call("big_std",
                    X@address,
                    as.integer(count_cores()),
+                   tocenter,
                    NULL, # no center values to pass here -- will calculate these
                    NULL, # no scaling values to pass -- will calculate these
                    PACKAGE = "plmmr")

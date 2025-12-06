@@ -13,7 +13,8 @@ standardize_filebacked(
   id_var,
   outfile,
   quiet,
-  overwrite
+  overwrite,
+  tocenter = TRUE
 )
 }
 \arguments{

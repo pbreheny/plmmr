@@ -64,6 +64,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
     std_trainX_info <- .Call("big_std",
                              fold_args$std_X@address,
                              as.integer(count_cores()),
+                             to_center = TRUE,
                              NULL,
                              NULL,
                              PACKAGE = "plmmr")
@@ -186,6 +187,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
       std_test_info <- .Call("big_std",
                              std_test_X@address,
                              as.integer(count_cores()),
+                             tocenter = TRUE,
                              fold_args$std_X_details$center,
                              fold_args$std_X_details$scale,
                              PACKAGE = "plmmr")

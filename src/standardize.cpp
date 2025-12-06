@@ -1,8 +1,9 @@
 #include "utilities.h"
-// Note: this function is taken from the R package ncvreg;
+// Note: this function is adapted from the R package ncvreg;
 // See https://github.com/pbreheny/ncvreg/blob/master/src/standardize.c
 
-RcppExport SEXP in_mem_std(SEXP X_) {
+RcppExport SEXP in_mem_std(SEXP X_,
+                           SEXP tocenter_) {
 
   // Declarations
   NumericMatrix X = NumericMatrix(X_);
@@ -11,12 +12,15 @@ RcppExport SEXP in_mem_std(SEXP X_) {
   NumericMatrix XX(n, p);
   NumericVector c(p);
   NumericVector s(p);
+  bool tocenter = LOGICAL(tocenter_)[0];
 
   for (int j = 0; j < p; j++) {
     // Center
     c[j] = 0;
-    for (int i = 0; i < n; i++) {
-      c[j] += X(i, j);
+    if (tocenter == true) {
+      for (int i = 0; i < n; i++) {
+        c[j] += X(i, j);
+      }
     }
     c[j] = c[j] / n;
     for (int i = 0; i < n; i++) {

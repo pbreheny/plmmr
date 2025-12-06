@@ -2,6 +2,7 @@
 
 RcppExport SEXP big_std(SEXP X_,
                         SEXP ncore_,
+                        SEXP tocenter_,
                         SEXP center_ = R_NilValue,
                         SEXP scale_ = R_NilValue){
 
@@ -18,7 +19,7 @@ RcppExport SEXP big_std(SEXP X_,
   // MatrixAccessor<double> X_acc(*X);
   int n = X->nrow();
   int p = X->ncol();
-
+  bool tocenter = LOGICAL(tocenter_)[0];
 
   // set up omp
   // Rprintf("\n set up OpenMP");
@@ -34,13 +35,16 @@ RcppExport SEXP big_std(SEXP X_,
 
   // re-center
   // Rprintf("\nCalling col_means()");
-  NumericVector center_vals;
-  if (Rf_isNull(center_)) {
-    center_vals = col_means(X, n, p);
-  } else {
-    center_vals = as<NumericVector>(center_);
+  // If tocenter == false, just use zero-initialized center_vals
+  NumericVector center_vals(p);
+  if(tocenter == true) {
+    if (Rf_isNull(center_)) {
+      center_vals = col_means(X, n, p);
+    } else {
+      center_vals = as<NumericVector>(center_);
+    }
+    center_cols(X, n, p, center_vals);
   }
-  center_cols(X, n, p, center_vals);
 
   // re-scale
   // Rprintf("\nCalling scaling functions");

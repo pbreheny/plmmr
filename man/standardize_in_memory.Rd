@@ -4,7 +4,7 @@
 \alias{standardize_in_memory}
 \title{A helper function to standardize matrices}
 \usage{
-standardize_in_memory(X)
+standardize_in_memory(X, tocenter = TRUE)
 }
 \arguments{
 \item{X}{a matrix}
