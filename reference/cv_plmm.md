@@ -1,0 +1,254 @@
+# Cross-validation for plmm
+
+Performs k-fold cross validation for lasso-, MCP-, or SCAD-penalized
+linear mixed models over a grid of values for the regularization
+parameter `lambda`.
+
+## Usage
+
+``` r
+cv_plmm(
+  design,
+  y = NULL,
+  K = NULL,
+  diag_K = NULL,
+  eta_star = NULL,
+  penalty = "lasso",
+  type = "blup",
+  gamma,
+  alpha = 1,
+  lambda_min,
+  nlambda = 100,
+  lambda,
+  eps = 1e-04,
+  max_iter = 10000,
+  warn = TRUE,
+  init = NULL,
+  cluster,
+  nfolds = 5,
+  seed,
+  fold = NULL,
+  trace = FALSE,
+  save_rds = NULL,
+  return_fit = TRUE,
+  ...
+)
+```
+
+## Arguments
+
+- design:
+
+  The first argument must be one of three things: (1) `plmm_design`
+  object (as created by
+  [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)) (2)
+  a string with the file path to a design object (the file path must end
+  in '.rds') (3) a `matrix` or `data.frame` object representing the
+  design matrix of interest
+
+- y:
+
+  Optional: In the case where `design` is a `matrix` or `data.frame`,
+  the user must also supply a numeric outcome vector as the `y`
+  argument. In this case, `design` and `y` will be passed internally to
+  `create_design(X = design, y = y)`.
+
+- K:
+
+  Similarity matrix used to rotate the data. This should either be (1) a
+  known matrix that reflects the covariance of y, (2) an estimate
+  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
+  and 'u', as returned by choose_k().
+
+- diag_K:
+
+  Logical: should K be a diagonal matrix? This would reflect
+  observations that are unrelated, or that can be treated as unrelated.
+  Defaults to FALSE. Note: plmm() does not check to see if a matrix is
+  diagonal. If you want to use a diagonal K matrix, you must set diag_K
+  = TRUE.
+
+- eta_star:
+
+  Optional argument to input a specific eta term rather than estimate it
+  from the data. If K is a known covariance matrix that is full rank,
+  this should be 1.
+
+- penalty:
+
+  The penalty to be applied to the model. Either "lasso" (the default),
+  "SCAD", or "MCP".
+
+- type:
+
+  A character argument indicating what should be returned from
+  predict.plmm(). If type == 'lp', predictions are based on the linear
+  predictor, X beta. If type == 'blup', predictions are based on the sum
+  of the linear predictor and the estimated random effect (BLUP).
+  Defaults to 'blup', as this has shown to be a superior prediction
+  method in many applications.
+
+- gamma:
+
+  The tuning parameter of the MCP/SCAD penalty (see details). Default is
+  3 for MCP and 3.7 for SCAD.
+
+- alpha:
+
+  Tuning parameter for the Mnet estimator which controls the relative
+  contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
+  alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be
+  equivalent to ridge regression. However, alpha=0 is not supported;
+  alpha may be arbitrarily small, but not exactly 0.
+
+- lambda_min:
+
+  The smallest value for lambda, as a fraction of lambda.max. Default is
+  .001 if the number of observations is larger than the number of
+  covariates and .05 otherwise.
+
+- nlambda:
+
+  Length of the sequence of lambda. Default is 100.
+
+- lambda:
+
+  A user-specified sequence of lambda values. By default, a sequence of
+  values of length nlambda is computed, equally spaced on the log scale.
+
+- eps:
+
+  Convergence threshold. The algorithm iterates until the RMSD for the
+  change in linear predictors for each coefficient is less than eps.
+  Default is `1e-4`.
+
+- max_iter:
+
+  Maximum number of iterations (total across entire path). Default is
+  10000.
+
+- warn:
+
+  Return warning messages for failures to converge and model saturation?
+  Default is TRUE.
+
+- init:
+
+  Initial values for coefficients. Default is 0 for all columns of X.
+
+- cluster:
+
+  Option for **in-memory data only**: cv_plmm() can be run in parallel
+  across a cluster using the parallel package. The cluster must be set
+  up in advance using parallel::makeCluster(). The cluster must then be
+  passed to cv_plmm(). **Note**: this option is not yet implemented for
+  filebacked data.
+
+- nfolds:
+
+  The number of cross-validation folds. Default is 5.
+
+- seed:
+
+  You may set the seed of the random number generator in order to obtain
+  reproducible results.
+
+- fold:
+
+  Which fold each observation belongs to. By default, the observations
+  are randomly assigned.
+
+- trace:
+
+  If set to TRUE, inform the user of progress by announcing the
+  beginning of each CV fold. Default is FALSE.
+
+- save_rds:
+
+  Optional: if a filepath and name *without* the '.rds' suffix is
+  specified (e.g., `save_rds = "~/dir/my_results"`), then the model
+  results are saved to the provided location (e.g.,
+  "~/dir/my_results.rds"). Defaults to NULL, which does not save the
+  result. **Note**: Along with the model results, two '.rds' files
+  ('loss' and 'yhat') will be created in the same directory as
+  'save_rds'. These files contain the loss and predicted outcome values
+  in each fold; both files will be updated during after prediction
+  within each fold.
+
+- return_fit:
+
+  Optional: a logical value indicating whether the fitted model should
+  be returned as a `plmm` object in the current (assumed interactive)
+  session. Defaults to TRUE.
+
+- ...:
+
+  Additional arguments to `plmm_fit`
+
+## Value
+
+A list that includes 15 items:
+
+- type: The type of prediction used ('lp' or 'blup')
+
+- cve: A numeric vector with the cross validation error (CVE) at each
+  value of `lambda`
+
+- cvse: A numeric vector with the estimated standard error associated
+  with each value of `cve`
+
+- fold: A numeric `n` length vector of integers indicating the fold to
+  which each observation was assigned
+
+- lambda: A numeric vector of `lambda` values
+
+- fit: The overall fit of the object, including all predictors; this is
+  a list as returned by
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md)
+
+- min: The index corresponding to the value of `lambda` that minimizes
+  `cve`
+
+- lambda_min: The `lambda` value at which `cve` is minimized
+
+- min1se: The index corresponding to the value of `lambda` within 1
+  standard error of that which minimizes `cve`
+
+- lambda1se: The largest value of lambda such that `cve` is within 1
+  standard error of the minimum
+
+- null.dev: A numeric value representing the deviance for the
+  intercept-only model. If you have supplied your own `lambda` sequence,
+  this quantity may not be meaningful.
+
+- Y: A matrix with the predicted outcome (\\\hat{y}\\) values at each
+  value of `lambda`. Rows are observations, columns are values of
+  `lambda`.
+
+- bias: A numeric value with the estimated bias of the minimized CVE.
+
+- loss: A matrix with the loss values at each value of lambda. Rows are
+  observations, columns are values of `lambda`.
+
+- estimated_Sigma: An n x n matrix representing the estimated covariance
+  matrix.
+
+## Examples
+
+``` r
+admix_design <- create_design(X = admix$X, y = admix$y)
+cv_fit <- cv_plmm(design = admix_design)
+print(summary(cv_fit))
+#> lasso-penalized model with n=197 and p=101
+#> At minimum cross-validation error (lambda=0.6226):
+#> -------------------------------------------------
+#>   Nonzero coefficients: 0
+#>   Cross-validation error (deviance): 3.00
+#>   Scale estimate (sigma): 1.732
+plot(cv_fit)
+
+
+# Note: for examples with filebacked data, see the filebacking vignette
+# https://pbreheny.github.io/plmmr/articles/filebacking.html
+
+```

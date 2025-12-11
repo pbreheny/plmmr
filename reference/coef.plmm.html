@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Coef method for "plmm" class</h1>
-      <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/master/R/coef-plmm.R" class="external-link"><code>R/coef-plmm.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/main/R/coef-plmm.R" class="external-link"><code>R/coef-plmm.R</code></a></small>
       <div class="d-none name"><code>coef.plmm.Rd</code></div>
     </div>
 
@@ -86,11 +86,11 @@ feature names, columns are values of <code>lambda</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">admix_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">41</span><span class="op">:</span><span class="fl">45</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 0.1860     0.1804     0.1751     0.1698     0.1648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  4.7342727  4.7724928  4.8095736  4.8496524  4.8968064</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        -0.4078029 -0.4226724 -0.4370988 -0.4513161 -0.4652842</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 0.1856     0.1801     0.1747     0.1695     0.1644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  4.5226834  4.5705611  4.6194859  4.6672104  4.7185077</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp1        -0.3594119 -0.3735471 -0.3873291 -0.4007035 -0.4136123</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Snp2         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3         0.7811067  0.8518539  0.9204924  0.9866300  1.0494011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Snp3         1.0622440  1.1362918  1.2078129  1.2771748  1.3437531</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Snp4         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Snp5         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Snp6         0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span>
@@ -104,11 +104,11 @@ feature names, columns are values of <code>lambda</code>.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Tabitha K. Peter, Anna C. Reisetter, Yujing Lu, Oscar Rysavy, Patrick J. Breheny.</p>
+  <p>Developed by Tabitha K. Peter, Anna C. Reisetter, Yujing Lu, Oscar A. Rysavy, Patrick J. Breheny.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

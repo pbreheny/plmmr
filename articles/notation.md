@@ -1,0 +1,163 @@
+# Notes on notation
+
+The purpose of this short vignette is to document the notation
+conventions for the math and programming related to PLMM. We begin with
+the math, and then translate our math notation into naming objects in
+our source code.
+
+Throughout this document, the reader will notice some notation
+conventions:
+
+- Matrices are denoted with **boldface**, UPPERCASE letters
+- Vectors are denoted with **boldface** lowercase letters
+- Scalar values and indices are denoted with lowercase letters
+- the \dot{} modifier indicates (column) standardization
+- the \tilde{} modifier indicates rotation
+
+## Math notation
+
+Here are the concepts we need to denote, in order of their usage in our
+derivations. I have blocked these into sections corresponding to the
+steps of the model fitting process.
+
+### Statistical model (the overall framework)
+
+The overall model can be written as
+
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} +
+\mathbf{Z}\boldsymbol{\gamma} + \boldsymbol{\epsilon}
+
+or equivalently as \mathbf{y} =
+\dot{\mathbf{X}}\dot{\boldsymbol{\beta}} + \mathbf{u} +
+\boldsymbol{\epsilon} where:
+
+- \mathbf{X} and \mathbf{y} are the n \times p design matrix of our data
+  and the n \times 1 vector of outcomes, respectively. Here, n is the
+  number of *observations* (e.g., number of patients, number of samples,
+  etc.) and p is the number of *features* (e.g., number of SNPs, number
+  of variables, number of covariates, etc.).
+
+- \dot{\mathbf{X}} is the column-standardized \mathbf{X}, in which each
+  of the p columns has mean 0 and standard deviation 1. Note:
+  \dot{\mathbf{X}} excludes any singular features (columns of constants)
+  in the original \mathbf{X}.
+
+- \dot{\boldsymbol{\beta}} represents the coefficients on the
+  standardized scale.
+
+- \mathbf{Z} is a n \times b matrix of indicators corresponding to a
+  grouping structure, and \boldsymbol{\gamma} is the vector of values
+  describing how each grouping is associated with \mathbf{y}. In real
+  data, these values typically unknown.
+
+- \boldsymbol{\epsilon} is the n \times 1 vector of noise.
+
+We define the realized (or empirical) relatedness matrix as \mathbf{K}
+\equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top
+
+This model assumes:
+
+- \boldsymbol{\epsilon} \perp \mathbf{u}
+- \boldsymbol{\epsilon} \sim N(0, \sigma^2\_{\epsilon}\mathbf{I})
+- \mathbf{u} \sim N(0, \sigma^2\_{s}\mathbf{K})
+
+Under these assumptions, we may write \mathbf{y} \sim
+N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})
+
+**Indices**:
+
+- i \in 1,..., n indexes observations
+- j \in 1,..., p indexes features
+- h \in 1,..., b indexes the batches (e.g., different family groups,
+  different data collection sites, etc.)
+
+### Decomposition and rotation (prep and first part of fit)
+
+- Beginning with an eigendecomposition, we have \mathbf{U} and
+  \mathbf{s} are the eigenvectors and eigenvalues of \mathbf{K}, as one
+  would obtain from \text{eigen}(\mathbf{K)} \equiv
+  \mathbf{U}\mathbf{S}\mathbf{U}^\top. The elements of \mathbf{s} are
+  the diagonal values of \mathbf{S}. Note, random effect \mathbf{u} is
+  distinct from the columns of matrix \mathbf{U}.
+
+- k represents the number of nonzero eigenvalues represented in
+  \mathbf{U} and \mathbf{d}, so k \leq \text{min}(n,p).
+
+- Again, \mathbf{K} \equiv
+  \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top} is often referred
+  to in the literature as the realized relatedness matrix (RRM) or
+  genomic relatedness matrix (GRM). \mathbf{K} has dimension n \times n.
+
+- \eta is the ratio \frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}. We
+  estimate \hat{\eta} from a null model (more details to come).
+
+- \mathbf{\Sigma} is the variance of the outcome, where
+  \mathbb{V}({\mathbf{y}}) \propto \eta \mathbf{K} + (1 -
+  \eta)\mathbf{I}\_n.
+
+- \mathbf{w} is the vector of weights defined as
+  (\eta\mathbf{\mathbf{s}} + (1-\eta))^{-1/2}. The values in \mathbf{w}
+  are the nonzero values of the diagonal matrix \mathbf{W} \equiv
+  (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}.
+
+- The matrix to be used in rotating (or *preconditioning*) the data is
+  \mathbf{\Sigma}^{-1/2} \equiv \mathbf{W}\mathbf{U}^\top.
+
+- \tilde{\dot{\mathbf{X}}} \equiv
+  \mathbf{W}\mathbf{U}^\top\dot{\mathbf{X}} is the rotated data, or the
+  data on the transformed scale.
+
+- \tilde{\mathbf{y}} \equiv \mathbf{\Sigma}^{-1/2}\mathbf{y} is the
+  outcome on the rotated scale.
+
+- \tilde{\ddot{\mathbf{X}}} is the **standardized** rotated data. Note:
+  This standardization involves scaling, but not centering. This
+  post-rotation standardization impacts the estimated coefficients as
+  well; we define {\ddot{\boldsymbol{\beta}}} as the estimated
+  coefficients on this scale.
+
+### Model fitting with penalization
+
+We fit \tilde{\mathbf{y}} \sim \tilde{\ddot{\mathbf{X}}} using a
+penalized linear mixed model, and obtain \hat{\ddot{\boldsymbol{\beta}}}
+as our estimated coefficients. The penalty parameter values (e.g.,
+values of the lasso tuning parameter) are indexed by \lambda_l \in
+1,..., t.
+
+### Rescaling results (format)
+
+To obtain the estimated coefficients on the original scale, the values
+estimated by the model must be unscaled (or ‘untransformed’) twice: once
+to adjust for the post-rotation standardization, and again to adjust for
+the pre-rotation standardization. This process could be written
+\hat{\ddot{\boldsymbol{\beta}}} \rightarrow
+\hat{\dot{\boldsymbol{\beta}}} \rightarrow \hat{\boldsymbol{\beta}}.
+
+## Object names in source code
+
+In the code, we denote the objects above in this way:
+
+- \mathbf{X} and \mathbf{y} are `X` and `y`
+
+- \dot{\mathbf{X}} is `std_X`
+
+- \tilde{\dot{\mathbf{X}}} is `rot_X`
+
+- \ddot{\tilde{\mathbf{X}}} is `stdrot_X`
+
+- \hat{\boldsymbol{\beta}} is named `og_scale_beta` in helper functions
+  (for clarity) and returned in `plmm` objects as `beta_vals`.
+  `beta_vals` and `og_scale_beta` are equivalent; both represent the
+  estimated coefficients on the original scale.
+
+- \hat{\dot{\boldsymbol{\beta}}} is `std_scale_beta`
+
+- \hat{\ddot{\boldsymbol{\beta}}} is `stdrot_scale_beta`
+
+- \dot{\mathbf{X}}\hat{\dot{\boldsymbol{\beta}}} is `Xb`; this is
+  equivalent to the `std_Xbeta` object returned by
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
+
+- \hat{\boldsymbol{\Sigma}} \propto \hat{\eta}\mathbf{K} + (1 -
+  \hat{\eta})\mathbf{I} is `estimated_Sigma`. Similarly,
+  \hat{\boldsymbol{\Sigma}}\_{11} is `Sigma_11`, etc.

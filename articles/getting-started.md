@@ -1,0 +1,177 @@
+# Getting started with plmmr
+
+``` r
+library(plmmr)
+#> Loading required package: bigalgebra
+#> Loading required package: bigmemory
+```
+
+## Introduction
+
+`plmmr` is a package for fitting **P**enalized **L**inear **M**ixed
+**M**odels in **R**. This package was created for the purpose of fitting
+penalized regression models to high dimensional data in which the
+observations are correlated. For instance, this kind of data arises
+often in the context of genetics (*e.g.*, GWAS in which there is
+population structure and/or family grouping).
+
+The novelties of `plmmr` are:
+
+1.  **Integration**: `plmmr` combines the functionality of several
+    packages in order to do quality control, model fitting/analysis, and
+    data visualization all in one package. For example, if you have GWAS
+    data, `plmmr` will take you from PLINK files all the way to a list
+    of SNPs for downstream analysis.
+
+2.  **Accessibility**: `plmmr` can be run from an `R` session on a
+    typical desktop or laptop computer. The user does not need access to
+    a supercomputer or have experience with the command line in order to
+    fit models `plmmr`.
+
+3.  **Handling correlation**: `plmmr` uses a transformation that (1)
+    measures correlation among samples and (2) uses this correlation
+    measurement to improve predictions (via the best linear unbiased
+    predictor, or BLUP). This means that in
+    [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md),
+    there’s no need to filter data down to a ‘maximum subset of
+    unrelated samples.’
+
+## Minimal example
+
+Below is a minimal reproducible example of how `plmmr` can be used:
+
+``` r
+# library(plmmr)
+fit <- plmm(admix$X, admix$y) # admix data ships with package
+plot(fit)
+```
+
+![](getting-started_files/figure-html/unnamed-chunk-2-1.png)
+
+``` r
+
+cvfit <- cv_plmm(admix$X, admix$y)
+plot(cvfit)
+```
+
+![](getting-started_files/figure-html/unnamed-chunk-2-2.png)
+
+``` r
+summary(cvfit)
+#> lasso-penalized model with n=197 and p=101
+#> At minimum cross-validation error (lambda=0.6226):
+#> -------------------------------------------------
+#>   Nonzero coefficients: 0
+#>   Cross-validation error (deviance): 3.06
+#>   Scale estimate (sigma): 1.750
+```
+
+## Computational capability
+
+### File-backing
+
+In many applications of high dimensional data analysis, the dataset is
+too large to read into R – the session will crash for lack of memory.
+This is particularly common when analyzing data from genome-wide
+association studies (GWAS). To analyze such large datasets, `plmmr` is
+equipped to analyze data using *filebacking* - a strategy that lets R
+‘point’ to a file on disk, rather than reading the file into the R
+session. Many other packages use this technique -
+[bigstatsr](https://privefl.github.io/bigstatsr/) and
+[biglasso](https://pbreheny.github.io/biglasso/) are two examples of
+packages that use the filebacking technique. The package that `plmmr`
+uses to create and store filebacked objects is
+[bigmemory](https://CRAN.R-project.org/package=bigmemory). The
+filebacked computation relies on the
+[biglasso](https://pbreheny.github.io/biglasso/) package by [Yaohui
+Zeng](https://scholar.google.com/citations?user=jpEmf04AAAAJ&hl=en) et
+al. and on [bigalgebra](https://CRAN.R-project.org/package=bigalgebra)
+by Michael Kane et al. For processing
+[PLINK](https://www.cog-genomics.org/plink/) files, we use methods from
+the `bigsnpr` [package](https://privefl.github.io/bigsnpr/) by [Florian
+Privé](https://privefl.github.io/).
+
+### Numeric outcomes only
+
+At this time, the package is designed for linear regression only – that
+is, we are considering only continuous (numeric) outcomes. We maintain
+that treating binary outcomes as numeric values is appropriate in some
+contexts, as described by Hastie et al. in the [Elements of Statistical
+Learning](https://hastie.su.domains/ElemStatLearn/), chapter 4. In the
+future, we would like to extend this package to handle dichotomous
+outcomes via logistic regression; the theoretical work underlying this
+is an open problem.
+
+### 3 types of penalization
+
+Since we are focused on penalized regression in this package, `plmmr`
+offers 3 choices of penalty: the minimax concave (MCP), the smoothly
+clipped absolute deviation (SCAD), and the least absolute shrinkage and
+selection operator (LASSO). The implementation of these penalties is
+built on the concepts/techniques provided in the
+[ncvreg](https://pbreheny.github.io/ncvreg/) package.
+
+### Data size and dimensionality
+
+We distinguish between the data attributes ‘big’ and ‘high dimensional.’
+‘Big’ describes the amount of space data takes up on a computer, while
+‘high dimensional’ describes a context where the ratio of features (also
+called ‘variables’ or ‘predictors’) to observations (e.g., samples) is
+high. For instance, data with 100 samples and 100 variables is high
+dimensional, but not big. By contrast, data with 10 million observations
+and 100 variables is big, but not high dimensional.
+
+`plmmr` is optimized for data that are high dimensional – the methods we
+are using to estimate relatedness among observations perform best when
+there are a high number of features relative to the number of
+observations.
+
+`plmmr` is also designed to accommodate data that is too large to
+analyze in-memory. We accommodate such data through file-backing (as
+described above). Our current analysis pipeline works well for data
+files up to about 40 Gb in size. In practice, this means that `plmmr` is
+equipped to analyze GWAS data, but not biobank-sized data.
+
+## Data input types
+
+`plmmr` currently works with three types of data input:
+
+1.  Data that is stored in-memory as a matrix or data frame
+
+2.  Data that is stored in PLINK files
+
+3.  Data that is stored in delimited files
+
+### Example data sets
+
+`plmmr` currently includes three example data sets, one for each type of
+data input.
+
+- The `admix` data is our example of matrix input data. `admix` is a
+  small data set (197 observations, 100 SNPs) that describes individuals
+  of different ancestry groups. The outcome of `admix` is simulated to
+  include population structure effects (*i.e.* race/ethnicity have an
+  impact on the SNP associations). This data set is available as
+  whenever [`library(plmmr)`](https://pbreheny.github.io/plmmr/) is
+  called. An example analysis with the `admix` data is available in
+  `vignette('matrix_data', package = "plmmr")`.
+
+- The `penncath_lite` data is our example of PLINK input data.
+  `penncath_lite` (data on coronary artery disease from the [PennCath
+  study](https://pubmed.ncbi.nlm.nih.gov/21239051/)) is a high
+  dimensional data set (1401 observations, 4217 SNPs) with several
+  health outcomes as well as age and sex information. The features in
+  this data set represent a small subset of a much larger GWAS data set
+  (the original data has over 800K SNPs). For for information on this
+  data set, refer to the [original
+  publication](https://pubmed.ncbi.nlm.nih.gov/21239051/). An example
+  analysis with the `penncath_lite` data is available in
+  `vignette('plink_files', package = "plmmr")`.
+
+- The `colon2` data is our example of delimited-file input data.
+  `colon2` is a variation of the `colon` data included in the
+  [biglasso](https://pbreheny.github.io/biglasso/) package. `colon2` has
+  62 observations and 2,001 features representing a study of colon
+  disease. 2000 features are original to the data, and the ‘sex’ feature
+  is simulated. An example analysis with the `colon2` data is available
+  in `vignette('delim_files', package = "plmmr")`.
