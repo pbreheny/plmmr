@@ -131,6 +131,7 @@ predict.plmm <- function(object,
       std_test_info <- .Call("big_std",
                              newX@address,
                              as.integer(count_cores()),
+                             tocenter = TRUE,
                              object$std_X_details$center,
                              object$std_X_details$scale,
                              PACKAGE = "plmmr")
