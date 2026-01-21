@@ -20,6 +20,8 @@ Useful links:
 
 - <https://github.com/pbreheny/plmmr/>
 
+- Report bugs at <https://github.com/pbreheny/plmmr/issues/>
+
 ## Author
 
 **Maintainer**: Patrick J. Breheny <patrick-breheny@uiowa.edu>

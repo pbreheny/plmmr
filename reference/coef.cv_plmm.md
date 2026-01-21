@@ -37,8 +37,7 @@ values of `lambda`.
 ## Examples
 
 ``` r
-admix_design <- create_design(X = admix$X, y = admix$y)
-cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
+cv_fit <- cv_plmm(admix$X, admix$y, return_fit = TRUE)
 head(coef(cv_fit))
 #> (Intercept)        Snp1        Snp2        Snp3        Snp4        Snp5 
 #>    4.145401    0.000000    0.000000    0.000000    0.000000    0.000000 

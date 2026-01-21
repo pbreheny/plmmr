@@ -2,12 +2,11 @@
 
 ## plmmr 4.2.2
 
-- **Bug in scaling of rotated data** We found an error in the
-  implementation of scaling for the rotated design matrix. Data were
-  erroneously re-centered after rotation, which caused some
-  instabilities in the coefficient paths. This behavior has been
-  corrected.
-- **Bug in argument passing** The `eta_star` argument in
+- **Bug fix:** We found an error in the implementation of scaling for
+  the rotated design matrix. Featured should be scaled only, not scaled
+  and centered. This was leading to instability in the coefficient
+  paths, but has been corrected.
+- **Bug fix:** The `eta_star` argument in
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) and
   [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md)
   was previously not being passed to internal functions and hence

@@ -225,8 +225,6 @@ A list that includes 15 items:
   value of `lambda`. Rows are observations, columns are values of
   `lambda`.
 
-- bias: A numeric value with the estimated bias of the minimized CVE.
-
 - loss: A matrix with the loss values at each value of lambda. Rows are
   observations, columns are values of `lambda`.
 
@@ -246,9 +244,4 @@ print(summary(cv_fit))
 #>   Cross-validation error (deviance): 3.00
 #>   Scale estimate (sigma): 1.732
 plot(cv_fit)
-
-
-# Note: for examples with filebacked data, see the filebacking vignette
-# https://pbreheny.github.io/plmmr/articles/filebacking.html
-
 ```

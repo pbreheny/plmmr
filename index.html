@@ -63,6 +63,7 @@
 <h2 id="plmmr-">plmmr <img src="reference/figures/plmmr_hex_sticker.png" align="right" width="150"><a class="anchor" aria-label="anchor" href="#plmmr-"></a>
 </h2>
 <p>The <code>plmmr</code> (<strong>p</strong>enalized <strong>l</strong>inear <strong>m</strong>ixed <strong>m</strong>odels in <strong>R</strong>) package contains functions that fit penalized linear mixed models to correct for unobserved confounding effects.</p>
+<p>Three small datasets ship with <code>plmmr</code>, and tutorials walking through how to analyze these data sets are documented in the <a href="https://pbreheny.github.io/plmmr/">plmmr website</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -73,7 +74,6 @@
 <p>You can also install <code>plmmr</code> from CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'plmmr'</span><span class="op">)</span></span></code></pre></div>
-<p>For a description of the motivation of the functions in this package (along with examples) refer to the second module of <a href="https://pbreheny.github.io/adv-gwas-tutorial/index.html" class="external-link">this GWAS data tutorial</a></p>
 </div>
 <div class="section level2">
 <h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
@@ -92,18 +92,7 @@
 <div class="section level2">
 <h2 id="so-how-fast-is-plmmr-and-how-well-does-it-scale">So how fast is <code>plmmr</code>? And how well does it scale?<a class="anchor" aria-label="anchor" href="#so-how-fast-is-plmmr-and-how-well-does-it-scale"></a>
 </h2>
-<p>To illustrate these important questions, I created a separate <a href="https://github.com/tabpeter/demo_plmmr/tree/master" class="external-link">GitHub repository</a> that has all the scripts for a <code>plmmr</code> workflow using publicly-available genome-wide association (GWAS) data. The main takeaway: using GWAS data from a study with 1,400 samples and 800,000 SNPs, a full <code>plmmr</code> analysis will run in about half an hour using a single core on a laptop.</p>
-<p>Three smaller datasets ship with <code>plmmr</code>, and tutorials walking through how to analyze these data sets are documented in the <a href="https://pbreheny.github.io/plmmr/">documentation site</a>. While these datasets are useful for didactic purposes, they are not large enough to really highlight the computational scalability of <code>plmmr</code> – this is what motivated the creation of the separate repository for a GWAS workflow.</p>
-</div>
-<div class="section level2">
-<h2 id="note-on-branches">Note on branches<a class="anchor" aria-label="anchor" href="#note-on-branches"></a>
-</h2>
-<p>The branches of this repo are organized in the following way:</p>
-<ul>
-<li><p><code>master</code> is the main (or ‘head’) branch.</p></li>
-<li><p><code>gh_pages</code> is where we are keeping all the documentation for <code>plmmr</code></p></li>
-<li><p><code>gwas_scale</code> is an <strong>archived</strong> branch that contains the development version of the package I used to run my dissertation analysis. Will delete this eventually.</p></li>
-</ul>
+<p>These questions are addressed in our <a href="https://arxiv.org/abs/2502.01577" class="external-link">manuscript describing plmmr</a>, along with its accompanying <a href="https://github.com/tabpeter/reproduce_plmmr_manuscript/" class="external-link">GitHub repository</a>. However, using GWAS data from a study with 1,400 samples and 800,000 SNPs, a full <code>plmmr</code> analysis will run in about half an hour using a single core on a laptop.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
@@ -111,6 +100,7 @@
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=plmmr" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/pbreheny/plmmr/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/pbreheny/plmmr/issues/" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 

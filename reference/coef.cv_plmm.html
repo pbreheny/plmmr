@@ -63,7 +63,8 @@
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p>Vector of lambda indices for which coefficients to return. Defaults to lambda index with minimum CVE.</p></dd>
+<dd><p>Vector of lambda indices for which coefficients to return.
+Defaults to lambda index with minimum CVE.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -79,8 +80,7 @@ values of <code>lambda</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">admix_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_design.html">create_design</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">X</span>, y <span class="op">=</span> <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span>, return_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cv_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv_plmm.html">cv_plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span>, return_fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">cv_fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)        Snp1        Snp2        Snp3        Snp4        Snp5 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    4.145401    0.000000    0.000000    0.000000    0.000000    0.000000 </span>

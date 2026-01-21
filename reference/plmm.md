@@ -241,9 +241,4 @@ print(s)
 #> # of non-zero coefficients:  37 
 #> -------------------------------------------------
 plot(fit)
-
-
-# Note: for examples with large data that are too big to fit in memory,
-# see the article "PLINK files/file-backed matrices" on our website
-# https://pbreheny.github.io/plmmr/articles/filebacking.html
 ```
