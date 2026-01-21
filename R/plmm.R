@@ -62,7 +62,6 @@
 #'  * K: a list with 2 elements, `s` and `U` ---
 #'    - s: a vector of the eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)
 #'    - U: a matrix of the eigenvectors of the relatedness matrix
-#' @export
 #'
 #' @examples
 #' # using admix data
@@ -70,11 +69,8 @@
 #' s <- summary(fit, idx = 50)
 #' print(s)
 #' plot(fit)
-#'
-#' # Note: for examples with large data that are too big to fit in memory,
-#' # see the article "PLINK files/file-backed matrices" on our website
-#' # https://pbreheny.github.io/plmmr/articles/filebacking.html
-#'
+#' @export
+
 plmm <- function(design,
                  y = NULL,
                  K = NULL,

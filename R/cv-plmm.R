@@ -59,22 +59,17 @@
 #'   your own `lambda` sequence, this quantity may not be meaningful.
 #' * Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of `lambda`.
 #'   Rows are observations, columns are values of `lambda`.
-#' * bias: A numeric value with the estimated bias of the minimized CVE.
 #' * loss: A matrix with the loss values at each value of lambda. Rows are observations,
 #'   columns are values of `lambda`.
 #' * estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
-#' @export
 #'
 #' @examples
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' cv_fit <- cv_plmm(design = admix_design)
 #' print(summary(cv_fit))
 #' plot(cv_fit)
-#'
-#' # Note: for examples with filebacked data, see the filebacking vignette
-#' # https://pbreheny.github.io/plmmr/articles/filebacking.html
-#'
-#'
+#' @export
+
 cv_plmm <- function(design,
                     y = NULL,
                     K = NULL,
@@ -103,9 +98,6 @@ cv_plmm <- function(design,
   # check filepaths for saving results ------------------------------
   if (!is.null(save_rds)) {
     save_rds <- tools::file_path_sans_ext(save_rds)
-    # ^^ internally, we need to take off the extension from the file name
-
-    # start the log
     logfile <- create_log(outfile = save_rds)
   }
 
@@ -113,18 +105,20 @@ cv_plmm <- function(design,
   if (inherits(design, "data.frame") || inherits(design, "matrix")) {
     # error check: if 'design' is matrix/data.frame, user must specify 'y'
     if (is.null(y)) {
-      stop("If you supply a matrix or data frame as 'design', you
-                         must also specify a numeric vector as the outcome of your
-                         model to the 'y' argument.")
+      stop(
+        "If you supply a matrix or data frame as 'design', you must also specify
+        a numeric vector as the outcome of your model to the 'y' argument.",
+        call. = FALSE
+      )
     }
-
     design <- create_design_in_memory(X = design, y = y)
-
-
   } else if (!is.null(y)) {
-    stop("If you are supplying a plmm_design object or filepath to
-                          the 'design' argument, that design already has a 'y' --
-                          please do not specify a 'y' argument here in plmm()")
+    stop(
+      "If you are supplying a plmm_design object or filepath to the 'design'
+      argument, that design already has a 'y' -- do not specify a 'y' argument
+      here in plmm()",
+      call. = FALSE
+    )
   }
 
   # run data checks ------------------------------
@@ -236,8 +230,6 @@ cv_plmm <- function(design,
     set.seed(seed)
   }
 
-  #sde <- sqrt(.Machine$double.eps)
-
   if (is.null(fold)) {
     if (trace) {
       cat("'Fold' argument is either NULL or missing; assigning folds randomly (by default).
@@ -253,8 +245,13 @@ cv_plmm <- function(design,
   if (!missing(cluster)) {
 
     # error check: parallelization is not yet implemented for filebacked data
-    if (checked_data$fbm_flag) stop("Parallelization is not yet implemented for filebacked data.
-                                    You cannot specify a 'cluster' argument if data are stored filebacked.\n.")
+    if (checked_data$fbm_flag) {
+      stop(
+        "Parallelization is not yet implemented for filebacked data. You cannot
+        specify a 'cluster' argument if data are stored filebacked.\n.",
+        call. = FALSE
+      )
+    }
 
     # check type of 'cluster' argument
     if (!inherits(cluster, "cluster")) stop("cluster is not of class 'cluster'; see ?makeCluster", call. = FALSE)
@@ -291,17 +288,10 @@ cv_plmm <- function(design,
         append = TRUE)
   }
 
-  # set up progress bar -- this can take a while
-  if(trace) {
-    pb <- utils::txtProgressBar(min = 0, max = nfolds, style = 3)
-  }
   for (i in 1:nfolds) {
     # case 1: user-specified cluster
     if (!missing(cluster)) {
       res <- fold_results[[i]] # refers to lines from above
-      if (trace) {
-        utils::setTxtProgressBar(pb, i)
-        }
     } else {
       # case 2: cluster NOT user specified
       if (!is.null(save_rds)) {
@@ -313,12 +303,7 @@ cv_plmm <- function(design,
                  fold = fold,
                  type = type,
                  cv_args = cv_args)
-      if (trace) {
-        utils::setTxtProgressBar(pb, i)
-        }
     }
-
-    if(trace) close(pb)
 
     # update E and Y
     E[fold == i, 1:res$nl] <- res$loss
@@ -348,7 +333,7 @@ cv_plmm <- function(design,
   lambda <- fit$lambda[ind]
 
   # return min lambda idx
-  cve <- apply(E, 2, mean)
+  cve <- colMeans(E)
   cvse <- apply(E, 2, stats::sd) / sqrt(nrow(Y))
   min <- which.min(cve)
 
@@ -357,10 +342,6 @@ cv_plmm <- function(design,
   u.se <- cve[min] + cvse[min]
   within1se <- which(cve >= l.se & cve <= u.se)
   min1se <- which.max(lambda %in% lambda[within1se])
-
-  # bias correction
-  e <- sapply(1:nfolds, function(i) apply(E[fold == i, , drop = FALSE], 2, mean))
-  Bias <- mean(e[min, ] - apply(e, 2, min))
 
   val <- list(type = type,
               cve = cve,
@@ -374,7 +355,6 @@ cv_plmm <- function(design,
               lambda.1se = lambda[min1se],
               null.dev = mean(plmm_loss(checked_data$y, rep(mean(checked_data$y), n))),
               Y = Y,
-              bias = Bias,
               loss = E)
 
   if (type == "blup") {
@@ -384,16 +364,20 @@ cv_plmm <- function(design,
   # save output
   if (!is.null(save_rds)) {
     saveRDS(val, paste0(save_rds, ".rds"))
-    cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-        pretty_time(),
-        file = logfile, append = TRUE)
+    cat(
+      "Results saved to: ", paste0(save_rds, ".rds"), "at", pretty_time(),
+      file = logfile,
+      append = TRUE
+    )
   }
 
   # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
   if (is.null(save_rds) && !return_fit) {
-    cat("You accidentally left save_rds = NULL and return_fit = FALSE;
-        to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
-
+    cat(
+      "You have specified `save_rds=NULL` and `return_fit=FALSE`; to prevent you
+      from losing your work, plmm() is returning the output as if
+      `return_fit=TRUE`"
+    )
     return_fit <- TRUE
   }
 
@@ -404,7 +388,4 @@ cv_plmm <- function(design,
   if (return_fit) {
     return(structure(val, class = "cv_plmm"))
   }
-
-
-
 }

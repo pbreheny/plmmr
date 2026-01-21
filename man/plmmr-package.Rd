@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://pbreheny.github.io/plmmr/}
   \item \url{https://github.com/pbreheny/plmmr/}
+  \item Report bugs at \url{https://github.com/pbreheny/plmmr/issues/}
 }
 
 }

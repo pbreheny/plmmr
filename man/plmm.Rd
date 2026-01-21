@@ -123,9 +123,4 @@ fit <- plmm(admix$X, admix$y)
 s <- summary(fit, idx = 50)
 print(s)
 plot(fit)
-
-# Note: for examples with large data that are too big to fit in memory,
-# see the article "PLINK files/file-backed matrices" on our website
-# https://pbreheny.github.io/plmmr/articles/filebacking.html
-
 }

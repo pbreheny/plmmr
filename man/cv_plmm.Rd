@@ -112,7 +112,6 @@ that which minimizes \code{cve}
 your own \code{lambda} sequence, this quantity may not be meaningful.
 \item Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of \code{lambda}.
 Rows are observations, columns are values of \code{lambda}.
-\item bias: A numeric value with the estimated bias of the minimized CVE.
 \item loss: A matrix with the loss values at each value of lambda. Rows are observations,
 columns are values of \code{lambda}.
 \item estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
@@ -127,9 +126,4 @@ admix_design <- create_design(X = admix$X, y = admix$y)
 cv_fit <- cv_plmm(design = admix_design)
 print(summary(cv_fit))
 plot(cv_fit)
-
-# Note: for examples with filebacked data, see the filebacking vignette
-# https://pbreheny.github.io/plmmr/articles/filebacking.html
-
-
 }

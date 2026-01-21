@@ -14,7 +14,7 @@
 #' * a numeric vector with the loss at each value of lambda
 #' * a numeric value indicating the number of lambda values used
 #' * a numeric value with the predicted outcome (y hat) values at each lambda
-#'
+
 cvf <- function(i, fold, type, cv_args, ...) {
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep
@@ -42,32 +42,35 @@ cvf <- function(i, fold, type, cv_args, ...) {
   if (cv_args$fbm_flag) {
 
     # designate the training set
-    train_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                   rows = which(fold != i),
-                                   type = "double",
-                                   backingfile = paste0("train_fold", i, ".bk"),
-                                   descriptorfile = paste0("train_fold", i, ".desc"),
-                                   backingpath = bigmemory::dir.name(full_cv_prep$std_X))
-
-    # TODO should these fold-specific data files be created in a tempdir? Then,
-    #   the entire tempdir could be deleted at the end of this function....
+    train_X <- bigmemory::deepcopy(
+      full_cv_prep$std_X,
+      rows = which(fold != i),
+      type = "double",
+      backingfile = paste0("train_fold", i, ".bk"),
+      descriptorfile = paste0("train_fold", i, ".desc"),
+      backingpath = bigmemory::dir.name(full_cv_prep$std_X)
+    )
 
     # create the copy of the training data to be standardized
-    fold_args$std_X <- bigmemory::deepcopy(full_cv_prep$std_X,
-                                           rows = which(fold != i),
-                                           type = "double",
-                                           backingfile = paste0("std_train_fold", i, ".bk"),
-                                           descriptorfile = paste0("std_train_fold", i, ".desc"),
-                                           backingpath = bigmemory::dir.name(full_cv_prep$std_X))
+    fold_args$std_X <- bigmemory::deepcopy(
+      full_cv_prep$std_X,
+      rows = which(fold != i),
+      type = "double",
+      backingfile = paste0("std_train_fold", i, ".bk"),
+      descriptorfile = paste0("std_train_fold", i, ".desc"),
+      backingpath = bigmemory::dir.name(full_cv_prep$std_X)
+    )
 
     # re-scale data & check for singularity
-    std_trainX_info <- .Call("big_std",
-                             fold_args$std_X@address,
-                             as.integer(count_cores()),
-                             to_center = TRUE,
-                             NULL,
-                             NULL,
-                             PACKAGE = "plmmr")
+    std_trainX_info <- .Call(
+      "big_std",
+      fold_args$std_X@address,
+      as.integer(count_cores()),
+      to_center = TRUE,
+      NULL,
+      NULL,
+      PACKAGE = "plmmr"
+    )
 
     fold_args$std_X@address <- std_trainX_info$std_X
     fold_args$std_X_details$center <- std_trainX_info$std_X_center
@@ -94,7 +97,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
     # do not fit a model on these (near) singular features!
     singular <- fold_args$std_X_details$scale < 1e-3
     if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
-
   }
 
   # subset outcome vector to include outcomes for training data only
@@ -138,7 +140,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # fit a plmm within each fold at each value of lambda
   # lambda stays the same for each fold; comes from the overall fit in cv_plmm()
   if (cv_args$prep$trace) {
-    cat("Fitting model in fold ", i, ":\n")
+    cat("** Fitting model in fold ", i, "\n", sep = "")
   }
 
   fit.i <- plmm_fit(prep = fold_prep,

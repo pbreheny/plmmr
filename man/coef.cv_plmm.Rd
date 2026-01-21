@@ -11,7 +11,8 @@
 
 \item{lambda}{A numeric vector of lambda values.}
 
-\item{which}{Vector of lambda indices for which coefficients to return. Defaults to lambda index with minimum CVE.}
+\item{which}{Vector of lambda indices for which coefficients to return.
+Defaults to lambda index with minimum CVE.}
 
 \item{...}{Additional arguments (not used).}
 }
@@ -24,8 +25,7 @@ values of \code{lambda}.
 Coef method for "cv_plmm" class
 }
 \examples{
-admix_design <- create_design(X = admix$X, y = admix$y)
-cv_fit <- cv_plmm(design = admix_design, return_fit = TRUE)
+cv_fit <- cv_plmm(admix$X, admix$y, return_fit = TRUE)
 head(coef(cv_fit))
 
 }
