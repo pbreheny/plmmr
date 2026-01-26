@@ -12,11 +12,13 @@ extern SEXP big_sd(SEXP X_, SEXP ncore_);
 // standardize a matrix of filebacked data
 extern SEXP big_std(SEXP X_,
                     SEXP ncore_,
+                    SEXP tocenter_,
                     SEXP center_,
                     SEXP scale_);
 
 // standardize a matrix of in-memory data
-extern SEXP in_mem_std(SEXP X_);
+extern SEXP in_mem_std(SEXP X_,
+                       SEXP tocenter_);
 
 // big_crossprod
 extern SEXP big_crossprod(SEXP X_,

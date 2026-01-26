@@ -4,14 +4,11 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  asan:
+  lto:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/r-hub/containers/lto:latest
       
-    env:
-      R_LIBS_USER: ${{ github.workspace }}/_rlib
-
     steps:
     - uses: actions/checkout@v4
 
