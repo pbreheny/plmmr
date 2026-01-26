@@ -1,6 +1,6 @@
 Package: plmmr
 Title: Penalized Linear Mixed Models for Correlated Data
-Version: 4.2.2
+Version: 4.2.3
 Authors@R: c(
     person("Tabitha K.", "Peter", , "tabitha.peter15@gmail.com", role = "aut",
            comment = c(ORCID = "0009-0005-2524-4751")),

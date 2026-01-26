@@ -1,3 +1,7 @@
+# plmmr 4.2.3
+
+- **Bug fix:** Fixing LTO mismatch error.
+
 # plmmr 4.2.2
 
 - **Bug fix:** We found an error in the implementation of scaling for the rotated design matrix. Featured should be scaled only, not scaled and centered. This was leading to instability in the coefficient paths, but has been corrected.
