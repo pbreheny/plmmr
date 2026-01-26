@@ -1,6 +1,12 @@
 # Changelog
 
+## plmmr 4.2.3
+
+- **Bug fix:** Fixing LTO mismatch error.
+
 ## plmmr 4.2.2
+
+CRAN release: 2026-01-21
 
 - **Bug fix:** We found an error in the implementation of scaling for
   the rotated design matrix. Featured should be scaled only, not scaled
