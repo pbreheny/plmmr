@@ -30,7 +30,7 @@ eigen_K <- function(std_X, fbm_flag) {
   nz <- decomp$values > 1e-4
   list(
     s = decomp$values[nz],
-    U = decomp$vectors[, nz],
+    U = decomp$vectors[, nz, drop = FALSE],
     K = K
   )
 }

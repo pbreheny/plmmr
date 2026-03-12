@@ -174,7 +174,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
   }
 
   if (type == "blup") {
-    Sigma_11 <- construct_variance(K = fold_prep$K, eta = fit.i$eta)
     if (cv_args$fbm_flag) {
       # we will need a copy of the testing data that is standardized
       std_test_X <- bigmemory::deepcopy(full_cv_prep$std_X,
@@ -218,7 +217,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
                               testX = test_X,
                               type = "blup",
                               fbm = cv_args$fbm_flag,
-                              Sigma_11 = Sigma_11,
                               Sigma_21 = Sigma_21)
 
   }

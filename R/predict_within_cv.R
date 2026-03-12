@@ -6,7 +6,7 @@
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
 #' @param Sigma_11 Variance-covariance matrix of the training data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
-#' @param Sigma_21 Covariance matrix between the training and the testing data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
+#' @param Sigma_21 Covariance matrix between the training and the testing data. Required if \code{type == 'blup'}.
 #'
 #' @returns A numeric vector of predicted values
 #'
@@ -27,7 +27,6 @@ predict_within_cv <- function(fit,
                               testX,
                               type,
                               fbm = FALSE,
-                              Sigma_11 = NULL,
                               Sigma_21 = NULL) {
 
   # make sure X is in the correct format...
@@ -55,10 +54,7 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
-    # TODO: to find the inverse of Sigma_11 using Woodbury's formula? think on this...
-    resid_train <- (drop(fit$y) - fit$std_Xbeta)
-    ranef <- Sigma_21 %*% chol2inv(chol(Sigma_11)) %*% resid_train
-    blup <- Xb + ranef
+    blup <- compute_blup(fit, Xb, Sigma_21)
     return(blup)
   }
 

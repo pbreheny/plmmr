@@ -145,7 +145,6 @@ predict.plmm <- function(object,
                         scale = object$std_X_details$scale)
     }
 
-    Sigma_11 <- construct_variance(fit = object)
     if (fbm_flag) {
       const <- (object$eta / ncol(newX))
       XXt <- bigalgebra::dgemm(TRANSA = "N",
@@ -157,9 +156,7 @@ predict.plmm <- function(object,
     } else {
       Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
     }
-    resid_old <- drop(object$y) - object$std_Xbeta
-    ranef <- Sigma_21 %*% (chol2inv(chol(Sigma_11)) %*% resid_old)
-    blup <- drop(Xb + ranef)
+    blup <- compute_blup(object, Xb, Sigma_21)
 
     return(blup)
   }
