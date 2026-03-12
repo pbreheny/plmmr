@@ -241,7 +241,7 @@ print(summary(cv_fit))
 #> At minimum cross-validation error (lambda=0.6226):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 0
-#>   Cross-validation error (deviance): 3.00
-#>   Scale estimate (sigma): 1.732
+#>   Cross-validation error (deviance): 3.03
+#>   Scale estimate (sigma): 1.740
 plot(cv_fit)
 ```

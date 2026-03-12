@@ -2,6 +2,8 @@
 
 ## plmmr 4.2.3
 
+CRAN release: 2026-01-26
+
 - **Bug fix:** Fixing LTO mismatch error.
 
 ## plmmr 4.2.2
