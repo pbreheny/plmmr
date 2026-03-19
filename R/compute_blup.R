@@ -31,11 +31,7 @@ compute_blup <- function(fit, Xb, Sigma_21) {
   resid_old <- drop(fit$y) - fit$std_Xbeta
   Ut_r   <- drop(t(U) %*% resid_old)
   proj_r <- U %*% Ut_r
-  if (eta != 1) {
-    tmp <- U %*% (Ut_r / (eta * s + (1 - eta))) + (resid_old - proj_r) / (1 - eta)
-  } else {
-    tmp <- U %*% (Ut_r / s)
-  }
+  tmp <- U %*% (Ut_r / (eta * s + (1 - eta)))
   ranef <- Sigma_21 %*% tmp
   blup <- drop(Xb + ranef)
 
