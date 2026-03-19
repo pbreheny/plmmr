@@ -59,11 +59,11 @@ plot(cvfit)
 ``` r
 summary(cvfit)
 #> lasso-penalized model with n=197 and p=101
-#> At minimum cross-validation error (lambda=0.6226):
+#> At minimum cross-validation error (lambda=0.6204):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 0
-#>   Cross-validation error (deviance): 3.06
-#>   Scale estimate (sigma): 1.750
+#>   Cross-validation error (deviance): 3.03
+#>   Scale estimate (sigma): 1.742
 ```
 
 ## Computational capability

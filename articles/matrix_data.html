@@ -98,7 +98,7 @@ delimited files.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">admix_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">50</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.1413</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.1408</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -123,16 +123,16 @@ columns represent values of the penalization parameter <span class="math inline"
 <th style="text-align:left;">
 </th>
 <th style="text-align:right;">
-0.0341
+0.0340
 </th>
 <th style="text-align:right;">
-0.0331
+0.0330
 </th>
 <th style="text-align:right;">
-0.0321
+0.0320
 </th>
 <th style="text-align:right;">
-0.0311
+0.0310
 </th>
 </tr></thead>
 <tbody>
@@ -141,16 +141,16 @@ columns represent values of the penalization parameter <span class="math inline"
 (Intercept)
 </td>
 <td style="text-align:right;">
-6.563
+6.564
 </td>
 <td style="text-align:right;">
-6.576
+6.577
 </td>
 <td style="text-align:right;">
-6.587
+6.588
 </td>
 <td style="text-align:right;">
-6.598
+6.599
 </td>
 </tr>
 <tr>
@@ -184,7 +184,7 @@ Snp2
 0.189
 </td>
 <td style="text-align:right;">
-0.191
+0.192
 </td>
 </tr>
 <tr>
@@ -192,16 +192,16 @@ Snp2
 Snp3
 </td>
 <td style="text-align:right;">
-2.968
+2.974
 </td>
 <td style="text-align:right;">
-2.980
+2.986
 </td>
 <td style="text-align:right;">
-2.991
+2.997
 </td>
 <td style="text-align:right;">
-3.002
+3.007
 </td>
 </tr>
 <tr>
@@ -212,13 +212,13 @@ Snp4
 0.116
 </td>
 <td style="text-align:right;">
-0.119
+0.118
 </td>
 <td style="text-align:right;">
-0.121
+0.120
 </td>
 <td style="text-align:right;">
-0.123
+0.122
 </td>
 </tr>
 <tr>
@@ -226,16 +226,16 @@ Snp4
 Snp5
 </td>
 <td style="text-align:right;">
-0.302
+0.303
 </td>
 <td style="text-align:right;">
-0.312
+0.313
 </td>
 <td style="text-align:right;">
-0.322
+0.323
 </td>
 <td style="text-align:right;">
-0.331
+0.332
 </td>
 </tr>
 <tr>
@@ -246,7 +246,7 @@ Snp6
 -0.073
 </td>
 <td style="text-align:right;">
--0.074
+-0.075
 </td>
 <td style="text-align:right;">
 -0.076
@@ -266,7 +266,7 @@ Snp7
 0.109
 </td>
 <td style="text-align:right;">
-0.110
+0.111
 </td>
 <td style="text-align:right;">
 0.112
@@ -294,7 +294,7 @@ Snp8
 Snp9
 </td>
 <td style="text-align:right;">
-0.207
+0.208
 </td>
 <td style="text-align:right;">
 0.209
@@ -303,7 +303,7 @@ Snp9
 0.211
 </td>
 <td style="text-align:right;">
-0.212
+0.213
 </td>
 </tr>
 </tbody>
@@ -316,7 +316,7 @@ the members of this population.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># for n = 25 </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit</span>, lambda <span class="op">=</span> <span class="va">admix_fit</span><span class="op">$</span><span class="va">lambda</span><span class="op">[</span><span class="fl">25</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.3012</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=101 at lambda=0.3001</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -357,7 +357,7 @@ prior to calling <code><a href="../reference/plmm.html">plmm()</a></code>. Here 
 to our first model:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_fit2</span>, idx <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
-<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.3516</span></span>
+<span><span class="co">#&gt; lasso-penalized regression model with n=197, p=102 at lambda=0.3631</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; The model converged </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
@@ -378,11 +378,11 @@ cross-validation error:</p>
 <span><span class="va">admix_cv_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">admix_cv</span>, lambda <span class="op">=</span> <span class="st">"min"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">admix_cv_s</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2520):</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2526):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.46</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.209</span></span></code></pre></div>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.44</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.199</span></span></code></pre></div>
 <p>We can also plot the cross-validation error (CVE) versus <span class="math inline">\lambda</span> (on the log scale):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">admix_cv</span><span class="op">)</span></span></code></pre></div>
@@ -413,11 +413,11 @@ in parallel:</p>
 <span><span class="co"># note: the results closely correspond to the above</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lasso-penalized model with n=197 and p=102</span></span>
-<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2445):</span></span>
+<span><span class="co">#&gt; At minimum cross-validation error (lambda=0.2450):</span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt;   Nonzero coefficients: 3</span></span>
-<span><span class="co">#&gt;   Cross-validation error (deviance): 1.40</span></span>
-<span><span class="co">#&gt;   Scale estimate (sigma): 1.183</span></span>
+<span><span class="co">#&gt;   Cross-validation error (deviance): 1.38</span></span>
+<span><span class="co">#&gt;   Scale estimate (sigma): 1.175</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cv_fit_parallel</span><span class="op">)</span></span></code></pre></div>
 <p><img src="matrix_data_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 </div>
@@ -445,7 +445,7 @@ from an intercept-only model using mean squared prediction error (MSPE)
 <span><span class="co"># our model at its best value of lambda</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">y_hat</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">mse</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.682576</span></span>
+<span><span class="co">#&gt; [1] 0.68262</span></span>
 <span><span class="co"># ^ across all values of lambda, our model has MSPE lower than the null model</span></span></code></pre></div>
 <p>We see our model has better predictions than the null.</p>
 </div>

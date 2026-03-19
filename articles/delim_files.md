@@ -30,7 +30,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpwPjiCt/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpIShdAG/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -85,7 +85,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-03-12 19:33:30
+#> Standardization completed at 2026-03-19 20:00:43
 #> Done with standardization. File formatting in progress
 ```
 
@@ -120,7 +120,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpwPjiCt/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpIShdAG/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -155,18 +155,18 @@ colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> download the previous version of the package to avoid these warnings:
 #> 
 #> remotes::install_version("bigalgebra", version = "1.1.1")
-#> Input data passed all checks at  2026-03-12 19:33:30
+#> Input data passed all checks at  2026-03-19 20:00:43
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-03-12 19:33:30
+#> Eigendecomposition finished at  2026-03-19 20:00:43
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-03-12 19:33:30
+#> Rotation (preconditioning) finished at  2026-03-19 20:00:43
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-03-12 19:33:30 
+#> Model fitting finished at  2026-03-19 20:00:43 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-03-12 19:33:30
+#> Model ready at  2026-03-19 20:00:43
 ```
 
 Notice the messages that are printed out – this documentation may be
@@ -176,7 +176,7 @@ We can examine the results at a specific \lambda value:
 
 ``` r
 summary(colon_fit, idx = 50)
-#> lasso-penalized regression model with n=62, p=2002 at lambda=0.0609
+#> lasso-penalized regression model with n=62, p=2002 at lambda=0.0594
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -212,7 +212,7 @@ yhat_blup <- predict(object = colon_fit,
 mspe_lp <- apply(yhat_lp, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
 mspe_blup <- apply(yhat_blup, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
 min(mspe_lp)
-#> [1] 0.001781148
+#> [1] 0.001795886
 min(mspe_blup)
-#> [1] 0.0009994209
+#> [1] 0.001059727
 ```

@@ -32,7 +32,7 @@ The `admix` dataset is now ready to analyze with a call to
 ``` r
 admix_fit <- plmm(admix$X, admix$y)
 summary(admix_fit, lambda = admix_fit$lambda[50])
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.1413
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.1408
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -60,18 +60,18 @@ admix_fit$beta_vals[1:10, 97:100] |>
                format = "html")
 ```
 
-|             | 0.0341 | 0.0331 | 0.0321 | 0.0311 |
+|             | 0.0340 | 0.0330 | 0.0320 | 0.0310 |
 |:------------|-------:|-------:|-------:|-------:|
-| (Intercept) |  6.563 |  6.576 |  6.587 |  6.598 |
+| (Intercept) |  6.564 |  6.577 |  6.588 |  6.599 |
 | Snp1        | -0.764 | -0.767 | -0.770 | -0.772 |
-| Snp2        |  0.183 |  0.186 |  0.189 |  0.191 |
-| Snp3        |  2.968 |  2.980 |  2.991 |  3.002 |
-| Snp4        |  0.116 |  0.119 |  0.121 |  0.123 |
-| Snp5        |  0.302 |  0.312 |  0.322 |  0.331 |
-| Snp6        | -0.073 | -0.074 | -0.076 | -0.078 |
-| Snp7        |  0.107 |  0.109 |  0.110 |  0.112 |
+| Snp2        |  0.183 |  0.186 |  0.189 |  0.192 |
+| Snp3        |  2.974 |  2.986 |  2.997 |  3.007 |
+| Snp4        |  0.116 |  0.118 |  0.120 |  0.122 |
+| Snp5        |  0.303 |  0.313 |  0.323 |  0.332 |
+| Snp6        | -0.073 | -0.075 | -0.076 | -0.078 |
+| Snp7        |  0.107 |  0.109 |  0.111 |  0.112 |
 | Snp8        |  0.000 |  0.000 |  0.000 |  0.000 |
-| Snp9        |  0.207 |  0.209 |  0.211 |  0.212 |
+| Snp9        |  0.208 |  0.209 |  0.211 |  0.213 |
 
 Note that for all values of \lambda, SNP 8 has \hat \beta = 0. This is
 because SNP 8 is a constant feature, a feature (i.e., a column of
@@ -83,7 +83,7 @@ We can summarize our fit at the nth \lambda value:
 ``` r
 # for n = 25 
 summary(admix_fit, lambda = admix_fit$lambda[25])
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.3012
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.3001
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -136,7 +136,7 @@ our first model:
 
 ``` r
 summary(admix_fit2, idx = 25)
-#> lasso-penalized regression model with n=197, p=102 at lambda=0.3516
+#> lasso-penalized regression model with n=197, p=102 at lambda=0.3631
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -158,11 +158,11 @@ admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 #> lasso-penalized model with n=197 and p=102
-#> At minimum cross-validation error (lambda=0.2520):
+#> At minimum cross-validation error (lambda=0.2526):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.46
-#>   Scale estimate (sigma): 1.209
+#>   Cross-validation error (deviance): 1.44
+#>   Scale estimate (sigma): 1.199
 ```
 
 We can also plot the cross-validation error (CVE) versus \lambda (on the
@@ -198,11 +198,11 @@ cv_fit_parallel <- cv_plmm(design = admix_design2,
 # note: the results closely correspond to the above
 summary(cv_fit_parallel)
 #> lasso-penalized model with n=197 and p=102
-#> At minimum cross-validation error (lambda=0.2445):
+#> At minimum cross-validation error (lambda=0.2450):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.40
-#>   Scale estimate (sigma): 1.183
+#>   Cross-validation error (deviance): 1.38
+#>   Scale estimate (sigma): 1.175
 plot(cv_fit_parallel)
 ```
 
@@ -234,7 +234,7 @@ crossprod(admix$y - mean(admix$y))/length(admix$y)
 # our model at its best value of lambda
 apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
 min(mse)
-#> [1] 0.682576
+#> [1] 0.68262
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 
