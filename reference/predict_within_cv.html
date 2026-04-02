@@ -46,14 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict_within_cv</span><span class="op">(</span></span>
-<span>  <span class="va">fit</span>,</span>
-<span>  <span class="va">testX</span>,</span>
-<span>  <span class="va">type</span>,</span>
-<span>  fbm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  Sigma_11 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Sigma_21 <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict_within_cv</span><span class="op">(</span><span class="va">fit</span>, <span class="va">testX</span>, <span class="va">type</span>, fbm <span class="op">=</span> <span class="cn">FALSE</span>, Sigma_21 <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,12 +70,8 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.</p><
 <dd><p>Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.</p></dd>
 
 
-<dt id="arg-sigma-">Sigma_11<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
-<dd><p>Variance-covariance matrix of the training data. Extracted from <code>estimated_Sigma</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
-
-
 <dt id="arg-sigma-">Sigma_21<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
-<dd><p>Covariance matrix between the training and the testing data. Extracted from <code>estimated_Sigma</code> that is generated using all observations. Required if <code>type == 'blup'</code>.</p></dd>
+<dd><p>Covariance matrix between the training and the testing data. Required if <code>type == 'blup'</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

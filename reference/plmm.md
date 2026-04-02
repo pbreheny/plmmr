@@ -234,11 +234,11 @@ A list which includes 19 items:
 fit <- plmm(admix$X, admix$y)
 s <- summary(fit, idx = 50)
 print(s)
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.1408
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.01403
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
-#> # of non-zero coefficients:  37 
+#> # of non-zero coefficients:  89 
 #> -------------------------------------------------
 plot(fit)
 ```

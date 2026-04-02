@@ -5,14 +5,7 @@ Predict method to use in cross-validation (within `cvf`)
 ## Usage
 
 ``` r
-predict_within_cv(
-  fit,
-  testX,
-  type,
-  fbm = FALSE,
-  Sigma_11 = NULL,
-  Sigma_21 = NULL
-)
+predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 ```
 
 ## Arguments
@@ -38,17 +31,10 @@ predict_within_cv(
   Logical: is trainX an FBM object? If so, this function expects that
   testX is also an FBM. The two X matrices must be stored the same way.
 
-- Sigma_11:
-
-  Variance-covariance matrix of the training data. Extracted from
-  `estimated_Sigma` that is generated using all observations. Required
-  if `type == 'blup'`.
-
 - Sigma_21:
 
-  Covariance matrix between the training and the testing data. Extracted
-  from `estimated_Sigma` that is generated using all observations.
-  Required if `type == 'blup'`.
+  Covariance matrix between the training and the testing data. Required
+  if `type == 'blup'`.
 
 ## Value
 

@@ -71,10 +71,10 @@ has its own print method and contains the following list elements:
 admix_design <- create_design(X = admix$X, y = admix$y)
 fit <- plmm(design = admix_design)
 summary(fit, idx = 97)
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.0340
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.00053
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
-#> # of non-zero coefficients:  82 
+#> # of non-zero coefficients:  98 
 #> -------------------------------------------------
 ```

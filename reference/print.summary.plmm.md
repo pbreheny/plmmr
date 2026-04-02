@@ -36,13 +36,13 @@ print(summary(fit, idx = 18))
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
-#> # of non-zero coefficients:  50 
+#> # of non-zero coefficients:  31 
 #> -------------------------------------------------
 print(summary(fit2, idx = 18))
 #> SCAD-penalized regression model with n=197, p=101 at lambda=0.1100
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
-#> # of non-zero coefficients:  49 
+#> # of non-zero coefficients:  31 
 #> -------------------------------------------------
 ```
