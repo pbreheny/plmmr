@@ -154,7 +154,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmp77fO7I/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmphav6DK/processed_colon2.rds
 
 # prepare outcome data
 colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
@@ -167,7 +167,7 @@ overwrite = TRUE, logfile = "test.log")
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-02 20:21:44
+#> Standardization completed at 2026-04-02 20:57:14
 #> Done with standardization. File formatting in progress
 
 # look at the results
@@ -190,7 +190,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp77fO7I/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmphav6DK/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -213,7 +213,7 @@ str(colon_rds)
 # process PLINK data
 temp_dir <- tempdir()
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/Rtmp77fO7I 
+#> Unzipped files are saved in /tmp/Rtmphav6DK 
 
 plink_data <- process_plink(data_dir = temp_dir,
   data_prefix = "penncath_lite",
@@ -237,7 +237,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Imputing the missing (genotype) values using mode method
 #> 
 #> process_plink() completed
-#> Processed files now saved as /tmp/Rtmp77fO7I/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/Rtmphav6DK/imputed_penncath_lite.rds
 
 # get outcome data
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
@@ -272,7 +272,7 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 62 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-02 20:21:47
+#> Standardization completed at 2026-04-02 20:57:17
 #> Done with standardization. File formatting in progress
 
 # examine the design - notice the components of this object

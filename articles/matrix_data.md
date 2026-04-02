@@ -32,7 +32,7 @@ The `admix` dataset is now ready to analyze with a call to
 ``` r
 admix_fit <- plmm(admix$X, admix$y)
 summary(admix_fit, lambda = admix_fit$lambda[50])
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.01403
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.01404
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -83,7 +83,7 @@ We can summarize our fit at the nth \lambda value:
 ``` r
 # for n = 25 
 summary(admix_fit, lambda = admix_fit$lambda[25])
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.08027
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.08036
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -136,7 +136,7 @@ our first model:
 
 ``` r
 summary(admix_fit2, idx = 25)
-#> lasso-penalized regression model with n=197, p=102 at lambda=0.09950
+#> lasso-penalized regression model with n=197, p=102 at lambda=0.09944
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------
@@ -158,11 +158,11 @@ admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
 #> lasso-penalized model with n=197 and p=102
-#> At minimum cross-validation error (lambda=0.1999):
+#> At minimum cross-validation error (lambda=0.1998):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.44
-#>   Scale estimate (sigma): 1.199
+#>   Cross-validation error (deviance): 1.46
+#>   Scale estimate (sigma): 1.209
 ```
 
 We can also plot the cross-validation error (CVE) versus \lambda (on the
@@ -198,11 +198,11 @@ cv_fit_parallel <- cv_plmm(design = admix_design2,
 # note: the results closely correspond to the above
 summary(cv_fit_parallel)
 #> lasso-penalized model with n=197 and p=102
-#> At minimum cross-validation error (lambda=0.1999):
+#> At minimum cross-validation error (lambda=0.1998):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.38
-#>   Scale estimate (sigma): 1.175
+#>   Cross-validation error (deviance): 1.40
+#>   Scale estimate (sigma): 1.183
 plot(cv_fit_parallel)
 ```
 
@@ -234,7 +234,7 @@ crossprod(admix$y - mean(admix$y))/length(admix$y)
 # our model at its best value of lambda
 apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
 min(mse)
-#> [1] 0.6820413
+#> [1] 0.6820412
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 

@@ -59,9 +59,9 @@ admix_design <- create_design(X = admix$X, y = admix$y)
 cv_fit <- cv_plmm(design = admix_design)
 summary(cv_fit)
 #> lasso-penalized model with n=197 and p=101
-#> At minimum cross-validation error (lambda=0.4284):
+#> At minimum cross-validation error (lambda=0.4289):
 #> -------------------------------------------------
-#>   Nonzero coefficients: 1
-#>   Cross-validation error (deviance): 3.32
-#>   Scale estimate (sigma): 1.821
+#>   Nonzero coefficients: 0
+#>   Cross-validation error (deviance): 3.36
+#>   Scale estimate (sigma): 1.832
 ```
