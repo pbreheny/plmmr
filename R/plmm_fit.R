@@ -51,8 +51,8 @@ plmm_fit <- function(prep,
   if (!fbm_flag) {
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
-    rot_X <- wUt %*% prep$std_X
-    rot_y <- wUt %*% prep$centered_y # remember: we're using the centered outcome vector
+    rot_X <- prep$U %*% wUt %*% prep$std_X
+    rot_y <- prep$U %*% wUt %*% prep$centered_y # remember: we're using the centered outcome vector
 
     # re-standardize rot_X
     stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)

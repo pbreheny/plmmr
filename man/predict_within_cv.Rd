@@ -4,14 +4,7 @@
 \alias{predict_within_cv}
 \title{Predict method to use in cross-validation (within \code{cvf})}
 \usage{
-predict_within_cv(
-  fit,
-  testX,
-  type,
-  fbm = FALSE,
-  Sigma_11 = NULL,
-  Sigma_21 = NULL
-)
+predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 }
 \arguments{
 \item{fit}{A list with the components returned by \code{plmm_fit}.}
@@ -23,9 +16,7 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{fbm}{Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.}
 
-\item{Sigma_11}{Variance-covariance matrix of the training data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
-
-\item{Sigma_21}{Covariance matrix between the training and the testing data. Extracted from \code{estimated_Sigma} that is generated using all observations. Required if \code{type == 'blup'}.}
+\item{Sigma_21}{Covariance matrix between the training and the testing data. Required if \code{type == 'blup'}.}
 }
 \value{
 A numeric vector of predicted values

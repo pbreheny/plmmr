@@ -5,7 +5,6 @@
 #' @param type A character argument indicating what type of prediction should be returned. Passed from `cvf()`,
 #'             Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param fbm Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.
-#' @param Sigma_11 Variance-covariance matrix of the training data. Extracted from `estimated_Sigma` that is generated using all observations. Required if \code{type == 'blup'}.
 #' @param Sigma_21 Covariance matrix between the training and the testing data. Required if \code{type == 'blup'}.
 #'
 #' @returns A numeric vector of predicted values
