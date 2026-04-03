@@ -185,9 +185,9 @@ diagonal matrix <span class="math inline">\mathbf{W} \equiv
 (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}</span>.</p></li>
 <li><p>The matrix to be used in rotating (or <em>preconditioning</em>)
 the data is <span class="math inline">\mathbf{\Sigma}^{-1/2} \equiv
-\mathbf{W}\mathbf{U}^\top</span>.</p></li>
+\mathbf{U}\mathbf{W}\mathbf{U}^\top</span>.</p></li>
 <li><p><span class="math inline">\tilde{\dot{\mathbf{X}}} \equiv
-\mathbf{W}\mathbf{U}^\top\dot{\mathbf{X}}</span> is the rotated data, or
+\mathbf{\Sigma}^{-1/2}\dot{\mathbf{X}}</span> is the rotated data, or
 the data on the transformed scale.</p></li>
 <li><p><span class="math inline">\tilde{\mathbf{y}} \equiv
 \mathbf{\Sigma}^{-1/2}\mathbf{y}</span> is the outcome on the rotated

@@ -30,7 +30,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmpy6mF5b/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpLRQGTr/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -44,7 +44,7 @@ along with other meta-data.
 
 Note that what is returned by
 [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md)
-is a character string with a filepath: .
+is a character string with a filepath.
 
 ## Create a design
 
@@ -85,7 +85,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-03 21:02:52
+#> Standardization completed at 2026-04-03 21:41:08
 #> Done with standardization. File formatting in progress
 ```
 
@@ -120,7 +120,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpy6mF5b/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpLRQGTr/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -155,18 +155,18 @@ colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> download the previous version of the package to avoid these warnings:
 #> 
 #> remotes::install_version("bigalgebra", version = "1.1.1")
-#> Input data passed all checks at  2026-04-03 21:02:53
+#> Input data passed all checks at  2026-04-03 21:41:08
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-03 21:02:53
+#> Eigendecomposition finished at  2026-04-03 21:41:08
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:02:53
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:08
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:02:53 
+#> Model fitting finished at  2026-04-03 21:41:09 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-03 21:02:53
+#> Model ready at  2026-04-03 21:41:09
 ```
 
 Notice the messages that are printed out – this documentation may be

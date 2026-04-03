@@ -7,7 +7,7 @@ library(plmmr)
 ```
 
 In this overview, I will provide a demo of the main functions in `plmmr`
-using the `admix` data. Checkout the other vignettes to see examples of
+using the `admix` data. Check out the other vignettes to see examples of
 analyzing data from PLINK files or delimited files.
 
 Examine what we have in the `admix` data:

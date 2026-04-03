@@ -39,7 +39,7 @@ summary(cvfit)
 ## So how fast is `plmmr`? And how well does it scale?
 
 These questions are addressed in our [manuscript describing
-plmmr](https://arxiv.org/abs/2502.01577), along with its accompanying
+plmmr](https://doi.org/10.1093/bib/bbaf672), along with its accompanying
 [GitHub
 repository](https://github.com/tabpeter/reproduce_plmmr_manuscript/).
 However, using GWAS data from a study with 1,400 samples and 800,000

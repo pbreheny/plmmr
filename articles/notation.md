@@ -101,11 +101,10 @@ N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})
   (\eta\mathbf{S} + (1 - \eta)\mathbf{I})^{-1/2}.
 
 - The matrix to be used in rotating (or *preconditioning*) the data is
-  \mathbf{\Sigma}^{-1/2} \equiv \mathbf{W}\mathbf{U}^\top.
+  \mathbf{\Sigma}^{-1/2} \equiv \mathbf{U}\mathbf{W}\mathbf{U}^\top.
 
-- \tilde{\dot{\mathbf{X}}} \equiv
-  \mathbf{W}\mathbf{U}^\top\dot{\mathbf{X}} is the rotated data, or the
-  data on the transformed scale.
+- \tilde{\dot{\mathbf{X}}} \equiv \mathbf{\Sigma}^{-1/2}\dot{\mathbf{X}}
+  is the rotated data, or the data on the transformed scale.
 
 - \tilde{\mathbf{y}} \equiv \mathbf{\Sigma}^{-1/2}\mathbf{y} is the
   outcome on the rotated scale.

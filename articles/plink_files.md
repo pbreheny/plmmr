@@ -40,7 +40,7 @@ MacOS or Linux, you can run this command to unzip:
 ``` r
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/RtmpSHdeSU
+#> Unzipped files are saved in /tmp/RtmpIs5h5r
 ```
 
 For GWAS data, we have to tell `plmmr` how to combine information across
@@ -77,7 +77,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Imputing the missing (genotype) values using mode method
 #> 
 #> process_plink() completed
-#> Processed files now saved as /tmp/RtmpSHdeSU/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpIs5h5r/imputed_penncath_lite.rds
 ```
 
 You’ll see a lot of messages printed to the console here … the result of
@@ -89,7 +89,7 @@ data, which we will now use to create our design.
 
 For didactic purposes, let’s examine what’s in
 `imputed_penncath_lite.rds` using the
-[`readRDS()`](https://rdrr.io/r/base/readRDS.html) function (**Note**
+[`readRDS()`](https://rdrr.io/r/base/readRDS.html) function (**Note:**
 Don’t do this in your analysis - the section below reads the data into
 memory. This is just for illustration):
 
@@ -101,7 +101,7 @@ str(pen) # note: genotype data is *not* in memory
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpSHdeSU/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpIs5h5r/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4367
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -187,7 +187,7 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 62 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-03 21:03:16
+#> Standardization completed at 2026-04-03 21:41:33
 #> Done with standardization. File formatting in progress
 
 # examine the design - notice the components of this object 
@@ -211,7 +211,7 @@ str(pen_design_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpSHdeSU/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpIs5h5r/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4307
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -271,18 +271,18 @@ pen_fit <- plmm(design = pen_design,
 #> download the previous version of the package to avoid these warnings:
 #> 
 #> remotes::install_version("bigalgebra", version = "1.1.1")
-#> Input data passed all checks at  2026-04-03 21:03:17
+#> Input data passed all checks at  2026-04-03 21:41:34
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-03 21:03:19
+#> Eigendecomposition finished at  2026-04-03 21:41:36
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:19
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:36
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:22 
+#> Model fitting finished at  2026-04-03 21:41:39 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-03 21:03:22
+#> Model ready at  2026-04-03 21:41:39
 # you can turn off the trace messages by letting trace = F (default)
 ```
 
@@ -316,10 +316,10 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:24
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:41
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:27 
+#> Model fitting finished at  2026-04-03 21:41:44 
 #> 'Fold' argument is either NULL or missing; assigning folds randomly (by default).
 #>           
 #> To specify folds for each observation, supply a vector with fold assignments.
@@ -330,41 +330,41 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 1
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:28
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:46
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:30 
+#> Model fitting finished at  2026-04-03 21:41:48 
 #> Beginning eigendecomposition in fold  2 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 2
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:32
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:50
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:34 
+#> Model fitting finished at  2026-04-03 21:41:52 
 #> Beginning eigendecomposition in fold  3 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 3
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:35
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:54
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:37 
+#> Model fitting finished at  2026-04-03 21:41:56 
 #> Beginning eigendecomposition in fold  4 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 4
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:39
+#> Rotation (preconditioning) finished at  2026-04-03 21:41:57
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:41 
+#> Model fitting finished at  2026-04-03 21:42:00 
 #> Beginning eigendecomposition in fold  5 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 5
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-03 21:03:42
+#> Rotation (preconditioning) finished at  2026-04-03 21:42:01
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-03 21:03:45
+#> Model fitting finished at  2026-04-03 21:42:04
 ```
 
 There are plot and summary methods for CV models as well:

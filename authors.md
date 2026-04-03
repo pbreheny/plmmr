@@ -20,17 +20,20 @@
 Source:
 [`inst/CITATION`](https://github.com/pbreheny/plmmr/blob/main/inst/CITATION)
 
-Peter T, Reisetter A, Lu Y, Rysavy O, Breheny P (2025). “plmmr: an R
+Peter T, Reisetter A, Lu Y, Rysavy O, Breheny P (2026). “plmmr: an R
 package to fit penalized linear mixed models for genome-wide association
-data with complex correlation structure.” *arXiv preprint*.
-[doi:10.48550/arXiv.2502.01577](https://doi.org/10.48550/arXiv.2502.01577).
+data with complex correlation structure.” *Briefings in bioinformatics*,
+**27**(1).
+[doi:10.1093/bib/bbaf672](https://doi.org/10.1093/bib/bbaf672).
 
     @Article{,
       author = {Tabitha K. Peter and Anna C. Reisetter and Yujing Lu and Oscar A. Rysavy and Patrick J. Breheny},
       title = {plmmr: an R package to fit penalized linear mixed models for genome-wide association data with complex correlation structure},
-      journal = {arXiv preprint},
-      year = {2025},
-      doi = {10.48550/arXiv.2502.01577},
+      journal = {Briefings in bioinformatics},
+      year = {2026},
+      volume = {27},
+      number = {1},
+      doi = {10.1093/bib/bbaf672},
     }
 
 Reisetter A, Breheny P (2021). “Penalized linear mixed models for
