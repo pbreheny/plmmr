@@ -161,8 +161,8 @@ print(admix_cv_s)
 #> At minimum cross-validation error (lambda=0.1998):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.46
-#>   Scale estimate (sigma): 1.209
+#>   Cross-validation error (deviance): 1.41
+#>   Scale estimate (sigma): 1.188
 ```
 
 We can also plot the cross-validation error (CVE) versus \lambda (on the
@@ -198,11 +198,11 @@ cv_fit_parallel <- cv_plmm(design = admix_design2,
 # note: the results closely correspond to the above
 summary(cv_fit_parallel)
 #> lasso-penalized model with n=197 and p=102
-#> At minimum cross-validation error (lambda=0.1998):
+#> At minimum cross-validation error (lambda=0.1863):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.40
-#>   Scale estimate (sigma): 1.183
+#>   Cross-validation error (deviance): 1.34
+#>   Scale estimate (sigma): 1.159
 plot(cv_fit_parallel)
 ```
 

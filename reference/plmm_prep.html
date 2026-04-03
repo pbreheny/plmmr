@@ -58,7 +58,7 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  <span class="va">centered_y</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eta_star <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -101,7 +101,7 @@ This is an internal function for <code>cv_plmm</code></p>
 <dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
 
 
-<dt id="arg-eta-star">eta_star<a class="anchor" aria-label="anchor" href="#arg-eta-star"></a></dt>
+<dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
 <dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.</p></dd>
 
 

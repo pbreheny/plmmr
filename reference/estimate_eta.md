@@ -7,7 +7,7 @@ internally by
 ## Usage
 
 ``` r
-estimate_eta(n, s, U, y, eta_star)
+estimate_eta(n, s, U, y)
 ```
 
 ## Arguments

@@ -9,7 +9,7 @@ plmm_checks(
   design,
   K = NULL,
   diag_K = NULL,
-  eta_star = NULL,
+  eta = NULL,
   penalty = "lasso",
   init = NULL,
   gamma,
@@ -43,7 +43,7 @@ plmm_checks(
   diagonal. If you want to use a diagonal K matrix, you must set diag_K
   = TRUE.
 
-- eta_star:
+- eta:
 
   Optional argument to input a specific eta term rather than estimate it
   from the data. If K is a known covariance matrix that is full rank,

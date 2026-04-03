@@ -15,7 +15,7 @@ plmm_prep(
   centered_y,
   K = NULL,
   diag_K = NULL,
-  eta_star = NULL,
+  eta = NULL,
   fbm_flag,
   trace = NULL,
   ...
@@ -65,7 +65,7 @@ plmm_prep(
   Passed from
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
-- eta_star:
+- eta:
 
   Optional argument to input a specific eta term rather than estimate it
   from the data. If K is a known covariance matrix that is full rank,

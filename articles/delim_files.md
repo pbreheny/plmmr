@@ -30,7 +30,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmp2Lj7NY/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmpy6mF5b/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -85,7 +85,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-02 21:36:06
+#> Standardization completed at 2026-04-03 21:02:52
 #> Done with standardization. File formatting in progress
 ```
 
@@ -120,7 +120,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp2Lj7NY/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmpy6mF5b/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -147,7 +147,7 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Warning in plmm_checks(design, K = K, diag_K = diag_K, eta_star = eta_star, : 
+#> Warning in plmm_checks(design, K = K, diag_K = diag_K, eta = eta, penalty = penalty, : 
 #> Note: version 1.1.2 of bigalgebra produces occasional 'stack imbalance'
 #> warnings; see
 #> https://github.com/fbertran/bigalgebra/issues/2
@@ -155,18 +155,18 @@ colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> download the previous version of the package to avoid these warnings:
 #> 
 #> remotes::install_version("bigalgebra", version = "1.1.1")
-#> Input data passed all checks at  2026-04-02 21:36:06
+#> Input data passed all checks at  2026-04-03 21:02:53
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-02 21:36:06
+#> Eigendecomposition finished at  2026-04-03 21:02:53
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-02 21:36:06
+#> Rotation (preconditioning) finished at  2026-04-03 21:02:53
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-02 21:36:06 
+#> Model fitting finished at  2026-04-03 21:02:53 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-02 21:36:06
+#> Model ready at  2026-04-03 21:02:53
 ```
 
 Notice the messages that are printed out – this documentation may be
