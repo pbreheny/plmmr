@@ -7,9 +7,11 @@ bibentry(
     person('Oscar A.', 'Rysavy'),
     person('Patrick J.', 'Breheny')),
   title = "plmmr: an R package to fit penalized linear mixed models for genome-wide association data with complex correlation structure",
-  journal = "arXiv preprint",
-  year = "2025",
-  doi = "10.48550/arXiv.2502.01577")
+  journal = "Briefings in bioinformatics",
+  year = "2026",
+  volume = "27",
+  number = "1",
+  doi = "10.1093/bib/bbaf672")
 
 bibentry(
   bibtype="Article",
