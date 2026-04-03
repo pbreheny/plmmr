@@ -134,7 +134,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                          p = ncol(full_cv_prep$std_X),
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
-                         eta_star = cv_args$eta_star,
+                         eta = cv_args$eta,
                          trace = cv_args$prep$trace)
   fold_args$prep <- fold_prep
   # fit a plmm within each fold at each value of lambda

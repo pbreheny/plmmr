@@ -12,7 +12,7 @@
 #'                                  (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
 #' @param diag_K                  Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'                                Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
-#' @param eta_star                Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+#' @param eta                     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty                 The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma                   The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
@@ -75,7 +75,7 @@ plmm <- function(design,
                  y = NULL,
                  K = NULL,
                  diag_K = NULL,
-                 eta_star = NULL,
+                 eta = NULL,
                  penalty = "lasso",
                  init = NULL,
                  gamma,
@@ -127,7 +127,7 @@ plmm <- function(design,
   checked_data <- plmm_checks(design,
                               K = K,
                               diag_K = diag_K,
-                              eta_star = eta_star,
+                              eta = eta,
                               penalty = penalty,
                               init = init,
                               gamma = gamma,
@@ -154,7 +154,7 @@ plmm <- function(design,
                         centered_y = checked_data$centered_y,
                         K = checked_data$K,
                         diag_K = checked_data$diag_K,
-                        eta_star = checked_data$eta_star,
+                        eta = checked_data$eta,
                         fbm_flag = checked_data$fbm_flag,
                         trace = trace)
 

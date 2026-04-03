@@ -9,7 +9,7 @@
 #' @param centered_y Continuous outcome vector, centered.
 #' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
-#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+#' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
@@ -32,7 +32,7 @@ plmm_prep <- function(std_X,
                       centered_y,
                       K = NULL,
                       diag_K = NULL,
-                      eta_star = NULL,
+                      eta = NULL,
                       fbm_flag,
                       trace = NULL,
                       ...) {
@@ -117,12 +117,9 @@ plmm_prep <- function(std_X,
          \n \tDid you intend to set diag_K = TRUE?.")
   }
 
-  # estimate eta if needed
-  if (is.null(eta_star)) {
+  # estimate eta if needed; otherwise, use the user-supplied value (this option is mainly used for simulation studies)
+  if (is.null(eta)) {
     eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y)
-  } else {
-    # otherwise, use the user-supplied value (this option is mainly used for simulation studies)
-    eta <- eta_star
   }
 
   # return values to be passed into plmm_fit():

@@ -5,7 +5,7 @@
 \title{Estimate eta (to be used in rotating the data)
 This function is called internally by \code{plmm()}}
 \usage{
-estimate_eta(n, s, U, y, eta_star)
+estimate_eta(n, s, U, y)
 }
 \arguments{
 \item{n}{The number of observations}

@@ -14,7 +14,7 @@ plmm_prep(
   centered_y,
   K = NULL,
   diag_K = NULL,
-  eta_star = NULL,
+  eta = NULL,
   fbm_flag,
   trace = NULL,
   ...
@@ -37,7 +37,7 @@ plmm_prep(
 
 \item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from \code{plmm()}.}
 
-\item{eta_star}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
+\item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
 \item{fbm_flag}{Logical: is std_X an FBM type object? This is set internally by \code{plmm()}.}
 

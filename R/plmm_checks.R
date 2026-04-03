@@ -3,7 +3,7 @@
 #' @param K Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 'd' and 'u', as returned by choose_k().
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'  Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
-#' @param eta_star Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+#' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
@@ -20,7 +20,7 @@
 plmm_checks <- function(design,
                         K = NULL,
                         diag_K = NULL,
-                        eta_star = NULL,
+                        eta = NULL,
                         penalty = "lasso",
                         init = NULL,
                         gamma,
@@ -149,7 +149,7 @@ remotes::install_version(\"bigalgebra\", version = \"1.1.1\")")
     centered_y = y - mean(y),
     K = K,
     diag_K = diag_K,
-    eta_star = eta_star,
+    eta = eta,
     fbm_flag = fbm_flag,
     plink_flag = plink_flag,
     penalty = penalty,
