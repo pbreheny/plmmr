@@ -38,7 +38,7 @@ colon <- readRDS(colon_dat)
 
 The output messages indicate that the data has been processed. This call created 2 files, one `.rds` file and a corresponding `.bk` file. The `.bk` file is a special type of binary file that can be used to store large data sets. The `.rds` file contains a pointer to the `.bk` file, along with other meta-data. 
 
-Note that what is returned by `process_delim()` is a character string with a filepath: `r str(colon_dat)`. 
+Note that what is returned by `process_delim()` is a character string with a filepath. 
 
 ## Create a design 
 
