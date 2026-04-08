@@ -1,7 +1,7 @@
 # Admix: Semi-simulated SNP data
 
 A dataset containing the 100 SNPs, a demographic variable representing
-race, and a simulated outcome
+ancestry, and a simulated outcome.
 
 ## Usage
 
@@ -11,7 +11,7 @@ admix
 
 ## Format
 
-A list with 3 components
+A list with 3 components:
 
 - X:
 
@@ -19,11 +19,11 @@ A list with 3 components
 
 - y:
 
-  vector of simulated (continuous) outcomes
+  197 x 1 matrix of simulated (continuous) outcomes
 
-- race:
+- ancestry:
 
-  vector with racial group categorization: \# 0 = African, 1 = African
+  vector with ancestry categorization: 0 = African, 1 = African
   American, 2 = European, 3 = Japanese
 
 ## Source
