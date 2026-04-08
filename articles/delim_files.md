@@ -30,7 +30,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpfjAuk7/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpUz8ibk/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -85,7 +85,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-08 20:48:34
+#> Standardization completed at 2026-04-08 21:04:23
 #> Done with standardization. File formatting in progress
 ```
 
@@ -120,7 +120,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpfjAuk7/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpUz8ibk/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -147,18 +147,18 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-04-08 20:48:34
+#> Input data passed all checks at  2026-04-08 21:04:23
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-08 20:48:34
+#> Eigendecomposition finished at  2026-04-08 21:04:23
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-08 20:48:34
+#> Rotation (preconditioning) finished at  2026-04-08 21:04:23
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-08 20:48:35 
+#> Model fitting finished at  2026-04-08 21:04:23 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-08 20:48:35
+#> Model ready at  2026-04-08 21:04:23
 ```
 
 Notice the messages that are printed out – this documentation may be
