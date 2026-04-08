@@ -121,23 +121,6 @@ plmm_checks <- function(design,
     plink_flag <- FALSE
   }
 
-  # warn about bigalgebra issues if this is user's first call to filebacked analysis
-  # Check if the warning has been shown
-  if (!.plmmr_env$warning_shown && fbm_flag) {
-
-    warning("
-Note: version 1.1.2 of bigalgebra produces occasional 'stack imbalance'
-warnings; see
-https://github.com/fbertran/bigalgebra/issues/2
-These warnings don't affect the results of plmm(), although you may wish to
-download the previous version of the package to avoid these warnings:
-
-remotes::install_version(\"bigalgebra\", version = \"1.1.1\")")
-
-    # Update the state
-    .plmmr_env$warning_shown <- TRUE
-  }
-
   # return list for model preparation ---------------------------------
   ret <- list(
     std_X = std_X,

@@ -46,7 +46,8 @@ Suggests:
     MASS,
     rmarkdown,
     R.utils,
-    tinytest
+    tinytest,
+    withr
 LinkingTo: 
     BH,
     bigmemory,

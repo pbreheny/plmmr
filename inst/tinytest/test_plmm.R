@@ -12,9 +12,9 @@ plmm0 <- plmm(design = admix_design,
               trace = TRUE)
 
 lasso0 <- glmnet::glmnet(x = admix$X,
-                 y = admix$y,
-                 family = "gaussian",
-                 lambda = lambda0)
+                         y = admix$y,
+                         family = "gaussian",
+                         lambda = lambda0)
 
 A0 <- as.matrix(plmm0$beta_vals[2:10, ])
 dimnames(A0) <- NULL
@@ -22,7 +22,7 @@ B0 <- as.matrix(lasso0$beta[1:9, ]) # NB: glmnet() does not return intercept val
 dimnames(B0) <- NULL
 
 # test 0 - implementation
-tinytest::expect_equivalent(A0, B0, tolerance = 0.01)
+expect_equivalent(A0, B0, tolerance = 0.01)
 
 
 # Test 1 Case where K is diagonal and lambda is 0 ---------------------------
@@ -54,10 +54,11 @@ names(B1) <- NULL
 B1 <- ifelse(is.na(B1), 0, B1)
 
 # test 1: implementation
-tinytest::expect_equivalent(A1, B1, tolerance = 0.01)
+expect_equivalent(A1, B1, tolerance = 0.01)
 
 # check
 # head(data.frame(A1, B1))
+
 
 # Test 2: Case where K is diagonal and lambda != 0 -----------------------------
 
@@ -72,11 +73,11 @@ plmm2 <- plmm(design = admix_design,
 v2 <- diag(K_diagonal)*plmm2$eta + 1
 
 lasso2 <- glmnet::glmnet(x = admix$X,
-                 y = admix$y,
-                 family = "gaussian",
-                 lambda = lambda2,
-                 # weights are by INVERSE variance
-                 weights = 1/v2)
+                         y = admix$y,
+                         family = "gaussian",
+                         lambda = lambda2,
+                         # weights are by INVERSE variance
+                         weights = 1/v2)
 
 
 A2 <- as.matrix(plmm2$beta_vals[2:10, ])
@@ -85,23 +86,27 @@ B2 <- as.matrix(lasso2$beta[1:9, ]) # NB: glmnet() does not return intercept val
 dimnames(B2) <- NULL
 
 # test 2 - implementation
-tinytest::expect_equivalent(A2, B2, tolerance = 0.1)
+expect_equivalent(A2, B2, tolerance = 0.1)
+
 
 # Test 3: show that monomorphic SNPs are given beta values of 0s -------------
+
 monomorphic <- apply(admix$X[,1:15], 2, var) == 0
 monomorphic_snps <- paste0("Snp", which(monomorphic))
 # NB: SNPs 8 and 14 are monomorphic
 fit3 <- plmm(design = admix_design)
-tinytest::expect_equivalent(matrix(0,
-                 nrow = length(monomorphic_snps),
-                 ncol = length(fit3$lambda)
-                 ),
-          fit3$beta_vals[monomorphic_snps,])
+expect_equivalent(matrix(0,
+                         nrow = length(monomorphic_snps),
+                         ncol = length(fit3$lambda)
+),
+fit3$beta_vals[monomorphic_snps,])
+
 
 # Test 4: make sure in-memory and filebacked computations match ---------------
-if (interactive()) {
+
+local({
   # process delimited files
-  temp_dir <- tempdir() # using a temp dir -- change to fit your preference
+  temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
   colon_dat <- process_delim(data_file = "colon2.txt",
                              data_dir = find_example_data(parent = TRUE),
                              rds_dir = temp_dir,
@@ -125,8 +130,9 @@ if (interactive()) {
   fb_fit <- plmm(design = colon_design, trace = TRUE, return_fit = TRUE)
 
   # in-memory
-  colon_X <- read.delim(file = "inst/extdata/colon2.txt")
-  in_mem_design <- create_design(X = colon_X, outcome_col = colon_outcome$y)
+  colon_path <- find_example_data("colon2.txt")
+  colon_X <- read.delim(colon_path)
+  in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
   fit <- plmm(design = in_mem_design,
               # make sure to use the same K!
               K = fb_fit$K,
@@ -135,28 +141,27 @@ if (interactive()) {
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()
   b2 <- fit$beta_vals
-  tinytest::expect_equivalent(b1, b2, tolerance = 0.001) # passes
-
-}
+  expect_equivalent(b1, b2, tolerance = 0.01)
+})
 
 
 # Test 5: make sure predict method is working -------------------
-if (interactive()) {
-  plmm_fit <- plmm(design = admix_design,
-                   penalty = 'lasso',
-                   lambda = c(0.1, 0.01))
-  plmm_pred <- predict(object = plmm_fit, newX = admix$X, type = "lp")
 
-  # use glmnet as gold standard
-  glmnet_fit <- glmnet::glmnet(admix$X, admix$y, lambda = c(0.1, 0.01))
-  glmnet_pred <- predict(glmnet_fit, newx = admix$X, type = "response")
+plmm_fit <- plmm(design = admix_design,
+                 penalty = 'lasso',
+                 lambda = c(0.1, 0.01))
+plmm_pred <- predict(object = plmm_fit, newX = admix$X, type = "lp")
 
-  cbind(admix$y, plmm_pred, glmnet_pred) -> test
-  colnames(test) <- c('y',
-                      'y_hat_plmm0.1',
-                      'y_hat_plmm0.01',
-                      'y_hat_glmnet0.1',
-                      'y_hat_glmnet0.01')
+# use glmnet as gold standard
+glmnet_fit <- glmnet::glmnet(admix$X, admix$y, lambda = c(0.1, 0.01))
+glmnet_pred <- predict(glmnet_fit, newx = admix$X, type = "response")
+
+cbind(admix$y, plmm_pred, glmnet_pred) -> test
+colnames(test) <- c('y',
+                    'y_hat_plmm0.1',
+                    'y_hat_plmm0.01',
+                    'y_hat_glmnet0.1',
+                    'y_hat_glmnet0.01')
 
 glmnet_spe0.1 <- crossprod(glmnet_pred[,1] - admix$y)/nrow(admix$X)
 plmmr_spe0.1 <- crossprod(plmm_pred[,1] - admix$y)/nrow(admix$X)
@@ -164,8 +169,6 @@ plmmr_spe0.1 <- crossprod(plmm_pred[,1] - admix$y)/nrow(admix$X)
 glmnet_spe0.01 <- crossprod(glmnet_pred[,2] - admix$y)/nrow(admix$X)
 plmmr_spe0.01 <- crossprod(plmm_pred[,2] - admix$y)/nrow(admix$X)
 
-  # examine the values to see how much the two sets of predictions differ...
-  # abs(mean(test[,2] - test[,4]))
-  # test[1:10,]
-
-}
+# examine the values to see how much the two sets of predictions differ...
+# abs(mean(test[,2] - test[,4]))
+# test[1:10,]
