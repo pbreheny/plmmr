@@ -9,12 +9,14 @@ plmm0 <- plmm(design = admix_design,
               diag_K = TRUE,
               lambda = lambda0,
               penalty = "lasso",
-              trace = TRUE)
+              trace = TRUE,
+              eps = 1e-15)
 
 lasso0 <- glmnet::glmnet(x = admix$X,
                          y = admix$y,
                          family = "gaussian",
-                         lambda = lambda0)
+                         lambda = lambda0,
+                         thres = 1e-15)
 
 A0 <- as.matrix(plmm0$beta_vals[2:10, ])
 dimnames(A0) <- NULL
@@ -37,7 +39,8 @@ plmm1 <- plmm(design = admix_design,
               diag_K = TRUE,
               # TODO: Need to fix plmm so that lambda can be a single value
               lambda = c(0.001, 0),
-              penalty = "lasso")
+              penalty = "lasso",
+              eps = 1e-15)
 
 v1 <- diag(K_diagonal)*plmm1$eta + 1
 print(summary(plmm1, lambda = 0))
@@ -68,7 +71,8 @@ plmm2 <- plmm(design = admix_design,
               diag_K = TRUE,
               K = K_diagonal,
               lambda = lambda2,
-              penalty = "lasso")
+              penalty = "lasso",
+              eps = 1e-15)
 
 v2 <- diag(K_diagonal)*plmm2$eta + 1
 
@@ -77,7 +81,8 @@ lasso2 <- glmnet::glmnet(x = admix$X,
                          family = "gaussian",
                          lambda = lambda2,
                          # weights are by INVERSE variance
-                         weights = 1/v2)
+                         weights = 1/v2,
+                         thres = 1e-15)
 
 
 A2 <- as.matrix(plmm2$beta_vals[2:10, ])
@@ -86,7 +91,7 @@ B2 <- as.matrix(lasso2$beta[1:9, ]) # NB: glmnet() does not return intercept val
 dimnames(B2) <- NULL
 
 # test 2 - implementation
-expect_equivalent(A2, B2, tolerance = 0.1)
+expect_equivalent(A2, B2, tolerance = 0.01)
 
 
 # Test 3: show that monomorphic SNPs are given beta values of 0s -------------
@@ -127,7 +132,8 @@ local({
                                 logfile = "colon_design",
                                 overwrite = TRUE)
   # filebacked
-  fb_fit <- plmm(design = colon_design, trace = TRUE, return_fit = TRUE)
+  fb_fit <- plmm(design = colon_design, trace = TRUE, return_fit = TRUE,
+                 eps = 1e-15)
 
   # in-memory
   colon_path <- find_example_data("colon2.txt")
@@ -136,7 +142,8 @@ local({
   fit <- plmm(design = in_mem_design,
               # make sure to use the same K!
               K = fb_fit$K,
-              trace = TRUE)
+              trace = TRUE,
+              eps = 1e-15)
 
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()
