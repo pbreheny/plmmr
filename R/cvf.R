@@ -41,16 +41,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
   #   (and in so doing, leave out the ith fold)
   if (cv_args$fbm_flag) {
 
-    # designate the training set
-    train_X <- bigmemory::deepcopy(
-      full_cv_prep$std_X,
-      rows = which(fold != i),
-      type = "double",
-      backingfile = paste0("train_fold", i, ".bk"),
-      descriptorfile = paste0("train_fold", i, ".desc"),
-      backingpath = bigmemory::dir.name(full_cv_prep$std_X)
-    )
-
     # create the copy of the training data to be standardized
     fold_args$std_X <- bigmemory::deepcopy(
       full_cv_prep$std_X,
@@ -194,7 +184,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                              PACKAGE = "plmmr")
       std_test_X@address <- std_test_info$std_X
 
-      const <- (fit.i$eta / ncol(train_X))
+      const <- (fit.i$eta / ncol(fold_args$std_X))
       XXt <- bigalgebra::dgemm(TRANSA = "N",
                                TRANSB = "T",
                                A = std_test_X,
@@ -209,8 +199,8 @@ cvf <- function(i, fold, type, cv_args, ...) {
       std_test_X <- scale(test_X,
                           center = fold_args$std_X_details$center,
                           scale = fold_args$std_X_details$scale)
-      Sigma_21 <- fit.i$eta * (1 / ncol(train_X)) * tcrossprod(std_test_X,
-                                                               fold_args$std_X)
+      Sigma_21 <- (fit.i$eta / ncol(fold_args$std_X)) * tcrossprod(std_test_X,
+                                                                   fold_args$std_X)
     }
 
     yhat <- predict_within_cv(fit = format.i,
