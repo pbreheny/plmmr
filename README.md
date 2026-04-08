@@ -2,7 +2,7 @@
 [![GitHub version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pbreheny/plmmr/master/.version.json&style=flat&logo=github)](https://github.com/pbreheny/plmmr)
 [![CRAN version](https://img.shields.io/cran/v/plmmr?logo=R)](https://cran.r-project.org/package=plmmr)
 [![R-CMD-check](https://github.com/pbreheny/plmmr/workflows/R-CMD-check/badge.svg)](https://github.com/pbreheny/plmmr/actions) 
-[![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/pbreheny/plmmr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pbreheny/plmmr?branch=main)
 <!-- badges: end -->
 
 ## plmmr <img src="man/figures/plmmr_hex_sticker.png" align="right" width="150"/>
