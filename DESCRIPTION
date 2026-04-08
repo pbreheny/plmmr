@@ -45,6 +45,7 @@ Suggests:
     knitr,
     MASS,
     rmarkdown,
+    R.utils,
     tinytest
 LinkingTo: 
     BH,

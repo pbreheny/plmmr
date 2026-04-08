@@ -21,7 +21,7 @@ The `plmmr` package is designed to handle data so that users can analyze large d
 
 ## Processing PLINK files 
 
-First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; if you are on MacOS or Linux, you can run this command to unzip: 
+First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; you can run this command to unzip: 
 
 ```{r}
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
@@ -47,7 +47,6 @@ plink_data <- process_plink(data_dir = temp_dir,
                             #   leaving this on causes problems knitting this vignette
                             parallel = FALSE)
 ```
-
 
 You'll see a lot of messages printed to the console here ... the result of all this is the creation of 3 files: `imputed_penncath_lite.rds` and `imputed_penncath_lite.bk` contain the data. ^[Optionally, you can add a `.log` file via the `logfile` argument: a log file is a text file documenting the steps that were just done.] These will show up in the folder where the PLINK data is. What is returned is a filepath. The `.rds` object at this filepath contains the processed data, which we will now use to create our design. 
 

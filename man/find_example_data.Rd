@@ -2,21 +2,21 @@
 % Please edit documentation in R/find_example_data.R
 \name{find_example_data}
 \alias{find_example_data}
-\title{A function to help with accessing example PLINK files}
+\title{A function to help with accessing example PLINK files.}
 \usage{
 find_example_data(path, parent = FALSE)
 }
 \arguments{
-\item{path}{Argument (string) specifying a path (filename) for an external data file in \code{extdata/}}
+\item{path}{Argument (string) specifying a path (filename) for an external data file in \code{extdata/}.}
 
-\item{parent}{If \code{path=TRUE} and the user wants the name of the parent directory where that file is located, set \code{parent=TRUE}. Defaults to FALSE.}
+\item{parent}{If the user wants the name of the parent directory where the example data is located, set \code{parent=TRUE}. Defaults to FALSE.}
 }
 \value{
 If \code{path=NULL}, a character vector of file names is returned. If path is given, then a character string
-with the full file path
+with the full file path.
 }
 \description{
-A function to help with accessing example PLINK files
+A function to help with accessing example PLINK files.
 }
 \examples{
 find_example_data(parent = TRUE)

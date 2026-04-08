@@ -2,20 +2,19 @@
 % Please edit documentation in R/find_example_data.R
 \name{unzip_example_data}
 \alias{unzip_example_data}
-\title{For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the \code{plmmr} package}
+\title{Companion function to unzip the .gz files that ship with the \code{plmmr} package.}
 \usage{
 unzip_example_data(outdir)
 }
 \arguments{
-\item{outdir}{The file path to the directory to which the .gz files should be written}
+\item{outdir}{The file path to the directory to which the .gz files should be written.}
 }
 \value{
-Nothing is returned; the PLINK files that ship with the \code{plmmr} package are stored in the directory specified by 'outdir'
+Nothing is returned; the PLINK files that ship with the \code{plmmr} package are stored in the directory specified by 'outdir'.
 }
 \description{
-For Linux/Unix and MacOS only, here is a companion function to unzip the .gz files that ship with the \code{plmmr} package
+Companion function to unzip the .gz files that ship with the \code{plmmr} package.
 }
 \details{
 For an example of this function, look at \code{vignette('plink_files', package = "plmmr")}.
-Note again: this function will not work on Windows systems - only for Linux/Unix and MacOS.
 }
