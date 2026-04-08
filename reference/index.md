@@ -25,7 +25,7 @@
   : a function to create a design for PLMM modeling
 
 - [`find_example_data()`](https://pbreheny.github.io/plmmr/reference/find_example_data.md)
-  : A function to help with accessing example PLINK files
+  : A function to help with accessing example PLINK files.
 
 - [`process_plink()`](https://pbreheny.github.io/plmmr/reference/process_plink.md)
   :
@@ -41,8 +41,8 @@
 - [`unzip_example_data()`](https://pbreheny.github.io/plmmr/reference/unzip_example_data.md)
   :
 
-  For Linux/Unix and MacOS only, here is a companion function to unzip
-  the .gz files that ship with the `plmmr` package
+  Companion function to unzip the .gz files that ship with the `plmmr`
+  package.
 
 ## Plotting, summarizing, and formatting
 
