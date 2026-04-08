@@ -5,11 +5,11 @@
 \alias{admix}
 \title{Admix: Semi-simulated SNP data}
 \format{
-A list with 3 components
+A list with 3 components:
 \describe{
 \item{X}{SNP matrix (197 observations of 100 SNPs)}
-\item{y}{vector of simulated (continuous) outcomes}
-\item{race}{vector with racial group categorization: # 0 = African, 1 = African American, 2 = European, 3 = Japanese}
+\item{y}{197 x 1 matrix of simulated (continuous) outcomes}
+\item{ancestry}{vector with ancestry categorization: 0 = African, 1 = African American, 2 = European, 3 = Japanese}
 }
 }
 \source{
@@ -19,7 +19,7 @@ A list with 3 components
 admix
 }
 \description{
-A dataset containing the 100 SNPs, a demographic variable representing race,
-and a simulated outcome
+A dataset containing the 100 SNPs, a demographic variable representing ancestry,
+and a simulated outcome.
 }
 \keyword{datasets}
