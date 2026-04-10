@@ -33,7 +33,7 @@ compute_blup <- function(fit, Xb, Sigma_21) {
   proj_r <- U %*% Ut_r
   tmp <- U %*% (Ut_r / (eta * s + (1 - eta)))
   ranef <- Sigma_21 %*% tmp
-  blup <- drop(Xb + ranef)
+  blup <- Xb + ranef
 
   return(blup)
 }

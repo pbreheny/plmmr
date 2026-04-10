@@ -48,7 +48,7 @@ predict_within_cv <- function(fit,
 
   # for linear predictor, return mean values
   if (type == "lp") {
-    return(drop(Xb))
+    return(Xb)
   }
 
   # for blup, will incorporate the estimated variance
