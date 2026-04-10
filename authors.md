@@ -35,18 +35,3 @@ data with complex correlation structure.” *Briefings in bioinformatics*,
       number = {1},
       doi = {10.1093/bib/bbaf672},
     }
-
-Reisetter A, Breheny P (2021). “Penalized linear mixed models for
-structured genetic data.” *Genetic epidemiology*, **45**(5), 427–444.
-[doi:10.1002/gepi.22384](https://doi.org/10.1002/gepi.22384).
-
-    @Article{,
-      author = {Anna C. Reisetter and Patrick Breheny},
-      title = {Penalized linear mixed models for structured genetic data},
-      journal = {Genetic epidemiology},
-      year = {2021},
-      volume = {45},
-      pages = {427--444},
-      number = {5},
-      doi = {10.1002/gepi.22384},
-    }
