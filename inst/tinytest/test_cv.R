@@ -29,8 +29,11 @@ local({
     logfile = "colon_design",
     overwrite = TRUE)
   # filebacked
-  fb_fit <- cv_plmm(design = fb_design, trace = TRUE, return_fit = TRUE,
-                    nfolds = n)
+  fb_fit <- cv_plmm(
+    design = fb_design,
+    trace = TRUE,
+    return_fit = TRUE,
+    nfolds = n)
 
   # in-memory
   colon_path <- find_example_data("colon2.txt")
@@ -38,7 +41,12 @@ local({
 
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
 
-  fit <- cv_plmm(design = in_mem_design, trace = TRUE, nfolds = n)
+  fit <- cv_plmm(
+    design = in_mem_design,
+    K = fb_fit$K, # use same K
+    trace = TRUE,
+    return_fit = TRUE,
+    nfolds = n)
 
   # check: these results match
   b1 <- coef(fb_fit) |> as.numeric()

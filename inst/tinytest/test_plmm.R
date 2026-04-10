@@ -142,8 +142,7 @@ local({
   fb_fit <- plmm(
     design = colon_design,
     trace = TRUE,
-    return_fit = TRUE,
-    eps = 1e-15)
+    return_fit = TRUE)
 
   # in-memory
   colon_path <- find_example_data("colon2.txt")
@@ -151,8 +150,8 @@ local({
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
   fit <- plmm(
     design = in_mem_design,
-    trace = TRUE,
-    eps = 1e-15)
+    K = fb_fit$K,
+    trace = TRUE)
 
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()
