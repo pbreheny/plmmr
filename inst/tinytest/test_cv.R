@@ -1,7 +1,7 @@
 # Test 1 - make sure in-memory and filebacked LOOCV match ----------------------
 
 local({
-  lambda <- exp(seq(log(0.01), log(1), length.out = 50))
+  lambda <- exp(seq(log(1), log(0.01), length.out = 50))
   # process delimited files
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
   colon_dat <- process_delim(
@@ -50,7 +50,7 @@ local({
     nfolds = n)
 
   # check: these results match
-  b1 <- coef(fb_fit) |> as.numeric()
-  b2 <- coef(fit)
+  b1 <- fb_fit$fit$beta_vals |> as.matrix()
+  b2 <- fit$fit$beta_vals
   expect_equivalent(b1, b2, tolerance = 0.01)
 })

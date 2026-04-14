@@ -179,7 +179,9 @@ cv_plmm <- function(design,
     eps = eps,
     warn = warn))
 
-  if (!missing(lambda_min)) {
+  if (!missing(lambda)) {
+    fit_args$lambda <- lambda
+  } else if (!missing(lambda_min)) {
     fit_args$lambda_min <- lambda_min
   }
 
