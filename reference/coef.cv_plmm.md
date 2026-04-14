@@ -40,5 +40,5 @@ values of `lambda`.
 cv_fit <- cv_plmm(admix$X, admix$y, return_fit = TRUE)
 head(coef(cv_fit))
 #> (Intercept)        Snp1        Snp2        Snp3        Snp4        Snp5 
-#>     4.04092     0.00000     0.00000     0.00000     0.00000     0.00000 
+#>    4.040164    0.000000    0.000000    0.000000    0.000000    0.000000 
 ```
