@@ -53,10 +53,12 @@ plmm_prep(
 
 - K:
 
-  Similarity matrix used to rotate the data. This should either be a
-  known matrix that reflects the covariance of y, or an estimate
-  (Default is \\\frac{1}{p}(XX^T)\\, where X is standardized). This can
-  also be a list, with components d and u (as returned by choose_k)
+  Similarity matrix used to rotate the data. This should either be: (1)
+  a known matrix that reflects the covariance of y, (2) an estimate
+  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
+  and 'U', as returned by a previous
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
+  fit on the same data.
 
 - diag_K:
 

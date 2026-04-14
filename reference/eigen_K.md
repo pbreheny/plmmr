@@ -17,7 +17,7 @@ eigen_K(std_X, fbm_flag)
 
 - fbm_flag:
 
-  Logical: is std_X an FBM obejct? Passed from
+  Logical: is std_X an FBM object? Passed from
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 ## Value

@@ -52,7 +52,8 @@ plmm(
   a known matrix that reflects the covariance of y, (2) an estimate
   (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
   and 'U', as returned by a previous `plmm()` model fit on the same
-  data.
+  data. Note: if a user provides their own matrix, it is decomposed as
+  provided and will *not* be scaled.
 
 - diag_K:
 
@@ -234,7 +235,7 @@ A list which includes 19 items:
 fit <- plmm(admix$X, admix$y)
 s <- summary(fit, idx = 50)
 print(s)
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.01404
+#> lasso-penalized regression model with n=197, p=101 at lambda=0.01403
 #> -------------------------------------------------
 #> The model converged 
 #> -------------------------------------------------

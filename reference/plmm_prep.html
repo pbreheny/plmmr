@@ -94,7 +94,10 @@ This is an internal function for <code>cv_plmm</code></p>
 
 
 <dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \(\frac{1}{p}(XX^T)\), where X is standardized). This can also be a list, with components d and u (as returned by choose_k)</p></dd>
+<dd><p>Similarity matrix used to rotate the data. This should either be:
+(1) a known matrix that reflects the covariance of y,
+(2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
+(3) a list with components 's' and 'U', as returned by a previous <code><a href="plmm.html">plmm()</a></code> model fit on the same data.</p></dd>
 
 
 <dt id="arg-diag-k">diag_K<a class="anchor" aria-label="anchor" href="#arg-diag-k"></a></dt>

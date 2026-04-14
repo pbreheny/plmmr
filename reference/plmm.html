@@ -90,7 +90,8 @@ internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 <dd><p>Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
-(3) a list with components 's' and 'U', as returned by a previous <code>plmm()</code> model fit on the same data.</p></dd>
+(3) a list with components 's' and 'U', as returned by a previous <code>plmm()</code> model fit on the same data.
+Note: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
 
 
 <dt id="arg-diag-k">diag_K<a class="anchor" aria-label="anchor" href="#arg-diag-k"></a></dt>
@@ -201,7 +202,7 @@ Defaults to TRUE.</p></dd>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">plmm</span><span class="op">(</span><span class="va">admix</span><span class="op">$</span><span class="va">X</span>, <span class="va">admix</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized regression model with n=197, p=101 at lambda=0.01404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lasso-penalized regression model with n=197, p=101 at lambda=0.01403</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The model converged </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>

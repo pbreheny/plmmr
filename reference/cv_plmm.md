@@ -58,7 +58,10 @@ cv_plmm(
   Similarity matrix used to rotate the data. This should either be (1) a
   known matrix that reflects the covariance of y, (2) an estimate
   (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
-  and 'u', as returned by choose_k().
+  and 'U', as returned by a previous
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
+  fit on the same data. Note: if a user provides their own matrix, it is
+  decomposed as provided and will *not* be scaled.
 
 - diag_K:
 
@@ -238,10 +241,10 @@ admix_design <- create_design(X = admix$X, y = admix$y)
 cv_fit <- cv_plmm(design = admix_design)
 print(summary(cv_fit))
 #> lasso-penalized model with n=197 and p=101
-#> At minimum cross-validation error (lambda=0.4289):
+#> At minimum cross-validation error (lambda=0.4284):
 #> -------------------------------------------------
-#>   Nonzero coefficients: 0
-#>   Cross-validation error (deviance): 2.48
-#>   Scale estimate (sigma): 1.576
+#>   Nonzero coefficients: 1
+#>   Cross-validation error (deviance): 2.44
+#>   Scale estimate (sigma): 1.564
 plot(cv_fit)
 ```
