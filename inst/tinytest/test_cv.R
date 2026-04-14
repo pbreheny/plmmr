@@ -1,8 +1,7 @@
-admix_design <- create_design(X = admix$X, y = admix$y)
-
 # Test 1 - make sure in-memory and filebacked LOOCV match ----------------------
 
 local({
+  lambda <- exp(seq(log(0.01), log(1), length.out = 50))
   # process delimited files
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
   colon_dat <- process_delim(
@@ -26,11 +25,12 @@ local({
     add_outcome = colon_outcome,
     outcome_id = "ID",
     outcome_col = "y",
-    logfile = "colon_design",
+    logfile = "fb_design",
     overwrite = TRUE)
   # filebacked
   fb_fit <- cv_plmm(
     design = fb_design,
+    lambda = lambda,
     trace = TRUE,
     return_fit = TRUE,
     nfolds = n)
@@ -43,7 +43,8 @@ local({
 
   fit <- cv_plmm(
     design = in_mem_design,
-    K = fb_fit$K, # use same K
+    lambda = lambda,
+    K = fb_fit$K,
     trace = TRUE,
     return_fit = TRUE,
     nfolds = n)

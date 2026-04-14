@@ -10,7 +10,11 @@
 #' @param y               Optional: In the case where `design` is a `matrix` or `data.frame`, the user must also supply
 #'                        a numeric outcome vector as the `y` argument. In this case, `design` and `y` will be passed
 #'                        internally to `create_design(X = design, y = y)`.
-#' @param K               Similarity matrix used to rotate the data. This should either be (1) a known matrix that reflects the covariance of y, (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or (3) a list with components 's' and 'u', as returned by choose_k().
+#' @param K               Similarity matrix used to rotate the data. This should either be
+#'                          (1) a known matrix that reflects the covariance of y,
+#'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
+#'                          (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
+#'                        Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
 #' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
 #'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.

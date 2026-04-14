@@ -7,7 +7,10 @@
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param centered_y Continuous outcome vector, centered.
-#' @param K Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)
+#' @param K Similarity matrix used to rotate the data. This should either be:
+#'            (1) a known matrix that reflects the covariance of y,
+#'            (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
+#'            (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
 #' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
 #' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`.
@@ -99,8 +102,7 @@ plmm_prep <- function(std_X,
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K, symmetric = TRUE)
-      s <- eigen_res$values * (1 / std_X_p)
-      # note: our definition of the RRM averages over the number of features used to calculate K
+      s <- eigen_res$values
       U <- eigen_res$vectors
     }
 

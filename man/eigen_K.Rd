@@ -10,7 +10,7 @@ eigen_K(std_X, fbm_flag)
 \arguments{
 \item{std_X}{The \emph{standardized} design matrix, stored as big.matrix object.}
 
-\item{fbm_flag}{Logical: is std_X an FBM obejct? Passed from \code{plmm()}.}
+\item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
 }
 \value{
 A list with the eigenvectors and eigenvalues of K

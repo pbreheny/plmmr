@@ -33,7 +33,10 @@ plmm_prep(
 
 \item{centered_y}{Continuous outcome vector, centered.}
 
-\item{K}{Similarity matrix used to rotate the data. This should either be a known matrix that reflects the covariance of y, or an estimate (Default is \eqn{\frac{1}{p}(XX^T)}, where X is standardized). This can also be a list, with components d and u (as returned by choose_k)}
+\item{K}{Similarity matrix used to rotate the data. This should either be:
+(1) a known matrix that reflects the covariance of y,
+(2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
+(3) a list with components 's' and 'U', as returned by a previous \code{plmm()} model fit on the same data.}
 
 \item{diag_K}{Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from \code{plmm()}.}
 

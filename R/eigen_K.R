@@ -2,7 +2,7 @@
 #' Note: This is faster than taking SVD of X when p >> n
 #'
 #' @param std_X The *standardized* design matrix, stored as big.matrix object.
-#' @param fbm_flag Logical: is std_X an FBM obejct? Passed from `plmm()`.
+#' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
 #'
 #' @return A list with the eigenvectors and eigenvalues of K
 #'
