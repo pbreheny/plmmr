@@ -174,6 +174,7 @@ plmm_fit <- function(prep,
       eps = eps,
       max.iter = max_iter,
       penalty.factor = penalty_factor,
+      warn = warn,
       ...)
 
     stdrot_scale_beta <- res$beta

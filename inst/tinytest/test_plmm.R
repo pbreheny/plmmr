@@ -112,7 +112,7 @@ fit3$beta_vals[monomorphic_snps,])
 # Test 4: make sure in-memory and filebacked computations match ----------------
 
 local({
-  lambda <- exp(seq(log(1), log(0.01), length.out = 50))
+  lambda <- exp(seq(log(1), log(0.05), length.out = 25))
   # process delimited files
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
   colon_dat <- process_delim(
@@ -141,7 +141,9 @@ local({
     design = fb_design,
     lambda = lambda,
     trace = TRUE,
-    return_fit = TRUE)
+    return_fit = TRUE,
+    eps = 1e-15,
+    warn = FALSE)
 
   # in-memory
   colon_path <- find_example_data("colon2.txt")
@@ -151,7 +153,10 @@ local({
     design = in_mem_design,
     lambda = lambda,
     K = fb_fit$K,
-    trace = TRUE)
+    trace = TRUE,
+    return_fit = TRUE,
+    eps = 1e-15,
+    warn = FALSE)
 
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()

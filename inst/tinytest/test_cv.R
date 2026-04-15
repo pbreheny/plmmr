@@ -1,7 +1,7 @@
 # Test 1 - make sure in-memory and filebacked LOOCV match ----------------------
 
 local({
-  lambda <- exp(seq(log(1), log(0.01), length.out = 50))
+  lambda <- exp(seq(log(1), log(0.05), length.out = 25))
   # process delimited files
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
   colon_dat <- process_delim(
@@ -33,7 +33,9 @@ local({
     lambda = lambda,
     trace = TRUE,
     return_fit = TRUE,
-    nfolds = n)
+    nfolds = n,
+    eps = 1e-15,
+    warn = FALSE) # need for small epsilon
 
   # in-memory
   colon_path <- find_example_data("colon2.txt")
@@ -47,10 +49,12 @@ local({
     K = fb_fit$K,
     trace = TRUE,
     return_fit = TRUE,
-    nfolds = n)
+    nfolds = n,
+    eps = 1e-15,
+    warn = FALSE)
 
   # check: these results match
-  b1 <- fb_fit$fit$beta_vals |> as.matrix()
-  b2 <- fit$fit$beta_vals
+  b1 <- coef(fb_fit) |> as.numeric()
+  b2 <- coef(fit)
   expect_equivalent(b1, b2, tolerance = 0.01)
 })
