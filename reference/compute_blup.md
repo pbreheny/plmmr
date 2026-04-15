@@ -5,7 +5,7 @@ a function to compute the BLUP
 ## Usage
 
 ``` r
-compute_blup(fit, Xb, Sigma_21)
+compute_blup(fit, Xb, Sigma_21, idx)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ compute_blup(fit, Xb, Sigma_21)
 
   Covariance matrix between the training and the testing data. Extracted
   from `estimated_Sigma` that is generated using all observations
+
+- idx:
+
+  Vector of indices of the penalty parameter `lambda` at which
+  predictions are required. By default, all indices are returned.
 
 ## Value
 

@@ -46,7 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_blup</span><span class="op">(</span><span class="va">fit</span>, <span class="va">Xb</span>, <span class="va">Sigma_21</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_blup</span><span class="op">(</span><span class="va">fit</span>, <span class="va">Xb</span>, <span class="va">Sigma_21</span>, <span class="va">idx</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,6 +63,10 @@
 
 <dt id="arg-sigma-">Sigma_21<a class="anchor" aria-label="anchor" href="#arg-sigma-"></a></dt>
 <dd><p>Covariance matrix between the training and the testing data. Extracted from <code>estimated_Sigma</code> that is generated using all observations</p></dd>
+
+
+<dt id="arg-idx">idx<a class="anchor" aria-label="anchor" href="#arg-idx"></a></dt>
+<dd><p>Vector of indices of the penalty parameter <code>lambda</code> at which predictions are required. By default, all indices are returned.</p></dd>
 
 </dl></div>
     <div class="section level2">
