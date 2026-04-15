@@ -9,7 +9,6 @@ plmm(
   design,
   y = NULL,
   K = NULL,
-  diag_K = NULL,
   eta = NULL,
   penalty = "lasso",
   init = NULL,
@@ -54,14 +53,6 @@ plmm(
   and 'U', as returned by a previous `plmm()` model fit on the same
   data. Note: if a user provides their own matrix, it is decomposed as
   provided and will *not* be scaled.
-
-- diag_K:
-
-  Logical: should K be a diagonal matrix? This would reflect
-  observations that are unrelated, or that can be treated as unrelated.
-  Defaults to FALSE. Note: plmm() does not check to see if a matrix is
-  diagonal. If you want to use a diagonal K matrix, you must set diag_K
-  = TRUE.
 
 - eta:
 

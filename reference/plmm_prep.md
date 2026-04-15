@@ -14,7 +14,6 @@ plmm_prep(
   p,
   centered_y,
   K = NULL,
-  diag_K = NULL,
   eta = NULL,
   fbm_flag,
   trace = NULL,
@@ -59,13 +58,6 @@ plmm_prep(
   and 'U', as returned by a previous
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data.
-
-- diag_K:
-
-  Logical: should K be a diagonal matrix? This would reflect
-  observations that are unrelated, or that can be treated as unrelated.
-  Passed from
-  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 - eta:
 

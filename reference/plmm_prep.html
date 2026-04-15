@@ -57,7 +57,6 @@ This is an internal function for <code>cv_plmm</code></p>
 <span>  <span class="va">p</span>,</span>
 <span>  <span class="va">centered_y</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  diag_K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -98,10 +97,6 @@ This is an internal function for <code>cv_plmm</code></p>
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
 (3) a list with components 's' and 'U', as returned by a previous <code><a href="plmm.html">plmm()</a></code> model fit on the same data.</p></dd>
-
-
-<dt id="arg-diag-k">diag_K<a class="anchor" aria-label="anchor" href="#arg-diag-k"></a></dt>
-<dd><p>Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from <code><a href="plmm.html">plmm()</a></code>.</p></dd>
 
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>

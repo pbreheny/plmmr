@@ -8,7 +8,6 @@ plmm_checks
 plmm_checks(
   design,
   K = NULL,
-  diag_K = NULL,
   eta = NULL,
   penalty = "lasso",
   init = NULL,
@@ -36,14 +35,6 @@ plmm_checks(
   and 'U', as returned by a previous
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data.
-
-- diag_K:
-
-  Logical: should K be a diagonal matrix? This would reflect
-  observations that are unrelated, or that can be treated as unrelated.
-  Defaults to FALSE. Note: plmm() does not check to see if a matrix is
-  diagonal. If you want to use a diagonal K matrix, you must set diag_K
-  = TRUE.
 
 - eta:
 
