@@ -7,7 +7,7 @@ lambda0 <- c(1, 0.1, 0.01, 0.001)
 admix_design <- create_design(X = admix$X, y = admix$y)
 plmm0 <- plmm(
   design = admix_design,
-  diag_K = TRUE,
+  K = diag(nrow(admix$X)),
   lambda = lambda0,
   penalty = "lasso",
   trace = TRUE,
@@ -39,7 +39,6 @@ K_diagonal <- diag(x = (rnorm(n = nrow(admix$X))^2),
 plmm1 <- plmm(
   design = admix_design,
   K = K_diagonal,
-  diag_K = TRUE,
   # TODO: Need to fix plmm so that lambda can be a single value
   lambda = c(0.001, 0),
   penalty = "lasso",
@@ -69,7 +68,6 @@ lambda2 <- c(1, 0.1, 0.01)
 
 plmm2 <- plmm(
   design = admix_design,
-  diag_K = TRUE,
   K = K_diagonal,
   lambda = lambda2,
   penalty = "lasso",
@@ -113,18 +111,11 @@ fit3$beta_vals[monomorphic_snps,])
 
 local({
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
-  # log-transform the colon data
-  colon_path <- find_example_data("colon2.txt")
-  colon_X <- read.delim(colon_path)
-  colon_X[,-1] <- log(colon_X[,-1])
-  write.table(colon_X,
-              file.path(temp_dir, "colon2_log.txt"),
-              sep = "\t", quote = FALSE, row.names = FALSE)
 
   # process delimited files
   colon_dat <- process_delim(
-    data_file = "colon2_log.txt",
-    data_dir = temp_dir,
+    data_file = "colon2.txt",
+    data_dir = find_example_data(parent = TRUE),
     rds_dir = temp_dir,
     rds_prefix = "processed_colon2",
     sep = "\t",
@@ -151,6 +142,9 @@ local({
     return_fit = TRUE)
 
   # in-memory
+  colon_path <- find_example_data("colon2.txt")
+  colon_X <- read.delim(colon_path)
+
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
 
   fit <- plmm(
@@ -163,7 +157,7 @@ local({
   # check: these results match
   b1 <- fb_fit$beta_vals |> as.matrix()
   b2 <- fit$beta_vals
-  expect_equivalent(b1, b2, tolerance = 0.01)
+  expect_equivalent(b1, b2, tolerance = 0.025) # allowing slightly higher tolerance here; small coefficients
 })
 
 

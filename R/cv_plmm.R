@@ -15,8 +15,6 @@
 #'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                          (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
 #'                        Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
-#' @param diag_K          Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Defaults to FALSE.
-#'                        Note: plmm() does not check to see if a matrix is diagonal. If you want to use a diagonal K matrix, you must set diag_K = TRUE.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
@@ -77,7 +75,6 @@
 cv_plmm <- function(design,
                     y = NULL,
                     K = NULL,
-                    diag_K = NULL,
                     eta = NULL,
                     penalty = "lasso",
                     type = "blup",
@@ -128,7 +125,6 @@ cv_plmm <- function(design,
   # run data checks ------------------------------
   checked_data <- plmm_checks(design = design,
                               K = K,
-                              diag_K = diag_K,
                               eta = eta,
                               penalty = penalty,
                               init = init,
@@ -151,7 +147,6 @@ cv_plmm <- function(design,
                       p = checked_data$p,
                       centered_y = checked_data$centered_y,
                       K = checked_data$K,
-                      diag_K = checked_data$diag_K,
                       eta = checked_data$eta,
                       fbm_flag = checked_data$fbm_flag,
                       trace = trace))

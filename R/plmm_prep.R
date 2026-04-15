@@ -11,7 +11,6 @@
 #'            (1) a known matrix that reflects the covariance of y,
 #'            (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'            (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
-#' @param diag_K Logical: should K be a diagonal matrix? This would reflect observations that are unrelated, or that can be treated as unrelated. Passed from `plmm()`.
 #' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
@@ -34,45 +33,31 @@ plmm_prep <- function(std_X,
                       p,
                       centered_y,
                       K = NULL,
-                      diag_K = NULL,
                       eta = NULL,
                       fbm_flag,
                       trace = NULL,
                       ...) {
 
 
-  ## coersion
+  ## coercion
   U <- s <- eta <- NULL
 
+  # First: handle the cases where no decomposition is needed ------------------
 
-  # set default: if diag_K not specified, set to false
-  if (is.null(diag_K)) {
-    diag_K <- FALSE
-  }
-
-  # First: handle the cases where no decomposition is  ------------------
-
-  # case 1: K is the identity matrix
-  flag1 <- diag_K & is.null(K)
+  # case 1: K is user-supplied diagonal matrix (like a weighted lm())
+  flag1 <- !is.null(K) & ifelse(!("matrix" %in% class(K) || "dcGMatrix" %in% class(K)),
+                                FALSE,
+                                Matrix::isDiagonal(K))
   if (flag1) {
-    if (trace) {
-      (cat("Using identity matrix for K.\n"))
-    }
-    s <- rep(1, n)
-    U <- diag(nrow = n)
-  }
-  # case 2: K is user-supplied diagonal matrix (like a weighted lm())
-  flag2 <- diag_K & !is.null(K) & ("matrix" %in% class(K))
-  if (flag2) {
     if (trace) {
       (cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n"))
     }
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = n)[, order(diag(K), decreasing = TRUE)]
   }
-  # case 3: K is a user-supplied list
-  flag3 <- !is.null(K) & ("list" %in% class(K))
-  if (flag3) {
+  # case 2: K is a user-supplied list
+  flag2 <- !is.null(K) & ("list" %in% class(K))
+  if (flag2) {
     if (trace) {
       cat("K is a list; will pass U,s components from list to model fitting.\n")
     }
@@ -85,7 +70,7 @@ plmm_prep <- function(std_X,
   }
 
   # otherwise, need to do eigendecomposition -----------------------------
-  if (sum(c(flag1, flag2, flag3)) == 0) {
+  if (sum(c(flag1, flag2)) == 0) {
     if (trace) {
       cat("Starting decomposition.\n")
     }
@@ -115,8 +100,7 @@ plmm_prep <- function(std_X,
          \n plmm_prep(), the internal function called by plmm() to do this step of the modeling process.
          \n Re-examine the supplied arguments -- here are some common mistakes:
          \n Is the K argument you supplied something other than a list, a matrix, or a filepath to an RDS file with one of those objects?
-         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'.
-         \n \tDid you intend to set diag_K = TRUE?.")
+         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'.")
   }
 
   # estimate eta if needed; otherwise, use the user-supplied value (this option is mainly used for simulation studies)
