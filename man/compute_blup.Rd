@@ -4,7 +4,7 @@
 \alias{compute_blup}
 \title{a function to compute the BLUP}
 \usage{
-compute_blup(fit, Xb, Sigma_21)
+compute_blup(fit, Xb, Sigma_21, idx)
 }
 \arguments{
 \item{fit}{An object returned by \code{plmm()}}
@@ -12,6 +12,8 @@ compute_blup(fit, Xb, Sigma_21)
 \item{Xb}{Linear predictor}
 
 \item{Sigma_21}{Covariance matrix between the training and the testing data. Extracted from \code{estimated_Sigma} that is generated using all observations}
+
+\item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 }
 \value{
 Sigma_hat, a matrix representing the estimated variance

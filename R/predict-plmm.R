@@ -156,7 +156,7 @@ predict.plmm <- function(object,
     } else {
       Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
     }
-    blup <- compute_blup(object, Xb, Sigma_21)
+    blup <- compute_blup(object, Xb, Sigma_21, idx)
 
     return(blup)
   }

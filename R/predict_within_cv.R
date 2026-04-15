@@ -53,7 +53,7 @@ predict_within_cv <- function(fit,
 
   # for blup, will incorporate the estimated variance
   if (type == "blup") {
-    blup <- compute_blup(fit, Xb, Sigma_21)
+    blup <- compute_blup(fit, Xb, Sigma_21, idx = seq_along(fit$lambda))
     return(blup)
   }
 
