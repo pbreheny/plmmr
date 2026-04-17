@@ -62,6 +62,6 @@ summary(cv_fit)
 #> At minimum cross-validation error (lambda=0.2632):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 5
-#>   Cross-validation error (deviance): 2.57
-#>   Scale estimate (sigma): 1.602
+#>   Cross-validation error (deviance): 2.53
+#>   Scale estimate (sigma): 1.590
 ```

@@ -108,11 +108,11 @@ fit <- plmm(design = train_design)
 # look at mean squared prediction error
 mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
 min(mspe)
-#> [1] 2.819134
+#> [1] 2.813242
 
 mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
 min(mspe_blup) # BLUP is better
-#> [1] 2.127884
+#> [1] 2.126016
 
 # compare the MSPE of our model to a null model, for reference
 # null model = intercept only -> y_hat is always mean(y)
