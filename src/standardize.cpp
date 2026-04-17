@@ -21,8 +21,8 @@ RcppExport SEXP in_mem_std(SEXP X_,
       for (int i = 0; i < n; i++) {
         c[j] += X(i, j);
       }
+      c[j] = c[j] / n;
     }
-    c[j] = c[j] / n;
     for (int i = 0; i < n; i++) {
       XX(i, j) = X(i, j) - c[j];
     }

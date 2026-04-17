@@ -29,20 +29,24 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
 
 
   if (is.null(rot_y) && !(missing(y))) {
-    rot_y <- wUt %*% y
+    rot_y <- U %*% wUt %*% y
   }
 
   # rotate the intercept (this is the only term in the null model)
   intcpt <- rep(1, n)
-  rot_intcpt <- (wUt %*% intcpt)
+  if(isTRUE(all.equal(rep(0, ncol(U)), colSums(U)))) {
+    rot_intcpt <- rep(0, n)
+    rot_e <- rot_y # e = 'error', y - mean
+  } else {
+    rot_intcpt <- (U %*% wUt %*% intcpt)
+    # calculate the term representing the \hat\beta(\eta) MLE
+    intcpt_crossprod <- crossprod(rot_intcpt)
+    intcpt_y_crossprod <- crossprod(rot_intcpt, rot_y)
+    hat_beta_mle <- drop(intcpt_y_crossprod / intcpt_crossprod)
+    # using hat_beta_mle, calculate the quadratic term from the log likelihood
+    rot_e <- rot_y - (rot_intcpt * hat_beta_mle)
+  }
 
-  # calculate the term representing the \hat\beta(\eta) MLE
-  intcpt_crossprod <- crossprod(rot_intcpt)
-  intcpt_y_crossprod <- crossprod(rot_intcpt, rot_y)
-  hat_beta_mle <- drop(intcpt_y_crossprod / intcpt_crossprod)
-
-  # using hat_beta_mle, calculate the quadratic term from the log likelihood
-  rot_e <- rot_y - (rot_intcpt * hat_beta_mle) # e = 'error', y - mean
   rot_sqe <- crossprod(rot_e) # mse = sq. error
   quad_term <- (1/n) * rot_sqe/sum(w2)
 
