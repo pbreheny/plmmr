@@ -87,8 +87,9 @@ plmm_prep <- function(std_X,
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K, symmetric = TRUE)
-      s <- eigen_res$values
-      U <- eigen_res$vectors
+      nz <- eigen_res$values > 1e-4
+      s <- eigen_res$values[nz]
+      U <- eigen_res$vectors[, nz, drop = FALSE]
     }
 
   }
