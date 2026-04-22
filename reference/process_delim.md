@@ -41,12 +41,12 @@ process_delim(
 - rds_dir:
 
   The directory where the user wants to create the '.rds' and '.bk'
-  files Defaults to `data_dir`
+  files. Defaults to `data_dir`
 
 - rds_prefix:
 
   String specifying the user's preferred filename for the to-be-created
-  .rds file (will be create inside `rds_dir` folder) Note: 'rds_prefix'
+  .rds file (will be create inside `rds_dir` folder). Note: 'rds_prefix'
   cannot be the same as 'data_prefix'
 
 - logfile:
@@ -57,12 +57,9 @@ process_delim(
 
 - overwrite:
 
-  Optional: the name (character string) of the prefix of the logfile to
-  be written. Defaults to 'process_plink', i.e. you will get
-  'process_plink.log' as the outfile. **Note**: If there are multiple
-  `.rds` files with names that start with "std_prefix\_...", **this will
-  error out**. To protect users from accidentally deleting files with
-  saved results, only one `.rds` file can be removed with this option.
+  Logical: if existing `.bk`/`.rds` files exist for the specified
+  directory/prefix, should these be overwritten? Defaults to FALSE. Set
+  to TRUE if you want to change the imputation method you're using, etc.
 
 - quiet:
 
@@ -87,13 +84,13 @@ colon_dat <- process_delim(data_file = "colon2.txt",
  data_dir = find_example_data(parent = TRUE), overwrite = TRUE,
  rds_dir = temp_dir, rds_prefix = "processed_colon2", sep = "\t", header = TRUE)
 #> 
-#> Overwriting existing files:processed_colon2.bk/.rds/.desc
+#> Overwriting existing files: processed_colon2.bk/.rds/.desc
 #> There are 62 observations and 2001 features in the specified data files.
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpxKqLCz/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmp3G9aS5/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -102,7 +99,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpxKqLCz/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmp3G9aS5/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62

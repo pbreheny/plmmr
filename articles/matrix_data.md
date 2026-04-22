@@ -6,9 +6,9 @@ library(plmmr)
 #> Loading required package: bigmemory
 ```
 
-In this overview, I will provide a demo of the main functions in `plmmr`
-using the `admix` data. Check out the other vignettes to see examples of
-analyzing data from PLINK files or delimited files.
+In this overview, we will provide a demo of the main functions in
+`plmmr` using the `admix` data. Check out the other vignettes to see
+examples of analyzing data from PLINK files or delimited files.
 
 Examine what we have in the `admix` data:
 
@@ -40,7 +40,7 @@ summary(admix_fit, lambda = admix_fit$lambda[50])
 #> -------------------------------------------------
 ```
 
-Notice: I am passing `admix$X` as the `design` argument in
+Notice: We are passing `admix$X` as the `design` argument in
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md);
 internally,
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) has taken
@@ -123,7 +123,7 @@ colnames(X_plus_ancestry) <- c("ancestry", colnames(admix$X))
 # create a design
 admix_design2 <- create_design(X = X_plus_ancestry,
                                y = admix$y,
-                               # below, I mark ancestry variable as unpenalized
+                               # below, we mark ancestry variable as unpenalized
                                # we want ancestry to always be in the model
                                unpen = "ancestry")
 

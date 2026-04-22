@@ -50,6 +50,7 @@
 <span>  <span class="va">data_dir</span>,</span>
 <span>  <span class="va">data_prefix</span>,</span>
 <span>  <span class="va">rds_dir</span>,</span>
+<span>  <span class="va">rds_prefix</span>,</span>
 <span>  <span class="va">outfile</span>,</span>
 <span>  <span class="va">parallel</span>,</span>
 <span>  <span class="va">overwrite</span>,</span>
@@ -71,6 +72,11 @@
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
 <dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
+
+
+<dt id="arg-rds-prefix">rds_prefix<a class="anchor" aria-label="anchor" href="#arg-rds-prefix"></a></dt>
+<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create inside <code>rds_dir</code> folder). If no rds_prefix is provided, the processed data files will be returned in memory.
+Note: 'rds_prefix' cannot be the same as 'data_prefix'</p></dd>
 
 
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>

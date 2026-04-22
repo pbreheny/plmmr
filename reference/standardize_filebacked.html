@@ -46,18 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">standardize_filebacked</span><span class="op">(</span></span>
-<span>  <span class="va">X</span>,</span>
-<span>  <span class="va">new_file</span>,</span>
-<span>  <span class="va">rds_dir</span>,</span>
-<span>  <span class="va">non_gen</span>,</span>
-<span>  <span class="va">complete_outcome</span>,</span>
-<span>  <span class="va">id_var</span>,</span>
-<span>  <span class="va">outfile</span>,</span>
-<span>  <span class="va">quiet</span>,</span>
-<span>  <span class="va">overwrite</span>,</span>
-<span>  tocenter <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">standardize_filebacked</span><span class="op">(</span><span class="va">X</span>, <span class="va">new_file</span>, <span class="va">rds_dir</span>, <span class="va">outfile</span>, <span class="va">quiet</span>, tocenter <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,9 +54,7 @@
 
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A list that includes:
-(1) subset_X: a <code>big.matrix</code> object that has been subset &amp;/or had any additional predictors appended as columns
-(2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X</p></dd>
+<dd><p>A <code>big.matrix</code> object that has been subset &amp;/or had any additional predictors appended as columns</p></dd>
 
 
 <dt id="arg-new-file">new_file<a class="anchor" aria-label="anchor" href="#arg-new-file"></a></dt>
@@ -86,8 +73,8 @@
 <dd><p>Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)</p></dd>
 
 
-<dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>Logical: if existing <code>.bk</code>/<code>.rds</code> files exist for the specified directory/new_file, should these be overwritten?</p></dd>
+<dt id="arg-tocenter">tocenter<a class="anchor" aria-label="anchor" href="#arg-tocenter"></a></dt>
+<dd><p>Should the matrix be centered in addition to scaled? Defaults to TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">

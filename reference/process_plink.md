@@ -104,10 +104,6 @@ process_plink(
   Logical: if existing `.bk`/`.rds` files exist for the specified
   directory/prefix, should these be overwritten? Defaults to FALSE. Set
   to TRUE if you want to change the imputation method you're using, etc.
-  **Note**: If there are multiple `.rds` files with names that start
-  with "std_prefix\_...", **this will error out**. To protect users from
-  accidentally deleting files with saved results, only one `.rds` file
-  can be removed with this option.
 
 - ...:
 
@@ -133,10 +129,11 @@ Three files are created in the location specified by `rds_dir`:
   information) (3) `fam`: a data.frame with the PLINK 'fam' data (i.e.,
   the pedigree information)
 
-- 'prefix.bk': This is the backingfile that stores the numeric data of
-  the genotype matrix
+- 'rds_prefix.bk': This is the backing file that stores the numeric data
+  of the genotype matrix.
 
-- 'rds_prefix.desc'" This is the description file, as needed by the
+- 'rds_prefix.desc' This is the description file, needed to attach the
+  genotype matrix to the R session.
 
 Note that `process_plink()` need only be run once for a given set of
 PLINK files; in subsequent data analysis/scripts,

@@ -78,12 +78,12 @@ Note: if your file has headers/column names, set 'header = TRUE' – this will b
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The directory where the user wants to create the '.rds' and '.bk' files
+<dd><p>The directory where the user wants to create the '.rds' and '.bk' files.
 Defaults to <code>data_dir</code></p></dd>
 
 
 <dt id="arg-rds-prefix">rds_prefix<a class="anchor" aria-label="anchor" href="#arg-rds-prefix"></a></dt>
-<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create inside <code>rds_dir</code> folder)
+<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create inside <code>rds_dir</code> folder).
 Note: 'rds_prefix' cannot be the same as 'data_prefix'</p></dd>
 
 
@@ -93,10 +93,7 @@ logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_d
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>Optional: the name (character string) of the prefix of the logfile to be written.
-Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-<strong>Note</strong>: If there are multiple <code>.rds</code> files with names that start with "std_prefix_...", <strong>this will error out</strong>.
-To protect users from accidentally deleting files with saved results, only one <code>.rds</code> file can be removed with this option.</p></dd>
+<dd><p>Logical: if existing <code>.bk</code>/<code>.rds</code> files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
@@ -119,13 +116,13 @@ To protect users from accidentally deleting files with saved results, only one <
 <span class="r-in"><span> data_dir <span class="op">=</span> <span class="fu"><a href="find_example_data.html">find_example_data</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span> rds_dir <span class="op">=</span> <span class="va">temp_dir</span>, rds_prefix <span class="op">=</span> <span class="st">"processed_colon2"</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overwriting existing files:processed_colon2.bk/.rds/.desc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overwriting existing files: processed_colon2.bk/.rds/.desc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> There are 62 observations and 2001 features in the specified data files.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> At this time, plmmr::process_delim() does not not handle missing values in delimited data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Please make sure you have addressed missingness before you proceed.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> process_plink() completed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved as /tmp/RtmpxKqLCz/processed_colon2.rds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved as /tmp/Rtmp3G9aS5/processed_colon2.rds</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_dat</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">colon2</span><span class="op">)</span></span></span>
@@ -134,7 +131,7 @@ To protect users from accidentally deleting files with saved results, only one <
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ description:List of 13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ sharedType: chr "FileBacked"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ filename  : chr "processed_colon2.bk"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ dirname   : chr "/tmp/RtmpxKqLCz/"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ dirname   : chr "/tmp/Rtmp3G9aS5/"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ totalRows : int 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ totalCols : int 2001</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ rowOffset : num [1:2] 0 62</span>

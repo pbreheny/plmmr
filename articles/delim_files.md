@@ -14,7 +14,7 @@ model.
 ## Process the data
 
 ``` r
- # I will create the processed data files in a temporary directory; 
+ # We will create the processed data files in a temporary directory; 
 #   fill in the `rds_dir` argument with the directory of your choice
 temp_dir <- tempdir()
 
@@ -30,7 +30,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmpx5zbhj/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpQQNcFc/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -58,8 +58,8 @@ transforming each column of the design matrix to have a mean of 0 and a
 variance of 1. The penalty factor vector is an indicator vector in which
 a 0 represents a feature that will always be in the model – such a
 feature is *unpenalized*. To specify columns that you want to be
-unpenalized, use the ‘unpen’ argument. Below in our example, I am
-choosing to make ‘sex’ an unpenalized covariate.
+unpenalized, use the ‘unpen’ argument. Below in our example, we make
+‘sex’ an unpenalized covariate.
 
 A side note on unpenalized covariates: for delimited file data, all
 features that you want to include in the model – both the penalized and
@@ -85,7 +85,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-20 19:06:51
+#> Standardization completed at 2026-04-22 21:00:56
 #> Done with standardization. File formatting in progress
 ```
 
@@ -120,7 +120,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpx5zbhj/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpQQNcFc/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -147,18 +147,18 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-04-20 19:06:51
+#> Input data passed all checks at  2026-04-22 21:00:56
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-20 19:06:51
+#> Eigendecomposition finished at  2026-04-22 21:00:56
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-20 19:06:51
+#> Rotation (preconditioning) finished at  2026-04-22 21:00:56
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-20 19:06:52 
+#> Model fitting finished at  2026-04-22 21:00:57 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-20 19:06:52
+#> Model ready at  2026-04-22 21:00:57
 ```
 
 Notice the messages that are printed out – this documentation may be

@@ -5,28 +5,15 @@ A helper function to standardize a filebacked matrix
 ## Usage
 
 ``` r
-standardize_filebacked(
-  X,
-  new_file,
-  rds_dir,
-  non_gen,
-  complete_outcome,
-  id_var,
-  outfile,
-  quiet,
-  overwrite,
-  tocenter = TRUE
-)
+standardize_filebacked(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE)
 ```
 
 ## Arguments
 
 - X:
 
-  A list that includes: (1) subset_X: a `big.matrix` object that has
-  been subset &/or had any additional predictors appended as columns (2)
-  ns: a numeric vector indicating the indices of nonsingular columns in
-  subset_X
+  A `big.matrix` object that has been subset &/or had any additional
+  predictors appended as columns
 
 - new_file:
 
@@ -49,10 +36,9 @@ standardize_filebacked(
   Logical: should messages be printed to the console? Defaults to FALSE
   (which leaves the print messages on...)
 
-- overwrite:
+- tocenter:
 
-  Logical: if existing `.bk`/`.rds` files exist for the specified
-  directory/new_file, should these be overwritten?
+  Should the matrix be centered in addition to scaled? Defaults to TRUE.
 
 ## Value
 

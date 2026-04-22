@@ -9,6 +9,7 @@ read_plink_files(
   data_dir,
   data_prefix,
   rds_dir,
+  rds_prefix,
   outfile,
   parallel,
   overwrite,
@@ -32,6 +33,13 @@ read_plink_files(
 
   The path to the directory in which you want to create the new '.rds'
   and '.bk' files. Defaults to `data_dir`
+
+- rds_prefix:
+
+  String specifying the user's preferred filename for the to-be-created
+  .rds file (will be create inside `rds_dir` folder). If no rds_prefix
+  is provided, the processed data files will be returned in memory.
+  Note: 'rds_prefix' cannot be the same as 'data_prefix'
 
 - outfile:
 

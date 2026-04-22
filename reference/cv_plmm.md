@@ -13,7 +13,7 @@ cv_plmm(
   K = NULL,
   eta = NULL,
   penalty = "lasso",
-  type = "blup",
+  type = NULL,
   gamma,
   alpha = 1,
   lambda_min,
@@ -66,7 +66,10 @@ cv_plmm(
 
   Optional argument to input a specific eta term rather than estimate it
   from the data. If K is a known covariance matrix that is full rank,
-  this should be 1.
+  this should be 1. Note: Setting eta = 1 will change the default of
+  `type` to 'lp', as K is always calculated empirically in each fold.
+  This can be overridden by specifying 'blup', but should be done with
+  caution.
 
 - penalty:
 

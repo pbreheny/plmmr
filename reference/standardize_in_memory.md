@@ -14,6 +14,10 @@ standardize_in_memory(X, tocenter = TRUE)
 
   a matrix
 
+- tocenter:
+
+  Should the matrix be centered in addition to scaled? Defaults to TRUE.
+
 ## Value
 
 a list with the standardized matrix, vectors with the centering/scaling

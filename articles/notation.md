@@ -17,7 +17,7 @@ conventions:
 ## Math notation
 
 Here are the concepts we need to denote, in order of their usage in our
-derivations. I have blocked these into sections corresponding to the
+derivations. We have blocked these into sections corresponding to the
 steps of the model fitting process.
 
 ### Statistical model (the overall framework)
