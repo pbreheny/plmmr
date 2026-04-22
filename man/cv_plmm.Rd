@@ -10,7 +10,7 @@ cv_plmm(
   K = NULL,
   eta = NULL,
   penalty = "lasso",
-  type = "blup",
+  type = NULL,
   gamma,
   alpha = 1,
   lambda_min,
@@ -46,7 +46,8 @@ internally to \code{create_design(X = design, y = y)}.}
 (3) a list with components 's' and 'U', as returned by a previous \code{plmm()} model fit on the same data.
 Note: if a user provides their own matrix, it is decomposed as provided and will \emph{not} be scaled.}
 
-\item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
+\item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
+Note: Setting eta = 1 will change the default of \code{type} to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying 'blup', but should be done with caution.}
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 

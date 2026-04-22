@@ -98,9 +98,7 @@ reference:
     - impute_snp_data
     - index_samples
     - lam_names
-    - lasso
     - log_lik
-    - MCP
     - name_and_count_bigsnp
     - plmm_checks
     - plmm_fit
@@ -111,7 +109,6 @@ reference:
     - read_data_files
     - read_plink_files
     - rotate_filebacked
-    - SCAD
     - setup_lambda
     - standardize_filebacked
     - standardize_in_memory
@@ -120,6 +117,3 @@ reference:
     - untransform_in_memory
     - untransform_delim
     - untransform_plink
-
-
-
