@@ -16,7 +16,7 @@
 #'                          (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
 #'                        Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#'                        Note: Setting eta = 1 will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying 'blup', but should be done with caution.
+#'                        Note: Setting eta = 1 will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying type='blup', but should be done with caution.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.

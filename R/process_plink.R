@@ -70,11 +70,16 @@ process_plink <- function(data_dir,
     logfile <- tempfile()
   }
 
-
   if (!quiet) {
     cat("\nPreprocessing", data_prefix, "data:")
   }
   cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
+
+  # remove old data backing files --------------------
+
+  gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
+  list.files(rds_dir, pattern = paste0("^", data_prefix, "\\.(bk|rds)"), full.names = TRUE) |>
+    unlink(force = TRUE)
 
   # read in PLINK files --------------------------------
   step1 <- read_plink_files(data_dir = data_dir,
@@ -151,7 +156,7 @@ process_plink <- function(data_dir,
     # TODO: add warning if object size is greater than some threshold
     ret$X <- bigmemory::attach.big.matrix(ret$X)[,]
 
-    list.files(rds_dir, pattern = paste0("^", rds_prefix, ".(bk|desc)"),
+    list.files(rds_dir, pattern = paste0("^", rds_prefix, "\\.(bk|desc)"),
                full.names = TRUE) |>
       unlink()
   }
