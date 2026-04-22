@@ -1,6 +1,7 @@
 #' A helper function to standardize matrices
 #'
 #' @param X a matrix
+#' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
 #' @returns a list with the standardized matrix, vectors with the centering/scaling values, and a vector with the indices of nonsingular columns
 #' @keywords internal

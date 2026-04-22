@@ -17,11 +17,9 @@
 
 #' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
 #' @param parallel            Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
-#'                              In particular, the user should be aware that too much parallelization can make computations *slower*.
+#'                            In particular, the user should be aware that too much parallelization can make computations *slower*.
 #' @param quiet               Logical: should messages to be printed to the console be silenced? Defaults to FALSE
 #' @param overwrite           Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
-#'                            **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
-#'                            To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
 #' @param ...                 Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
 #'
 #' @return The filepath to the '.rds' object created; see details for explanation.
@@ -34,10 +32,9 @@
 #'    (2) `map`: a data.frame with the PLINK 'bim' data (i.e., the variant information)
 #'    (3) `fam`: a data.frame with the PLINK 'fam' data (i.e., the pedigree information)
 #'
-#' * 'prefix.bk': This is the
-#' backingfile that stores the numeric data of the genotype matrix
+#' * 'rds_prefix.bk': This is the backing file that stores the numeric data of the genotype matrix.
 #'
-#' * 'rds_prefix.desc'" This is the description file, as needed by the
+#' * 'rds_prefix.desc' This is the description file, needed to attach the genotype matrix to the R session.
 #'
 #'  Note that `process_plink()` need only be run once for a given set of PLINK
 #'  files; in subsequent data analysis/scripts, `get_data()` will access the '.rds' file.
@@ -59,7 +56,10 @@ process_plink <- function(data_dir,
                           overwrite = FALSE,
                           ...) {
 
-  if (identical(rds_prefix, data_prefix)) stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n")
+  if (identical(rds_prefix, data_prefix)) {
+    stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
+         call. = FALSE)
+  }
 
   # start log -----------------------------------------
   if (!is.null(logfile)) {
@@ -76,17 +76,11 @@ process_plink <- function(data_dir,
   }
   cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
 
-
-  # handle overwrite ----------------------------------
-  if (overwrite) {
-    to_remove <- list.files(file.path(rds_dir, rds_prefix))
-    file.remove(to_remove)
-  }
-
   # read in PLINK files --------------------------------
   step1 <- read_plink_files(data_dir = data_dir,
                             data_prefix = data_prefix,
                             rds_dir = rds_dir,
+                            rds_prefix = rds_prefix,
                             outfile = logfile,
                             parallel = parallel,
                             overwrite = overwrite,
@@ -130,8 +124,6 @@ process_plink <- function(data_dir,
                            outfile = logfile,
                            quiet = quiet, ...)
 
-  bigsnpr::snp_save(step3) # save imputed data
-
   # format return object --------------------------------------------------------
 
   X  <- bigmemory::deepcopy(
@@ -140,8 +132,8 @@ process_plink <- function(data_dir,
     col = seq_len(ncol(step3$genotypes)),
     type = "double", # this is why we're making a copy -- need type 'double' downstream
     backingpath = rds_dir,
-    backingfile = paste0("processed_", data_prefix, ".bk"),
-    descriptorfile = paste0("processed_", data_prefix, ".desc")
+    backingfile = paste0(rds_prefix, ".bk"),
+    descriptorfile = paste0(rds_prefix, ".desc")
   )
 
   ret <- structure(list(X = bigmemory::describe(X),
@@ -159,31 +151,15 @@ process_plink <- function(data_dir,
     # TODO: add warning if object size is greater than some threshold
     ret$X <- bigmemory::attach.big.matrix(ret$X)[,]
 
-    list.files(rds_dir, pattern = paste0("processed_", data_prefix, ".bk"),
+    list.files(rds_dir, pattern = paste0("^", rds_prefix, ".(bk|desc)"),
                full.names = TRUE) |>
-      file.remove()
-    list.files(rds_dir, pattern = paste0("processed_", data_prefix, ".desc"),
-               full.names = TRUE) |>
-      file.remove()
+      unlink()
   }
-
-  # cleanup --------------------------------------------------------------------
-
-  # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern = paste0("^file.*.bk"), full.names = TRUE) |>
-    file.remove()
-  list.files(rds_dir, pattern = paste0("^", data_prefix, ".rds"), full.names = TRUE) |>
-    file.remove()
-  list.files(rds_dir, pattern = paste0("^", data_prefix, ".bk"), full.names = TRUE) |>
-    file.remove() #TODO: Determine the permissions error origin
-
-  gc()
 
   if (!quiet) cat("\nprocess_plink() completed")
 
   if (!is.null(rds_prefix)) {
-    cat("\nProcessed files now saved as",
-        file.path(rds_dir, rds_filename))
+    cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename))
 
     # file.remove(tempfile())
     # TODO: Not needed? Think about best way to handle logfile...

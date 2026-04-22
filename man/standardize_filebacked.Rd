@@ -4,23 +4,10 @@
 \alias{standardize_filebacked}
 \title{A helper function to standardize a filebacked matrix}
 \usage{
-standardize_filebacked(
-  X,
-  new_file,
-  rds_dir,
-  non_gen,
-  complete_outcome,
-  id_var,
-  outfile,
-  quiet,
-  overwrite,
-  tocenter = TRUE
-)
+standardize_filebacked(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE)
 }
 \arguments{
-\item{X}{A list that includes:
-(1) subset_X: a \code{big.matrix} object that has been subset &/or had any additional predictors appended as columns
-(2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X}
+\item{X}{A \code{big.matrix} object that has been subset &/or had any additional predictors appended as columns}
 
 \item{new_file}{The new_file (as a character string) of the bed/fam data files (e.g., \code{new_file = 'mydata'})}
 
@@ -30,7 +17,7 @@ standardize_filebacked(
 
 \item{quiet}{Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)}
 
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/new_file, should these be overwritten?}
+\item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE.}
 }
 \value{
 A list with a new component of \code{obj} called 'std_X' - this is an FBM with column-standardized data.

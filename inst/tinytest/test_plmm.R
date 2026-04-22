@@ -1,5 +1,3 @@
-# Tabitha Peter - tests for plmmr
-
 # Test 0: Case where K = identity ----------------------------------------------
 
 # set up

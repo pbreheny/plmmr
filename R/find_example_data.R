@@ -38,6 +38,8 @@ unzip_example_data <- function(outdir) {
   # Get a list of all .gz files in the input directory
   gz_files <- list.files(indir, pattern = "\\.gz$", full.names = TRUE)
 
+  gc()
+
   # Loop through and unzip each .gz file
   for(i in seq_along(gz_files)) {
     file_base <- tools::file_path_sans_ext(basename(gz_files[i]))

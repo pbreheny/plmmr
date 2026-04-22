@@ -26,7 +26,7 @@ Throughout this document, the reader will notice some notation conventions:
 
 ## Math notation
 
-Here are the concepts we need to denote, in order of their usage in our derivations. I have blocked these into sections corresponding to the steps of the model fitting process.
+Here are the concepts we need to denote, in order of their usage in our derivations. We have blocked these into sections corresponding to the steps of the model fitting process.
 
 ### Statistical model (the overall framework)
 

@@ -50,9 +50,7 @@ In particular, the user should be aware that too much parallelization can make c
 
 \item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
 
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
-\strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
-To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
 \item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
 }
@@ -70,9 +68,8 @@ Three files are created in the location specified by \code{rds_dir}:
 This matrix has type 'double', which is important for downstream operations in \code{create_design()}
 (2) \code{map}: a data.frame with the PLINK 'bim' data (i.e., the variant information)
 (3) \code{fam}: a data.frame with the PLINK 'fam' data (i.e., the pedigree information)
-\item 'prefix.bk': This is the
-backingfile that stores the numeric data of the genotype matrix
-\item 'rds_prefix.desc'" This is the description file, as needed by the
+\item 'rds_prefix.bk': This is the backing file that stores the numeric data of the genotype matrix.
+\item 'rds_prefix.desc' This is the description file, needed to attach the genotype matrix to the R session.
 }
 
 Note that \code{process_plink()} need only be run once for a given set of PLINK

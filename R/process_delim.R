@@ -5,16 +5,13 @@
 #'                      Example: use `data_file = "myfile.txt"`, not `data_file = "~/mydirectory/myfile.txt"`
 #'                      Note: if your file has headers/column names, set 'header = TRUE' -- this will be passed into `bigmemory::read.big.matrix()`.
 #' @param feature_id    A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
-#' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files
+#' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files.
 #'                      Defaults to `data_dir`
-#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder)
+#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder).
 #'                      Note: 'rds_prefix' cannot be the same as 'data_prefix'
 #' @param logfile       Optional: the name (character string) of the prefix of the
 #'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
-#' @param overwrite     Optional: the name (character string) of the prefix of the logfile to be written.
-#'                      Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#'                      **Note**: If there are multiple `.rds` files with names that start with "std_prefix_...", **this will error out**.
-#'                      To protect users from accidentally deleting files with saved results, only one `.rds` file can be removed with this option.
+#' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #' @param quiet         Logical: should the messages printed to the console be silenced? Defaults to FALSE.
 #' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: 'sep' is an option to pass here, as is 'header'.
 #'
@@ -45,7 +42,8 @@ process_delim <- function(data_dir,
   prefix <- tools::file_path_sans_ext(data_file)
 
   if (identical(rds_prefix, prefix)) {
-    stop("rds_prefix cannot be the same as data_prefix.", call. = FALSE)
+    stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
+         call. = FALSE)
   }
 
   # start log ------------------------------------------
@@ -90,17 +88,6 @@ process_delim <- function(data_dir,
 
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))
-
-  # cleanup ----------------------------------------------------------
-  # These steps remove intermediate rds/bk files created by the steps of the data management process
-  list.files(rds_dir, pattern = paste0("^file.*.bk"), full.names = TRUE) |>
-    file.remove()
-  list.files(rds_dir, pattern = paste0("^", prefix, ".rds"), full.names = TRUE) |>
-    file.remove()
-  list.files(rds_dir, pattern = paste0("^", prefix, ".bk"), full.names = TRUE) |>
-    file.remove()
-
-  gc()
 
   if (!quiet) {
     cat("\nprocess_plink() completed \nProcessed files now saved as",

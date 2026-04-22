@@ -17,25 +17,23 @@
 read_data_files <- function(data_file, data_dir, rds_dir, rds_prefix,
                             outfile, overwrite, quiet, ...) {
 
-  rds_path <- file.path(rds_dir,  paste0(rds_prefix, ".rds"))
-  bk_path <- file.path(rds_dir, paste0(rds_prefix, ".bk"))
-  desc_path <- file.path(rds_dir, paste0(rds_prefix, ".desc"))
+  to_remove <- paste0(file.path(rds_dir, rds_prefix), c(".rds", ".desc", ".bk"))
 
   # check for overwrite:
-  if (file.exists(bk_path)) {
+  if (any(file.exists(to_remove))) {
     if (overwrite) {
       # notify
-      cat("\nOverwriting existing files:", rds_prefix, ".bk/.rds/.desc\n",
-          file = outfile, append = TRUE, sep = "")
+      cat("\nOverwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n",
+          sep = "", file = outfile, append = TRUE)
 
       if (!quiet) {
-        cat("\nOverwriting existing files:", rds_prefix, ".bk/.rds/.desc\n", sep = "")
+        cat("\nOverwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n", sep = "")
       }
-      file.remove(bk_path)
-      file.remove(rds_path)
-      file.remove(desc_path)
+
+      gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
+      unlink(to_remove, force = TRUE)
     } else {
-      stop("\nThere are existing .rds and/or .bk files in the specified directory.
+      stop("\nThere are existing .rds and .bk files in the specified directory with the given prefix.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.
            \nOtherwise, choose a different prefix.")
     }

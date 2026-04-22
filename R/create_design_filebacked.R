@@ -101,22 +101,29 @@ create_design_filebacked <- function(data_file,
   design <- list()
 
   # check for files to be overwritten---------------------------------
-  if (overwrite) {
+  to_remove <- paste0(file.path(rds_dir, new_file), c(".bk", ".rds", ".desc"))
 
-    # remove files with name pattern
-    to_remove <- paste0(file.path(rds_dir, new_file), c(".bk", ".rds", ".desc"))
-    if (any(file.exists(to_remove))) {
-      file.remove(to_remove)
+  if (any(file.exists(to_remove))) {
+    if (overwrite) {
+      # notify
+      cat("\nOverwriting existing files: ", new_file, ".bk/.rds\n",
+          sep = "", file = logfile, append = TRUE)
+
+      if (!quiet) {
+        cat("\nOverwriting existing files: ", new_file, ".bk/.rds\n", sep = "")
+      }
+
+      gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
+      unlink(to_remove, force = TRUE)
+    } else {
+      stop("\nThere are existing new_file.rds and new_file.bk files in the specified directory.
+           \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.
+           \nOtherwise, choose a different prefix.")
     }
-
-    # check for left over intermediate files
-    if (file.exists(file.path(rds_dir, "unstd_design_matrix.bk"))) {
-      file.remove(c(file.path(rds_dir, "unstd_design_matrix.bk"),
-                    file.path(rds_dir, "unstd_design_matrix.desc")))
-    }
-
-
   }
+
+  # remove leftover intermediate files
+  unlink(list.files(rds_dir, "unstd_design_matrix.(bk|desc)", full.names = TRUE))
 
   # attach the processed data -------------------------------
   obj$X <- bigmemory::attach.big.matrix(obj$X)
@@ -275,8 +282,7 @@ create_design_filebacked <- function(data_file,
                                     new_file = new_file,
                                     rds_dir = rds_dir,
                                     outfile = logfile,
-                                    quiet = quiet,
-                                    overwrite = overwrite)
+                                    quiet = quiet)
   rm(subset_res)
   gc()
 

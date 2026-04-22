@@ -8,7 +8,7 @@
 #'
 #' @return A list of 2 components:
 #' * 'obj' - a `bigSNP` object with an added element representing the matrix that includes the additional predictors as the first few columns
-#' * 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
+#' * 'unpen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
 #' @keywords internal
 #'
 add_predictors <- function(obj,

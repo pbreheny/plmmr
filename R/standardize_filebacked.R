@@ -1,21 +1,18 @@
 #' A helper function to standardize a filebacked matrix
 #'
-#' @param X           A list that includes:
-#'                       (1) subset_X: a `big.matrix` object that has been subset &/or had any additional predictors appended as columns
-#'                       (2) ns: a numeric vector indicating the indices of nonsingular columns in subset_X
-#' @param new_file        The new_file (as a character string) of the bed/fam data files (e.g., `new_file = 'mydata'`)
+#' @param X             A `big.matrix` object that has been subset &/or had any additional predictors appended as columns
+#' @param new_file      The new_file (as a character string) of the bed/fam data files (e.g., `new_file = 'mydata'`)
 #' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
 #' @param outfile       Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
 #' @param quiet         Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
-#' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/new_file, should these be overwritten?
+#' @param tocenter      Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
 #' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.
 #' List also includes several other indices/meta-data on the standardized matrix
 #' @keywords internal
 #'
 #'
-standardize_filebacked <- function(X, new_file, rds_dir, non_gen, complete_outcome, id_var,
-                                   outfile, quiet, overwrite, tocenter = TRUE) {
+standardize_filebacked <- function(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE) {
 
   # standardization ------------------------------------------------
   if (!quiet) {

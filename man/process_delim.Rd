@@ -25,19 +25,16 @@ Note: if your file has headers/column names, set 'header = TRUE' -- this will be
 
 \item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.}
 
-\item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files
+\item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files.
 Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder)
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder).
 Note: 'rds_prefix' cannot be the same as 'data_prefix'}
 
 \item{logfile}{Optional: the name (character string) of the prefix of the
 logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.}
 
-\item{overwrite}{Optional: the name (character string) of the prefix of the logfile to be written.
-Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-\strong{Note}: If there are multiple \code{.rds} files with names that start with "std_prefix_...", \strong{this will error out}.
-To protect users from accidentally deleting files with saved results, only one \code{.rds} file can be removed with this option.}
+\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
 \item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
 

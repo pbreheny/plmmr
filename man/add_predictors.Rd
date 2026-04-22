@@ -21,7 +21,7 @@ add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
 A list of 2 components:
 \itemize{
 \item 'obj' - a \code{bigSNP} object with an added element representing the matrix that includes the additional predictors as the first few columns
-\item 'non_gen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
+\item 'unpen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
 }
 }
 \description{

@@ -8,6 +8,8 @@ standardize_in_memory(X, tocenter = TRUE)
 }
 \arguments{
 \item{X}{a matrix}
+
+\item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE.}
 }
 \value{
 a list with the standardized matrix, vectors with the centering/scaling values, and a vector with the indices of nonsingular columns

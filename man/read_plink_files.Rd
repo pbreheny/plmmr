@@ -8,6 +8,7 @@ read_plink_files(
   data_dir,
   data_prefix,
   rds_dir,
+  rds_prefix,
   outfile,
   parallel,
   overwrite,
@@ -20,6 +21,9 @@ read_plink_files(
 \item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
 \item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
+Note: 'rds_prefix' cannot be the same as 'data_prefix'}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 

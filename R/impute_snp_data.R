@@ -80,7 +80,7 @@ impute_snp_data <- function(obj, X, impute, impute_method,
       obj$genotypes$code256 <- bigsnpr::CODE_IMPUTE_PRED
     }
 
-    # save the subset data
+    # save the imputed data
     obj <- bigsnpr::snp_save(obj)
 
     cat("Done with imputation.\n",
