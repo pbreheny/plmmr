@@ -20,8 +20,7 @@ Loss method for "plmm" class
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)
-fit <- plmm(design = admix_design, K = relatedness_mat(admix$X))
+fit <- plmm(design = admix_design)
 yhat <- predict(object = fit, newX = admix$X, type = 'lp', lambda = 0.05)
 head(plmm_loss(yhat = yhat, y = admix$y))
-
 }

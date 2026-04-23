@@ -49,8 +49,8 @@ reference:
 
   - title: Coefficient methods for PLMMs
     contents:
-    - coef.cv_plmm
     - coef.plmm
+    - coef.cv_plmm
 
   - title: Data (pre)processing and wrangling
     contents:
@@ -67,12 +67,13 @@ reference:
     - summary.cv_plmm
     - plot.plmm
     - plot.cv_plmm
-    - print.summary.cv_plmm
     - print.summary.plmm
+    - print.summary.cv_plmm
 
   - title: Prediction
     contents:
     - predict.plmm
+    - predict.cv_plmm
 
   - title: Data sets
     contents:

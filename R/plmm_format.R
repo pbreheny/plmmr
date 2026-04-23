@@ -18,7 +18,7 @@
 #'  * `beta_vals`: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of `lambda`
 #'  * `lambda`: a numeric vector of the lasso tuning parameter values used in model fitting.
 #'  * `eta`: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
-#'  * `s`: a vectof of the eigenvalues of relatedness matrix `K`; see `relatedness_mat()` for details.
+#'  * `s`: a vector of the eigenvalues of relatedness matrix `K`; see `relatedness_mat()` for details.
 #'  * `U`: a matrix of the eigenvalues of relatedness matrix `K`
 #'  * `rot_y`: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
 #'  * `linear_predictors`: the matrix resulting from the product of `stdrot_X` and the estimated coefficients on the ~rotated~ scale.

@@ -1,10 +1,8 @@
 #' Predict method for plmm class
 #'
 #' @param object    An object of class \code{plmm}.
-#' @param newX      Matrix of values at which predictions are to be made (not used for
-#'                  `type="coefficients"` or for some of the `type` settings in `predict`).
-#'                  This can be either a FBM object or a 'matrix' object.
-#'                  **Note**: Columns of this argument must be named!
+#' @param newX      Matrix of values at which predictions are to be made (not used for `type` = "coefficients", "vars", or "nvars").
+#'                  This can be either a FBM object or a 'matrix' object. Note: Columns of this argument must be named!
 #' @param type      A character argument indicating what type of prediction should be
 #'                  returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param X         Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
@@ -12,20 +10,19 @@
 #'                  **Note**: If the model was fit file-backed, then the filepath to the .bk file with this standardized design matrix is returned as 'std_X' in the fit supplied to 'object'.
 #' @param lambda    A numeric vector of regularization parameter \code{lambda} values
 #'                  at which predictions are requested.
-#' @param idx       Vector of indices of the penalty parameter \code{lambda} at which
-#'                  predictions are required. By default, all indices are returned.
+#' @param idx       Vector of indices of regularization parameter \code{lambda} at which
+#'                  predictions are requested. By default, all indices are returned.
 #' @param ...       Additional optional arguments
 #'
 #' @details
-#' Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for `type` are as follows:
+#' The options for `type` are as follows:
 #'
-#'  * 'response' (default): uses the product of newX and beta-hat to predict new values of the outcome. This does not incorporate the correlation structure of the data.
-#'  For the stats folks out there, this is simply the linear predictor.
+#'  * 'lp' (linear predictor): uses the product of newX and the beta coefficients of \code{object} to predict new values of the outcome. This does not incorporate the correlation structure of the data.
 #'
-#'  * 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'response' a value that represents the esetimated random effect. This addition is a way of incorporating
-#'  the estimated correlation structure of data into our prediction of the outcome.
+#'  * 'blup' (default, acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect. This addition is a way of incorporating
+#'  the estimated correlation structure of the data into our prediction of the outcome.
 #'
-#'  * 'coefficients': returns the estimated beta-hat
+#'  * 'coefficients': returns the estimated beta coefficients.
 #'
 #'  * 'vars': returns the _indices_ of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
 #'

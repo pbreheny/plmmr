@@ -32,7 +32,7 @@ A list with the components:
 \item \code{beta_vals}: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
-\item \code{s}: a vectof of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
+\item \code{s}: a vector of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
 \item \code{U}: a matrix of the eigenvalues of relatedness matrix \code{K}
 \item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
 \item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
