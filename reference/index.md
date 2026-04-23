@@ -14,10 +14,10 @@
 
 ## Coefficient methods for PLMMs
 
-- [`coef(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/coef.cv_plmm.md)
-  : Coef method for "cv_plmm" class
 - [`coef(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/coef.plmm.md)
   : Coef method for "plmm" class
+- [`coef(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/coef.cv_plmm.md)
+  : Coef method for "cv_plmm" class
 
 ## Data (pre)processing and wrangling
 
@@ -58,18 +58,20 @@
 - [`plot(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/plot.cv_plmm.md)
   : Plot method for cv_plmm class
 
-- [`print(`*`<summary.cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/print.summary.cv_plmm.md)
-  : Print method for summary.cv_plmm objects
-
 - [`print(`*`<summary.plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/print.summary.plmm.md)
   :
 
   A function to print the summary of a `plmm` model
 
+- [`print(`*`<summary.cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/print.summary.cv_plmm.md)
+  : Print method for summary.cv_plmm objects
+
 ## Prediction
 
 - [`predict(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/predict.plmm.md)
   : Predict method for plmm class
+- [`predict(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/predict.cv_plmm.md)
+  : Predict method for cv_plmm class
 
 ## Data sets
 

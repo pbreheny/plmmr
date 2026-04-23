@@ -27,14 +27,14 @@ and predicted outcomes
 
 ``` r
 admix_design <- create_design(X = admix$X, y = admix$y)
-fit <- plmm(design = admix_design, K = relatedness_mat(admix$X))
+fit <- plmm(design = admix_design)
 yhat <- predict(object = fit, newX = admix$X, type = 'lp', lambda = 0.05)
 head(plmm_loss(yhat = yhat, y = admix$y))
 #>            [,1]
-#> [1,] 0.78965760
-#> [2,] 0.07225795
-#> [3,] 1.21246359
-#> [4,] 1.48951064
-#> [5,] 0.67003851
-#> [6,] 0.60754400
+#> [1,] 0.78944147
+#> [2,] 0.07330212
+#> [3,] 1.22563765
+#> [4,] 1.51621494
+#> [5,] 0.66752505
+#> [6,] 0.60393682
 ```

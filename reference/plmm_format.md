@@ -57,7 +57,7 @@ A list with the components:
   proportion of the variance in the outcome attributable to
   population/correlation structure.
 
-- `s`: a vectof of the eigenvalues of relatedness matrix `K`; see
+- `s`: a vector of the eigenvalues of relatedness matrix `K`; see
   [`relatedness_mat()`](https://pbreheny.github.io/plmmr/reference/relatedness_mat.md)
   for details.
 

@@ -1,18 +1,18 @@
-# Predict method for plmm class
+# Predict method for cv_plmm class
 
-Predict method for plmm class
+Predict method for cv_plmm class
 
 ## Usage
 
 ``` r
-# S3 method for class 'plmm'
+# S3 method for class 'cv_plmm'
 predict(
   object,
   newX,
   type = c("blup", "coefficients", "vars", "nvars", "lp"),
-  X = NULL,
+  X,
   lambda,
-  idx = seq_along(object$lambda),
+  idx = object$min,
   ...
 )
 ```
@@ -21,7 +21,7 @@ predict(
 
 - object:
 
-  An object of class `plmm`.
+  An object of class `cv_plmm`.
 
 - newX:
 
@@ -55,7 +55,8 @@ predict(
 - idx:
 
   Vector of indices of regularization parameter `lambda` at which
-  predictions are requested. By default, all indices are returned.
+  predictions are requested. By default, this is the lambda index which
+  minimizes the cross-validation error.
 
 - ...:
 
@@ -67,18 +68,20 @@ Depends on the `type` - see Details
 
 ## Details
 
-The options for `type` are as follows:
+Define beta-hat as the coefficients estimated at the value of lambda
+that minimizes cross-validation error (CVE). Then options for `type` are
+as follows:
 
 - 'lp' (linear predictor): uses the product of newX and the beta
   coefficients of `object` to predict new values of the outcome. This
   does not incorporate the correlation structure of the data.
 
-- 'blup' (default, acronym for Best Linear Unbiased Predictor): adds to
-  the 'lp' a value that represents the estimated random effect. This
-  addition is a way of incorporating the estimated correlation structure
-  of the data into our prediction of the outcome.
+- 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp'
+  a value that represents the estimated random effect. This addition is
+  a way of incorporating the estimated correlation structure of data
+  into our prediction of the outcome.
 
-- 'coefficients': returns the estimated beta coefficients.
+- 'coefficients': returns the estimated beta-hat
 
 - 'vars': returns the *indices* of variables (e.g., SNPs) with nonzero
   coefficients at each value of lambda. EXCLUDES intercept.
@@ -96,25 +99,8 @@ train <- list(X = admix$X[train_idx,], y = admix$y[train_idx])
 train_design <- create_design(X = train$X, y = train$y)
 
 test <- list(X = admix$X[-train_idx,], y = admix$y[-train_idx])
-fit <- plmm(design = train_design)
+fit <- cv_plmm(design = train_design)
 
-# make predictions for all lambda values
- pred1 <- predict(object = fit, newX = test$X, type = "lp")
- pred2 <- predict(object = fit, newX = test$X, type = "blup", X = train$X)
-
-# look at mean squared prediction error
-mspe <- apply(pred1, 2, function(c){crossprod(test$y - c)/length(c)})
-min(mspe)
-#> [1] 2.813242
-
-mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
-min(mspe_blup) # BLUP is better
-#> [1] 2.126016
-
-# compare the MSPE of our model to a null model, for reference
-# null model = intercept only -> y_hat is always mean(y)
-crossprod(mean(test$y) - test$y)/length(test$y)
-#>          [,1]
-#> [1,] 6.381748
-
+pred1 <- predict(object = fit, newX = test$X, X = train$X) # Minimum CVE lambda
+pred2 <- predict(object = fit, newX = test$X, X = train$X, idx = fit$min1se) # 1 SE lambda
 ```

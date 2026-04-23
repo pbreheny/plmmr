@@ -87,7 +87,7 @@ appropriate dimensions for the estimated coefficient matrix it returns.</p></dd>
     <p>A list with the components:</p><ul><li><p><code>beta_vals</code>: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of <code>lambda</code></p></li>
 <li><p><code>lambda</code>: a numeric vector of the lasso tuning parameter values used in model fitting.</p></li>
 <li><p><code>eta</code>: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.</p></li>
-<li><p><code>s</code>: a vectof of the eigenvalues of relatedness matrix <code>K</code>; see <code><a href="relatedness_mat.html">relatedness_mat()</a></code> for details.</p></li>
+<li><p><code>s</code>: a vector of the eigenvalues of relatedness matrix <code>K</code>; see <code><a href="relatedness_mat.html">relatedness_mat()</a></code> for details.</p></li>
 <li><p><code>U</code>: a matrix of the eigenvalues of relatedness matrix <code>K</code></p></li>
 <li><p><code>rot_y</code>: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.</p></li>
 <li><p><code>linear_predictors</code>: the matrix resulting from the product of <code>stdrot_X</code> and the estimated coefficients on the ~rotated~ scale.</p></li>

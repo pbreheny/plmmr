@@ -67,10 +67,8 @@
 
 
 <dt id="arg-newx">newX<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
-<dd><p>Matrix of values at which predictions are to be made (not used for
-<code>type="coefficients"</code> or for some of the <code>type</code> settings in <code>predict</code>).
-This can be either a FBM object or a 'matrix' object.
-<strong>Note</strong>: Columns of this argument must be named!</p></dd>
+<dd><p>Matrix of values at which predictions are to be made (not used for <code>type</code> = "coefficients", "vars", or "nvars").
+This can be either a FBM object or a 'matrix' object. Note: Columns of this argument must be named!</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -90,8 +88,8 @@ at which predictions are requested.</p></dd>
 
 
 <dt id="arg-idx">idx<a class="anchor" aria-label="anchor" href="#arg-idx"></a></dt>
-<dd><p>Vector of indices of the penalty parameter <code>lambda</code> at which
-predictions are required. By default, all indices are returned.</p></dd>
+<dd><p>Vector of indices of regularization parameter <code>lambda</code> at which
+predictions are requested. By default, all indices are returned.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -104,11 +102,10 @@ predictions are required. By default, all indices are returned.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for <code>type</code> are as follows:</p><ul><li><p>'response' (default): uses the product of newX and beta-hat to predict new values of the outcome. This does not incorporate the correlation structure of the data.
-For the stats folks out there, this is simply the linear predictor.</p></li>
-<li><p>'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'response' a value that represents the esetimated random effect. This addition is a way of incorporating
-the estimated correlation structure of data into our prediction of the outcome.</p></li>
-<li><p>'coefficients': returns the estimated beta-hat</p></li>
+    <p>The options for <code>type</code> are as follows:</p><ul><li><p>'lp' (linear predictor): uses the product of newX and the beta coefficients of <code>object</code> to predict new values of the outcome. This does not incorporate the correlation structure of the data.</p></li>
+<li><p>'blup' (default, acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect. This addition is a way of incorporating
+the estimated correlation structure of the data into our prediction of the outcome.</p></li>
+<li><p>'coefficients': returns the estimated beta coefficients.</p></li>
 <li><p>'vars': returns the <em>indices</em> of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.</p></li>
 <li><p>'nvars': returns the <em>number</em> of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.</p></li>
 </ul></div>
