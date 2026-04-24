@@ -90,7 +90,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpLDyqla/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpJWerNn/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -99,7 +99,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpLDyqla/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpJWerNn/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
