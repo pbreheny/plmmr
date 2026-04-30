@@ -66,17 +66,17 @@
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code>(from <code><a href="process_plink.html">process_plink()</a></code> call)</p></dd>
+<dd><p>The path to the directory in which you want to create the new <code>.rds</code> and <code>.bk</code> files. Defaults to <code>data_dir</code>(from <code><a href="process_plink.html">process_plink()</a></code> call)</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of 2 components:</p><ul><li><p>'obj' - a <code>bigSNP</code> object with an added element representing the matrix that includes the additional predictors as the first few columns</p></li>
-<li><p>'unpen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2</p></li>
+    <p>A list of 2 components:</p><ul><li><p><code>design_matrix</code> - a <code>bigSNP</code> object with an added element representing the matrix that includes the additional predictors as the first few columns</p></li>
+<li><p><code>unpen</code> - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, <code>unpen = 1:2</code></p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,6 +1,6 @@
-# A summary method for the plmm objects
+# A summary method for `plmm` objects
 
-A summary method for the plmm objects
+A summary method for `plmm` objects
 
 ## Usage
 
@@ -22,16 +22,16 @@ summary(object, lambda, idx, eps = 1e-05, ...)
 
 - idx:
 
-  Alternatively, `lambda` may be specified by an index; `idx=10` means:
-  report inference for the 10th value of `lambda` along the
+  Alternatively, `lambda` may be specified by an index; `idx = 10`
+  means: report inference for the 10th value of `lambda` along the
   regularization path. If both `lambda` and `idx` are specified,
   `lambda` takes precedence.
 
 - eps:
 
-  If lambda is given, eps is the tolerance for difference between the
+  If lambda is given, `eps` is the tolerance for difference between the
   given lambda value and a lambda value from the object. Defaults to
-  0.0001 (1e-5)
+  0.00001 (`1e-5`)
 
 - ...:
 
@@ -47,7 +47,7 @@ has its own print method and contains the following list elements:
 - `n`: Number of instances/observations
 
 - `std_X_n`: the number of observations in the standardized data; the
-  only time this would differ from 'n' is if data are from PLINK and the
+  only time this would differ from `n` is if data are from PLINK and the
   external data does not include all the same samples
 
 - `p`: Number of regression coefficients (not including the intercept)

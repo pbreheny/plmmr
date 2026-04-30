@@ -1,7 +1,6 @@
-# A function to read in a large file as a numeric file-backed matrix (`FBM`) Note: this function is a wrapper for `bigstatsr::big_read()`
+# A function to read in a large file as a numeric file-backed matrix (FBM)
 
-A function to read in a large file as a numeric file-backed matrix
-(`FBM`) Note: this function is a wrapper for
+Note: this function is a wrapper for
 [`bigstatsr::big_read()`](https://privefl.github.io/bigstatsr/reference/big_read.html)
 
 ## Usage
@@ -28,24 +27,23 @@ read_data_files(
 
 - data_dir:
 
-  The path to the directory where 'file' is
+  The path to the directory where `data_file` is
 
 - rds_dir:
 
-  The path to the directory in which you want to create the new '.rds'
-  and '.bk' files. Defaults to `data_dir`
+  The path to the directory in which you want to create the new `.rds`
+  and `.bk` files. Defaults to `data_dir`
 
 - rds_prefix:
 
   String specifying the user's preferred filename for the to-be-created
-  .rds/.bk files (will be create insie `rds_dir` folder) Note:
-  'rds_prefix' cannot be the same as 'data_file'
+  .rds/.bk files (will be create inside `rds_dir` folder) Note:
+  `rds_prefix` cannot be the same as `data_file`
 
 - outfile:
 
   Optional: the name (character string) of the prefix of the logfile to
-  be written. Defaults to 'process_plink', i.e. you will get
-  'process_plink.log' as the outfile.
+  be written. Defaults to NULL (no log file written).
 
 - overwrite:
 
@@ -55,16 +53,16 @@ read_data_files(
 
 - quiet:
 
-  Logical: should messages be printed to the console? Defaults to TRUE
+  Logical: should console messages be silenced? Defaults to FALSE
 
 - ...:
 
   Optional: other arguments to be passed to
   [`bigmemory::read.big.matrix()`](https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html).
-  Note: 'sep' is an option to pass here.
+  Note: `sep` is an option to pass here.
 
 ## Value
 
-'.rds', '.bk', and '.desc' files are created in `data_dir`, and `obj` (a
+`.rds`, `.bk`, and `.desc` files are created in `data_dir`, and `obj` (a
 filebacked `bigmemory big.matrix` object) is returned. See `bigmemory`
 documentation for more info on the `big.matrix` class.

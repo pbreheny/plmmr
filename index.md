@@ -13,18 +13,21 @@ website](https://pbreheny.github.io/plmmr/).
 To install the latest version of the package from GitHub, use this:
 
 ``` r
+
 devtools::install_github("pbreheny/plmmr")
 ```
 
 You can also install `plmmr` from CRAN:
 
 ``` r
+
 install.packages('plmmr')
 ```
 
 ## Minimal example
 
 ``` r
+
 library(plmmr)
 X <- rnorm(100*20) |> matrix(100, 20)
 y <- rnorm(100)

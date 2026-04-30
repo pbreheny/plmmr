@@ -46,7 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">standardize_filebacked</span><span class="op">(</span><span class="va">X</span>, <span class="va">new_file</span>, <span class="va">rds_dir</span>, <span class="va">outfile</span>, <span class="va">quiet</span>, tocenter <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">standardize_filebacked</span><span class="op">(</span><span class="va">X</span>, <span class="va">outfile</span>, <span class="va">quiet</span>, tocenter <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -57,20 +57,12 @@
 <dd><p>A <code>big.matrix</code> object that has been subset &amp;/or had any additional predictors appended as columns</p></dd>
 
 
-<dt id="arg-new-file">new_file<a class="anchor" aria-label="anchor" href="#arg-new-file"></a></dt>
-<dd><p>The new_file (as a character string) of the bed/fam data files (e.g., <code>new_file = 'mydata'</code>)</p></dd>
-
-
-<dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
-
-
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
-<dd><p>Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
+<dd><p>Optional: the name (character string) of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 
 <dt id="arg-tocenter">tocenter<a class="anchor" aria-label="anchor" href="#arg-tocenter"></a></dt>
@@ -79,7 +71,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with a new component of <code>obj</code> called 'std_X' - this is an FBM with column-standardized data.
+    <p>A list with a component called <code>std_X</code> - this is an FBM with column-standardized data.
 List also includes several other indices/meta-data on the standardized matrix</p>
     </div>
 

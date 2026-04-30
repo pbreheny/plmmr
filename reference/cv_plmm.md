@@ -25,8 +25,8 @@ cv_plmm(
   init = NULL,
   cluster,
   nfolds = 5,
-  seed,
   fold = NULL,
+  seed,
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
@@ -42,7 +42,7 @@ cv_plmm(
   object (as created by
   [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)) (2)
   a string with the file path to a design object (the file path must end
-  in '.rds') (3) a `matrix` or `data.frame` object representing the
+  in `.rds`) (3) a `matrix` or `data.frame` object representing the
   design matrix of interest
 
 - y:
@@ -56,8 +56,8 @@ cv_plmm(
 
   Similarity matrix used to rotate the data. This should either be (1) a
   known matrix that reflects the covariance of y, (2) an estimate
-  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
-  and 'U', as returned by a previous
+  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components `s`
+  and `U`, as returned by a previous
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data. Note: if a user provides their own matrix, it is
   decomposed as provided and will *not* be scaled.
@@ -66,10 +66,10 @@ cv_plmm(
 
   Optional argument to input a specific eta term rather than estimate it
   from the data. If K is a known covariance matrix that is full rank,
-  this should be 1. Note: Setting eta = 1 will change the default of
+  this should be 1. Note: Setting `eta = 1` will change the default of
   `type` to 'lp', as K is always calculated empirically in each fold.
-  This can be overridden by specifying type='blup', but should be done
-  with caution.
+  This can be overridden by specifying `type = 'blup'`, but should be
+  done with caution.
 
 - penalty:
 
@@ -79,11 +79,12 @@ cv_plmm(
 - type:
 
   A character argument indicating what should be returned from
-  predict.plmm(). If type == 'lp', predictions are based on the linear
-  predictor, X beta. If type == 'blup', predictions are based on the sum
-  of the linear predictor and the estimated random effect (BLUP).
-  Defaults to 'blup', as this has shown to be a superior prediction
-  method in many applications.
+  [`predict.plmm()`](https://pbreheny.github.io/plmmr/reference/predict.plmm.md).
+  If `type = 'lp'`, predictions are based on the linear predictor, X
+  beta. If `type = 'blup'`, predictions are based on the sum of the
+  linear predictor and the estimated random effect (BLUP). Defaults to
+  'blup', as this has shown to be a superior prediction method in many
+  applications.
 
 - gamma:
 
@@ -94,9 +95,9 @@ cv_plmm(
 
   Tuning parameter for the Mnet estimator which controls the relative
   contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
-  alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be
-  equivalent to ridge regression. However, alpha=0 is not supported;
-  alpha may be arbitrarily small, but not exactly 0.
+  `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would
+  be equivalent to ridge regression. However, `alpha = 0` is not
+  supported; alpha may be arbitrarily small, but not exactly 0.
 
 - lambda_min:
 
@@ -111,12 +112,13 @@ cv_plmm(
 - lambda:
 
   A user-specified sequence of lambda values. By default, a sequence of
-  values of length nlambda is computed, equally spaced on the log scale.
+  values of length `nlambda` is computed, equally spaced on the log
+  scale.
 
 - eps:
 
-  Convergence threshold. The algorithm iterates until the RMSD for the
-  change in linear predictors for each coefficient is less than eps.
+  Convergence threshold. The algorithm iterates until the RMSE for the
+  change in linear predictors for each coefficient is less than `eps`.
   Default is `1e-4`.
 
 - max_iter:
@@ -135,25 +137,26 @@ cv_plmm(
 
 - cluster:
 
-  Option for **in-memory data only**: cv_plmm() can be run in parallel
+  Option for **in-memory data only**: `cv_plmm()` can be run in parallel
   across a cluster using the parallel package. The cluster must be set
-  up in advance using parallel::makeCluster(). The cluster must then be
-  passed to cv_plmm(). **Note**: this option is not yet implemented for
-  filebacked data.
+  up in advance using
+  [`parallel::makeCluster()`](https://rdrr.io/r/parallel/makeCluster.html).
+  The cluster must then be passed to `cv_plmm()`. **Note**: this option
+  is not yet implemented for filebacked data.
 
 - nfolds:
 
   The number of cross-validation folds. Default is 5.
 
-- seed:
-
-  You may set the seed of the random number generator in order to obtain
-  reproducible results.
-
 - fold:
 
   Which fold each observation belongs to. By default, the observations
   are randomly assigned.
+
+- seed:
+
+  You may set the seed of the random number generator in order to obtain
+  reproducible results.
 
 - trace:
 
@@ -162,13 +165,13 @@ cv_plmm(
 
 - save_rds:
 
-  Optional: if a filepath and name *without* the '.rds' suffix is
+  Optional: if a filepath and name *without* the `.rds` suffix is
   specified (e.g., `save_rds = "~/dir/my_results"`), then the model
   results are saved to the provided location (e.g.,
   "~/dir/my_results.rds"). Defaults to NULL, which does not save the
-  result. **Note**: Along with the model results, two '.rds' files
+  result. **Note**: Along with the model results, two `.rds` files
   ('loss' and 'yhat') will be created in the same directory as
-  'save_rds'. These files contain the loss and predicted outcome values
+  `save_rds`. These files contain the loss and predicted outcome values
   in each fold; both files will be updated during after prediction
   within each fold.
 
@@ -184,49 +187,49 @@ cv_plmm(
 
 ## Value
 
-A list that includes 15 items:
+A list that includes 14 items:
 
-- type: The type of prediction used ('lp' or 'blup')
+- `type`: The type of prediction used ('lp' or 'blup')
 
-- cve: A numeric vector with the cross validation error (CVE) at each
+- `cve`: A numeric vector with the cross validation error (CVE) at each
   value of `lambda`
 
-- cvse: A numeric vector with the estimated standard error associated
+- `cvse`: A numeric vector with the estimated standard error associated
   with each value of `cve`
 
-- fold: A numeric `n` length vector of integers indicating the fold to
+- `fold`: A numeric `n` length vector of integers indicating the fold to
   which each observation was assigned
 
-- lambda: A numeric vector of `lambda` values
+- `lambda`: A numeric vector of `lambda` values
 
-- fit: The overall fit of the object, including all predictors; this is
-  a list as returned by
+- `fit`: The overall fit of the object, including all predictors; this
+  is a list as returned by
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md)
 
-- min: The index corresponding to the value of `lambda` that minimizes
+- `min`: The index corresponding to the value of `lambda` that minimizes
   `cve`
 
-- lambda_min: The `lambda` value at which `cve` is minimized
+- `lambda_min`: The `lambda` value at which `cve` is minimized
 
-- min1se: The index corresponding to the value of `lambda` within 1
+- `min1se`: The index corresponding to the value of `lambda` within 1
   standard error of that which minimizes `cve`
 
-- lambda1se: The largest value of lambda such that `cve` is within 1
+- `lambda1se`: The largest value of lambda such that `cve` is within 1
   standard error of the minimum
 
-- null.dev: A numeric value representing the deviance for the
+- `null.dev`: A numeric value representing the deviance for the
   intercept-only model. If you have supplied your own `lambda` sequence,
   this quantity may not be meaningful.
 
-- Y: A matrix with the predicted outcome (\\\hat{y}\\) values at each
+- `Y`: A matrix with the predicted outcome (\\\hat{y}\\) values at each
   value of `lambda`. Rows are observations, columns are values of
   `lambda`.
 
-- loss: A matrix with the loss values at each value of lambda. Rows are
-  observations, columns are values of `lambda`.
+- `loss`: A matrix with the loss values at each value of lambda. Rows
+  are observations, columns are values of `lambda`.
 
-- estimated_Sigma: An n x n matrix representing the estimated covariance
-  matrix.
+- `estimated_Sigma`: If `type = 'blup'`, an n x n matrix representing
+  the estimated covariance matrix.
 
 ## Examples
 

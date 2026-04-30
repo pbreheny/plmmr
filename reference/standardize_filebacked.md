@@ -5,7 +5,7 @@ A helper function to standardize a filebacked matrix
 ## Usage
 
 ``` r
-standardize_filebacked(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE)
+standardize_filebacked(X, outfile, quiet, tocenter = TRUE)
 ```
 
 ## Arguments
@@ -15,26 +15,15 @@ standardize_filebacked(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE)
   A `big.matrix` object that has been subset &/or had any additional
   predictors appended as columns
 
-- new_file:
-
-  The new_file (as a character string) of the bed/fam data files (e.g.,
-  `new_file = 'mydata'`)
-
-- rds_dir:
-
-  The path to the directory in which you want to create the new '.rds'
-  and '.bk' files. Defaults to `data_dir`
-
 - outfile:
 
-  Optional: the name (character string) of the new_file of the logfile
-  to be written. Defaults to 'process_plink', i.e. you will get
-  'process_plink.log' as the outfile.
+  Optional: the name (character string) of the logfile to be written.
+  Defaults to 'process_plink', i.e. you will get 'process_plink.log' as
+  the outfile.
 
 - quiet:
 
-  Logical: should messages be printed to the console? Defaults to FALSE
-  (which leaves the print messages on...)
+  Logical: should console messages be silenced? Defaults to FALSE
 
 - tocenter:
 
@@ -42,6 +31,6 @@ standardize_filebacked(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE)
 
 ## Value
 
-A list with a new component of `obj` called 'std_X' - this is an FBM
-with column-standardized data. List also includes several other
+A list with a component called `std_X` - this is an FBM with
+column-standardized data. List also includes several other
 indices/meta-data on the standardized matrix

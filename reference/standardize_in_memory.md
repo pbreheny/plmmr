@@ -12,7 +12,7 @@ standardize_in_memory(X, tocenter = TRUE)
 
 - X:
 
-  a matrix
+  A matrix
 
 - tocenter:
 
@@ -20,12 +20,13 @@ standardize_in_memory(X, tocenter = TRUE)
 
 ## Value
 
-a list with the standardized matrix, vectors with the centering/scaling
-values, and a vector with the indices of nonsingular columns
+A list containing the standardized `X` matrix and associated metadata
 
 ## Details
 
 This function is adapted from
 https://github.com/pbreheny/ncvreg/blob/master/R/std.R NOTE: this
 function returns a matrix **in memory**. For standardizing filebacked
-data, use `big_std()` – see src/big_standardize.cpp
+data, use
+[`standardize_filebacked()`](https://pbreheny.github.io/plmmr/reference/standardize_filebacked.md)
+– see `src/big_standardize.cpp`

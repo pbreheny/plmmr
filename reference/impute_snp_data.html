@@ -64,23 +64,23 @@
 
 
 <dl><dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
-<dd><p>a <code>bigSNP</code> object (as created by <code><a href="read_plink_files.html">read_plink_files()</a></code>)</p></dd>
+<dd><p>A <code>bigSNP</code> object (as created by <code><a href="read_plink_files.html">read_plink_files()</a></code>)</p></dd>
 
 
 <dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A matrix of genotype data as  returned by <code>name_and_count_bigsnp</code></p></dd>
+<dd><p>A matrix of genotype data as returned by <code><a href="name_and_count_bigsnp.html">name_and_count_bigsnp()</a></code></p></dd>
 
 
 <dt id="arg-impute">impute<a class="anchor" aria-label="anchor" href="#arg-impute"></a></dt>
-<dd><p>Logical: should data be imputed? Default to TRUE.</p></dd>
+<dd><p>Logical: should data be imputed? Defaults to TRUE.</p></dd>
 
 
 <dt id="arg-impute-method">impute_method<a class="anchor" aria-label="anchor" href="#arg-impute-method"></a></dt>
-<dd><p>If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:</p><ul><li><p>mode (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.</p></li>
-<li><p>random: Imputes sampling according to allele frequencies.</p></li>
-<li><p>mean0: Imputes the rounded mean.</p></li>
-<li><p>mean2: Imputes the mean rounded to 2 decimal places.</p></li>
-<li><p>xgboost: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
+<dd><p>If <code>impute = TRUE</code>, this argument will specify the kind of imputation desired. Options are:</p><ul><li><p><code>mode</code> (default): Imputes the most frequent call. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html" class="external-link">bigsnpr::snp_fastImputeSimple()</a></code> for details.</p></li>
+<li><p><code>random</code>: Imputes sampling according to allele frequencies.</p></li>
+<li><p><code>mean0</code>: Imputes the rounded mean.</p></li>
+<li><p><code>mean2</code>: Imputes the mean rounded to 2 decimal places.</p></li>
+<li><p><code>xgboost</code>: Imputes using an algorithm based on local XGBoost models. See <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> for details. Note: this can take several minutes, even for a relatively small data set.</p></li>
 </ul></dd>
 
 
@@ -94,7 +94,7 @@ In particular, the user should be aware that too much parallelization can make c
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -102,7 +102,7 @@ In particular, the user should be aware that too much parallelization can make c
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Optional: additional arguments to <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> (relevant only if impute_method = "xgboost")</p></dd>
+<dd><p>Optional: additional arguments to <code><a href="https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html" class="external-link">bigsnpr::snp_fastImpute()</a></code> (relevant only if <code>impute_method = 'xgboost'</code>)</p></dd>
 
 </dl></div>
     <div class="section level2">

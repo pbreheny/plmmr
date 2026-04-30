@@ -1,6 +1,6 @@
-# Coef method for "plmm" class
+# Coef method for `plmm` class
 
-Coef method for "plmm" class
+Coef method for `plmm` class
 
 ## Usage
 
@@ -13,7 +13,7 @@ coef(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...)
 
 - object:
 
-  An object of class "plmm."
+  An object of class `plmm`.
 
 - lambda:
 
@@ -21,11 +21,11 @@ coef(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...)
 
 - which:
 
-  Vector of lambda indices for which coefficients to return.
+  Vector of lambda indices for which to return coefficients.
 
 - drop:
 
-  Logical.
+  Logical. Should returned object be coerced to a vector if possible?
 
 - ...:
 

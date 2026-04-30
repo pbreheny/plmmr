@@ -22,33 +22,34 @@ impute_snp_data(
 
 - obj:
 
-  a `bigSNP` object (as created by
+  A `bigSNP` object (as created by
   [`read_plink_files()`](https://pbreheny.github.io/plmmr/reference/read_plink_files.md))
 
 - X:
 
-  A matrix of genotype data as returned by `name_and_count_bigsnp`
+  A matrix of genotype data as returned by
+  [`name_and_count_bigsnp()`](https://pbreheny.github.io/plmmr/reference/name_and_count_bigsnp.md)
 
 - impute:
 
-  Logical: should data be imputed? Default to TRUE.
+  Logical: should data be imputed? Defaults to TRUE.
 
 - impute_method:
 
-  If 'impute' = TRUE, this argument will specify the kind of imputation
+  If `impute = TRUE`, this argument will specify the kind of imputation
   desired. Options are:
 
-  - mode (default): Imputes the most frequent call. See
+  - `mode` (default): Imputes the most frequent call. See
     [`bigsnpr::snp_fastImputeSimple()`](https://privefl.github.io/bigsnpr/reference/snp_fastImputeSimple.html)
     for details.
 
-  - random: Imputes sampling according to allele frequencies.
+  - `random`: Imputes sampling according to allele frequencies.
 
-  - mean0: Imputes the rounded mean.
+  - `mean0`: Imputes the rounded mean.
 
-  - mean2: Imputes the mean rounded to 2 decimal places.
+  - `mean2`: Imputes the mean rounded to 2 decimal places.
 
-  - xgboost: Imputes using an algorithm based on local XGBoost models.
+  - `xgboost`: Imputes using an algorithm based on local XGBoost models.
     See
     [`bigsnpr::snp_fastImpute()`](https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html)
     for details. Note: this can take several minutes, even for a
@@ -72,7 +73,7 @@ impute_snp_data(
 
 - quiet:
 
-  Logical: should messages be printed to the console? Defaults to TRUE
+  Logical: should console messages be silenced? Defaults to FALSE
 
 - seed:
 
@@ -83,7 +84,7 @@ impute_snp_data(
 
   Optional: additional arguments to
   [`bigsnpr::snp_fastImpute()`](https://privefl.github.io/bigsnpr/reference/snp_fastImpute.html)
-  (relevant only if impute_method = "xgboost")
+  (relevant only if `impute_method = 'xgboost'`)
 
 ## Value
 

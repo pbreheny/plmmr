@@ -1,6 +1,7 @@
 # Getting started with plmmr
 
 ``` r
+
 library(plmmr)
 #> Loading required package: bigalgebra
 #> Loading required package: bigmemory
@@ -41,6 +42,7 @@ The novelties of `plmmr` are:
 Below is a minimal reproducible example of how `plmmr` can be used:
 
 ``` r
+
 # library(plmmr)
 fit <- plmm(admix$X, admix$y) # admix data ships with package
 plot(fit)
@@ -50,6 +52,7 @@ plot(fit)
 
 ``` r
 
+
 cvfit <- cv_plmm(admix$X, admix$y)
 plot(cvfit)
 ```
@@ -57,6 +60,7 @@ plot(cvfit)
 ![](getting-started_files/figure-html/unnamed-chunk-2-2.png)
 
 ``` r
+
 summary(cvfit)
 #> lasso-penalized model with n=197 and p=101
 #> At minimum cross-validation error (lambda=0.3479):

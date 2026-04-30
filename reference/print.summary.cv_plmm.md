@@ -1,6 +1,6 @@
-# Print method for summary.cv_plmm objects
+# Print method for `summary.cv_plmm` objects
 
-Print method for summary.cv_plmm objects
+Print method for `summary.cv_plmm` objects
 
 ## Usage
 

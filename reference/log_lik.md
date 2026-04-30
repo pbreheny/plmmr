@@ -14,8 +14,8 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
 - eta:
 
-  The proportion of variance in the outcome that is attributable to
-  causal SNP effects. In other words, signal-to-noise ratio.
+  Estimated proportion of the variance in the outcome attributable to
+  population/correlation structure
 
 - n:
 
@@ -23,19 +23,19 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
 - s:
 
-  The singular values of K, the realized relationship matrix
+  The non-zero eigenvalues of K, the realized relationship matrix
 
 - U:
 
-  The left-singular vectors of the *standardized* design matrix
+  The eigenvectors of K associated with s
 
 - y:
 
-  Continuous outcome vector.
+  Continuous outcome vector
 
 - rot_y:
 
-  Optional: if y has already been rotated, then this can be supplied.
+  Optional: if y has already been rotated, then this can be supplied
 
 ## Value
 

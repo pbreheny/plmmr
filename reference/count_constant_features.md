@@ -20,9 +20,9 @@ count_constant_features(fbm, outfile, quiet)
 
 - quiet:
 
-  Logical: should a message be printed to the console
+  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 
-ns A numeric vector with the indices of the non-singular columns of the
-matrix associated with `counts`
+A numeric vector with the indices of the non-singular columns of the
+matrix associated with `fbm`

@@ -1,6 +1,7 @@
 # If your data is in a delimited file
 
 ``` r
+
 library(plmmr)
 #> Loading required package: bigalgebra
 #> Loading required package: bigmemory
@@ -14,6 +15,7 @@ model.
 ## Process the data
 
 ``` r
+
  # We will create the processed data files in a temporary directory; 
 #   fill in the `rds_dir` argument with the directory of your choice
 temp_dir <- tempdir()
@@ -30,7 +32,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpRSXAtD/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmptbe3CO/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -69,6 +71,7 @@ differs from how PLINK file data are analyzed; look at the
 documentation details for examples.
 
 ``` r
+
 # prepare outcome data
 colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
 
@@ -85,7 +88,7 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-24 20:06:46
+#> Standardization completed at 2026-04-30 21:23:52
 #> Done with standardization. File formatting in progress
 ```
 
@@ -100,6 +103,7 @@ file `colon_design.log` in the `rds_dir` folder.
 For didactic purposes, we can look at the design:
 
 ``` r
+
 # look at the results
 colon_rds <- readRDS(colon_design)
 str(colon_rds)
@@ -120,7 +124,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpRSXAtD/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmptbe3CO/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -144,21 +148,22 @@ str(colon_rds)
 We fit a model using our design as follows:
 
 ``` r
+
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-04-24 20:06:46
+#> Input data passed all checks at  2026-04-30 21:23:52
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-24 20:06:46
+#> Eigendecomposition finished at  2026-04-30 21:23:52
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:06:46
+#> Rotation (preconditioning) finished at  2026-04-30 21:23:52
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:06:47 
+#> Model fitting finished at  2026-04-30 21:23:52 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-24 20:06:47
+#> Model ready at  2026-04-30 21:23:52
 ```
 
 Notice the messages that are printed out – this documentation may be
@@ -167,6 +172,7 @@ optionally saved to another `.log` file using the `logfile` argument.
 We can examine the results at a specific \lambda value:
 
 ``` r
+
 summary(colon_fit, idx = 50)
 #> lasso-penalized regression model with n=62, p=2002 at lambda=0.0588
 #> -------------------------------------------------
@@ -179,6 +185,7 @@ summary(colon_fit, idx = 50)
 We may also plot of the paths of the estimated coefficients:
 
 ``` r
+
 plot(colon_fit)
 ```
 
@@ -190,6 +197,7 @@ This example shows an experimental option, wherein we are working to add
 a prediction method for filebacked outside of cross-validation.
 
 ``` r
+
 # linear predictor 
 yhat_lp <- predict(object = colon_fit,
         newX = attach.big.matrix(colon$X),

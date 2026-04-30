@@ -29,7 +29,7 @@ process_delim(
   The file to be read in, without the filepath. This should be a file of
   numeric values. Example: use `data_file = "myfile.txt"`, not
   `data_file = "~/mydirectory/myfile.txt"` Note: if your file has
-  headers/column names, set 'header = TRUE' – this will be passed into
+  headers/column names, set `header = TRUE` – this will be passed into
   [`bigmemory::read.big.matrix()`](https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html).
 
 - feature_id:
@@ -40,14 +40,14 @@ process_delim(
 
 - rds_dir:
 
-  The directory where the user wants to create the '.rds' and '.bk'
+  The directory where the user wants to create the `.rds` and `.bk`
   files. Defaults to `data_dir`
 
 - rds_prefix:
 
   String specifying the user's preferred filename for the to-be-created
-  .rds file (will be create inside `rds_dir` folder). Note: 'rds_prefix'
-  cannot be the same as 'data_prefix'
+  `.rds` file (will be create inside `rds_dir` folder). Note:
+  `rds_prefix` cannot be the same as `data_prefix`
 
 - logfile:
 
@@ -57,24 +57,23 @@ process_delim(
 
 - overwrite:
 
-  Logical: if existing `.bk`/`.rds` files exist for the specified
+  Logical: if existing .bk/.rds files exist for the specified
   directory/prefix, should these be overwritten? Defaults to FALSE. Set
   to TRUE if you want to change the imputation method you're using, etc.
 
 - quiet:
 
-  Logical: should the messages printed to the console be silenced?
-  Defaults to FALSE.
+  Logical: should console messages be silenced? Defaults to FALSE
 
 - ...:
 
   Optional: other arguments to be passed to
   [`bigmemory::read.big.matrix()`](https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html).
-  Note: 'sep' is an option to pass here, as is 'header'.
+  Note: `sep` is an option to pass here, as is `header`.
 
 ## Value
 
-The file path to the newly created '.rds' file
+The file path to the newly created `.rds` file
 
 ## Examples
 
@@ -90,7 +89,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #>       Please make sure you have addressed missingness before you proceed.
 #> 
 #> process_plink() completed 
-#> Processed files now saved as /tmp/RtmpJWerNn/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmp292scP/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -99,7 +98,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpJWerNn/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmp292scP/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62

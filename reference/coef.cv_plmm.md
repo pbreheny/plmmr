@@ -1,6 +1,6 @@
-# Coef method for "cv_plmm" class
+# Coef method for `cv_plmm` class
 
-Coef method for "cv_plmm" class
+Coef method for `cv_plmm` class
 
 ## Usage
 
@@ -13,7 +13,7 @@ coef(object, lambda, which = object$min, ...)
 
 - object:
 
-  An object of class "cv_plmm."
+  An object of class `cv_plmm`.
 
 - lambda:
 
@@ -21,7 +21,7 @@ coef(object, lambda, which = object$min, ...)
 
 - which:
 
-  Vector of lambda indices for which coefficients to return. Defaults to
+  Vector of lambda indices for which to return coefficients. Defaults to
   lambda index with minimum CVE.
 
 - ...:
@@ -31,7 +31,7 @@ coef(object, lambda, which = object$min, ...)
 ## Value
 
 Returns a named numeric vector. Values are the coefficients of the model
-at the specified value of either `lambda` or `which`. Names are the
+at the specified value(s) of either `lambda` or `which`. Names are the
 values of `lambda`.
 
 ## Examples

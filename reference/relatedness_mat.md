@@ -3,7 +3,7 @@
 Given a matrix of genotypes, this function estimates the genetic
 relatedness matrix (GRM, also known as the RRM, see Hayes et al. 2009,
 [doi:10.1017/S0016672308009981](https://doi.org/10.1017/S0016672308009981)
-) among the subjects: XX'/p, where X is standardized.
+) among the subjects: \\\frac{1}{p}(XX^T)\\, where X is standardized.
 
 ## Usage
 
@@ -20,13 +20,13 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 
 - std:
 
-  Logical: should X be standardized? If you set this to FALSE (which can
-  only be done if data are stored in memory), you should have a good
+  Logical: should `X` be standardized? If you set this to FALSE (which
+  can only be done if data are stored in memory), you should have a good
   reason for doing so, as standardization is a best practice.
 
 - fbm:
 
-  Logical: is X stored as an FBM? Defaults to FALSE
+  Logical: is `X` stored as an FBM? Defaults to FALSE
 
 - ns:
 

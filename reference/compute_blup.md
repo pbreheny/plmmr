@@ -1,6 +1,6 @@
-# a function to compute the BLUP
+# A function to compute the BLUP
 
-a function to compute the BLUP
+A function to compute the BLUP
 
 ## Usage
 
@@ -31,4 +31,4 @@ compute_blup(fit, Xb, Sigma_21, idx)
 
 ## Value
 
-Sigma_hat, a matrix representing the estimated variance
+A matrix of the linear predictors + the estimated random effects

@@ -1,6 +1,6 @@
-# plmm_checks
+# A function to perform checks on passed objects before model fitting.
 
-plmm_checks
+A function to perform checks on passed objects before model fitting.
 
 ## Usage
 
@@ -31,8 +31,8 @@ plmm_checks(
 
   Similarity matrix used to rotate the data. This should either be (1) a
   known matrix that reflects the covariance of y, (2) an estimate
-  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 'd'
-  and 'U', as returned by a previous
+  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components `s`
+  and `U`, as returned by a previous
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data.
 
@@ -60,9 +60,9 @@ plmm_checks(
 
   Tuning parameter for the Mnet estimator which controls the relative
   contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
-  alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be
-  equivalent to ridge regression. However, alpha=0 is not supported;
-  alpha may be arbitrarily small, but not exactly 0.
+  `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would
+  be equivalent to ridge regression. However, `alpha = 0` is not
+  supported; alpha may be arbitrarily small, but not exactly 0.
 
 - trace:
 
@@ -89,5 +89,45 @@ plmm_checks(
 
 ## Value
 
-A list of parameters to pass on to model fitting. The list includes the
-standardized design matrix, the outcome, and meta-data
+A list which includes 16 items:
+
+- `std_X`: The standardized design matrix. If design matrix is
+  filebacked, the descriptor for the filebacked data is returned using
+  [`bigmemory::describe()`](https://rdrr.io/pkg/bigmemory.sri/man/describe.html).
+
+- `std_X_details`: Metadata for `std_X`.
+
+- `std_X_n`: Number of rows in `std_X`.
+
+- `std_X_p`: Number of columns in `std_X`.
+
+- `y`: Original outcome vector.
+
+- `y_name`: Variable name of `y`.
+
+- `centered_y`: The centered outcome vector.
+
+- `K`: The relationship matrix (as passed by
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md), may be
+  NULL)
+
+- `eta`: Estimated proportion of the variance in the outcome
+  attributable to population/correlation structure (as passed by
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md), may be
+  NULL)
+
+- `fbm_flag`: Logical, is `std_X` filebacked?
+
+- `plink_flag`: Logical, does `std_X` originate from PLINK files?
+
+- `penalty`: A character string indicating the penalty type
+
+- `gamma`: Tuning parameter for the SCAD or MCP penalties.
+
+- `init`: Initialized values for beta coefficients.
+
+- `n`: Number of rows in the original design matrix prior to
+  standardization procedures.
+
+- `p`: Number of columns in the original design matrix prior to
+  standardization procedures.

@@ -30,5 +30,5 @@ create_design_in_memory(X, y, unpen = NULL)
 
 ## Value
 
-A list with elements including a standardized X and model design
-information
+A named list containing the standardized design matrix, outcome, penalty
+factor vector, and other details needed for fitting a model

@@ -27,8 +27,8 @@ index_samples(
 
 - rds_dir:
 
-  The path to the directory in which you want to create the new '.rds'
-  and '.bk' files.
+  The path to the directory in which you want to create the new `.rds`
+  and `.bk` files.
 
 - indiv_id:
 
@@ -39,17 +39,18 @@ index_samples(
 
 - add_outcome:
 
-  A data frame with at least two columns: and ID column and a phenotype
+  A data frame with at least two columns: an ID column and a phenotype
   column
 
 - outcome_id:
 
-  A string specifying the name of the ID column in `pheno`
+  A string specifying the name of the ID column in `add_outcome`
 
 - outcome_col:
 
-  A string specifying the name of the phenotype column in `pheno`. This
-  column will be used as the default `y` argument to 'plmm()'.
+  A string specifying the name of the phenotype column in `add_outcome`.
+  This column will be used as the default `y` argument to
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 - na_outcome_vals:
 
@@ -62,16 +63,15 @@ index_samples(
 
 - quiet:
 
-  Logical: should messages be printed to the console? Defaults to FALSE
-  (which leaves the print messages on...
+  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 
 a list with two items:
 
-- a data.table with rows corresponding to the samples for which both
-  genotype and phenotype are available.
+- `complete_samples`: a data.table with rows corresponding to the
+  samples for which both genotype and phenotype are available.
 
-- a numeric vector with indices indicating which samples were 'complete'
-  (i.e., which samples from add_outcome had corresponding data in the
-  PLINK files)
+- `outcome_idx`: a numeric vector with indices indicating which samples
+  were 'complete' (i.e., which samples from add_outcome had
+  corresponding data in the PLINK files)

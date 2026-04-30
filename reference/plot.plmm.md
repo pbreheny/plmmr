@@ -1,6 +1,6 @@
-# Plot method for plmm class
+# Plot method for `plmm` class
 
-Plot method for plmm class
+Plot method for `plmm` class
 
 ## Usage
 
@@ -19,14 +19,14 @@ plot(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...)
 
   Tuning parameter for the Mnet estimator which controls the relative
   contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
-  `alpha=1` is equivalent to MCP/SCAD penalty, while `alpha=0` would be
-  equivalent to ridge regression. However, `alpha=0` is not supported;
-  alpha may be arbitrarily small, but not exactly 0.
+  `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would
+  be equivalent to ridge regression. However, `alpha = 0` is not
+  supported; alpha may be arbitrarily small, but not exactly 0.
 
 - log.l:
 
   Logical to indicate the plot should be returned on the natural log
-  scale. Defaults to `log.l = FALSE`.
+  scale. Defaults to FALSE.
 
 - shade:
 

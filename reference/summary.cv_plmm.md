@@ -1,6 +1,6 @@
-# A summary function for cv_plmm objects
+# A summary function for `cv_plmm` objects
 
-A summary function for cv_plmm objects
+A summary function for `cv_plmm` objects
 
 ## Usage
 
@@ -19,7 +19,7 @@ summary(object, lambda = "min", ...)
 
   The regularization parameter value at which inference should be
   reported. Can choose a numeric value, 'min', or '1se'. Defaults to
-  'min.'
+  'min'.
 
 - ...:
 
@@ -45,12 +45,6 @@ has its own print method and contains the following list elements:
 - `min`: The minimum cross validation error
 
 - `fit`: The `plmm` fit used in the cross validation
-
-if `return_bias_details = TRUE`, two more items are returned:
-
-- `bias`: The mean bias of the cross validation
-
-- `loss`: The loss at each value of `lambda`
 
 ## Examples
 

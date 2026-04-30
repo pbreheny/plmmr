@@ -1,6 +1,6 @@
-# Loss method for "plmm" class
+# Loss method for `plmm` class
 
-Loss method for "plmm" class
+Loss method for `plmm` class
 
 ## Usage
 

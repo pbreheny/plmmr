@@ -31,15 +31,15 @@ read_plink_files(
 
 - rds_dir:
 
-  The path to the directory in which you want to create the new '.rds'
-  and '.bk' files. Defaults to `data_dir`
+  The path to the directory in which you want to create the new `.rds`
+  and `.bk` files. Defaults to `data_dir`
 
 - rds_prefix:
 
   String specifying the user's preferred filename for the to-be-created
-  .rds file (will be create inside `rds_dir` folder). If no rds_prefix
+  `.rds` file (will be create inside `rds_dir` folder). If no rds_prefix
   is provided, the processed data files will be returned in memory.
-  Note: 'rds_prefix' cannot be the same as 'data_prefix'
+  Note: `rds_prefix` cannot be the same as `data_prefix`
 
 - outfile:
 
@@ -69,6 +69,6 @@ read_plink_files(
 
 ## Value
 
-'.rds' and '.bk' files are created in `data_dir`, and `obj` (a `bigSNP`
+`.rds` and `.bk` files are created in `data_dir`, and `obj` (a `bigSNP`
 object) is returned. See `bigsnpr` documentation for more info on the
 `bigSNP` class.

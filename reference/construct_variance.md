@@ -1,6 +1,6 @@
-# a function to create the estimated variance matrix from a PLMM fit
+# A function to construct the estimated variance matrix from a PLMM fit
 
-a function to create the estimated variance matrix from a PLMM fit
+A function to construct the estimated variance matrix from a PLMM fit
 
 ## Usage
 

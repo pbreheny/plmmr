@@ -1,6 +1,7 @@
 # If your data is in a matrix or data frame
 
 ``` r
+
 library(plmmr)
 #> Loading required package: bigalgebra
 #> Loading required package: bigmemory
@@ -13,6 +14,7 @@ examples of analyzing data from PLINK files or delimited files.
 Examine what we have in the `admix` data:
 
 ``` r
+
 str(admix)
 #> List of 3
 #>  $ X       : int [1:197, 1:100] 0 0 0 0 1 0 1 0 0 0 ...
@@ -30,6 +32,7 @@ The `admix` dataset is now ready to analyze with a call to
 (one of the main functions in `plmmr`):
 
 ``` r
+
 admix_fit <- plmm(admix$X, admix$y)
 summary(admix_fit, lambda = admix_fit$lambda[50])
 #> lasso-penalized regression model with n=197, p=101 at lambda=0.01404
@@ -55,6 +58,7 @@ parameter \lambda. By default, `plmm` fits 100 values of \lambda (see
 the `setup_lambda` function for details).
 
 ``` r
+
 admix_fit$beta_vals[1:10, 97:100] |> 
   knitr::kable(digits = 3,
                format = "html")
@@ -81,6 +85,7 @@ population.
 We can summarize our fit at the nth \lambda value:
 
 ``` r
+
 # for n = 25 
 summary(admix_fit, lambda = admix_fit$lambda[25])
 #> lasso-penalized regression model with n=197, p=101 at lambda=0.08037
@@ -95,6 +100,7 @@ We can also plot the path of the fit to see how model coefficients vary
 with \lambda:
 
 ``` r
+
 plot(admix_fit)
 ```
 
@@ -114,6 +120,7 @@ function prior to calling
 how that would look:
 
 ``` r
+
 # add ancestry to design matrix
 X_plus_ancestry <- cbind(admix$ancestry, admix$X)
 
@@ -135,6 +142,7 @@ We may compare the results from the model which includes ‘ancestry’ to
 our first model:
 
 ``` r
+
 summary(admix_fit2, idx = 25)
 #> lasso-penalized regression model with n=197, p=102 at lambda=0.09977
 #> -------------------------------------------------
@@ -154,6 +162,7 @@ example of using `cv_plmm` to select a \lambda that minimizes
 cross-validation error:
 
 ``` r
+
 admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
 admix_cv_s <- summary(admix_cv, lambda = "min")
 print(admix_cv_s)
@@ -169,6 +178,7 @@ We can also plot the cross-validation error (CVE) versus \lambda (on the
 log scale):
 
 ``` r
+
 plot(admix_cv)
 ```
 
@@ -184,6 +194,7 @@ choose to implement CV in parallel using the `cluster` argument in
 Here is an example of setting up CV in parallel:
 
 ``` r
+
 # make a cluster
 num_cores <- 5 # just using 5 cores as a laptop-sized example
 cl <- parallel::makeCluster(spec = num_cores)
@@ -214,6 +225,7 @@ Below is an example of the
 [`predict()`](https://rdrr.io/r/stats/predict.html) methods for PLMMs:
 
 ``` r
+
 # make predictions for select lambda value(s)
 y_hat <- predict(object = admix_fit,
                  newX = admix$X,
@@ -226,6 +238,7 @@ an intercept-only model using mean squared prediction error (MSPE) –
 lower is better:
 
 ``` r
+
 # intercept-only (or 'null') model
 crossprod(admix$y - mean(admix$y))/length(admix$y)
 #>          [,1]

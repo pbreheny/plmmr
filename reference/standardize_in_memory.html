@@ -36,7 +36,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>A helper function to standardize matrices</h1>
-      <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/main/R/standardize_matrix.R" class="external-link"><code>R/standardize_matrix.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/main/R/standardize_in_memory.R" class="external-link"><code>R/standardize_in_memory.R</code></a></small>
       <div class="d-none name"><code>standardize_in_memory.Rd</code></div>
     </div>
 
@@ -54,7 +54,7 @@
 
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a matrix</p></dd>
+<dd><p>A matrix</p></dd>
 
 
 <dt id="arg-tocenter">tocenter<a class="anchor" aria-label="anchor" href="#arg-tocenter"></a></dt>
@@ -63,13 +63,13 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list with the standardized matrix, vectors with the centering/scaling values, and a vector with the indices of nonsingular columns</p>
+    <p>A list containing the standardized <code>X</code> matrix and associated metadata</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
 NOTE: this function returns a matrix <strong>in memory</strong>. For standardizing filebacked
-data, use <code>big_std()</code>  – see src/big_standardize.cpp</p>
+data, use <code><a href="standardize_filebacked.html">standardize_filebacked()</a></code>  – see <code>src/big_standardize.cpp</code></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

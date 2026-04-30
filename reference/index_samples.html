@@ -68,7 +68,7 @@
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files.</p></dd>
+<dd><p>The path to the directory in which you want to create the new <code>.rds</code> and <code>.bk</code> files.</p></dd>
 
 
 <dt id="arg-indiv-id">indiv_id<a class="anchor" aria-label="anchor" href="#arg-indiv-id"></a></dt>
@@ -77,15 +77,15 @@ element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' 
 
 
 <dt id="arg-add-outcome">add_outcome<a class="anchor" aria-label="anchor" href="#arg-add-outcome"></a></dt>
-<dd><p>A data frame with at least two columns: and ID column and a phenotype column</p></dd>
+<dd><p>A data frame with at least two columns: an ID column and a phenotype column</p></dd>
 
 
 <dt id="arg-outcome-id">outcome_id<a class="anchor" aria-label="anchor" href="#arg-outcome-id"></a></dt>
-<dd><p>A string specifying the name of the ID column in <code>pheno</code></p></dd>
+<dd><p>A string specifying the name of the ID column in <code>add_outcome</code></p></dd>
 
 
 <dt id="arg-outcome-col">outcome_col<a class="anchor" aria-label="anchor" href="#arg-outcome-col"></a></dt>
-<dd><p>A string specifying the name of the phenotype column in <code>pheno</code>. This column will be used as the default <code>y</code> argument to 'plmm()'.</p></dd>
+<dd><p>A string specifying the name of the phenotype column in <code>add_outcome</code>. This column will be used as the default <code>y</code> argument to <code><a href="plmm.html">plmm()</a></code>.</p></dd>
 
 
 <dt id="arg-na-outcome-vals">na_outcome_vals<a class="anchor" aria-label="anchor" href="#arg-na-outcome-vals"></a></dt>
@@ -97,13 +97,13 @@ element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' 
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...</p></dd>
+<dd><p>Logical:  should console messages be silenced? Defaults to FALSE</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list with two items:</p><ul><li><p>a data.table with rows corresponding to the samples for which both genotype and phenotype are available.</p></li>
-<li><p>a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)</p></li>
+    <p>a list with two items:</p><ul><li><p><code>complete_samples</code>: a data.table with rows corresponding to the samples for which both genotype and phenotype are available.</p></li>
+<li><p><code>outcome_idx</code>: a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

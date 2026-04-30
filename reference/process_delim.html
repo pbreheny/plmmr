@@ -70,7 +70,7 @@
 <dt id="arg-data-file">data_file<a class="anchor" aria-label="anchor" href="#arg-data-file"></a></dt>
 <dd><p>The file to be read in, without the filepath. This should be a file of numeric values.
 Example: use <code>data_file = "myfile.txt"</code>, not <code>data_file = "~/mydirectory/myfile.txt"</code>
-Note: if your file has headers/column names, set 'header = TRUE' – this will be passed into <code><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html" class="external-link">bigmemory::read.big.matrix()</a></code>.</p></dd>
+Note: if your file has headers/column names, set <code>header = TRUE</code> – this will be passed into <code><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html" class="external-link">bigmemory::read.big.matrix()</a></code>.</p></dd>
 
 
 <dt id="arg-feature-id">feature_id<a class="anchor" aria-label="anchor" href="#arg-feature-id"></a></dt>
@@ -78,13 +78,12 @@ Note: if your file has headers/column names, set 'header = TRUE' – this will b
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The directory where the user wants to create the '.rds' and '.bk' files.
-Defaults to <code>data_dir</code></p></dd>
+<dd><p>The directory where the user wants to create the <code>.rds</code> and <code>.bk</code> files. Defaults to <code>data_dir</code></p></dd>
 
 
 <dt id="arg-rds-prefix">rds_prefix<a class="anchor" aria-label="anchor" href="#arg-rds-prefix"></a></dt>
-<dd><p>String specifying the user's preferred filename for the to-be-created .rds file (will be create inside <code>rds_dir</code> folder).
-Note: 'rds_prefix' cannot be the same as 'data_prefix'</p></dd>
+<dd><p>String specifying the user's preferred filename for the to-be-created <code>.rds</code> file (will be create inside <code>rds_dir</code> folder).
+Note: <code>rds_prefix</code> cannot be the same as <code>data_prefix</code></p></dd>
 
 
 <dt id="arg-logfile">logfile<a class="anchor" aria-label="anchor" href="#arg-logfile"></a></dt>
@@ -93,20 +92,20 @@ logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_d
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>Logical: if existing <code>.bk</code>/<code>.rds</code> files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.</p></dd>
+<dd><p>Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should the messages printed to the console be silenced? Defaults to FALSE.</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Optional: other arguments to be passed to <code><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html" class="external-link">bigmemory::read.big.matrix()</a></code>. Note: 'sep' is an option to pass here, as is 'header'.</p></dd>
+<dd><p>Optional: other arguments to be passed to <code><a href="https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html" class="external-link">bigmemory::read.big.matrix()</a></code>. Note: <code>sep</code> is an option to pass here, as is <code>header</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The file path to the newly created '.rds' file</p>
+    <p>The file path to the newly created <code>.rds</code> file</p>
     </div>
 
     <div class="section level2">
@@ -122,7 +121,7 @@ logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_d
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Please make sure you have addressed missingness before you proceed.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> process_plink() completed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved as /tmp/RtmpJWerNn/processed_colon2.rds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processed files now saved as /tmp/Rtmp292scP/processed_colon2.rds</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">colon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_dat</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">colon2</span><span class="op">)</span></span></span>
@@ -131,7 +130,7 @@ logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_d
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ description:List of 13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ sharedType: chr "FileBacked"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ filename  : chr "processed_colon2.bk"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ dirname   : chr "/tmp/RtmpJWerNn/"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ dirname   : chr "/tmp/Rtmp292scP/"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ totalRows : int 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ totalCols : int 2001</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ rowOffset : num [1:2] 0 62</span>
@@ -145,7 +144,6 @@ logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_d
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ n: num 62</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ p: num 2001</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "processed_delim"</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

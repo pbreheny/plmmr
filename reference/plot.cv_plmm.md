@@ -1,6 +1,6 @@
-# Plot method for cv_plmm class
+# Plot method for `cv_plmm` class
 
-Plot method for cv_plmm class
+Plot method for `cv_plmm` class
 
 ## Usage
 
@@ -21,30 +21,41 @@ plot(
 
 - x:
 
-  An object of class cv_plmm
+  An object of class `cv_plmm`
 
 - log.l:
 
   Logical to indicate the plot should be returned on the natural log
-  scale. Defaults to `log.l = FALSE`.
+  scale. Defaults to TRUE.
 
 - type:
 
-  Type of plot to return. Defaults to "cve."
+  Type of plot to return. Options include:
+
+  - `cve`: cross-validation error
+
+  - `rsq`: estimated fraction of the deviance explained by the model
+    (\\R^2\\)
+
+  - `scale`: estimated standard deviation
+
+  - `snr`: estimated signal-to-noise ratio
+
+  - `all`: all of the above
 
 - selected:
 
-  Logical to indicate which variables should be plotted. Defaults to
-  TRUE.
+  Logical to indicate if the number of variables selected should be
+  plotted on the top axis. Defaults to TRUE.
 
 - vertical.line:
 
-  Logical to indicate whether vertical line should be plotted at the
+  Logical to indicate whether a vertical line should be plotted at the
   minimum/maximum value. Defaults to TRUE.
 
 - col:
 
-  Color for vertical line, if plotted. Defaults to "red."
+  Color for the points along the CV curve. Defaults to "red".
 
 - ...:
 
@@ -53,7 +64,7 @@ plot(
 ## Value
 
 Nothing is returned; instead, a plot is drawn representing the
-relationship between the tuning parameter 'lambda' value (x-axis) and
+relationship between the tuning parameter `lambda` value (x-axis) and
 the cross validation error (y-axis).
 
 ## Examples
@@ -62,5 +73,4 @@ the cross validation error (y-axis).
 admix_design <- create_design(X = admix$X, y = admix$y)
 cvfit <- cv_plmm(design = admix_design)
 plot(cvfit)
-
 ```

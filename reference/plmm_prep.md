@@ -1,7 +1,7 @@
-# PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model This is an internal function for `cv_plmm`
+# PLMM prep: a function to run checks, eigendecomposition, and rotation prior to fitting a PLMM model
 
-PLMM prep: a function to run checks, SVD, and rotation prior to fitting
-a PLMM model This is an internal function for `cv_plmm`
+This is an internal function for
+[`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md)
 
 ## Usage
 
@@ -30,11 +30,11 @@ plmm_prep(
 
 - std_X_n:
 
-  The number of observations in std_X (integer)
+  The number of observations in `std_X` (integer)
 
 - std_X_p:
 
-  The number of features in std_X (integer)
+  The number of features in `std_X` (integer)
 
 - n:
 
@@ -54,8 +54,8 @@ plmm_prep(
 
   Similarity matrix used to rotate the data. This should either be: (1)
   a known matrix that reflects the covariance of y, (2) an estimate
-  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components 's'
-  and 'U', as returned by a previous
+  (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components `s`
+  and `U`, as returned by a previous
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data.
 
@@ -67,7 +67,7 @@ plmm_prep(
 
 - fbm_flag:
 
-  Logical: is std_X an FBM type object? This is set internally by
+  Logical: is `std_X` an FBM type object? This is set internally by
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 - trace:
@@ -83,13 +83,20 @@ plmm_prep(
 
 List with these components:
 
-- centered_y: The vector of centered outcomes
+- `std_X`: Standardized design matrix. If design matrix is filebacked,
+  the descriptor for the filebacked data is returned using
+  [`bigmemory::describe()`](https://rdrr.io/pkg/bigmemory.sri/man/describe.html).
 
-- std_X: standardized design matrix
+- `centered_y`: Vector of centered outcomes
 
-- K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
-  and (2) U: the eigenvectors of K (same as left singular values of X).
+- `K`: Similarity matrix
 
-- eta: the numeric value of the estimated eta parameter
+- `s`: Vector of the non-zero eigenvalues of `K`
 
-- trace: logical.
+- `U`: Matrix of eigenvectors of `K` associated with `s` (same as left
+  singular values of X).
+
+- `eta`: The numeric value of the estimated eta parameter
+
+- `trace`: If set to TRUE, inform the user of progress by announcing the
+  beginning of each step of the modeling process

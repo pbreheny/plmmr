@@ -1,7 +1,6 @@
-# Estimate eta (to be used in rotating the data) This function is called internally by `plmm()`
+# Estimate eta (to be used in rotating the data)
 
-Estimate eta (to be used in rotating the data) This function is called
-internally by
+This function is called internally by
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md)
 
 ## Usage
@@ -18,15 +17,15 @@ estimate_eta(n, s, U, y)
 
 - s:
 
-  The singular values of K, the realized relationship matrix
+  The non-zero eigenvalues of K, the realized relationship matrix
 
 - U:
 
-  The left-singular vectors of the *standardized* design matrix
+  The eigenvectors of K associated with s
 
 - y:
 
-  Continuous outcome vector.
+  Continuous outcome vector
 
 ## Value
 

@@ -18,12 +18,12 @@ find_example_data(path, parent = FALSE)
 - parent:
 
   If the user wants the name of the parent directory where the example
-  data is located, set `parent=TRUE`. Defaults to FALSE.
+  data is located, set `parent = TRUE`. Defaults to FALSE.
 
 ## Value
 
-If `path=NULL`, a character vector of file names is returned. If path is
-given, then a character string with the full file path.
+If `path = NULL`, a character vector of file names is returned. If path
+is given, then a character string with the full file path.
 
 ## Examples
 

@@ -1,6 +1,7 @@
 # If your data is in PLINK files
 
 ``` r
+
 library(plmmr)
 #> Loading required package: bigalgebra
 #> Loading required package: bigmemory
@@ -38,9 +39,10 @@ First, unzip your PLINK files if they are zipped. Our example data,
 command to unzip:
 
 ``` r
+
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/RtmpMWIVr5
+#> Unzipped files are saved in /tmp/RtmpQM5Vkx
 ```
 
 For GWAS data, we have to tell `plmmr` how to combine information across
@@ -53,6 +55,7 @@ the sake of example. Users can specify the folder of their choice for
 `rds_dir`, as shown below:
 
 ``` r
+
 # temp_dir <- tempdir() # using a temporary directory (if you didn't already create one above)
 plink_data <- process_plink(data_dir = temp_dir, 
                             data_prefix = "penncath_lite",
@@ -77,15 +80,15 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Imputing the missing (genotype) values using mode method
 #> 
 #> process_plink() completed
-#> Processed files now saved as /tmp/RtmpMWIVr5/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpQM5Vkx/imputed_penncath_lite.rds
 ```
 
 You’ll see a lot of messages printed to the console here … the result of
 all this is the creation of 3 files: `imputed_penncath_lite.rds` and
-`imputed_penncath_lite.bk` contain the data. [¹](#fn1) These will show
-up in the folder where the PLINK data is. What is returned is a
-filepath. The `.rds` object at this filepath contains the processed
-data, which we will now use to create our design.
+`imputed_penncath_lite.bk` contain the data. [^1] These will show up in
+the folder where the PLINK data is. What is returned is a filepath. The
+`.rds` object at this filepath contains the processed data, which we
+will now use to create our design.
 
 For didactic purposes, let’s examine what’s in
 `imputed_penncath_lite.rds` using the
@@ -94,6 +97,7 @@ Don’t do this in your analysis - the section below reads the data into
 memory. This is just for illustration):
 
 ``` r
+
 pen <- readRDS(plink_data) # notice: this is a `processed_plink` object 
 str(pen) # note: genotype data is *not* in memory
 #> List of 5
@@ -101,7 +105,7 @@ str(pen) # note: genotype data is *not* in memory
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpMWIVr5/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpQM5Vkx/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4367
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -156,6 +160,7 @@ An example with these options is included in the
 documentation.
 
 ``` r
+
 # get outcome data 
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
 
@@ -187,7 +192,7 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 62 constant features in the data
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-04-24 20:07:12
+#> Standardization completed at 2026-04-30 21:24:13
 #> Done with standardization. File formatting in progress
 
 # examine the design - notice the components of this object 
@@ -211,7 +216,7 @@ str(pen_design_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpMWIVr5/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpQM5Vkx/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4307
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -239,6 +244,7 @@ something you should do in your analysis – this reads the data into
 memory.
 
 ``` r
+
 # we can check to see that our data have been standardized 
 std_X <- attach.big.matrix(pen_design_rds$std_X)
 colMeans(std_X[,]) |> summary() # columns have mean zero...
@@ -258,29 +264,31 @@ the model fitting results, set `return_fit = TRUE` in
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 ``` r
+
 pen_fit <- plmm(design = pen_design,
                 trace = T,
                 return_fit = T)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-04-24 20:07:14
+#> Input data passed all checks at  2026-04-30 21:24:14
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-04-24 20:07:16
+#> Eigendecomposition finished at  2026-04-30 21:24:16
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:16
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:16
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:19 
+#> Model fitting finished at  2026-04-30 21:24:20 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-04-24 20:07:19
+#> Model ready at  2026-04-30 21:24:20
 # you can turn off the trace messages by letting trace = F (default)
 ```
 
 We examine our model results below:
 
 ``` r
+
 summary(pen_fit, idx = 50)
 #> lasso-penalized regression model with n=1401, p=4370 at lambda=0.00970
 #> -------------------------------------------------
@@ -299,6 +307,7 @@ To choose a tuning parameter for a model, `plmmr` offers a cross
 validation method:
 
 ``` r
+
 cv_fit <- cv_plmm(design = pen_design,
                   type = "blup",
                   return_fit = T,
@@ -308,10 +317,10 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:22
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:22
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:26 
+#> Model fitting finished at  2026-04-30 21:24:25 
 #> 'Fold' argument is either NULL or missing; assigning folds randomly (by default).
 #>           
 #> To specify folds for each observation, supply a vector with fold assignments.
@@ -322,46 +331,47 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 1
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:27
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:27
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:30 
+#> Model fitting finished at  2026-04-30 21:24:29 
 #> Beginning eigendecomposition in fold  2 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 2
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:32
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:31
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:34 
+#> Model fitting finished at  2026-04-30 21:24:33 
 #> Beginning eigendecomposition in fold  3 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 3
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:36
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:35
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:39 
+#> Model fitting finished at  2026-04-30 21:24:37 
 #> Beginning eigendecomposition in fold  4 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 4
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:41
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:39
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:43 
+#> Model fitting finished at  2026-04-30 21:24:41 
 #> Beginning eigendecomposition in fold  5 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 5
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-04-24 20:07:45
+#> Rotation (preconditioning) finished at  2026-04-30 21:24:43
 #> Beginning model fitting.
-#> Model fitting finished at  2026-04-24 20:07:47
+#> Model fitting finished at  2026-04-30 21:24:45
 ```
 
 There are plot and summary methods for CV models as well:
 
 ``` r
+
 summary(cv_fit) # summary at lambda value that minimizes CV error
 #> lasso-penalized model with n=1401 and p=4370
 #> At minimum cross-validation error (lambda=0.0427):
@@ -411,7 +421,5 @@ involves these steps:
 - Standardize the design matrix so that all columns have mean of 0 and
   variance of 1.
 
-------------------------------------------------------------------------
-
-1.  Optionally, you can add a `.log` file via the `logfile` argument: a
-    log file is a text file documenting the steps that were just done.
+[^1]: Optionally, you can add a `.log` file via the `logfile` argument:
+    a log file is a text file documenting the steps that were just done.

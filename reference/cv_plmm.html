@@ -67,8 +67,8 @@ linear mixed models over a grid of values for the regularization parameter <code
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">cluster</span>,</span>
 <span>  nfolds <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  <span class="va">seed</span>,</span>
 <span>  fold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">seed</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  return_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -83,7 +83,7 @@ linear mixed models over a grid of values for the regularization parameter <code
 <dl><dt id="arg-design">design<a class="anchor" aria-label="anchor" href="#arg-design"></a></dt>
 <dd><p>The first argument must be one of three things:
 (1) <code>plmm_design</code> object (as created by <code><a href="create_design.html">create_design()</a></code>)
-(2) a string with the file path to a design object (the file path must end in '.rds')
+(2) a string with the file path to a design object (the file path must end in <code>.rds</code>)
 (3) a <code>matrix</code> or <code>data.frame</code> object representing the design matrix of interest</p></dd>
 
 
@@ -97,13 +97,13 @@ internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 <dd><p>Similarity matrix used to rotate the data. This should either be
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
-(3) a list with components 's' and 'U', as returned by a previous <code><a href="plmm.html">plmm()</a></code> model fit on the same data.
+(3) a list with components <code>s</code> and <code>U</code>, as returned by a previous <code><a href="plmm.html">plmm()</a></code> model fit on the same data.
 Note: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
 
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
 <dd><p>Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-Note: Setting eta = 1 will change the default of <code>type</code> to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying type='blup', but should be done with caution.</p></dd>
+Note: Setting <code>eta = 1</code> will change the default of <code>type</code> to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying <code>type = 'blup'</code>, but should be done with caution.</p></dd>
 
 
 <dt id="arg-penalty">penalty<a class="anchor" aria-label="anchor" href="#arg-penalty"></a></dt>
@@ -111,8 +111,8 @@ Note: Setting eta = 1 will change the default of <code>type</code> to 'lp', as K
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
-based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
+<dd><p>A character argument indicating what should be returned from <code><a href="predict.plmm.html">predict.plmm()</a></code>. If <code>type = 'lp'</code>, predictions are
+based on the linear predictor, X beta. If <code>type = 'blup'</code>, predictions are based on the sum of the linear predictor
 and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method
 in many applications.</p></dd>
 
@@ -122,7 +122,8 @@ in many applications.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
+<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. <code>alpha = 1</code> is equivalent to MCP/SCAD penalty, while <code>alpha = 0</code> would be equivalent to ridge regression.
+However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
 
 
 <dt id="arg-lambda-min">lambda_min<a class="anchor" aria-label="anchor" href="#arg-lambda-min"></a></dt>
@@ -134,11 +135,11 @@ in many applications.</p></dd>
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.</p></dd>
+<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length <code>nlambda</code> is computed, equally spaced on the log scale.</p></dd>
 
 
 <dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
-<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is <code>1e-4</code>.</p></dd>
+<dd><p>Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than <code>eps</code>. Default is <code>1e-4</code>.</p></dd>
 
 
 <dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
@@ -154,8 +155,8 @@ in many applications.</p></dd>
 
 
 <dt id="arg-cluster">cluster<a class="anchor" aria-label="anchor" href="#arg-cluster"></a></dt>
-<dd><p>Option for <strong>in-memory data only</strong>: cv_plmm() can be run in parallel across a cluster using the parallel package.
-The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+<dd><p>Option for <strong>in-memory data only</strong>: <code>cv_plmm()</code> can be run in parallel across a cluster using the parallel package.
+The cluster must be set up in advance using <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">parallel::makeCluster()</a></code>. The cluster must then be passed to <code>cv_plmm()</code>.
 <strong>Note</strong>: this option is not yet implemented for filebacked data.</p></dd>
 
 
@@ -163,12 +164,12 @@ The cluster must be set up in advance using parallel::makeCluster(). The cluster
 <dd><p>The number of cross-validation folds. Default is 5.</p></dd>
 
 
-<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>You may set the seed of the random number generator in order to obtain reproducible results.</p></dd>
-
-
 <dt id="arg-fold">fold<a class="anchor" aria-label="anchor" href="#arg-fold"></a></dt>
 <dd><p>Which fold each observation belongs to. By default, the observations are randomly assigned.</p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>You may set the seed of the random number generator in order to obtain reproducible results.</p></dd>
 
 
 <dt id="arg-trace">trace<a class="anchor" aria-label="anchor" href="#arg-trace"></a></dt>
@@ -176,9 +177,9 @@ The cluster must be set up in advance using parallel::makeCluster(). The cluster
 
 
 <dt id="arg-save-rds">save_rds<a class="anchor" aria-label="anchor" href="#arg-save-rds"></a></dt>
-<dd><p>Optional: if a filepath and name <em>without</em> the '.rds' suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+<dd><p>Optional: if a filepath and name <em>without</em> the <code>.rds</code> suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Defaults to NULL, which does not save the result.
-<strong>Note</strong>: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+<strong>Note</strong>: Along with the model results, two <code>.rds</code> files ('loss' and 'yhat') will be created in the same directory as <code>save_rds</code>.
 These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.</p></dd>
 
 
@@ -192,24 +193,24 @@ These files contain the loss and predicted outcome values in each fold; both fil
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list that includes 15 items:</p><ul><li><p>type: The type of prediction used ('lp' or 'blup')</p></li>
-<li><p>cve: A numeric vector with the cross validation error (CVE) at each value of <code>lambda</code></p></li>
-<li><p>cvse: A numeric vector with the estimated standard error associated with each value of <code>cve</code></p></li>
-<li><p>fold: A numeric <code>n</code> length vector of integers indicating the fold to which each observation was assigned</p></li>
-<li><p>lambda: A numeric vector of <code>lambda</code> values</p></li>
-<li><p>fit: The overall fit of the object, including all predictors; this is a list as returned by <code><a href="plmm.html">plmm()</a></code></p></li>
-<li><p>min: The index corresponding to the value of <code>lambda</code> that minimizes <code>cve</code></p></li>
-<li><p>lambda_min: The <code>lambda</code> value at which <code>cve</code> is minimized</p></li>
-<li><p>min1se: The index corresponding to the value of <code>lambda</code> within 1 standard error of
+    <p>A list that includes 14 items:</p><ul><li><p><code>type</code>: The type of prediction used ('lp' or 'blup')</p></li>
+<li><p><code>cve</code>: A numeric vector with the cross validation error (CVE) at each value of <code>lambda</code></p></li>
+<li><p><code>cvse</code>: A numeric vector with the estimated standard error associated with each value of <code>cve</code></p></li>
+<li><p><code>fold</code>: A numeric <code>n</code> length vector of integers indicating the fold to which each observation was assigned</p></li>
+<li><p><code>lambda</code>: A numeric vector of <code>lambda</code> values</p></li>
+<li><p><code>fit</code>: The overall fit of the object, including all predictors; this is a list as returned by <code><a href="plmm.html">plmm()</a></code></p></li>
+<li><p><code>min</code>: The index corresponding to the value of <code>lambda</code> that minimizes <code>cve</code></p></li>
+<li><p><code>lambda_min</code>: The <code>lambda</code> value at which <code>cve</code> is minimized</p></li>
+<li><p><code>min1se</code>: The index corresponding to the value of <code>lambda</code> within 1 standard error of
 that which minimizes <code>cve</code></p></li>
-<li><p>lambda1se: The largest value of lambda such that <code>cve</code> is within 1 standard error of the minimum</p></li>
-<li><p>null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+<li><p><code>lambda1se</code>: The largest value of lambda such that <code>cve</code> is within 1 standard error of the minimum</p></li>
+<li><p><code>null.dev</code>: A numeric value representing the deviance for the intercept-only model. If you have supplied
 your own <code>lambda</code> sequence, this quantity may not be meaningful.</p></li>
-<li><p>Y: A matrix with the predicted outcome (\(\hat{y}\)) values at each value of <code>lambda</code>.
+<li><p><code>Y</code>: A matrix with the predicted outcome (\(\hat{y}\)) values at each value of <code>lambda</code>.
 Rows are observations, columns are values of <code>lambda</code>.</p></li>
-<li><p>loss: A matrix with the loss values at each value of lambda. Rows are observations,
+<li><p><code>loss</code>: A matrix with the loss values at each value of lambda. Rows are observations,
 columns are values of <code>lambda</code>.</p></li>
-<li><p>estimated_Sigma: An n x n matrix representing the estimated covariance matrix.</p></li>
+<li><p><code>estimated_Sigma</code>: If <code>type = 'blup'</code>, an n x n matrix representing the estimated covariance matrix.</p></li>
 </ul></div>
 
     <div class="section level2">

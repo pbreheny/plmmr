@@ -58,20 +58,19 @@
 
 
 <dt id="arg-new-file">new_file<a class="anchor" aria-label="anchor" href="#arg-new-file"></a></dt>
-<dd><p>Optional user-specified new_file for the to-be-created .rds/.bk files.</p></dd>
+<dd><p>Optional user-specified new file for the to-be-created .rds/.bk files.</p></dd>
 
 
 <dt id="arg-complete-samples">complete_samples<a class="anchor" aria-label="anchor" href="#arg-complete-samples"></a></dt>
-<dd><p>Numeric vector with indicesmarking the rows of the original data which have a non-missing entry in the 6th column of the <code>.fam</code> file</p></dd>
+<dd><p>Numeric vector with indices marking the rows of the original data which have a non-missing entry in the 6th column of the <code>.fam</code> file</p></dd>
 
 
 <dt id="arg-ns">ns<a class="anchor" aria-label="anchor" href="#arg-ns"></a></dt>
-<dd><p>Numeric vector with the indices of the non-singular columns
-This vector is created in <code>handle_missingness()</code></p></dd>
+<dd><p>Numeric vector with the indices of the non-singular columns</p></dd>
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to <code>data_dir</code></p></dd>
+<dd><p>The path to the directory in which you want to create the new <code>.rds</code> and <code>.bk</code> files. Defaults to <code>data_dir</code></p></dd>
 
 
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
@@ -79,16 +78,16 @@ This vector is created in <code>handle_missingness()</code></p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with two components. First, a <code>big.matrix</code> object, 'subset_X', representing a design matrix wherein:</p><ul><li><p>rows are subset according to user's specification in <code>handle_missing_phen</code></p></li>
-<li><p>columns are subset so that no constant features remain – this is important for standardization downstream
-The list also includes the integer vector 'ns' which marks which columns of the original matrix were 'non-singular' (i.e. <em>not</em> constant features).
-The 'ns' index plays an important role in <code><a href="plmm_format.html">plmm_format()</a></code> and <code><a href="untransform.html">untransform()</a></code> (both helper functions in model fitting)</p></li>
-</ul></div>
+    <p>A list with two components. First, a <code>big.matrix</code> object, <code>subset_X</code>, representing a design matrix wherein:</p><ul><li><p>rows are subset to those with complete phenotype information</p></li>
+<li><p>columns are subset so that no constant features remain – this is important for standardization downstream</p></li>
+</ul><p>The list also includes the integer vector <code>ns</code> which marks which columns of the original matrix were 'non-singular' (i.e. <em>not</em> constant features).
+The <code>ns</code> index plays an important role in <code><a href="plmm_format.html">plmm_format()</a></code> and <code><a href="untransform.html">untransform()</a></code></p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

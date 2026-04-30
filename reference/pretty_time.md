@@ -1,6 +1,6 @@
-# a function to format the time
+# A function to format the time
 
-a function to format the time
+A function to format the time
 
 ## Usage
 

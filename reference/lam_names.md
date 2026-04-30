@@ -1,6 +1,6 @@
-# Generate nicely formatted lambda vec
+# Generate nicely formatted lambda vector
 
-Generate nicely formatted lambda vec
+Generate nicely formatted lambda vector
 
 ## Usage
 

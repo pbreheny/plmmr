@@ -35,13 +35,13 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Plot method for cv_plmm class</h1>
+      <h1>Plot method for <code>cv_plmm</code> class</h1>
       <small class="dont-index">Source: <a href="https://github.com/pbreheny/plmmr/blob/main/R/plot-cv-plmm.R" class="external-link"><code>R/plot-cv-plmm.R</code></a></small>
       <div class="d-none name"><code>plot.cv_plmm.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Plot method for cv_plmm class</p>
+    <p>Plot method for <code>cv_plmm</code> class</p>
     </div>
 
     <div class="section level2">
@@ -63,27 +63,32 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An object of class cv_plmm</p></dd>
+<dd><p>An object of class <code>cv_plmm</code></p></dd>
 
 
 <dt id="arg-log-l">log.l<a class="anchor" aria-label="anchor" href="#arg-log-l"></a></dt>
-<dd><p>Logical to indicate the plot should be returned on the natural log scale. Defaults to <code>log.l = FALSE</code>.</p></dd>
+<dd><p>Logical to indicate the plot should be returned on the natural log scale. Defaults to TRUE.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Type of plot to return. Defaults to "cve."</p></dd>
+<dd><p>Type of plot to return. Options include:</p><ul><li><p><code>cve</code>: cross-validation error</p></li>
+<li><p><code>rsq</code>: estimated fraction of the deviance explained by the model (\(R^2\))</p></li>
+<li><p><code>scale</code>: estimated standard deviation</p></li>
+<li><p><code>snr</code>: estimated signal-to-noise ratio</p></li>
+<li><p><code>all</code>: all of the above</p></li>
+</ul></dd>
 
 
 <dt id="arg-selected">selected<a class="anchor" aria-label="anchor" href="#arg-selected"></a></dt>
-<dd><p>Logical to indicate which variables should be plotted. Defaults to TRUE.</p></dd>
+<dd><p>Logical to indicate if the number of variables selected should be plotted on the top axis. Defaults to TRUE.</p></dd>
 
 
 <dt id="arg-vertical-line">vertical.line<a class="anchor" aria-label="anchor" href="#arg-vertical-line"></a></dt>
-<dd><p>Logical to indicate whether vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.</p></dd>
+<dd><p>Logical to indicate whether a vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.</p></dd>
 
 
 <dt id="arg-col">col<a class="anchor" aria-label="anchor" href="#arg-col"></a></dt>
-<dd><p>Color for vertical line, if plotted. Defaults to "red."</p></dd>
+<dd><p>Color for the points along the CV curve. Defaults to "red".</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -93,7 +98,7 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Nothing is returned; instead, a plot is drawn representing the relationship
-between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).</p>
+between the tuning parameter <code>lambda</code> value (x-axis) and the cross validation error (y-axis).</p>
     </div>
 
     <div class="section level2">
@@ -102,7 +107,6 @@ between the tuning parameter 'lambda' value (x-axis) and the cross validation er
 <span class="r-in"><span><span class="va">cvfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cv_plmm.html">cv_plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">admix_design</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cvfit</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.cv_plmm-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

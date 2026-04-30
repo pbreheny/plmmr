@@ -9,20 +9,28 @@
 
 - [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md) :
   Cross-validation for plmm
+
 - [`plmm_loss()`](https://pbreheny.github.io/plmmr/reference/plmm_loss.md)
-  : Loss method for "plmm" class
+  :
+
+  Loss method for `plmm` class
 
 ## Coefficient methods for PLMMs
 
 - [`coef(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/coef.plmm.md)
-  : Coef method for "plmm" class
+  :
+
+  Coef method for `plmm` class
+
 - [`coef(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/coef.cv_plmm.md)
-  : Coef method for "cv_plmm" class
+  :
+
+  Coef method for `cv_plmm` class
 
 ## Data (pre)processing and wrangling
 
 - [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
-  : a function to create a design for PLMM modeling
+  : A function to create a design for PLMM modeling
 
 - [`find_example_data()`](https://pbreheny.github.io/plmmr/reference/find_example_data.md)
   : A function to help with accessing example PLINK files.
@@ -41,22 +49,30 @@
 - [`unzip_example_data()`](https://pbreheny.github.io/plmmr/reference/unzip_example_data.md)
   :
 
-  Companion function to unzip the .gz files that ship with the `plmmr`
+  Companion function to unzip the `.gz` files that ship with the `plmmr`
   package.
 
 ## Plotting, summarizing, and formatting
 
 - [`summary(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/summary.plmm.md)
-  : A summary method for the plmm objects
+  :
+
+  A summary method for `plmm` objects
 
 - [`summary(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/summary.cv_plmm.md)
-  : A summary function for cv_plmm objects
+  :
+
+  A summary function for `cv_plmm` objects
 
 - [`plot(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/plot.plmm.md)
-  : Plot method for plmm class
+  :
+
+  Plot method for `plmm` class
 
 - [`plot(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/plot.cv_plmm.md)
-  : Plot method for cv_plmm class
+  :
+
+  Plot method for `cv_plmm` class
 
 - [`print(`*`<summary.plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/print.summary.plmm.md)
   :
@@ -64,14 +80,21 @@
   A function to print the summary of a `plmm` model
 
 - [`print(`*`<summary.cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/print.summary.cv_plmm.md)
-  : Print method for summary.cv_plmm objects
+  :
+
+  Print method for `summary.cv_plmm` objects
 
 ## Prediction
 
 - [`predict(`*`<plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/predict.plmm.md)
-  : Predict method for plmm class
+  :
+
+  Predict method for `plmm` class
+
 - [`predict(`*`<cv_plmm>`*`)`](https://pbreheny.github.io/plmmr/reference/predict.cv_plmm.md)
-  : Predict method for cv_plmm class
+  :
+
+  Predict method for `cv_plmm` class
 
 ## Data sets
 

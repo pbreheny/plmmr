@@ -1,11 +1,11 @@
-# create_log_file
+# Create the `.log` file
 
-create_log_file
+Create the `.log` file
 
 ## Usage
 
 ``` r
-create_log(outfile, ...)
+create_log(outfile)
 ```
 
 ## Arguments
@@ -15,10 +15,7 @@ create_log(outfile, ...)
   String specifying the name of the to-be-created file, *without*
   extension
 
-- ...:
-
-  Not used
-
 ## Value
 
-Nothing is returned, intead a text file with the suffix .log is created.
+Nothing is returned, instead a text file with the suffix `.log` is
+created.

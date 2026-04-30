@@ -1,7 +1,7 @@
-# PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
+# PLMM fit: A function that fits a PLMM using the values returned by `plmm_prep()`
 
-PLMM fit: a function that fits a PLMM using the values returned by
-plmm_prep()
+PLMM fit: A function that fits a PLMM using the values returned by
+[`plmm_prep()`](https://pbreheny.github.io/plmmr/reference/plmm_prep.md)
 
 ## Usage
 
@@ -39,18 +39,18 @@ plmm_fit(
 
 - std_X_details:
 
-  A list with components 'center' (values used to center X), 'scale'
-  (values used to scale X), and 'ns' (indices for nonsingular columns of
+  A list with components `center` (values used to center X), `scale`
+  (values used to scale X), and `ns` (indices for nonsingular columns of
   X)
 
 - penalty_factor:
 
   A multiplicative factor for the penalty applied to each coefficient.
-  If supplied, penalty_factor must be a numeric vector of length equal
-  to the number of columns of X. The purpose of penalty_factor is to
+  If supplied, `penalty_factor` must be a numeric vector of length equal
+  to the number of columns of X. The purpose of `penalty_factor` is to
   apply differential penalization if some coefficients are thought to be
   more likely than others to be in the model. In particular,
-  penalty_factor can be 0, in which case the coefficient is always in
+  `penalty_factor` can be 0, in which case the coefficient is always in
   the model without shrinkage.
 
 - fbm_flag:
@@ -72,15 +72,15 @@ plmm_fit(
 
   Tuning parameter for the Mnet estimator which controls the relative
   contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
-  alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be
-  equivalent to ridge regression. However, alpha=0 is not supported;
-  alpha may be arbitrarily small, but not exactly 0.
+  `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would
+  be equivalent to ridge regression. However, `alpha = 0` is not
+  supported; alpha may be arbitrarily small, but not exactly 0.
 
 - lambda_min:
 
-  The smallest value for lambda, as a fraction of lambda.max. Default is
-  .001 if the number of observations is larger than the number of
-  covariates and .05 otherwise.
+  The smallest value for lambda, as a fraction of the maximum lambda.
+  Default is .001 if the number of observations is larger than the
+  number of covariates and .05 otherwise.
 
 - nlambda:
 
@@ -89,12 +89,13 @@ plmm_fit(
 - lambda:
 
   A user-specified sequence of lambda values. By default, a sequence of
-  values of length nlambda is computed, equally spaced on the log scale.
+  values of length `nlambda` is computed, equally spaced on the log
+  scale.
 
 - eps:
 
-  Convergence threshold. The algorithm iterates until the RMSD for the
-  change in linear predictors for each coefficient is less than eps.
+  Convergence threshold. The algorithm iterates until the RMSE for the
+  change in linear predictors for each coefficient is less than `eps`.
   Default is `1e-4`.
 
 - max_iter:
@@ -115,3 +116,71 @@ plmm_fit(
 
   Additional arguments that can be passed to
   `biglasso::biglasso_simple_path()`
+
+## Value
+
+A list which includes 21 items:
+
+- `y`: The outcome vector used in model fitting.
+
+- `std_scale_beta`: The matrix of estimated coefficients on the
+  standardized scale. Rows are predictors (with the first row being the
+  intercept), and columns are values of `lambda`.
+
+- `std_Xbeta`: A matrix of the linear predictors on the scale of the
+  standardized design matrix. Rows are predictors, columns are values of
+  `lambda`. **Note**: `std_Xbeta` will not include rows for the
+  intercept or for constant features.
+
+- `centered_y`: The centered outcome vector.
+
+- `s`: a vector of the non-zero eigenvalues of the relatedness matrix K
+  (note: K is the kinship matrix for genetic/genomic data; see the
+  article on notation for details)
+
+- `U`: a matrix of the eigenvectors of K associated with `s`
+
+- `lambda`: A numeric vector of the tuning parameter values used in
+  model fitting.
+
+- `penalty`: A character string indicating the penalty with which the
+  model was fit (e.g., 'MCP')
+
+- `penalty_factor`: A vector of indicators corresponding to each
+  predictor, where 1 = predictor was penalized.
+
+- `iter`: An integer vector with the number of iterations needed in
+  model fitting for each value of `lambda`
+
+- `converged`: A vector of logical values indicating whether the model
+  fitting converged at each value of `lambda`
+
+- `loss`: A vector with the numeric values of the loss at each value of
+  `lambda` (calculated on the ~rotated~ scale)
+
+- `eta`: A double between 0 and 1 representing the estimated proportion
+  of the variance in the outcome attributable to population/correlation
+  structure.
+
+- `gamma`: A numeric value indicating the tuning parameter used for the
+  SCAD or MCP penalties. Not relevant for lasso models.
+
+- `alpha`: A numeric value indicating the elastic net tuning parameter.
+
+- `nlambda` Length of the sequence of lambda.
+
+- `eps`: Convergence threshold. The algorithm iterates until the RMSE
+  for the change in linear predictors for each coefficient is less than
+  `eps`
+
+- `max_iter`: Maximum number of iterations (total across entire path)
+
+- `warn`: Return warning messages for failures to converge and model
+  saturation?
+
+- `trace`: If set to TRUE, inform the user of progress by announcing the
+  beginning of each step of the modeling process
+
+- `std_X`: If design matrix is filebacked, the descriptor for the
+  filebacked data is returned using
+  [`bigmemory::describe()`](https://rdrr.io/pkg/bigmemory.sri/man/describe.html).

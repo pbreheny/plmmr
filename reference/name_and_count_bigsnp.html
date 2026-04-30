@@ -62,19 +62,23 @@
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages be printed to the console? Defaults to TRUE</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 
 <dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
-<dd><p>The string with the name of the .log file</p></dd>
+<dd><p>The string with the name of the <code>.log</code> file</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list with components:</p><ul><li><p>counts: column-wise summary of the minor allele counts in 'genotypes'</p></li>
-<li><p>obj: a modified <code>bigSNP</code> list with additional components</p></li>
-<li><p>X: the <code>obj$genotypes</code> as its own FBM</p></li>
-<li><p>pos: the <code>obj$map$physical.pos</code> vector</p></li>
+    <p>a list with 7 components:</p><ul><li><p><code>na_counts</code>: vector of missing SNP counts in <code>genotypes</code></p></li>
+<li><p><code>obj</code>: a modified <code>bigSNP</code> list with additional components</p></li>
+<li><p><code>og_plink_ids</code>: either the IID or FID column from <code>.fam</code>, determined by <code>id_var</code></p></li>
+<li><p><code>chr</code>: p-length containing the chromosomes for each SNP</p></li>
+<li><p><code>X</code>: the <code>obj$genotypes</code> as its own FBM</p></li>
+<li><p><code>pos</code>: vector of physical positions of the SNPs</p></li>
+<li><p><code>chr_range</code>: vector containing the minimum and maximum values of <code>chr</code>.
+Character strings are treated as the <strong>maximum</strong>.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

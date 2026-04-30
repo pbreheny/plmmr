@@ -1,6 +1,7 @@
-# a version of cbind() for file-backed matrices
+# A version of `cbind()` for file-backed matrices
 
-a version of cbind() for file-backed matrices
+A version of [`cbind()`](https://rdrr.io/r/base/cbind.html) for
+file-backed matrices
 
 ## Usage
 
@@ -24,7 +25,7 @@ big_cbind(A, B, C, quiet)
 
 - quiet:
 
-  Logical
+  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 

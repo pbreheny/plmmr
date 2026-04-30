@@ -7,9 +7,8 @@ passed to a model fitting function
 
 ``` r
 create_design_filebacked(
-  data_file,
-  rds_dir,
   obj,
+  rds_dir,
   new_file,
   add_outcome,
   outcome_id,
@@ -27,22 +26,15 @@ create_design_filebacked(
 
 ## Arguments
 
-- data_file:
-
-  A filepath to rds file of processed data (data from
-  [`process_plink()`](https://pbreheny.github.io/plmmr/reference/process_plink.md)
-  or
-  [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md))
-
-- rds_dir:
-
-  The path to the directory in which you want to create the new '.rds'
-  and '.bk' files.
-
 - obj:
 
   The RDS object read in by
   [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
+
+- rds_dir:
+
+  The path to the directory in which you want to create the new `.rds`
+  and `.bk` files.
 
 - new_file:
 
@@ -52,17 +44,17 @@ create_design_filebacked(
 
 - add_outcome:
 
-  A data frame or matrix with two columns: and ID column and a column
+  A data frame or matrix with two columns: an ID column and a column
   with the outcome value (to be used as 'y' in the final design). IDs
   must be characters, outcome must be numeric.
 
 - outcome_id:
 
-  A string specifying the name of the ID column in 'add_outcome'
+  A string specifying the name of the ID column in `add_outcome`
 
 - outcome_col:
 
-  A string specifying the name of the phenotype column in 'add_outcome'
+  A string specifying the name of the phenotype column in `add_outcome`
 
 - na_outcome_vals:
 
@@ -94,8 +86,8 @@ create_design_filebacked(
 - predictor_id:
 
   Optional (for PLINK data only): A string specifying the name of the
-  column in 'add_predictor' with sample IDs. **Required** if
-  'add_predictor' is supplied. The names will be used to subset and
+  column in `add_predictor` with sample IDs. **Required** if
+  `add_predictor` is supplied. The names will be used to subset and
   align this external covariate with the supplied PLINK data.
 
 - unpen:
@@ -107,7 +99,7 @@ create_design_filebacked(
 
 - logfile:
 
-  Optional: name of the '.log' file to be written – **Note:** do not
+  Optional: name of the `.log` file to be written – **Note:** do not
   append a `.log` to the filename; this is done automatically.
 
 - overwrite:
@@ -116,10 +108,9 @@ create_design_filebacked(
 
 - quiet:
 
-  Logical: should messages to be printed to the console be silenced?
-  Defaults to FALSE
+  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 
-A filepath to the created .rds file containing all the information for
+A filepath to the created `.rds` file containing all the information for
 model fitting, including a standardized X and model design information

@@ -47,9 +47,8 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_design_filebacked</span><span class="op">(</span></span>
-<span>  <span class="va">data_file</span>,</span>
-<span>  <span class="va">rds_dir</span>,</span>
 <span>  <span class="va">obj</span>,</span>
+<span>  <span class="va">rds_dir</span>,</span>
 <span>  <span class="va">new_file</span>,</span>
 <span>  <span class="va">add_outcome</span>,</span>
 <span>  <span class="va">outcome_id</span>,</span>
@@ -69,16 +68,12 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-data-file">data_file<a class="anchor" aria-label="anchor" href="#arg-data-file"></a></dt>
-<dd><p>A filepath to rds file of processed data (data from <code><a href="process_plink.html">process_plink()</a></code> or <code><a href="process_delim.html">process_delim()</a></code>)</p></dd>
+<dl><dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
+<dd><p>The RDS object read in by <code><a href="create_design.html">create_design()</a></code></p></dd>
 
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
-<dd><p>The path to the directory in which you want to create the new '.rds' and '.bk' files.</p></dd>
-
-
-<dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
-<dd><p>The RDS object read in by <code><a href="create_design.html">create_design()</a></code></p></dd>
+<dd><p>The path to the directory in which you want to create the new <code>.rds</code> and <code>.bk</code> files.</p></dd>
 
 
 <dt id="arg-new-file">new_file<a class="anchor" aria-label="anchor" href="#arg-new-file"></a></dt>
@@ -86,15 +81,15 @@
 
 
 <dt id="arg-add-outcome">add_outcome<a class="anchor" aria-label="anchor" href="#arg-add-outcome"></a></dt>
-<dd><p>A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.</p></dd>
+<dd><p>A data frame or matrix with two columns: an ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.</p></dd>
 
 
 <dt id="arg-outcome-id">outcome_id<a class="anchor" aria-label="anchor" href="#arg-outcome-id"></a></dt>
-<dd><p>A string specifying the name of the ID column in 'add_outcome'</p></dd>
+<dd><p>A string specifying the name of the ID column in <code>add_outcome</code></p></dd>
 
 
 <dt id="arg-outcome-col">outcome_col<a class="anchor" aria-label="anchor" href="#arg-outcome-col"></a></dt>
-<dd><p>A string specifying the name of the phenotype column in 'add_outcome'</p></dd>
+<dd><p>A string specifying the name of the phenotype column in <code>add_outcome</code></p></dd>
 
 
 <dt id="arg-na-outcome-vals">na_outcome_vals<a class="anchor" aria-label="anchor" href="#arg-na-outcome-vals"></a></dt>
@@ -115,7 +110,7 @@ This matrix must have one column that is an ID column; all other columns aside t
 
 
 <dt id="arg-predictor-id">predictor_id<a class="anchor" aria-label="anchor" href="#arg-predictor-id"></a></dt>
-<dd><p>Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. <strong>Required</strong> if 'add_predictor' is supplied.
+<dd><p>Optional (for PLINK data only): A string specifying the name of the column in <code>add_predictor</code> with sample IDs. <strong>Required</strong> if <code>add_predictor</code> is supplied.
 The names will be used to subset and align this external covariate with the supplied PLINK data.</p></dd>
 
 
@@ -125,7 +120,7 @@ The names will be used to subset and align this external covariate with the supp
 
 
 <dt id="arg-logfile">logfile<a class="anchor" aria-label="anchor" href="#arg-logfile"></a></dt>
-<dd><p>Optional: name of the '.log' file to be written – <strong>Note:</strong> do not append a <code>.log</code> to the filename; this is done automatically.</p></dd>
+<dd><p>Optional: name of the <code>.log</code> file to be written – <strong>Note:</strong> do not append a <code>.log</code> to the filename; this is done automatically.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -133,12 +128,12 @@ The names will be used to subset and align this external covariate with the supp
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>Logical: should messages to be printed to the console be silenced? Defaults to FALSE</p></dd>
+<dd><p>Logical: should console messages be silenced? Defaults to FALSE</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A filepath to the created .rds file containing all the information
+    <p>A filepath to the created <code>.rds</code> file containing all the information
 for model fitting, including a standardized X and model design information</p>
     </div>
 

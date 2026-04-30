@@ -1,7 +1,10 @@
-# Cross-validation internal function for cv_plmm
+# Cross-validation internal function for `cv_plmm()`
 
-Internal function for cv_plmm which calls plmm on a fold subset of the
-original data.
+Internal function for
+[`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md)
+which calls
+[`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) on a fold
+subset of the original data.
 
 ## Usage
 
@@ -22,9 +25,10 @@ cvf(i, fold, type, cv_args, ...)
 - type:
 
   A character argument indicating what should be returned from
-  predict.plmm. If `type == 'lp'` predictions are based on the linear
-  predictor, `$X beta$`. If `type == 'individual'` predictions are based
-  on the linear predictor plus the estimated random effect (BLUP).
+  [`predict.plmm()`](https://pbreheny.github.io/plmmr/reference/predict.plmm.md).
+  If `type = 'lp'` predictions are based on the linear predictor, \\X
+  \beta\\. If `type = 'individual'` predictions are based on the linear
+  predictor plus the estimated random effect (BLUP).
 
 - cv_args:
 
@@ -32,15 +36,16 @@ cvf(i, fold, type, cv_args, ...)
 
 - ...:
 
-  Optional arguments to `predict_within_cv`
+  Optional arguments to
+  [`predict_within_cv()`](https://pbreheny.github.io/plmmr/reference/predict_within_cv.md)
 
 ## Value
 
-a list with three elements:
+A list with three elements:
 
-- a numeric vector with the loss at each value of lambda
+- `loss`: a numeric vector with the loss at each value of lambda
 
-- a numeric value indicating the number of lambda values used
+- `nl`: a numeric value indicating the number of lambda values used
 
-- a numeric value with the predicted outcome (y hat) values at each
+- `yhat`: a numeric value with the predicted outcome values at each
   lambda

@@ -75,7 +75,7 @@
 <dl><dt id="arg-design">design<a class="anchor" aria-label="anchor" href="#arg-design"></a></dt>
 <dd><p>The first argument must be one of three things:
 (1) <code>plmm_design</code> object (as created by <code><a href="create_design.html">create_design()</a></code>)
-(2) a string with the file path to a design object (the file path must end in '.rds')
+(2) a string with the file path to a design object (the file path must end in <code>.rds</code>)
 (3) a <code>matrix</code> or <code>data.frame</code> object representing the design matrix of interest</p></dd>
 
 
@@ -89,7 +89,7 @@ internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 <dd><p>Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
-(3) a list with components 's' and 'U', as returned by a previous <code>plmm()</code> model fit on the same data.
+(3) a list with components <code>s</code> and <code>U</code>, as returned by a previous <code>plmm()</code> model fit on the same data.
 Note: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
 
 
@@ -110,11 +110,12 @@ Note: if a user provides their own matrix, it is decomposed as provided and will
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
+<dd><p>Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. <code>alpha = 1</code> is equivalent to MCP/SCAD penalty, while <code>alpha = 0</code> would be equivalent to ridge regression.
+However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
 
 
 <dt id="arg-lambda-min">lambda_min<a class="anchor" aria-label="anchor" href="#arg-lambda-min"></a></dt>
-<dd><p>The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.</p></dd>
+<dd><p>The smallest value for lambda, as a fraction of the maximum lambda. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.</p></dd>
 
 
 <dt id="arg-nlambda">nlambda<a class="anchor" aria-label="anchor" href="#arg-nlambda"></a></dt>
@@ -122,11 +123,11 @@ Note: if a user provides their own matrix, it is decomposed as provided and will
 
 
 <dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.</p></dd>
+<dd><p>A user-specified sequence of lambda values. By default, a sequence of values of length <code>nlambda</code> is computed, equally spaced on the log scale.</p></dd>
 
 
 <dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
-<dd><p>Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is <code>1e-4</code>.</p></dd>
+<dd><p>Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than <code>eps</code>. Default is <code>1e-4</code>.</p></dd>
 
 
 <dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
@@ -142,7 +143,7 @@ Note: if a user provides their own matrix, it is decomposed as provided and will
 
 
 <dt id="arg-save-rds">save_rds<a class="anchor" aria-label="anchor" href="#arg-save-rds"></a></dt>
-<dd><p>Optional: if a filepath and name <em>without</em> the '.rds' suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+<dd><p>Optional: if a filepath and name <em>without</em> the <code>.rds</code> suffix is specified (e.g., <code>save_rds = "~/dir/my_results"</code>), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Accompanying the RDS file is a log file for documentation, e.g., "~/dir/my_results.log".
 Defaults to NULL, which does not save any RDS or log files.</p></dd>
 
@@ -158,35 +159,35 @@ Defaults to TRUE.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list which includes 19 items:</p><ul><li><p>beta_vals: The matrix of estimated coefficients. Rows are predictors (with the first row being the intercept), and columns are values of <code>lambda</code>.</p></li>
-<li><p>std_Xbeta: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of <code>lambda</code>.
-<strong>Note</strong>: std_Xbeta will not include rows for the intercept or for constant features.</p></li>
-<li><p>std_X_details: A list with 9 items:
-- center: The center values used to center the columns of the design matrix
-- scale: The scaling values used to scale the columns of the design matrix
-- ns: An integer vector of the nonsingular columns of the original data
-- unpen: An integer vector of indices of the unpenalized features, if any were specified in the design
-- unpen_colnames: A charater vector of the column names of ay unpenalized features.
-- X_colnames: A character vector with the column names of all features in the original design matrix
-- X_rownames: A character vector with the row names of all features in the original design matrix; if none were provided, these are named 'row1', 'row2', etc.
-- std_X_colnames: A subset of X_colnames representing only nonsingular columns (i.e., the columns indexed by 'ns')
-- std_X_rownames: A subset of X_rownames representing rows that passed QC filtering &amp; and are represented in both the genotype and phenotype data sets (this only applies to PLINK data)</p></li>
-<li><p>std_X: If design matrix is filebacked, the descriptor for the filebacked data is returned using <code><a href="https://rdrr.io/pkg/bigmemory.sri/man/describe.html" class="external-link">bigmemory::describe()</a></code>. If the the data were stored in-memory, nothing is returned (std_X is NULL).</p></li>
-<li><p>y: The outcome vector used in model fitting.</p></li>
-<li><p>p: The total number of columns in the design matrix (including any singular columns, excluding the intercept).</p></li>
-<li><p>plink_flag: Logical - did the data come from PLINK files?</p></li>
-<li><p>lambda: A numeric vector of the tuning parameter values used in model fitting.</p></li>
-<li><p>eta: A double between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure</p></li>
-<li><p>penalty: A character string indicating the penalty with which the model was fit (e.g., 'MCP')</p></li>
-<li><p>gamma: A numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.</p></li>
-<li><p>alpha: A numeric value indicating the elastic net tuning parameter.</p></li>
-<li><p>loss: A vector with the numeric values of the loss at each value of <code>lambda</code> (calculated on the ~rotated~ scale)</p></li>
-<li><p>penalty_factor: A vector of indicators corresponding to each predictor, where 1 = predictor was penalized.</p></li>
-<li><p>ns_idx: An integer vector with the indices of predictors which were non-singular features (i.e., features which had variation), where feature 1 is the intercept.</p></li>
-<li><p>iter: An integer vector with the number of iterations needed in model fitting for each value of <code>lambda</code></p></li>
-<li><p>converged: A vector of logical values indicating whether the model fitting converged at each value of <code>lambda</code></p></li>
-<li><p>K: a list with 2 elements, <code>s</code> and <code>U</code> —</p><ul><li><p>s: a vector of the eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)</p></li>
-<li><p>U: a matrix of the eigenvectors of the relatedness matrix</p></li>
+    <p>A list which includes 18 items:</p><ul><li><p><code>beta_vals</code>: The matrix of estimated coefficients. Rows are predictors (with the first row being the intercept), and columns are values of <code>lambda</code>.</p></li>
+<li><p><code>std_Xbeta</code>: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of <code>lambda</code>.
+<strong>Note</strong>: <code>std_Xbeta</code> will not include rows for the intercept or for constant features.</p></li>
+<li><p><code>std_X_details</code>: A list with 9 items:</p><ul><li><p><code>center</code>: The center values used to center the columns of the design matrix</p></li>
+<li><p><code>scale</code>: The scaling values used to scale the columns of the design matrix</p></li>
+<li><p><code>ns</code>: An integer vector of the nonsingular columns of the original data</p></li>
+<li><p><code>unpen</code>: An integer vector of indices of the unpenalized features, if any were specified in the design</p></li>
+<li><p><code>unpen_colnames</code>: A character vector of the column names of any unpenalized features.</p></li>
+<li><p><code>X_colnames</code>: A character vector with the column names of all features in the original design matrix</p></li>
+<li><p><code>X_rownames</code>: A character vector with the row names of all features in the original design matrix; if none were provided, these are named 'row1', 'row2', etc.</p></li>
+<li><p><code>std_X_colnames</code>: A subset of <code>X_colnames</code> representing only nonsingular columns (i.e., the columns indexed by <code>ns</code>)</p></li>
+<li><p><code>std_X_rownames</code>: A subset of <code>X_rownames</code> representing rows that passed QC filtering &amp; and are represented in both the genotype and phenotype data sets (this only applies to PLINK data)</p></li>
+</ul></li>
+<li><p><code>std_X</code>: If design matrix is filebacked, the descriptor for the filebacked data is returned using <code><a href="https://rdrr.io/pkg/bigmemory.sri/man/describe.html" class="external-link">bigmemory::describe()</a></code>. If the the data were stored in-memory, nothing is returned (<code>std_X</code> is NULL).</p></li>
+<li><p><code>y</code>: The outcome vector used in model fitting.</p></li>
+<li><p><code>p</code>: The total number of columns in the design matrix (including any singular columns, excluding the intercept).</p></li>
+<li><p><code>plink_flag</code>: Logical - did the data come from PLINK files?</p></li>
+<li><p><code>lambda</code>: A numeric vector of the tuning parameter values used in model fitting.</p></li>
+<li><p><code>eta</code>: A double between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.</p></li>
+<li><p><code>penalty</code>: A character string indicating the penalty with which the model was fit (e.g., 'MCP')</p></li>
+<li><p><code>gamma</code>: A numeric value indicating the tuning parameter used for the SCAD or MCP penalties. Not relevant for lasso models.</p></li>
+<li><p><code>alpha</code>: A numeric value indicating the elastic net tuning parameter.</p></li>
+<li><p><code>loss</code>: A vector with the numeric values of the loss at each value of <code>lambda</code> (calculated on the ~rotated~ scale)</p></li>
+<li><p><code>penalty_factor</code>: A vector of indicators corresponding to each predictor, where 1 = predictor was penalized.</p></li>
+<li><p><code>ns_idx</code>: An integer vector with the indices of predictors which were non-singular features (i.e., features which had variation), where feature 1 is the intercept.</p></li>
+<li><p><code>iter</code>: An integer vector with the number of iterations needed in model fitting for each value of <code>lambda</code></p></li>
+<li><p><code>converged</code>: A vector of logical values indicating whether the model fitting converged at each value of <code>lambda</code></p></li>
+<li><p><code>K</code>: a list with 2 elements, <code>s</code> and <code>U</code> —</p><ul><li><p><code>s</code>: a vector of the non-zero eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)</p></li>
+<li><p><code>U</code>: a matrix of the eigenvectors of K associated with <code>s</code></p></li>
 </ul></li>
 </ul></div>
 

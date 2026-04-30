@@ -21,20 +21,28 @@ name_and_count_bigsnp(obj, id_var, quiet, outfile)
 
 - quiet:
 
-  Logical: should messages be printed to the console? Defaults to TRUE
+  Logical: should console messages be silenced? Defaults to FALSE
 
 - outfile:
 
-  The string with the name of the .log file
+  The string with the name of the `.log` file
 
 ## Value
 
-a list with components:
+a list with 7 components:
 
-- counts: column-wise summary of the minor allele counts in 'genotypes'
+- `na_counts`: vector of missing SNP counts in `genotypes`
 
-- obj: a modified `bigSNP` list with additional components
+- `obj`: a modified `bigSNP` list with additional components
 
-- X: the `obj$genotypes` as its own FBM
+- `og_plink_ids`: either the IID or FID column from `.fam`, determined
+  by `id_var`
 
-- pos: the `obj$map$physical.pos` vector
+- `chr`: p-length containing the chromosomes for each SNP
+
+- `X`: the `obj$genotypes` as its own FBM
+
+- `pos`: vector of physical positions of the SNPs
+
+- `chr_range`: vector containing the minimum and maximum values of
+  `chr`. Character strings are treated as the **maximum**.

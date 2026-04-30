@@ -1,6 +1,6 @@
-# Predict method for cv_plmm class
+# Predict method for `cv_plmm` class
 
-Predict method for cv_plmm class
+Predict method for `cv_plmm` class
 
 ## Usage
 
@@ -27,7 +27,7 @@ predict(
 
   Matrix of values at which predictions are to be made (not used for
   `type` = "coefficients", "vars", or "nvars"). This can be either a FBM
-  object or a 'matrix' object. Note: Columns of this argument must be
+  object or a matrix object. Note: Columns of this argument must be
   named!
 
 - type:
@@ -43,9 +43,9 @@ predict(
   supplied. When supplied, this design matrix will be standardized using
   the center/scale values in `object$std_X_details`, so please **do
   not** standardize this matrix before supplying here. **Note**: If the
-  model was fit file-backed, then the filepath to the .bk file with this
-  standardized design matrix is returned as 'std_X' in the fit supplied
-  to 'object'.
+  model was fit file-backed, then the filepath to the `.bk` file with
+  this standardized design matrix is returned as `std_X` in the fit
+  supplied to `object`.
 
 - lambda:
 
@@ -72,21 +72,21 @@ Define beta-hat as the coefficients estimated at the value of lambda
 that minimizes cross-validation error (CVE). Then options for `type` are
 as follows:
 
-- 'lp' (linear predictor): uses the product of newX and the beta
+- `lp` (linear predictor): uses the product of `newX` and the beta
   coefficients of `object` to predict new values of the outcome. This
   does not incorporate the correlation structure of the data.
 
-- 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp'
+- `blup` (acronym for Best Linear Unbiased Predictor): adds to the `lp`
   a value that represents the estimated random effect. This addition is
   a way of incorporating the estimated correlation structure of data
   into our prediction of the outcome.
 
-- 'coefficients': returns the estimated beta-hat
+- `coefficients`: returns the estimated beta-hat
 
-- 'vars': returns the *indices* of variables (e.g., SNPs) with nonzero
+- `vars`: returns the *indices* of variables (e.g., SNPs) with nonzero
   coefficients at each value of lambda. EXCLUDES intercept.
 
-- 'nvars': returns the *number* of variables (e.g., SNPs) with nonzero
+- `nvars`: returns the *number* of variables (e.g., SNPs) with nonzero
   coefficients at each value of lambda. EXCLUDES intercept.
 
 ## Examples
