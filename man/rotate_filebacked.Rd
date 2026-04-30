@@ -10,6 +10,8 @@ rotate_filebacked(prep, tocenter = TRUE, ...)
 \item{prep}{The object returned by \code{plmm_prep()}}
 
 \item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE}
+
+\item{...}{Not used}
 }
 \value{
 a list with 4 items:

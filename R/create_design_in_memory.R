@@ -37,7 +37,7 @@ create_design_in_memory <- function(X, y, unpen = NULL) {
     # save indices for unpenalized covariates
     design$unpen_colnames <- unpen
     design$penalty_factor <- rep(1, ncol(design$std_X))
-    design$unpen <- which_unpen <- which(unpen %in% design$std_X_colnames)
+    design$unpen <- which_unpen <- which(design$std_X_colnames %in% unpen)
     design$penalty_factor[which_unpen] <- 0
   }
 

@@ -2,6 +2,7 @@
 #'
 #' @param prep The object returned by `plmm_prep()`
 #' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE
+#' @param ... Not used
 #'
 #' @return a list with 4 items:
 #'  * `stdrot_X`: `X` on the rotated and re-standardized scale
