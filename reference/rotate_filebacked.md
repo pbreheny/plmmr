@@ -19,6 +19,10 @@ rotate_filebacked(prep, tocenter = TRUE, ...)
 
   Should the matrix be centered in addition to scaled? Defaults to TRUE
 
+- ...:
+
+  Not used
+
 ## Value
 
 a list with 4 items:
