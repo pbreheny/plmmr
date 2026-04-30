@@ -21,3 +21,5 @@
 ^codecov\.yml$
 ^Meta$
 ^doc$
+^\.positai$
+^\.claude$
