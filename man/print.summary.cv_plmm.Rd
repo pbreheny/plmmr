@@ -2,7 +2,7 @@
 % Please edit documentation in R/print-summary-cv-plmm.R
 \name{print.summary.cv_plmm}
 \alias{print.summary.cv_plmm}
-\title{Print method for summary.cv_plmm objects}
+\title{Print method for \code{summary.cv_plmm} objects}
 \usage{
 \method{print}{summary.cv_plmm}(x, digits, ...)
 }
@@ -18,11 +18,10 @@ Nothing is returned; instead, a message is printed to the console
 summarizing the results of the cross-validated model fit.
 }
 \description{
-Print method for summary.cv_plmm objects
+Print method for \code{summary.cv_plmm} objects
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)
 cv_fit <- cv_plmm(design = admix_design)
 print(summary(cv_fit))
-
 }

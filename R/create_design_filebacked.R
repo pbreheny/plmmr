@@ -1,36 +1,34 @@
 #' A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function
 #'
-#' @param data_file               A filepath to rds file of processed data (data from `process_plink()` or `process_delim()`)
-#' @param rds_dir                 The path to the directory in which you want to create the new '.rds' and '.bk' files.
 #' @param obj                     The RDS object read in by `create_design()`
+#' @param rds_dir                 The path to the directory in which you want to create the new `.rds` and `.bk` files.
 #' @param new_file                User-specified filename (*without .bk/.rds extension*) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.
+#' @param add_outcome             A data frame or matrix with two columns: an ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
+#' @param outcome_id              A string specifying the name of the ID column in `add_outcome`
+#' @param outcome_col             A string specifying the name of the phenotype column in `add_outcome`
+#' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
 #' @param feature_id              A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
 #'                                  - for PLINK data: a string specifying an ID column of the PLINK `.fam` file. Options are "IID" (default) and "FID"
 #'                                  - for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with `process_delim()`)
 #'                                  - if left NULL (default), X is assumed to have the same row-order as add_outcome.
-#'                                  **Note**: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.
-#' @param add_outcome             A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
-#' @param outcome_id              A string specifying the name of the ID column in 'add_outcome'
-#' @param outcome_col             A string specifying the name of the phenotype column in 'add_outcome'
-#' @param na_outcome_vals         A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
+#'                                **Note**: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.
 #' @param add_predictor           Optional (for PLINK data only): a matrix or data frame to be used for adding additional **unpenalized** covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                                This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
-#' @param predictor_id            Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. **Required** if 'add_predictor' is supplied.
+#' @param predictor_id            Optional (for PLINK data only): A string specifying the name of the column in `add_predictor` with sample IDs. **Required** if `add_predictor` is supplied.
 #'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
 #' @param unpen                   Optional (for delimited file data only): an optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                                **Note**: if you choose to use this option, X must have column names.
+#' @param logfile                 Optional: name of the `.log` file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param overwrite               Logical: should existing .rds files be overwritten? Defaults to FALSE.
-#' @param logfile                 Optional: name of the '.log' file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
-#' @param quiet                   Logical: should messages to be printed to the console be silenced? Defaults to FALSE
+#' @param quiet                   Logical: should console messages be silenced? Defaults to FALSE
+#'
+#' @return A filepath to the created `.rds` file containing all the information
+#' for model fitting, including a standardized X and model design information
 #'
 #' @keywords internal
 #'
-#' @returns A filepath to the created .rds file containing all the information
-#' for model fitting, including a standardized X and model design information
-#'
-create_design_filebacked <- function(data_file,
+create_design_filebacked <- function(obj,
                                      rds_dir,
-                                     obj,
                                      new_file,
                                      add_outcome,
                                      outcome_id,
@@ -45,7 +43,6 @@ create_design_filebacked <- function(data_file,
                                      quiet = FALSE) {
 
   # check for input errors ----------------------------------------
-
   if (any(add_outcome[, outcome_col] %in% na_outcome_vals)) {
     stop("It appears that you have some missing values in the outcome data.
          Please remove these samples; missing values are not permitted in the design.")
@@ -89,8 +86,6 @@ create_design_filebacked <- function(data_file,
   }
 
   # initial setup --------------------------------------------------
-  #existing_files <- list.files(rds_dir)
-
   if (!is.null(logfile)) {
     logfile <- file.path(rds_dir, logfile)
   }
@@ -154,7 +149,6 @@ create_design_filebacked <- function(data_file,
   }
 
   # check for any duplicated row IDs, if applicable
-  # TODO: update this syntax not to use 'exists()'
   if (exists("og_ids") && anyDuplicated(og_ids)) stop("Duplicated feature_id values detected.\n")
 
   # save these original dim names
@@ -218,9 +212,9 @@ create_design_filebacked <- function(data_file,
       stop("If add_predictor is supplied, the predictor_id argument must also be supplied")
     }
     aligned_add_predictor <- align_ids(id_var = predictor_id,
-                                       quiet = quiet,
                                        add_predictor = add_predictor,
-                                       og_ids = og_ids)
+                                       og_ids = og_ids,
+                                       quiet = quiet)
     gc()
     # add predictors from external files --------------------------------------
     unstd_X <- add_predictors(obj = obj,
@@ -279,8 +273,6 @@ create_design_filebacked <- function(data_file,
   gc()
   # standardization ------------------------------------------------------------
   std_res <- standardize_filebacked(X = subset_res$subset_X,
-                                    new_file = new_file,
-                                    rds_dir = rds_dir,
                                     outfile = logfile,
                                     quiet = quiet)
   rm(subset_res)
@@ -319,6 +311,6 @@ create_design_filebacked <- function(data_file,
   saveRDS(structure(design, class = "plmm_design"),
           file.path(rds_dir, paste0(new_file, ".rds")))
 
-  return(file.path(rds_dir, paste0(new_file, ".rds")))
+  file.path(rds_dir, paste0(new_file, ".rds"))
 
 }

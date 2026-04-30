@@ -2,19 +2,17 @@
 % Please edit documentation in R/create_log.R
 \name{create_log}
 \alias{create_log}
-\title{create_log_file}
+\title{Create the \code{.log} file}
 \usage{
-create_log(outfile, ...)
+create_log(outfile)
 }
 \arguments{
 \item{outfile}{String specifying the name of the to-be-created file, \emph{without} extension}
-
-\item{...}{Not used}
 }
 \value{
-Nothing is returned, intead a text file with the suffix .log is created.
+Nothing is returned, instead a text file with the suffix \code{.log} is created.
 }
 \description{
-create_log_file
+Create the \code{.log} file
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict-plmm.R
 \name{predict.plmm}
 \alias{predict.plmm}
-\title{Predict method for plmm class}
+\title{Predict method for \code{plmm} class}
 \usage{
 \method{predict}{plmm}(
   object,
@@ -18,14 +18,14 @@
 \item{object}{An object of class \code{plmm}.}
 
 \item{newX}{Matrix of values at which predictions are to be made (not used for \code{type} = "coefficients", "vars", or "nvars").
-This can be either a FBM object or a 'matrix' object. Note: Columns of this argument must be named!}
+This can be either a FBM object or a matrix object. Note: Columns of this argument must be named!}
 
 \item{type}{A character argument indicating what type of prediction should be
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
 \item{X}{Optional: if \code{type = 'blup'} and the model was fit in-memory, the design matrix used to fit the model represented in \code{object} must be supplied.
 When supplied, this design matrix will be standardized using the center/scale values in \code{object$std_X_details}, so please \strong{do not} standardize this matrix before supplying here.
-\strong{Note}: If the model was fit file-backed, then the filepath to the .bk file with this standardized design matrix is returned as 'std_X' in the fit supplied to 'object'.}
+\strong{Note}: If the model was fit file-backed, then the filepath to the \code{.bk} file with this standardized design matrix is returned as \code{std_X} in the fit supplied to \code{object}.}
 
 \item{lambda}{A numeric vector of regularization parameter \code{lambda} values
 at which predictions are requested.}
@@ -39,17 +39,17 @@ predictions are requested. By default, all indices are returned.}
 Depends on the \code{type} - see Details
 }
 \description{
-Predict method for plmm class
+Predict method for \code{plmm} class
 }
 \details{
 The options for \code{type} are as follows:
 \itemize{
-\item 'lp' (linear predictor): uses the product of newX and the beta coefficients of \code{object} to predict new values of the outcome. This does not incorporate the correlation structure of the data.
-\item 'blup' (default, acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect. This addition is a way of incorporating
+\item \code{lp} (linear predictor): uses the product of \code{newX} and the beta coefficients of \code{object} to predict new values of the outcome. This does not incorporate the correlation structure of the data.
+\item \code{blup} (default, acronym for Best Linear Unbiased Predictor): adds to the \code{lp} a value that represents the estimated random effect. This addition is a way of incorporating
 the estimated correlation structure of the data into our prediction of the outcome.
-\item 'coefficients': returns the estimated beta coefficients.
-\item 'vars': returns the \emph{indices} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
-\item 'nvars': returns the \emph{number} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
+\item \code{coefficients}: returns the estimated beta coefficients.
+\item \code{vars}: returns the \emph{indices} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
+\item \code{nvars}: returns the \emph{number} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
 }
 }
 \examples{
@@ -76,6 +76,4 @@ min(mspe_blup) # BLUP is better
 # compare the MSPE of our model to a null model, for reference
 # null model = intercept only -> y_hat is always mean(y)
 crossprod(mean(test$y) - test$y)/length(test$y)
-
-
 }

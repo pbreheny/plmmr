@@ -2,21 +2,24 @@
 % Please edit documentation in R/eigen_K.R
 \name{eigen_K}
 \alias{eigen_K}
-\title{A function to take the eigendecomposition of K
-Note: This is faster than taking SVD of X when p >> n}
+\title{A function to take the eigendecomposition of K}
 \usage{
 eigen_K(std_X, fbm_flag)
 }
 \arguments{
-\item{std_X}{The \emph{standardized} design matrix, stored as big.matrix object.}
+\item{std_X}{The \emph{standardized} design matrix.}
 
-\item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
+\item{fbm_flag}{Logical: is \code{std_X} an FBM object? Passed from \code{plmm()}.}
 }
 \value{
-A list with the eigenvectors and eigenvalues of K
+A list with three elements:
+\itemize{
+\item \code{s}: The non-zero eigenvalues of K
+\item \code{U}: The eigenvectors of K associated with s
+\item \code{K}: The fully computed K matrix
+}
 }
 \description{
-A function to take the eigendecomposition of K
 Note: This is faster than taking SVD of X when p >> n
 }
 \keyword{internal}

@@ -1,21 +1,22 @@
 #' A function to align genotype and phenotype data
 #'
 #' @param obj     An object created by `process_plink()`
-#' @param rds_dir   The path to the directory in which you want to create the new '.rds' and '.bk' files.
+#' @param rds_dir   The path to the directory in which you want to create the new `.rds` and `.bk` files.
 #' @param indiv_id   A character string indicating the ID column name in the 'fam'
-#'                  element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK. The other option is 'family.ID', equivalent to 'FID' in PLINK.
-#' @param add_outcome    A data frame with at least two columns: and ID column and a phenotype column
-#' @param outcome_id  A string specifying the name of the ID column in `pheno`
-#' @param outcome_col A string specifying the name of the phenotype column in `pheno`. This column will be used as the default `y` argument to 'plmm()'.
+#'                   element of the genotype data list. Defaults to 'sample.ID', equivalent to 'IID' in PLINK. The other option is 'family.ID', equivalent to 'FID' in PLINK.
+#' @param add_outcome    A data frame with at least two columns: an ID column and a phenotype column
+#' @param outcome_id  A string specifying the name of the ID column in `add_outcome`
+#' @param outcome_col A string specifying the name of the phenotype column in `add_outcome`. This column will be used as the default `y` argument to `plmm()`.
 #' @param na_outcome_vals A vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
 #' @param outfile   A string with the name of the filepath for the log file
-#' @param quiet     Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...
-
-#' @keywords        internal
+#' @param quiet     Logical:  should console messages be silenced? Defaults to FALSE
 #'
-#' @returns a list with two items:
-#' * a data.table with rows corresponding to the samples for which both genotype and phenotype are available.
-#' * a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)
+#' @return a list with two items:
+#' * `complete_samples`: a data.table with rows corresponding to the samples for which both genotype and phenotype are available.
+#' * `outcome_idx`: a numeric vector with indices indicating which samples were 'complete' (i.e., which samples from add_outcome had corresponding data in the PLINK files)
+#'
+#' @keywords internal
+#'
 index_samples <- function(obj,
                           rds_dir,
                           indiv_id,
@@ -66,7 +67,7 @@ index_samples <- function(obj,
   # *and* the feature data
 
   # keep the indices
-  return(list(complete_samples = complete_samples,
-              outcome_idx = which(indiv_id %in% add_outcome[, outcome_id])))
+  list(complete_samples = complete_samples,
+       outcome_idx = which(indiv_id %in% add_outcome[, outcome_id]))
 
 }

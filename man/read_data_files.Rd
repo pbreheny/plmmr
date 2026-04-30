@@ -2,8 +2,7 @@
 % Please edit documentation in R/read_data_files.R
 \name{read_data_files}
 \alias{read_data_files}
-\title{A function to read in a large file as a numeric file-backed matrix (\code{FBM})
-Note: this function is a wrapper for \code{bigstatsr::big_read()}}
+\title{A function to read in a large file as a numeric file-backed matrix (FBM)}
 \usage{
 read_data_files(
   data_file,
@@ -19,26 +18,25 @@ read_data_files(
 \arguments{
 \item{data_file}{The name of the file to read, not including its directory. Directory should be specified in \code{data_dir}}
 
-\item{data_dir}{The path to the directory where 'file' is}
+\item{data_dir}{The path to the directory where \code{data_file} is}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds/.bk files (will be create insie \code{rds_dir} folder)
-Note: 'rds_prefix' cannot be the same as 'data_file'}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds/.bk files (will be create inside \code{rds_dir} folder)
+Note: \code{rds_prefix} cannot be the same as \code{data_file}}
 
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to NULL (no log file written).}
 
 \item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 
-\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: 'sep' is an option to pass here.}
+\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: \code{sep} is an option to pass here.}
 }
 \value{
-'.rds', '.bk', and '.desc' files are created in \code{data_dir}, and \code{obj} (a filebacked \verb{bigmemory big.matrix} object) is returned. See \code{bigmemory} documentation for more info on the \code{big.matrix} class.
+\code{.rds}, \code{.bk}, and \code{.desc} files are created in \code{data_dir}, and \code{obj} (a filebacked \verb{bigmemory big.matrix} object) is returned. See \code{bigmemory} documentation for more info on the \code{big.matrix} class.
 }
 \description{
-A function to read in a large file as a numeric file-backed matrix (\code{FBM})
 Note: this function is a wrapper for \code{bigstatsr::big_read()}
 }
 \keyword{internal}

@@ -93,9 +93,7 @@ reference:
     - cvf
     - eigen_K
     - estimate_eta
-    - fbm2bm
     - get_data
-    - get_hostname
     - impute_snp_data
     - index_samples
     - lam_names

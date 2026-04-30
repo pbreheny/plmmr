@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_within_cv.R
 \name{predict_within_cv}
 \alias{predict_within_cv}
-\title{Predict method to use in cross-validation (within \code{cvf})}
+\title{Predict method to use in cross-validation (within \code{cvf()})}
 \usage{
 predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 }
@@ -11,10 +11,10 @@ predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 
 \item{testX}{A design matrix used for computing predicted values (i.e, the test data).}
 
-\item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()},
+\item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()}.
 Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
-\item{fbm}{Logical: is trainX an FBM object? If so, this function expects that testX is also an FBM. The two X matrices must be stored the same way.}
+\item{fbm}{Logical: is \code{trainX} an FBM object? If so, this function expects that \code{testX} is also an FBM. The two X matrices must be stored the same way.}
 
 \item{Sigma_21}{Covariance matrix between the training and the testing data. Required if \code{type == 'blup'}.}
 }
@@ -22,18 +22,19 @@ Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 A numeric vector of predicted values
 }
 \description{
-Predict method to use in cross-validation (within \code{cvf})
+Predict method to use in cross-validation (within \code{cvf()})
 }
 \details{
-Define beta-hat as the coefficients estimated at the value of lambda that minimizes cross-validation error (CVE). Then options for \code{type} are as follows:
 \itemize{
-\item 'lp' (default): uses the linear predictor (i.e., product of test data and estimated coefficients) to predict test values of the outcome.
-Note that this approach does not incorporate the correlation structure of the data.
-\item 'blup' (acronym for Best Linear Unbiased Predictor): adds to the 'lp' a value that represents the estimated random effect.
-This addition is a way of incorporating the estimated correlation structure of data into our prediction of the outcome.
+\item \code{lp} (linear predictor): uses the product of \code{testX} and the beta coefficients of \code{fit} to predict new values of the outcome. This does not incorporate the correlation structure of the data.
+\item \code{blup} (acronym for Best Linear Unbiased Predictor): adds to the `lp`` a value that represents the estimated random effect. This addition is a way of incorporating
+the estimated correlation structure of data into our prediction of the outcome.
+\item \code{coefficients}: returns the estimated beta-hat
+\item \code{vars}: returns the \emph{indices} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
+\item \code{nvars}: returns the \emph{number} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.
 }
 
 Note: the main difference between this function and the \code{predict.plmm()} method is that
-here in CV, the standardized testing data (std_test_X), Sigma_11, and Sigma_21 are calculated in \code{cvf()} instead of the function defined here.
+here in CV, the standardized testing data (\code{std_test_X}), \code{Sigma_11}, and \code{Sigma_21} are calculated in \code{cvf()} instead of the function defined here.
 }
 \keyword{internal}

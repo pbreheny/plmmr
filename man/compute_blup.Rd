@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_blup.R
 \name{compute_blup}
 \alias{compute_blup}
-\title{a function to compute the BLUP}
+\title{A function to compute the BLUP}
 \usage{
 compute_blup(fit, Xb, Sigma_21, idx)
 }
@@ -16,9 +16,9 @@ compute_blup(fit, Xb, Sigma_21, idx)
 \item{idx}{Vector of indices of the penalty parameter \code{lambda} at which predictions are required. By default, all indices are returned.}
 }
 \value{
-Sigma_hat, a matrix representing the estimated variance
+A matrix of the linear predictors + the estimated random effects
 }
 \description{
-a function to compute the BLUP
+A function to compute the BLUP
 }
 \keyword{internal}

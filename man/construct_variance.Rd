@@ -2,7 +2,7 @@
 % Please edit documentation in R/construct_variance.R
 \name{construct_variance}
 \alias{construct_variance}
-\title{a function to create the estimated variance matrix from a PLMM fit}
+\title{A function to construct the estimated variance matrix from a PLMM fit}
 \usage{
 construct_variance(fit, K = NULL, eta = NULL)
 }
@@ -17,6 +17,6 @@ construct_variance(fit, K = NULL, eta = NULL)
 Sigma_hat, a matrix representing the estimated variance
 }
 \description{
-a function to create the estimated variance matrix from a PLMM fit
+A function to construct the estimated variance matrix from a PLMM fit
 }
 \keyword{internal}

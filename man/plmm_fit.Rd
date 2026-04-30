@@ -2,7 +2,7 @@
 % Please edit documentation in R/plmm_fit.R
 \name{plmm_fit}
 \alias{plmm_fit}
-\title{PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()}
+\title{PLMM fit: A function that fits a PLMM using the values returned by \code{plmm_prep()}}
 \usage{
 plmm_fit(
   prep,
@@ -28,9 +28,10 @@ plmm_fit(
 
 \item{y}{The original (not centered) outcome vector. Need this for intercept estimate}
 
-\item{std_X_details}{A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsingular columns of X)}
+\item{std_X_details}{A list with components \code{center} (values used to center X), \code{scale} (values used to scale X), and \code{ns} (indices for nonsingular columns of X)}
 
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.}
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, \code{penalty_factor} must be a numeric vector of length equal to the number of columns of X.
+The purpose of \code{penalty_factor} is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, \code{penalty_factor} can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
 
@@ -38,15 +39,16 @@ plmm_fit(
 
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha = 1} is equivalent to MCP/SCAD penalty, while \code{alpha = 0} would be equivalent to ridge regression.
+However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
+\item{lambda_min}{The smallest value for lambda, as a fraction of the maximum lambda. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
-\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
+\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length \code{nlambda} is computed, equally spaced on the log scale.}
 
-\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than \code{eps}. Default is \code{1e-4}.}
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
@@ -56,7 +58,34 @@ plmm_fit(
 
 \item{...}{Additional arguments that can be passed to \code{biglasso::biglasso_simple_path()}}
 }
+\value{
+A list which includes 21 items:
+\itemize{
+\item \code{y}: The outcome vector used in model fitting.
+\item \code{std_scale_beta}: The matrix of estimated coefficients on the standardized scale. Rows are predictors (with the first row being the intercept), and columns are values of \code{lambda}.
+\item \code{std_Xbeta}: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of \code{lambda}.
+\strong{Note}: \code{std_Xbeta} will not include rows for the intercept or for constant features.
+\item \code{centered_y}: The centered outcome vector.
+\item \code{s}: a vector of the non-zero eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)
+\item \code{U}: a matrix of the eigenvectors of K associated with \code{s}
+\item \code{lambda}: A numeric vector of the tuning parameter values used in model fitting.
+\item \code{penalty}: A character string indicating the penalty with which the model was fit (e.g., 'MCP')
+\item \code{penalty_factor}: A vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+\item \code{iter}: An integer vector with the number of iterations needed in model fitting for each value of \code{lambda}
+\item \code{converged}: A vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
+\item \code{loss}: A vector with the numeric values of the loss at each value of \code{lambda} (calculated on the ~rotated~ scale)
+\item \code{eta}: A double between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
+\item \code{gamma}: A numeric value indicating the tuning parameter used for the SCAD or MCP penalties. Not relevant for lasso models.
+\item \code{alpha}: A numeric value indicating the elastic net tuning parameter.
+\item \code{nlambda} Length of the sequence of lambda.
+\item \code{eps}: Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than \code{eps}
+\item \code{max_iter}: Maximum number of iterations (total across entire path)
+\item \code{warn}: Return warning messages for failures to converge and model saturation?
+\item \code{trace}: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process
+\item \code{std_X}: If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}.
+}
+}
 \description{
-PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
+PLMM fit: A function that fits a PLMM using the values returned by \code{plmm_prep()}
 }
 \keyword{internal}

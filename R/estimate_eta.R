@@ -1,13 +1,16 @@
 #' Estimate eta (to be used in rotating the data)
-#' This function is called internally by \code{plmm()}
+#'
+#' This function is called internally by `plmm()`
+#'
 #' @param n The number of observations
-#' @param s The singular values of K, the realized relationship matrix
-#' @param U The left-singular vectors of the *standardized* design matrix
-#' @param y Continuous outcome vector.
+#' @param s The non-zero eigenvalues of K, the realized relationship matrix
+#' @param U The eigenvectors of K associated with s
+#' @param y Continuous outcome vector
+#'
+#' @return a numeric value with the estimated value of eta, the variance parameter
 #'
 #' @keywords internal
 #'
-#' @returns a numeric value with the estimated value of eta, the variance parameter
 estimate_eta <- function(n, s, U, y) {
 
   opt <- stats::optimize(f = log_lik,
@@ -17,8 +20,5 @@ estimate_eta <- function(n, s, U, y) {
                          U = U,
                          y = y)
 
-  eta <- opt$minimum
-
-
-  return(eta)
+  opt$minimum
 }

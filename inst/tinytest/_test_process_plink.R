@@ -1,3 +1,5 @@
+# Will create formal test based on this draft eventually
+
 if (interactive()){
   # tests with penncath_lite data (ships with package)
   # setup --------------------------------------
@@ -33,7 +35,6 @@ if (interactive()){
     dplyr::mutate(tg = dplyr::if_else(is.na(tg), mean(tg, na.rm = T), tg),
                   FamID = as.character(FamID))
 
-<<<<<<< HEAD
   phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
     as.data.frame() |>
     tidyr::drop_na() |>

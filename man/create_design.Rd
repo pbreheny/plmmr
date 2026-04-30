@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_design.R
 \name{create_design}
 \alias{create_design}
-\title{a function to create a design for PLMM modeling}
+\title{A function to create a design for PLMM modeling}
 \usage{
 create_design(data_file = NULL, rds_dir = NULL, X = NULL, y = NULL, ...)
 }
@@ -25,12 +25,12 @@ See the documentation for those helper functions for details.}
 }
 \value{
 A filepath to an object of class \code{plmm_design}, which is a named list with the design matrix,
-outcome, penalty factor vector, and other details needed for fitting a model. This list is stored as an .rds
+outcome, penalty factor vector, and other details needed for fitting a model. This list is stored as an \code{.rds}
 file for filebacked data, so in the filebacked case a string with the path to that file is returned. For in-memory data,
 the list itself is returned.
 }
 \description{
-a function to create a design for PLMM modeling
+A function to create a design for PLMM modeling
 }
 \details{
 This function is a wrapper for the other \code{create_design...()} inner functions; all arguments
@@ -46,32 +46,32 @@ Additional arguments for \strong{all filebacked} data:
 - for all other filebacked data: a character vector of unique identifiers (IDs) for each row of the feature data (i.e., the data processed with \code{process_delim()})
 - if left NULL (default), X is assumed to have the same row-order as add_outcome.
 \strong{Note}: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.
-\item \strong{add_outcome}             A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
-\item \strong{outcome_id}              A string specifying the name of the ID column in 'add_outcome'
-\item \strong{outcome_col}             A string specifying the name of the phenotype column in 'add_outcome'
+\item \strong{add_outcome}             A data frame or matrix with two columns: an ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
+\item \strong{outcome_id}              A string specifying the name of the ID column in \code{add_outcome}
+\item \strong{outcome_col}             A string specifying the name of the phenotype column in \code{add_outcome}
 \item \strong{na_outcome_vals}        Optional: a vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).
 \item \strong{overwrite}              Optional: logical - should existing .rds files be overwritten? Defaults to FALSE.
-\item \strong{logfile}                Optional: name of the '.log' file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.
-\item \strong{quiet}                  Optional: logical - should messages to be printed to the console be silenced? Defaults to FALSE
+\item \strong{logfile}                Optional: name of the \code{.log} file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.
+\item \strong{quiet}                  Optional: logical - should console messages be silenced? Defaults to FALSE
 }
 
 Additional arguments specific to \strong{PLINK} data:
 \itemize{
 \item \strong{add_predictor}           Optional (for PLINK data only): a matrix or data frame to be used for adding additional \strong{unpenalized} covariates/predictors/features from an external file (i.e., not a PLINK file).
 This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
-\item \strong{predictor_id}            Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
-The names will be used to subset and align this external covariate with the supplied PLINK data.
+\item \strong{predictor_id}            Optional (for PLINK data only): A string specifying the name of the column in \code{add_predictor} with sample IDs. Required if \code{add_predictor} is supplied.
+The names will be used to subset and align this external covariate(s) with the supplied PLINK data.
 }
 
 Additional arguments specific to \strong{delimited file} data:
 \itemize{
-\item \strong{unpen}         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+\item \strong{unpen}         Optional: a character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 \strong{Note}: if you choose to use this option, your delimited file \strong{must} have column names.
 }
 
 Additional arguments for \strong{in-memory} data:
 \itemize{
-\item \strong{unpen}         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+\item \strong{unpen}         Optional: a character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 \strong{Note}: if you choose to use this option, X must have column names.
 }
 }
@@ -144,8 +144,5 @@ pen_design <- create_design(data_file = plink_data,
 
 # examine the design - notice the components of this object
 pen_design_rds <- readRDS(pen_design)
-
 }
-
-
 }

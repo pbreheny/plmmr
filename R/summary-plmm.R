@@ -1,17 +1,17 @@
-#' A summary method for the plmm objects
+#' A summary method for `plmm` objects
 #'
-#' @param object An object of class \code{plmm}
+#' @param object An object of class `plmm`
 #' @param lambda The regularization parameter value at which inference should be reported.
-#' @param idx Alternatively, `lambda` may be specified by an index; `idx=10` means:
+#' @param idx Alternatively, `lambda` may be specified by an index; `idx = 10` means:
 #'      report inference for the 10th value of `lambda` along the regularization path. If both `lambda` and `idx` are specified, `lambda` takes precedence.
-#' @param eps If lambda is given, eps is the tolerance for difference between the given lambda value and a lambda value from the object. Defaults to 0.0001 (1e-5)
+#' @param eps If lambda is given, `eps` is the tolerance for difference between the given lambda value and a lambda value from the object. Defaults to 0.00001 (`1e-5`)
 #' @param ... Not used
 #'
 #' @return The return value is an object with S3 class `summary.plmm`. The class has its own print method and contains the following list elements:
 #' * `penalty`: The penalty used by `plmm` (e.g. SCAD, MCP, lasso)
 #' * `n`: Number of instances/observations
 #' * `std_X_n`: the number of observations in the standardized data;
-#'       the only time this would differ from 'n' is if data are from PLINK and the external data does not include all the same samples
+#'       the only time this would differ from `n` is if data are from PLINK and the external data does not include all the same samples
 #' * `p`: Number of regression coefficients (not including the intercept)
 #' * `converged`: Logical indicator for whether the model converged
 #' * `lambda`: The `lambda` value at which inference is being reported
@@ -20,6 +20,7 @@
 #' * `nonzero`: The column names indicating the nonzero coefficients in the model at the specified value of `lambda`
 #'
 #' @rdname summary.plmm
+#'
 #' @export
 #'
 #' @examples
@@ -55,7 +56,7 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...) {
   # don't drop, because we need the dimnames here ^
 
 
-  out <- structure(list(
+  structure(list(
     penalty = object$penalty,
     n = nrow(object$K$U),
     std_X_n = object$std_X_n,
@@ -64,10 +65,7 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...) {
     lambda = lambda,
     lambda_char = lambda_char,
     nvars = nvars,
-    nonzero = nonzero
-  ),
-  class = "summary.plmm")
-
-  return(out)
+    nonzero = nonzero),
+    class = "summary.plmm")
 
 }

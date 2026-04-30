@@ -3,19 +3,18 @@
 #' @param data_dir      The directory to the file.
 #' @param data_file     The file to be read in, without the filepath. This should be a file of numeric values.
 #'                      Example: use `data_file = "myfile.txt"`, not `data_file = "~/mydirectory/myfile.txt"`
-#'                      Note: if your file has headers/column names, set 'header = TRUE' -- this will be passed into `bigmemory::read.big.matrix()`.
+#'                      Note: if your file has headers/column names, set `header = TRUE` -- this will be passed into `bigmemory::read.big.matrix()`.
 #' @param feature_id    A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.
-#' @param rds_dir       The directory where the user wants to create the '.rds' and '.bk' files.
-#'                      Defaults to `data_dir`
-#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder).
-#'                      Note: 'rds_prefix' cannot be the same as 'data_prefix'
+#' @param rds_dir       The directory where the user wants to create the `.rds` and `.bk` files. Defaults to `data_dir`
+#' @param rds_prefix    String specifying the user's preferred filename for the to-be-created `.rds` file (will be create inside `rds_dir` folder).
+#'                      Note: `rds_prefix` cannot be the same as `data_prefix`
 #' @param logfile       Optional: the name (character string) of the prefix of the
 #'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
-#' @param overwrite     Logical: if existing `.bk`/`.rds` files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
-#' @param quiet         Logical: should the messages printed to the console be silenced? Defaults to FALSE.
-#' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: 'sep' is an option to pass here, as is 'header'.
+#' @param overwrite     Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
+#' @param quiet         Logical: should console messages be silenced? Defaults to FALSE
+#' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: `sep` is an option to pass here, as is `header`.
 #'
-#' @return The file path to the newly created '.rds' file
+#' @return The file path to the newly created `.rds` file
 #'
 #' @export
 #'
@@ -27,7 +26,6 @@
 #'
 #' colon2 <- readRDS(colon_dat)
 #' str(colon2)
-#'
 process_delim <- function(data_dir,
                           data_file,
                           feature_id,
@@ -52,7 +50,6 @@ process_delim <- function(data_dir,
     cat("\nLogging to", logfile)
     cat("Preprocessing", prefix, "data\n", file = logfile, append = TRUE)
   } else {
-    # TODO: change this default so that there is an option to turn off log files
     logfile <- tempfile()
   }
 

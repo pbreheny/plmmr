@@ -1,4 +1,5 @@
-#' a function to create a design for PLMM modeling
+#' A function to create a design for PLMM modeling
+#'
 #' @param data_file     For **filebacked data** (data from `process_plink()` or `process_delim()`), this is the
 #'                      filepath to the processed data. Defaults to NULL (this argument does not apply for in-memory data).
 #' @param rds_dir       For **filebacked data**, this is the filepath to the directory/folder where you want the design to be saved.
@@ -12,7 +13,7 @@
 #'                      See the documentation for those helper functions for details.
 #'
 #' @return A filepath to an object of class `plmm_design`, which is a named list with the design matrix,
-#'  outcome, penalty factor vector, and other details needed for fitting a model. This list is stored as an .rds
+#'  outcome, penalty factor vector, and other details needed for fitting a model. This list is stored as an `.rds`
 #'  file for filebacked data, so in the filebacked case a string with the path to that file is returned. For in-memory data,
 #'  the list itself is returned.
 #'
@@ -34,34 +35,34 @@
 #'                                  - if left NULL (default), X is assumed to have the same row-order as add_outcome.
 #'                                  **Note**: if this assumption is made in error, calculations downstream will be incorrect. Pay close attention here.
 #'
-#'    - **add_outcome**             A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
+#'    - **add_outcome**             A data frame or matrix with two columns: an ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.
 #'
-#'    - **outcome_id**              A string specifying the name of the ID column in 'add_outcome'
+#'    - **outcome_id**              A string specifying the name of the ID column in `add_outcome`
 #'
-#'    - **outcome_col**             A string specifying the name of the phenotype column in 'add_outcome'
+#'    - **outcome_col**             A string specifying the name of the phenotype column in `add_outcome`
 #'
 #'    - **na_outcome_vals**        Optional: a vector of numeric values used to code NA values in the outcome. Defaults to `c(-9, NA_integer)` (the -9 matches PLINK conventions).
 #'
 #'    - **overwrite**              Optional: logical - should existing .rds files be overwritten? Defaults to FALSE.
 #'
-#'    - **logfile**                Optional: name of the '.log' file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
+#'    - **logfile**                Optional: name of the `.log` file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
 #'
-#'    - **quiet**                  Optional: logical - should messages to be printed to the console be silenced? Defaults to FALSE
+#'    - **quiet**                  Optional: logical - should console messages be silenced? Defaults to FALSE
 #'
 #' Additional arguments specific to **PLINK** data:
 #'    - **add_predictor**           Optional (for PLINK data only): a matrix or data frame to be used for adding additional **unpenalized** covariates/predictors/features from an external file (i.e., not a PLINK file).
 #'                                This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.
 #'
-#'    - **predictor_id**            Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. Required if 'add_predictor' is supplied.
-#'                                The names will be used to subset and align this external covariate with the supplied PLINK data.
+#'    - **predictor_id**            Optional (for PLINK data only): A string specifying the name of the column in `add_predictor` with sample IDs. Required if `add_predictor` is supplied.
+#'                                The names will be used to subset and align this external covariate(s) with the supplied PLINK data.
 #'
 #' Additional arguments specific to **delimited file** data:
-#'    - **unpen**         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+#'    - **unpen**         Optional: a character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                      **Note**: if you choose to use this option, your delimited file **must** have column names.
 #'
 #' Additional arguments for **in-memory** data:
 #'
-#'    - **unpen**         Optional: an character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
+#'    - **unpen**         Optional: a character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                      **Note**: if you choose to use this option, X must have column names.
 #'
 #' @examples
@@ -133,10 +134,7 @@
 #'
 #' # examine the design - notice the components of this object
 #' pen_design_rds <- readRDS(pen_design)
-#'
 #'}
-#'
-#'
 create_design <- function(data_file = NULL,
                           rds_dir = NULL,
                           X = NULL,
@@ -150,14 +148,12 @@ create_design <- function(data_file = NULL,
   } else { # case 2: filebacked data
     obj <- readRDS(data_file)
     switch(class(obj),
-           processed_plink = create_design_filebacked(data_file = data_file,
+           processed_plink = create_design_filebacked(obj = obj,
                                                       rds_dir = rds_dir,
-                                                      obj = obj,
                                                       ...),
 
-           processed_delim = create_design_filebacked(data_file = data_file,
+           processed_delim = create_design_filebacked(obj = obj,
                                                       rds_dir = rds_dir,
-                                                      obj = obj,
                                                       ...)
     )
   }

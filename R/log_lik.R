@@ -1,16 +1,17 @@
 #' Evaluate the negative log-likelihood of an intercept-only Gaussian plmm model
 #'
 #' This function allows you to evaluate the negative log-likelihood of a linear mixed model under the assumption of a null model in order to estimate the variance parameter, eta.
-#' @param eta The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, signal-to-noise ratio.
+#'
+#' @param eta Estimated proportion of the variance in the outcome attributable to population/correlation structure
 #' @param n The number of observations
-#' @param s The singular values of K, the realized relationship matrix
-#' @param U The left-singular vectors of the *standardized* design matrix
-#' @param y Continuous outcome vector.
-#' @param rot_y Optional: if y has already been rotated, then this can be supplied.
+#' @param s The non-zero eigenvalues of K, the realized relationship matrix
+#' @param U The eigenvectors of K associated with s
+#' @param y Continuous outcome vector
+#' @param rot_y Optional: if y has already been rotated, then this can be supplied
+#'
+#' @return the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
 #'
 #' @keywords internal
-#'
-#' @returns the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
 #'
 log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
 
@@ -40,6 +41,6 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
   # NB: keep constant here to be consistent with log_lik.lm() method
   nLL <- 0.5 * (constant + n * log(quad_term) + sum_det_log + n)
 
-  return(drop(nLL))
+  drop(nLL)
 
 }

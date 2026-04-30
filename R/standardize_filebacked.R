@@ -1,18 +1,16 @@
 #' A helper function to standardize a filebacked matrix
 #'
 #' @param X             A `big.matrix` object that has been subset &/or had any additional predictors appended as columns
-#' @param new_file      The new_file (as a character string) of the bed/fam data files (e.g., `new_file = 'mydata'`)
-#' @param rds_dir       The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to `data_dir`
-#' @param outfile       Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet         Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)
+#' @param outfile       Optional: the name (character string) of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param quiet         Logical: should console messages be silenced? Defaults to FALSE
 #' @param tocenter      Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
-#' @return A list with a new component of `obj` called 'std_X' - this is an FBM with column-standardized data.
+#' @return A list with a component called `std_X` - this is an FBM with column-standardized data.
 #' List also includes several other indices/meta-data on the standardized matrix
+#'
 #' @keywords internal
 #'
-#'
-standardize_filebacked <- function(X, new_file, rds_dir, outfile, quiet, tocenter = TRUE) {
+standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
 
   # standardization ------------------------------------------------
   if (!quiet) {
@@ -28,7 +26,7 @@ standardize_filebacked <- function(X, new_file, rds_dir, outfile, quiet, tocente
                    NULL, # no scaling values to pass -- will calculate these
                    PACKAGE = "plmmr")
   X@address <- std_res$std_X # saves standardized .bk
-  # TODO: pick up here -- what to do about file names here... the same .bk is being modified..
+
   if (!quiet) {
     cat("Standardization completed at", pretty_time())
   }
@@ -39,18 +37,14 @@ standardize_filebacked <- function(X, new_file, rds_dir, outfile, quiet, tocente
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
-  ret <- list(
-    std_X = bigmemory::describe(X),
-    std_X_n = nrow(X),
-    std_X_p = ncol(X),
-    std_X_center = std_res$std_X_center,
-    std_X_scale = std_res$std_X_scale
-  )
-
-
   if (!quiet) {
     cat("Done with standardization. File formatting in progress\n")
   }
 
-  return(ret)
+  list(
+    std_X = bigmemory::describe(X),
+    std_X_n = nrow(X),
+    std_X_p = ncol(X),
+    std_X_center = std_res$std_X_center,
+    std_X_scale = std_res$std_X_scale)
 }

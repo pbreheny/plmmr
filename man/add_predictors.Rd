@@ -13,15 +13,15 @@ add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers.}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}(from \code{process_plink()} call)}
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}(from \code{process_plink()} call)}
 
-\item{quiet}{Logical: should messages be printed to the console? Defaults to FALSE (which leaves the print messages on...)}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
 A list of 2 components:
 \itemize{
-\item 'obj' - a \code{bigSNP} object with an added element representing the matrix that includes the additional predictors as the first few columns
-\item 'unpen' - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, unpen= 1:2
+\item \code{design_matrix} - a \code{bigSNP} object with an added element representing the matrix that includes the additional predictors as the first few columns
+\item \code{unpen} - an integer vector that ranges from 1 to the number of added predictors. Example: if 2 predictors are added, \code{unpen = 1:2}
 }
 }
 \description{

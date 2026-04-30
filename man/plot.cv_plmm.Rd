@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-cv-plmm.R
 \name{plot.cv_plmm}
 \alias{plot.cv_plmm}
-\title{Plot method for cv_plmm class}
+\title{Plot method for \code{cv_plmm} class}
 \usage{
 \method{plot}{cv_plmm}(
   x,
@@ -15,30 +15,36 @@
 )
 }
 \arguments{
-\item{x}{An object of class cv_plmm}
+\item{x}{An object of class \code{cv_plmm}}
 
-\item{log.l}{Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.}
+\item{log.l}{Logical to indicate the plot should be returned on the natural log scale. Defaults to TRUE.}
 
-\item{type}{Type of plot to return. Defaults to "cve."}
+\item{type}{Type of plot to return. Options include:
+\itemize{
+\item \code{cve}: cross-validation error
+\item \code{rsq}: estimated fraction of the deviance explained by the model (\eqn{R^2})
+\item \code{scale}: estimated standard deviation
+\item \code{snr}: estimated signal-to-noise ratio
+\item \code{all}: all of the above
+}}
 
-\item{selected}{Logical to indicate which variables should be plotted. Defaults to TRUE.}
+\item{selected}{Logical to indicate if the number of variables selected should be plotted on the top axis. Defaults to TRUE.}
 
-\item{vertical.line}{Logical to indicate whether vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.}
+\item{vertical.line}{Logical to indicate whether a vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.}
 
-\item{col}{Color for vertical line, if plotted. Defaults to "red."}
+\item{col}{Color for the points along the CV curve. Defaults to "red".}
 
 \item{...}{Additional arguments.}
 }
 \value{
 Nothing is returned; instead, a plot is drawn representing the relationship
-between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).
+between the tuning parameter \code{lambda} value (x-axis) and the cross validation error (y-axis).
 }
 \description{
-Plot method for cv_plmm class
+Plot method for \code{cv_plmm} class
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)
 cvfit <- cv_plmm(design = admix_design)
 plot(cvfit)
-
 }

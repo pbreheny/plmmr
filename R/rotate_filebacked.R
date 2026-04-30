@@ -1,10 +1,13 @@
 #' A function to rotate filebacked data
 #'
-#' @returns a list with 4 items:
-#'  * stdrot_X: `X` on the rotated and re-standardized scale
-#'  * rot_y: `y` on the rotated scale (a numeric vector)
-#'  * stdrot_X_center: numeric vector of values used to center `rot_X`
-#'  * stdrot_X_scale: numeric vector of values used to scale `rot_X`
+#' @param prep The object returned by `plmm_prep()`
+#' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE
+#'
+#' @return a list with 4 items:
+#'  * `stdrot_X`: `X` on the rotated and re-standardized scale
+#'  * `rot_y`: `y` on the rotated scale (a numeric vector)
+#'  * `stdrot_X_center`: numeric vector of values used to center `rot_X`
+#'  * `stdrot_X_scale`: numeric vector of values used to scale `rot_X`
 #'
 #' @keywords internal
 #'
@@ -32,8 +35,8 @@ rotate_filebacked <- function(prep,
                    PACKAGE = "plmmr")
   stdrot_X@address <- std_rot[[1]]
 
-  return(list(stdrot_X = stdrot_X,
-              rot_y = rot_y,
-              stdrot_X_center = std_rot[[2]],
-              stdrot_X_scale = std_rot[[3]]))
+  list(stdrot_X = stdrot_X,
+       rot_y = rot_y,
+       stdrot_X_center = std_rot[[2]],
+       stdrot_X_scale = std_rot[[3]])
 }

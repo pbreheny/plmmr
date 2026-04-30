@@ -5,7 +5,7 @@
 #'
 #' @param design          The first argument must be one of three things:
 #'                          (1) `plmm_design` object (as created by `create_design()`)
-#'                          (2) a string with the file path to a design object (the file path must end in '.rds')
+#'                          (2) a string with the file path to a design object (the file path must end in `.rds`)
 #'                          (3) a `matrix` or `data.frame` object representing the design matrix of interest
 #' @param y               Optional: In the case where `design` is a `matrix` or `data.frame`, the user must also supply
 #'                        a numeric outcome vector as the `y` argument. In this case, `design` and `y` will be passed
@@ -13,66 +13,67 @@
 #' @param K               Similarity matrix used to rotate the data. This should either be
 #'                          (1) a known matrix that reflects the covariance of y,
 #'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
-#'                          (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
+#'                          (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
 #'                        Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#'                        Note: Setting eta = 1 will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying type='blup', but should be done with caution.
+#'                        Note: Setting `eta = 1` will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying `type = 'blup'`, but should be done with caution.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
-#' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
-#' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda_min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
-#' @param nlambda         Length of the sequence of lambda. Default is 100.
-#' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps             Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
-#' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
-#' @param init            Initial values for coefficients. Default is 0 for all columns of X.
-#' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
-#' @param type            A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
-#'                        based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
+#' @param type            A character argument indicating what should be returned from `predict.plmm()`. If `type = 'lp'`, predictions are
+#'                        based on the linear predictor, X beta. If `type = 'blup'`, predictions are based on the sum of the linear predictor
 #'                        and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method
 #'                        in many applications.
-#' @param cluster         Option for **in-memory data only**: cv_plmm() can be run in parallel across a cluster using the parallel package.
-#'                        The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+#' @param gamma           The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
+#' @param alpha           Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would be equivalent to ridge regression.
+#'                        However, `alpha = 0` is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda_min      The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param nlambda         Length of the sequence of lambda. Default is 100.
+#' @param lambda          A user-specified sequence of lambda values. By default, a sequence of values of length `nlambda` is computed, equally spaced on the log scale.
+#' @param eps             Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than `eps`. Default is `1e-4`.
+#' @param max_iter        Maximum number of iterations (total across entire path). Default is 10000.
+#' @param warn            Return warning messages for failures to converge and model saturation? Default is TRUE.
+#' @param init            Initial values for coefficients. Default is 0 for all columns of X.
+#' @param cluster         Option for **in-memory data only**: `cv_plmm()` can be run in parallel across a cluster using the parallel package.
+#'                        The cluster must be set up in advance using `parallel::makeCluster()`. The cluster must then be passed to `cv_plmm()`.
 #'                        **Note**: this option is not yet implemented for filebacked data.
 #' @param nfolds          The number of cross-validation folds. Default is 5.
 #' @param fold            Which fold each observation belongs to. By default, the observations are randomly assigned.
 #' @param seed            You may set the seed of the random number generator in order to obtain reproducible results.
 #' @param trace           If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.
-#' @param save_rds        Optional: if a filepath and name *without* the '.rds' suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+#' @param save_rds        Optional: if a filepath and name *without* the `.rds` suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 #'                        Defaults to NULL, which does not save the result.
-#'                        **Note**: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+#'                        **Note**: Along with the model results, two `.rds` files ('loss' and 'yhat') will be created in the same directory as `save_rds`.
 #'                        These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.
 #' @param return_fit      Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
 #' @param ...             Additional arguments to `plmm_fit`
 #'
-#' @returns A list that includes 15 items:
+#' @return A list that includes 14 items:
 #'
-#' * type: The type of prediction used ('lp' or 'blup')
-#' * cve: A numeric vector with the cross validation error (CVE) at each value of `lambda`
-#' * cvse: A numeric vector with the estimated standard error associated with each value of `cve`
-#' * fold: A numeric `n` length vector of integers indicating the fold to which each observation was assigned
-#' * lambda: A numeric vector of `lambda` values
-#' * fit: The overall fit of the object, including all predictors; this is a list as returned by `plmm()`
-#' * min: The index corresponding to the value of `lambda` that minimizes `cve`
-#' * lambda_min: The `lambda` value at which `cve` is minimized
-#' * min1se: The index corresponding to the value of `lambda` within 1 standard error of
+#' * `type`: The type of prediction used ('lp' or 'blup')
+#' * `cve`: A numeric vector with the cross validation error (CVE) at each value of `lambda`
+#' * `cvse`: A numeric vector with the estimated standard error associated with each value of `cve`
+#' * `fold`: A numeric `n` length vector of integers indicating the fold to which each observation was assigned
+#' * `lambda`: A numeric vector of `lambda` values
+#' * `fit`: The overall fit of the object, including all predictors; this is a list as returned by `plmm()`
+#' * `min`: The index corresponding to the value of `lambda` that minimizes `cve`
+#' * `lambda_min`: The `lambda` value at which `cve` is minimized
+#' * `min1se`: The index corresponding to the value of `lambda` within 1 standard error of
 #'   that which minimizes `cve`
-#' * lambda1se: The largest value of lambda such that `cve` is within 1 standard error of the minimum
-#' * null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+#' * `lambda1se`: The largest value of lambda such that `cve` is within 1 standard error of the minimum
+#' * `null.dev`: A numeric value representing the deviance for the intercept-only model. If you have supplied
 #'   your own `lambda` sequence, this quantity may not be meaningful.
-#' * Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of `lambda`.
+#' * `Y`: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of `lambda`.
 #'   Rows are observations, columns are values of `lambda`.
-#' * loss: A matrix with the loss values at each value of lambda. Rows are observations,
+#' * `loss`: A matrix with the loss values at each value of lambda. Rows are observations,
 #'   columns are values of `lambda`.
-#' * estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
+#' * `estimated_Sigma`: If `type = 'blup'`, an n x n matrix representing the estimated covariance matrix.
+#'
+#' @export
 #'
 #' @examples
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' cv_fit <- cv_plmm(design = admix_design)
 #' print(summary(cv_fit))
 #' plot(cv_fit)
-#' @export
-
 cv_plmm <- function(design,
                     y = NULL,
                     K = NULL,
@@ -90,8 +91,8 @@ cv_plmm <- function(design,
                     init = NULL,
                     cluster,
                     nfolds = 5,
-                    seed,
                     fold = NULL,
+                    seed,
                     trace = FALSE,
                     save_rds = NULL,
                     return_fit = TRUE,
@@ -104,8 +105,8 @@ cv_plmm <- function(design,
   }
 
   # check eta and type congruence ----------------------------
-  if(is.null(type)) {
-    if(!is.null(eta) && eta == 1) {
+  if (is.null(type)) {
+    if (!is.null(eta) && eta == 1) {
       type <- "lp"
     } else {
       type <- "blup"
@@ -397,6 +398,6 @@ cv_plmm <- function(design,
 
   # return ----------------------------------------------------------------
   if (return_fit) {
-    return(structure(val, class = "cv_plmm"))
+    structure(val, class = "cv_plmm")
   }
 }

@@ -1,15 +1,17 @@
 #' A helper function to standardize matrices
 #'
-#' @param X a matrix
+#' @param X A matrix
 #' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
-#' @returns a list with the standardized matrix, vectors with the centering/scaling values, and a vector with the indices of nonsingular columns
+#' @return A list containing the standardized `X` matrix and associated metadata
+#'
 #' @keywords internal
 #'
 #' @details
 #' This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
 #' NOTE: this function returns a matrix **in memory**. For standardizing filebacked
-#' data, use `big_std()`  -- see src/big_standardize.cpp
+#' data, use `standardize_filebacked()`  -- see `src/big_standardize.cpp`
+#'
 standardize_in_memory <- function(X, tocenter = TRUE) {
 
   if (typeof(X) == "integer") storage.mode(X) <- "double"
@@ -37,8 +39,6 @@ standardize_in_memory <- function(X, tocenter = TRUE) {
   attr(std_X, "scale") <- std_X_details$scale <- standardization[[3]]
   attr(std_X, "nonsingular") <- std_X_details$ns <- ns
 
-  res <- list(std_X = std_X[, ],
-              std_X_details = std_X_details)
-
-  return(res)
+  list(std_X = std_X[,],
+       std_X_details = std_X_details)
 }

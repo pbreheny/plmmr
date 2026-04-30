@@ -2,7 +2,7 @@
 % Please edit documentation in R/loss-plmm.R
 \name{plmm_loss}
 \alias{plmm_loss}
-\title{Loss method for "plmm" class}
+\title{Loss method for \code{plmm} class}
 \usage{
 plmm_loss(y, yhat)
 }
@@ -16,7 +16,7 @@ A numeric vector of the squared-error loss values for the given
 observed and predicted outcomes
 }
 \description{
-Loss method for "plmm" class
+Loss method for \code{plmm} class
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)

@@ -2,14 +2,14 @@
 % Please edit documentation in R/summary-cv-plmm.R
 \name{summary.cv_plmm}
 \alias{summary.cv_plmm}
-\title{A summary function for cv_plmm objects}
+\title{A summary function for \code{cv_plmm} objects}
 \usage{
 \method{summary}{cv_plmm}(object, lambda = "min", ...)
 }
 \arguments{
 \item{object}{A \code{cv_plmm} object}
 
-\item{lambda}{The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min.'}
+\item{lambda}{The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min'.}
 
 \item{...}{Not used}
 }
@@ -24,15 +24,9 @@ The return value is an object with S3 class \code{summary.cv_plmm}. The class ha
 \item \code{min}: The minimum cross validation error
 \item \code{fit}: The \code{plmm} fit used in the cross validation
 }
-
-if \code{return_bias_details = TRUE}, two more items are returned:
-\itemize{
-\item \code{bias}: The mean bias of the cross validation
-\item \code{loss}: The loss at each value of \code{lambda}
-}
 }
 \description{
-A summary function for cv_plmm objects
+A summary function for \code{cv_plmm} objects
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)

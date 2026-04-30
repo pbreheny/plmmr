@@ -2,7 +2,7 @@
 % Please edit documentation in R/big_cbind.R
 \name{big_cbind}
 \alias{big_cbind}
-\title{a version of cbind() for file-backed matrices}
+\title{A version of \code{cbind()} for file-backed matrices}
 \usage{
 big_cbind(A, B, C, quiet)
 }
@@ -13,12 +13,12 @@ big_cbind(A, B, C, quiet)
 
 \item{C}{file-backed placeholder for combined data}
 
-\item{quiet}{Logical}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
 C, filled in with all column values of A and B combined
 }
 \description{
-a version of cbind() for file-backed matrices
+A version of \code{cbind()} for file-backed matrices
 }
 \keyword{internal}

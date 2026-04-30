@@ -2,30 +2,29 @@
 % Please edit documentation in R/coef-cv-plmm.R
 \name{coef.cv_plmm}
 \alias{coef.cv_plmm}
-\title{Coef method for "cv_plmm" class}
+\title{Coef method for \code{cv_plmm} class}
 \usage{
 \method{coef}{cv_plmm}(object, lambda, which = object$min, ...)
 }
 \arguments{
-\item{object}{An object of class "cv_plmm."}
+\item{object}{An object of class \code{cv_plmm}.}
 
 \item{lambda}{A numeric vector of lambda values.}
 
-\item{which}{Vector of lambda indices for which coefficients to return.
+\item{which}{Vector of lambda indices for which to return coefficients.
 Defaults to lambda index with minimum CVE.}
 
 \item{...}{Additional arguments (not used).}
 }
 \value{
 Returns a named numeric vector. Values are the coefficients of the
-model at the specified value of either \code{lambda} or \code{which}. Names are the
+model at the specified value(s) of either \code{lambda} or \code{which}. Names are the
 values of \code{lambda}.
 }
 \description{
-Coef method for "cv_plmm" class
+Coef method for \code{cv_plmm} class
 }
 \examples{
 cv_fit <- cv_plmm(admix$X, admix$y, return_fit = TRUE)
 head(coef(cv_fit))
-
 }

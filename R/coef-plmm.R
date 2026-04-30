@@ -1,14 +1,14 @@
-#' Coef method for "plmm" class
+#' Coef method for `plmm` class
 #'
-#' @param object An object of class "plmm."
+#' @param object An object of class `plmm`.
 #' @param lambda A numeric vector of lambda values.
-#' @param which Vector of lambda indices for which coefficients to return.
-#' @param drop Logical.
+#' @param which Vector of lambda indices for which to return coefficients.
+#' @param drop Logical. Should returned object be coerced to a vector if possible?
 #' @param ... Additional arguments.
 #'
 #' @rdname coef.plmm
 #'
-#' @returns Either a numeric matrix (if model was fit on data stored in memory)
+#' @return Either a numeric matrix (if model was fit on data stored in memory)
 #' or a sparse matrix (if model was fit on data stored filebacked). Rownames are
 #' feature names, columns are values of `lambda`.
 #'
@@ -18,8 +18,6 @@
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit <- plmm(design = admix_design)
 #' coef(fit)[1:10, 41:45]
-
-
 coef.plmm <- function(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...) {
   # error check for supplied lambda value
   if (!missing(lambda)) {
@@ -49,8 +47,8 @@ coef.plmm <- function(object, lambda, which = seq_along(object$lambda), drop = T
   }
 
   if (drop) {
-    return(drop(beta_vals))
+    drop(beta_vals)
   } else {
-    return(beta_vals)
+    beta_vals
   }
 }

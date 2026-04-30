@@ -2,7 +2,7 @@
 % Please edit documentation in R/plmm_checks.R
 \name{plmm_checks}
 \alias{plmm_checks}
-\title{plmm_checks}
+\title{A function to perform checks on passed objects before model fitting.}
 \usage{
 plmm_checks(
   design,
@@ -24,7 +24,7 @@ plmm_checks(
 \item{K}{Similarity matrix used to rotate the data. This should either be
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
-(3) a list with components 'd' and 'U', as returned by a previous \code{plmm()} model fit on the same data.}
+(3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
@@ -34,7 +34,8 @@ plmm_checks(
 
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha = 1} is equivalent to MCP/SCAD penalty, while \code{alpha = 0} would be equivalent to ridge regression.
+However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
@@ -45,9 +46,27 @@ plmm_checks(
 \item{...}{Additional arguments to \code{get_data()}}
 }
 \value{
-A list of parameters to pass on to model fitting. The list includes the standardized design matrix, the outcome, and meta-data
+A list which includes 16 items:
+\itemize{
+\item \code{std_X}: The standardized design matrix. If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}.
+\item \code{std_X_details}: Metadata for \code{std_X}.
+\item \code{std_X_n}: Number of rows in \code{std_X}.
+\item \code{std_X_p}: Number of columns in \code{std_X}.
+\item \code{y}: Original outcome vector.
+\item \code{y_name}: Variable name of \code{y}.
+\item \code{centered_y}: The centered outcome vector.
+\item \code{K}: The relationship matrix (as passed by \code{plmm()}, may be NULL)
+\item \code{eta}: Estimated proportion of the variance in the outcome attributable to population/correlation structure (as passed by \code{plmm()}, may be NULL)
+\item \code{fbm_flag}: Logical, is \code{std_X} filebacked?
+\item \code{plink_flag}: Logical, does \code{std_X} originate from PLINK files?
+\item \code{penalty}: A character string indicating the penalty type
+\item \code{gamma}: Tuning parameter for the SCAD or MCP penalties.
+\item \code{init}: Initialized values for beta coefficients.
+\item \code{n}: Number of rows in the original design matrix prior to standardization procedures.
+\item \code{p}: Number of columns in the original design matrix prior to standardization procedures.
+}
 }
 \description{
-plmm_checks
+A function to perform checks on passed objects before model fitting.
 }
 \keyword{internal}

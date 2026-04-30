@@ -1,11 +1,12 @@
-# Define the function to create the .log file
-#' create_log_file
-#' @param outfile   String specifying the name of the to-be-created file, *without* extension
-#' @param ...       Not used
+#' Create the `.log` file
+#'
+#' @param outfile String specifying the name of the to-be-created file, *without* extension
+#'
+#' @return Nothing is returned, instead a text file with the suffix `.log` is created.
+#'
 #' @keywords internal
 #'
-#' @returns Nothing is returned, intead a text file with the suffix .log is created.
-create_log <- function(outfile, ...) {
+create_log <- function(outfile) {
   if (missing(outfile)) {
     stop("You must specify a name for the output file(s) via the outfile argument.")
   }
@@ -15,10 +16,12 @@ create_log <- function(outfile, ...) {
   # open the log file for writing
   log_con <- file(logfile)
 
+  hostname <- as.character(Sys.info()["nodename"])
+
   # write header to the log file
   cat("### plmmr log file ###\n", file = logfile)
   cat("Logging to", logfile, "\n", file = logfile, append = TRUE)
-  cat("Host:", get_hostname(), "\n", file = logfile, append = TRUE)
+  cat("Host:", hostname, "\n", file = logfile, append = TRUE)
   cat("Current working directory:", getwd(), "\n", file = logfile, append = TRUE)
   cat("Start log at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
       file = logfile, append = TRUE)
@@ -31,5 +34,5 @@ create_log <- function(outfile, ...) {
   close(log_con)
 
   # return logfile name
-  return(logfile)
+  logfile
 }

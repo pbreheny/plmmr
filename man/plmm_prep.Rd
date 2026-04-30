@@ -2,8 +2,7 @@
 % Please edit documentation in R/plmm_prep.R
 \name{plmm_prep}
 \alias{plmm_prep}
-\title{PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-This is an internal function for \code{cv_plmm}}
+\title{PLMM prep: a function to run checks, eigendecomposition, and rotation prior to fitting a PLMM model}
 \usage{
 plmm_prep(
   std_X,
@@ -22,9 +21,9 @@ plmm_prep(
 \arguments{
 \item{std_X}{Column standardized design matrix. May include clinical covariates and other non-SNP data.}
 
-\item{std_X_n}{The number of observations in std_X (integer)}
+\item{std_X_n}{The number of observations in \code{std_X} (integer)}
 
-\item{std_X_p}{The number of features in std_X (integer)}
+\item{std_X_p}{The number of features in \code{std_X} (integer)}
 
 \item{n}{The number of instances in the \emph{original} design matrix X. This should not be altered by standardization.}
 
@@ -35,11 +34,11 @@ plmm_prep(
 \item{K}{Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
-(3) a list with components 's' and 'U', as returned by a previous \code{plmm()} model fit on the same data.}
+(3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
-\item{fbm_flag}{Logical: is std_X an FBM type object? This is set internally by \code{plmm()}.}
+\item{fbm_flag}{Logical: is \code{std_X} an FBM type object? This is set internally by \code{plmm()}.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
@@ -48,16 +47,16 @@ plmm_prep(
 \value{
 List with these components:
 \itemize{
-\item centered_y: The vector of centered outcomes
-\item std_X: standardized design matrix
-\item K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
-and (2) U: the eigenvectors of K (same as left singular values of X).
-\item eta: the numeric value of the estimated eta parameter
-\item trace: logical.
+\item \code{std_X}: Standardized design matrix. If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}.
+\item \code{centered_y}: Vector of centered outcomes
+\item \code{K}: Similarity matrix
+\item \code{s}: Vector of the non-zero eigenvalues of \code{K}
+\item \code{U}: Matrix of eigenvectors of \code{K} associated with \code{s} (same as left singular values of X).
+\item \code{eta}: The numeric value of the estimated eta parameter
+\item \code{trace}: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process
 }
 }
 \description{
-PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-This is an internal function for \code{cv_plmm}
+This is an internal function for \code{plmm()}
 }
 \keyword{internal}

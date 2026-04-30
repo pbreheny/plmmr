@@ -1,14 +1,13 @@
-#' Print method for summary.cv_plmm objects
+#' Print method for `summary.cv_plmm` objects
 #'
-#' @param x An object of class \code{summary.cv_plmm}
+#' @param x An object of class `summary.cv_plmm`
 #' @param digits The number of digits to use in formatting output
 #' @param ... Not used
 #'
 #' @rdname print.summary.cv_plmm
 #'
-#' @returns Nothing is returned; instead, a message is printed to the console
+#' @return Nothing is returned; instead, a message is printed to the console
 #' summarizing the results of the cross-validated model fit.
-#'
 #'
 #' @export
 #'
@@ -16,7 +15,6 @@
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' cv_fit <- cv_plmm(design = admix_design)
 #' print(summary(cv_fit))
-#'
 print.summary.cv_plmm <- function(x, digits, ...) {
   n <- nrow(x$fit$std_Xbeta)
   p <- nrow(x$fit$beta_vals)

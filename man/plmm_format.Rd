@@ -2,19 +2,21 @@
 % Please edit documentation in R/plmm_format.R
 \name{plmm_format}
 \alias{plmm_format}
-\title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit}}
+\title{PLMM format: a function to format the output of a model constructed with \code{plmm_fit()}}
 \usage{
 plmm_format(fit, p, std_X_details, fbm_flag, plink_flag)
 }
 \arguments{
-\item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit}}
+\item{fit}{A list of parameters describing the output of a model constructed with \code{plmm_fit()}}
 
 \item{p}{The number of features in the original data (including constant features)}
 
 \item{std_X_details}{A list with 3 items:
-* 'center': the centering values for the columns of \code{X}
-* 'scale': the scaling values for the non-singular columns of \code{X}
-* 'ns': indicesof nonsingular columns in \code{std_X}}
+\itemize{
+\item \code{center}: the centering values for the columns of \code{X}
+\item \code{scale}: the scaling values for the non-singular columns of \code{X}
+\item \code{ns}: indices of nonsingular columns in \code{std_X}
+}}
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked? Passed from \code{plmm()}.}
 
@@ -27,15 +29,28 @@ implications for how the \code{untransform()} function determines the
 appropriate dimensions for the estimated coefficient matrix it returns.}
 }
 \value{
-A list with the components:
+A list with 18 components:
 \itemize{
 \item \code{beta_vals}: the matrix of estimated coefficients on the original scale. Rows are predictors, columns are values of \code{lambda}
+\item \code{std_Xbeta}: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of \code{lambda}.
+\strong{Note}: \code{std_Xbeta} will not include rows for the intercept or for constant features.
+\item \code{std_X_details}: A list with 9 items:
+\itemize{
+\item \code{center}: The center values used to center the columns of the design matrix
+\item \code{scale}: The scaling values used to scale the columns of the design matrix
+\item \code{ns}: An integer vector of the nonsingular columns of the original data
+\item \code{unpen}: An integer vector of indices of the unpenalized features, if any were specified in the design
+\item \code{unpen_colnames}: A character vector of the column names of any unpenalized features.
+\item \code{X_colnames}: A character vector with the column names of all features in the original design matrix
+\item \code{X_rownames}: A character vector with the row names of all features in the original design matrix; if none were provided, these are named 'row1', 'row2', etc.
+\item \code{std_X_colnames}: A subset of \code{X_colnames} representing only nonsingular columns (i.e., the columns indexed by \code{ns})
+\item \code{std_X_rownames}: A subset of \code{X_rownames} representing rows that passed QC filtering & and are represented in both the genotype and phenotype data sets (this only applies to PLINK data)
+}
+\item \code{y}: The original outcome vector.
+\item \code{p}: The total number of columns in the design matrix (including any singular columns, excluding the intercept).
+\item \code{plink_flag}: Logical - did the data come from PLINK files?
 \item \code{lambda}: a numeric vector of the lasso tuning parameter values used in model fitting.
 \item \code{eta}: a number (double) between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
-\item \code{s}: a vector of the eigenvalues of relatedness matrix \code{K}; see \code{relatedness_mat()} for details.
-\item \code{U}: a matrix of the eigenvalues of relatedness matrix \code{K}
-\item \code{rot_y}: the vector of outcome values on the rotated scale. This is the scale on which the model was fit.
-\item \code{linear_predictors}: the matrix resulting from the product of \code{stdrot_X} and the estimated coefficients on the ~rotated~ scale.
 \item \code{penalty}: character string indicating the penalty with which the model was fit (e.g., 'MCP')
 \item \code{gamma}: numeric value indicating the tuning parameter used for the SCAD or lasso penalties was used. Not relevant for lasso models.
 \item \code{alpha}: numeric value indicating the elastic net tuning parameter.
@@ -44,9 +59,15 @@ A list with the components:
 \item \code{ns_idx}: vector with the indices of predictors which were nonsingular features (i.e., had variation).
 \item \code{iter}: numeric vector with the number of iterations needed in model fitting for each value of \code{lambda}
 \item \code{converged}: vector of logical values indicating whether the model fitting converged at each value of \code{lambda}
+\item \code{K}: a list with 2 elements, \code{s} and \code{U} ---
+\itemize{
+\item \code{s}: a vector of the non-zero eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)
+\item \code{U}: a matrix of the eigenvectors of K associated with \code{s}
+}
+\item \code{std_X}: If design matrix is filebacked, the descriptor for the filebacked data is returned using \code{bigmemory::describe()}.
 }
 }
 \description{
-PLMM format: a function to format the output of a model constructed with \code{plmm_fit}
+PLMM format: a function to format the output of a model constructed with \code{plmm_fit()}
 }
 \keyword{internal}

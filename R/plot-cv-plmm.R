@@ -1,15 +1,20 @@
-#' Plot method for cv_plmm class
+#' Plot method for `cv_plmm` class
 #'
-#' @param x An object of class cv_plmm
-#' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.
-#' @param type Type of plot to return. Defaults to "cve."
-#' @param selected Logical to indicate which variables should be plotted. Defaults to TRUE.
-#' @param vertical.line Logical to indicate whether vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.
-#' @param col Color for vertical line, if plotted. Defaults to "red."
+#' @param x An object of class `cv_plmm`
+#' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to TRUE.
+#' @param type Type of plot to return. Options include:
+#'  * `cve`: cross-validation error
+#'  * `rsq`: estimated fraction of the deviance explained by the model (\eqn{R^2})
+#'  * `scale`: estimated standard deviation
+#'  * `snr`: estimated signal-to-noise ratio
+#'  * `all`: all of the above
+#' @param selected Logical to indicate if the number of variables selected should be plotted on the top axis. Defaults to TRUE.
+#' @param vertical.line Logical to indicate whether a vertical line should be plotted at the minimum/maximum value. Defaults to TRUE.
+#' @param col Color for the points along the CV curve. Defaults to "red".
 #' @param ... Additional arguments.
 #'
-#' @returns Nothing is returned; instead, a plot is drawn representing the relationship
-#' between the tuning parameter 'lambda' value (x-axis) and the cross validation error (y-axis).
+#' @return Nothing is returned; instead, a plot is drawn representing the relationship
+#' between the tuning parameter `lambda` value (x-axis) and the cross validation error (y-axis).
 #'
 #' @export
 #'
@@ -17,11 +22,13 @@
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' cvfit <- cv_plmm(design = admix_design)
 #' plot(cvfit)
-#'
-
 ## from cv.ncvreg
-plot.cv_plmm <- function(x, log.l = TRUE, type = c("cve", "rsq", "scale", "snr", "all"),
-                         selected = TRUE, vertical.line = TRUE, col = "red", ...) {
+plot.cv_plmm <- function(x,
+                         log.l = TRUE,
+                         type = c("cve", "rsq", "scale", "snr", "all"),
+                         selected = TRUE,
+                         vertical.line = TRUE,
+                         col = "red", ...) {
   type <- match.arg(type)
   if (type == "all") {
     plot(x, log.l = log.l, type = "cve", selected = selected, ...)
@@ -74,8 +81,10 @@ plot.cv_plmm <- function(x, log.l = TRUE, type = c("cve", "rsq", "scale", "snr",
   plot.args <- list(x = l[ind], y = y[ind], ylim = ylim, xlab = xlab, ylab = ylab,
                     type = "n", xlim = rev(range(l[ind])), las = 1)
   new.args <- list(...)
+
   if (length(new.args)) plot.args[names(new.args)] <- new.args
   do.call("plot", plot.args)
+
   if (vertical.line) {
     graphics::abline(v = l[x$min], lty = 1, lwd = 0.5)
     graphics::abline(v = l[x$min1se], lty = 2, lwd = 0.5)
@@ -83,9 +92,10 @@ plot.cv_plmm <- function(x, log.l = TRUE, type = c("cve", "rsq", "scale", "snr",
   suppressWarnings(graphics::arrows(x0 = l[aind], x1 = l[aind], y0 = L[aind], y1 = U[aind],
                                     code = 3, angle = 90, col = "gray80", length = 0.05))
   graphics::points(l[ind], y[ind], col = col, pch = 19, cex = 0.5)
+
   if (selected) {
     n.s <- predict(x$fit, lambda = x$lambda, type = "nvars")
+    graphics::axis(3, at = l, labels = n.s, tick = FALSE, line = -0.5)
+    graphics::mtext("Variables selected", cex = 0.8, line = 1.5)
   }
-  graphics::axis(3, at = l, labels = n.s, tick = FALSE, line = -0.5)
-  graphics::mtext("Variables selected", cex = 0.8, line = 1.5)
 }

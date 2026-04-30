@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary-plmm.R
 \name{summary.plmm}
 \alias{summary.plmm}
-\title{A summary method for the plmm objects}
+\title{A summary method for \code{plmm} objects}
 \usage{
 \method{summary}{plmm}(object, lambda, idx, eps = 1e-05, ...)
 }
@@ -11,10 +11,10 @@
 
 \item{lambda}{The regularization parameter value at which inference should be reported.}
 
-\item{idx}{Alternatively, \code{lambda} may be specified by an index; \code{idx=10} means:
+\item{idx}{Alternatively, \code{lambda} may be specified by an index; \code{idx = 10} means:
 report inference for the 10th value of \code{lambda} along the regularization path. If both \code{lambda} and \code{idx} are specified, \code{lambda} takes precedence.}
 
-\item{eps}{If lambda is given, eps is the tolerance for difference between the given lambda value and a lambda value from the object. Defaults to 0.0001 (1e-5)}
+\item{eps}{If lambda is given, \code{eps} is the tolerance for difference between the given lambda value and a lambda value from the object. Defaults to 0.00001 (\code{1e-5})}
 
 \item{...}{Not used}
 }
@@ -24,7 +24,7 @@ The return value is an object with S3 class \code{summary.plmm}. The class has i
 \item \code{penalty}: The penalty used by \code{plmm} (e.g. SCAD, MCP, lasso)
 \item \code{n}: Number of instances/observations
 \item \code{std_X_n}: the number of observations in the standardized data;
-the only time this would differ from 'n' is if data are from PLINK and the external data does not include all the same samples
+the only time this would differ from \code{n} is if data are from PLINK and the external data does not include all the same samples
 \item \code{p}: Number of regression coefficients (not including the intercept)
 \item \code{converged}: Logical indicator for whether the model converged
 \item \code{lambda}: The \code{lambda} value at which inference is being reported
@@ -34,7 +34,7 @@ the only time this would differ from 'n' is if data are from PLINK and the exter
 }
 }
 \description{
-A summary method for the plmm objects
+A summary method for \code{plmm} objects
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)

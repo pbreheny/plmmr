@@ -1,12 +1,12 @@
-#' A function to print the summary of a \code{plmm} model
+#' A function to print the summary of a `plmm` model
 #'
 #' @param x A `summary.plmm` object
 #' @param ... Not used
+#'
 #' @rdname print.summary.plmm
 #'
-#' @returns Nothing is returned; instead, a message is printed to the console
+#' @return Nothing is returned; instead, a message is printed to the console
 #' summarizing the results of the model fit.
-#'
 #'
 #' @export
 #'
@@ -33,6 +33,4 @@ print.summary.plmm <- function(x, ...) {
   # nonzero coefficients
   cat("# of non-zero coefficients: ", x$nvars, "\n")
   cat("-------------------------------------------------\n")
-
-
 }

@@ -5,9 +5,8 @@
 \title{A function to create a design matrix, outcome, and penalty factor to be passed to a model fitting function}
 \usage{
 create_design_filebacked(
-  data_file,
-  rds_dir,
   obj,
+  rds_dir,
   new_file,
   add_outcome,
   outcome_id,
@@ -23,19 +22,17 @@ create_design_filebacked(
 )
 }
 \arguments{
-\item{data_file}{A filepath to rds file of processed data (data from \code{process_plink()} or \code{process_delim()})}
-
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files.}
-
 \item{obj}{The RDS object read in by \code{create_design()}}
+
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files.}
 
 \item{new_file}{User-specified filename (\emph{without .bk/.rds extension}) for the to-be-created .rds/.bk files. Must be different from any existing .rds/.bk files in the same folder.}
 
-\item{add_outcome}{A data frame or matrix with two columns: and ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.}
+\item{add_outcome}{A data frame or matrix with two columns: an ID column and a column with the outcome value (to be used as 'y' in the final design). IDs must be characters, outcome must be numeric.}
 
-\item{outcome_id}{A string specifying the name of the ID column in 'add_outcome'}
+\item{outcome_id}{A string specifying the name of the ID column in \code{add_outcome}}
 
-\item{outcome_col}{A string specifying the name of the phenotype column in 'add_outcome'}
+\item{outcome_col}{A string specifying the name of the phenotype column in \code{add_outcome}}
 
 \item{na_outcome_vals}{A vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).}
 
@@ -48,20 +45,20 @@ create_design_filebacked(
 \item{add_predictor}{Optional (for PLINK data only): a matrix or data frame to be used for adding additional \strong{unpenalized} covariates/predictors/features from an external file (i.e., not a PLINK file).
 This matrix must have one column that is an ID column; all other columns aside the ID will be used as covariates in the design matrix. Columns must be named.}
 
-\item{predictor_id}{Optional (for PLINK data only): A string specifying the name of the column in 'add_predictor' with sample IDs. \strong{Required} if 'add_predictor' is supplied.
+\item{predictor_id}{Optional (for PLINK data only): A string specifying the name of the column in \code{add_predictor} with sample IDs. \strong{Required} if \code{add_predictor} is supplied.
 The names will be used to subset and align this external covariate with the supplied PLINK data.}
 
 \item{unpen}{Optional (for delimited file data only): an optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 \strong{Note}: if you choose to use this option, X must have column names.}
 
-\item{logfile}{Optional: name of the '.log' file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
+\item{logfile}{Optional: name of the \code{.log} file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
 
 \item{overwrite}{Logical: should existing .rds files be overwritten? Defaults to FALSE.}
 
-\item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
-A filepath to the created .rds file containing all the information
+A filepath to the created \code{.rds} file containing all the information
 for model fitting, including a standardized X and model design information
 }
 \description{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lam_names.R
 \name{lam_names}
 \alias{lam_names}
-\title{Generate nicely formatted lambda vec}
+\title{Generate nicely formatted lambda vector}
 \usage{
 lam_names(l)
 }
@@ -13,6 +13,6 @@ lam_names(l)
 A character vector of formatted lambda value names
 }
 \description{
-Generate nicely formatted lambda vec
+Generate nicely formatted lambda vector
 }
 \keyword{internal}

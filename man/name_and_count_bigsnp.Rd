@@ -11,17 +11,21 @@ name_and_count_bigsnp(obj, id_var, quiet, outfile)
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID".}
 
-\item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 
-\item{outfile}{The string with the name of the .log file}
+\item{outfile}{The string with the name of the \code{.log} file}
 }
 \value{
-a list with components:
+a list with 7 components:
 \itemize{
-\item counts: column-wise summary of the minor allele counts in 'genotypes'
-\item obj: a modified \code{bigSNP} list with additional components
-\item X: the \code{obj$genotypes} as its own FBM
-\item pos: the \code{obj$map$physical.pos} vector
+\item \code{na_counts}: vector of missing SNP counts in \code{genotypes}
+\item \code{obj}: a modified \code{bigSNP} list with additional components
+\item \code{og_plink_ids}: either the IID or FID column from \code{.fam}, determined by \code{id_var}
+\item \code{chr}: p-length containing the chromosomes for each SNP
+\item \code{X}: the \code{obj$genotypes} as its own FBM
+\item \code{pos}: vector of physical positions of the SNPs
+\item \code{chr_range}: vector containing the minimum and maximum values of \code{chr}.
+Character strings are treated as the \strong{maximum}.
 }
 }
 \description{

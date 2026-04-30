@@ -1,27 +1,32 @@
 #' A function to impute SNP data
 #'
-#' @param obj a `bigSNP` object (as created by `read_plink_files()`)
-#' @param X A matrix of genotype data as  returned by `name_and_count_bigsnp`
-#' @param impute Logical: should data be imputed? Default to TRUE.
-#' @param impute_method If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
-#'  * mode (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
-#'  * random: Imputes sampling according to allele frequencies.
-#'  * mean0: Imputes the rounded mean.
-#'  * mean2: Imputes the mean rounded to 2 decimal places.
-#'  * xgboost: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
-#' @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
+#' @param obj A `bigSNP` object (as created by `read_plink_files()`)
+#' @param X A matrix of genotype data as returned by `name_and_count_bigsnp()`
+#' @param impute Logical: should data be imputed? Defaults to TRUE.
+#' @param impute_method If `impute = TRUE`, this argument will specify the kind of imputation desired. Options are:
+#'  * `mode` (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
+#'  * `random`: Imputes sampling according to allele frequencies.
+#'  * `mean0`: Imputes the rounded mean.
+#'  * `mean2`: Imputes the mean rounded to 2 decimal places.
+#'  * `xgboost`: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
 #' @param parallel Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
 #'                  In particular, the user should be aware that too much parallelization can make computations *slower*.
 #' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
-#' @param quiet Logical: should messages be printed to the console? Defaults to TRUE
-#' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if impute_method = "xgboost")
+#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
+#' @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
+#' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if `impute_method = 'xgboost'`)
 #'
 #' @return Nothing is returned, but the `obj$genotypes` is overwritten with the imputed version of the data
 #'
 #' @keywords internal
 #'
-impute_snp_data <- function(obj, X, impute, impute_method,
-                            parallel, outfile, quiet,
+impute_snp_data <- function(obj,
+                            X,
+                            impute,
+                            impute_method,
+                            parallel,
+                            outfile,
+                            quiet,
                             seed = as.numeric(Sys.Date()),
                             ...) {
 
@@ -87,5 +92,5 @@ impute_snp_data <- function(obj, X, impute, impute_method,
         file = outfile, append = TRUE)
   }
 
-  return(obj)
+  obj
 }

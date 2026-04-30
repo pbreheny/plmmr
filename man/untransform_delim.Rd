@@ -4,28 +4,22 @@
 \alias{untransform_delim}
 \title{Untransform coefficient values back to the original scale for \strong{file-backed} data}
 \usage{
-untransform_delim(
-  std_scale_beta,
-  p,
-  std_X_details,
-  plink_flag,
-  use_names = TRUE
-)
+untransform_delim(std_scale_beta, p, std_X_details, use_names = TRUE)
 }
 \arguments{
 \item{std_scale_beta}{The estimated coefficients on the standardized scale}
 
 \item{p}{The number of columns in the original design matrix}
 
-\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'}
+\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements \code{scale}, \code{center}, and \code{ns}}
 
-\item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as 'ns' will vary within CV folds.}
+\item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as \code{ns} will vary within CV folds.}
 }
 \value{
-a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
+a matrix of estimated coefficients, \code{untransformed_beta}, that is on the scale of the original data.
 }
 \description{
 This function unwinds the initial standardization of the data to obtain
-coefficient values on their original scale. It is called by plmm_format().
+coefficient values on their original scale. It is called by \code{plmm_format()}.
 }
 \keyword{internal}

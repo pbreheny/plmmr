@@ -16,7 +16,7 @@ create_design_in_memory(X, y, unpen = NULL)
 \strong{Note}: if you choose to use this option, X must have column names.}
 }
 \value{
-A list with elements including a standardized X and model design information
+A named list containing the standardized design matrix, outcome, penalty factor vector, and other details needed for fitting a model
 }
 \description{
 A function to create a design with an in-memory X matrix

@@ -1,15 +1,15 @@
-#' Plot method for plmm class
+#' Plot method for `plmm` class
 #'
-#' @param x An object of class \code{plmm}
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha=1} is equivalent to MCP/SCAD penalty, while \code{alpha=0} would be equivalent to ridge regression. However, \code{alpha=0} is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.
+#' @param x An object of class `plmm`
+#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
+#' `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would be equivalent to ridge regression. However, `alpha = 0` is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param log.l Logical to indicate the plot should be returned on the natural log scale. Defaults to FALSE.
 #' @param shade Logical to indicate whether a local nonconvex region should be shaded. Defaults to TRUE.
 #' @param col Vector of colors for coefficient lines.
 #' @param ... Additional arguments.
 #'
-#' @returns Nothing is returned; instead, a plot of the coefficient paths is drawn
+#' @return Nothing is returned; instead, a plot of the coefficient paths is drawn
 #' at each value of lambda (one 'path' for each coefficient).
-#'
 #'
 #' @export
 #'
@@ -18,7 +18,6 @@
 #' fit <- plmm(design = admix_design)
 #' plot(fit)
 #' plot(fit, log.l = TRUE)
-
 ## from ncvreg
 plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   if (length(x$lambda) == 1) stop("Model was fit with only a single lambda value; there is no path to plot", call. = FALSE)
@@ -46,10 +45,15 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   plot.args <- list(x = l, y = seq_along(l), ylim = range(Y), xlab = xlab, ylab = "",
                     type = "n", xlim = rev(range(l)), las = 1)
   new.args <- list(...)
-  if (length(new.args)) plot.args[names(new.args)] <- new.args
+  if (length(new.args)) {
+    plot.args[names(new.args)] <- new.args
+  }
   do.call("plot", plot.args)
-  if (!is.element("ylab", names(new.args))) graphics::mtext(expression(hat(beta)),
-                                                            side = 2, cex = graphics::par("cex"), line = 3, las = 1)
+
+  if (!is.element("ylab", names(new.args))) {
+    graphics::mtext(expression(hat(beta)), side = 2,
+                    cex = graphics::par("cex"), line = 3, las = 1)
+  }
 
   if (shade && !is.null(x$convex.min)) {
     l1 <- l[x$convex.min]
@@ -68,6 +72,7 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   line.args <- list(col = col, lwd = 1 + 2 * exp(-p/20), lty = 1)
   if (length(new.args)) line.args[names(new.args)] <- new.args
   line.args$x <- l
+
   # check types: Y may be filebacked, but in most cases it isn't that big...
   if (!is.matrix(Y)) {
     Y <- as.matrix(Y)

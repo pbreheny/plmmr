@@ -6,13 +6,18 @@
 \usage{
 rotate_filebacked(prep, tocenter = TRUE, ...)
 }
+\arguments{
+\item{prep}{The object returned by \code{plmm_prep()}}
+
+\item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE}
+}
 \value{
 a list with 4 items:
 \itemize{
-\item stdrot_X: \code{X} on the rotated and re-standardized scale
-\item rot_y: \code{y} on the rotated scale (a numeric vector)
-\item stdrot_X_center: numeric vector of values used to center \code{rot_X}
-\item stdrot_X_scale: numeric vector of values used to scale \code{rot_X}
+\item \code{stdrot_X}: \code{X} on the rotated and re-standardized scale
+\item \code{rot_y}: \code{y} on the rotated scale (a numeric vector)
+\item \code{stdrot_X_center}: numeric vector of values used to center \code{rot_X}
+\item \code{stdrot_X_scale}: numeric vector of values used to scale \code{rot_X}
 }
 }
 \description{

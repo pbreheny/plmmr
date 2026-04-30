@@ -7,17 +7,17 @@
 log_lik(eta, n, s, U, y, rot_y = NULL)
 }
 \arguments{
-\item{eta}{The proportion of variance in the outcome that is attributable to causal SNP effects. In other words, signal-to-noise ratio.}
+\item{eta}{Estimated proportion of the variance in the outcome attributable to population/correlation structure}
 
 \item{n}{The number of observations}
 
-\item{s}{The singular values of K, the realized relationship matrix}
+\item{s}{The non-zero eigenvalues of K, the realized relationship matrix}
 
-\item{U}{The left-singular vectors of the \emph{standardized} design matrix}
+\item{U}{The eigenvectors of K associated with s}
 
-\item{y}{Continuous outcome vector.}
+\item{y}{Continuous outcome vector}
 
-\item{rot_y}{Optional: if y has already been rotated, then this can be supplied.}
+\item{rot_y}{Optional: if y has already been rotated, then this can be supplied}
 }
 \value{
 the value of the log-likelihood of the PLMM, evaluated with the supplied parameters

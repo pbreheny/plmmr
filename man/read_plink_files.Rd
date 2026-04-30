@@ -20,10 +20,10 @@ read_plink_files(
 
 \item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{prefix = 'mydata'})}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
-Note: 'rds_prefix' cannot be the same as 'data_prefix'}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created \code{.rds} file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
+Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
 \item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
 
@@ -35,7 +35,7 @@ In particular, the user should be aware that too much parallelization can make c
 \item{quiet}{Logical: should messages be printed to the console? Defaults to TRUE}
 }
 \value{
-'.rds' and '.bk' files are created in \code{data_dir}, and \code{obj} (a \code{bigSNP} object) is returned. See \code{bigsnpr} documentation for more info on the \code{bigSNP} class.
+\code{.rds} and \code{.bk} files are created in \code{data_dir}, and \code{obj} (a \code{bigSNP} object) is returned. See \code{bigsnpr} documentation for more info on the \code{bigSNP} class.
 }
 \description{
 A function to read in PLINK files using \code{bigsnpr} methods

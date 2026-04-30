@@ -1,9 +1,10 @@
-#' a function to create the estimated variance matrix from a PLMM fit
+#' A function to construct the estimated variance matrix from a PLMM fit
+#'
 #' @param fit An object returned by `plmm()`
 #' @param K An optional matrix
 #' @param eta An optional numeric value between 0 and 1; if `fit` is not supplied, then this option must be specified.
 #'
-#' @returns Sigma_hat, a matrix representing the estimated variance
+#' @return Sigma_hat, a matrix representing the estimated variance
 #'
 #' @keywords internal
 #'
@@ -34,5 +35,5 @@ construct_variance <- function(fit, K = NULL, eta = NULL) {
          fit or \n(2) supply both K and eta arguments.", call. = FALSE)
   }
 
-  return(Sigma_hat)
+  Sigma_hat
 }

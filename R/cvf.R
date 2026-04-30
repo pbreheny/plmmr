@@ -1,20 +1,21 @@
-#' Cross-validation internal function for cv_plmm
+#' Cross-validation internal function for `cv_plmm()`
 #'
-#' Internal function for cv_plmm which calls plmm on a fold subset of the original data.
+#' Internal function for `cv_plmm()` which calls `plmm()` on a fold subset of the original data.
 #'
-#' @param i Fold number to be excluded from fit.
-#' @param fold n-length vector of fold-assignments.
-#' @param type A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).
+#' @param i       Fold number to be excluded from fit.
+#' @param fold    n-length vector of fold-assignments.
+#' @param type    A character argument indicating what should be returned from `predict.plmm()`. If `type = 'lp'` predictions are based on the linear predictor, \eqn{X \beta}.
+#'                If `type = 'individual'` predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param cv_args List of additional arguments to be passed to plmm.
-#' @param ... Optional arguments to `predict_within_cv`
+#' @param ...     Optional arguments to `predict_within_cv()`
+#'
+#' @return A list with three elements:
+#' * `loss`: a numeric vector with the loss at each value of lambda
+#' * `nl`: a numeric value indicating the number of lambda values used
+#' * `yhat`: a numeric value with the predicted outcome values at each lambda
 #'
 #' @keywords internal
 #'
-#' @returns a list with three elements:
-#' * a numeric vector with the loss at each value of lambda
-#' * a numeric value indicating the number of lambda values used
-#' * a numeric value with the predicted outcome (y hat) values at each lambda
-
 cvf <- function(i, fold, type, cv_args, ...) {
   # save the 'prep' object from the plmm_prep() in cv_plmm
   full_cv_prep <- cv_args$prep

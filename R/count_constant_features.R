@@ -2,9 +2,9 @@
 #'
 #' @param fbm A filebacked `big.matrix`
 #' @param outfile String specifying name of log file
-#' @param quiet Logical: should a message be printed to the console
+#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
-#' @return ns A numeric vector with the indices of the non-singular columns of the matrix associated with `counts`
+#' @return A numeric vector with the indices of the non-singular columns of the matrix associated with `fbm`
 #'
 #' @keywords internal
 #'
@@ -26,5 +26,5 @@ count_constant_features <- function(fbm, outfile, quiet) {
   cat("There are", sum(constants_idx), "constant features in the data\n",
       file = outfile, append = TRUE)
 
-  return(ns)
+  ns
 }

@@ -1,15 +1,15 @@
-#' Coef method for "cv_plmm" class
+#' Coef method for `cv_plmm` class
 #'
-#' @param object An object of class "cv_plmm."
+#' @param object An object of class `cv_plmm`.
 #' @param lambda A numeric vector of lambda values.
-#' @param which Vector of lambda indices for which coefficients to return.
+#' @param which Vector of lambda indices for which to return coefficients.
 #'   Defaults to lambda index with minimum CVE.
 #' @param ... Additional arguments (not used).
 #'
 #' @rdname coef.cv_plmm
 #'
-#' @returns Returns a named numeric vector. Values are the coefficients of the
-#' model at the specified value of either `lambda` or `which`. Names are the
+#' @return Returns a named numeric vector. Values are the coefficients of the
+#' model at the specified value(s) of either `lambda` or `which`. Names are the
 #' values of `lambda`.
 #'
 #' @export
@@ -17,7 +17,6 @@
 #' @examples
 #' cv_fit <- cv_plmm(admix$X, admix$y, return_fit = TRUE)
 #' head(coef(cv_fit))
-#'
 coef.cv_plmm <- function(object, lambda, which = object$min, ...) {
   coef(object$fit, lambda = lambda, which = which, ...)
 }

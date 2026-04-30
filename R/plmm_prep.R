@@ -1,31 +1,33 @@
-#' PLMM prep: a function to run checks, SVD, and rotation prior to fitting a PLMM model
-#' This is an internal function for \code{cv_plmm}
+#' PLMM prep: a function to run checks, eigendecomposition, and rotation prior to fitting a PLMM model
+#'
+#' This is an internal function for `plmm()`
 #'
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
-#' @param std_X_n The number of observations in std_X (integer)
-#' @param std_X_p The number of features in std_X (integer)
+#' @param std_X_n The number of observations in `std_X` (integer)
+#' @param std_X_p The number of features in `std_X` (integer)
 #' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
 #' @param p The number of features in the *original* design matrix X, including constant features
 #' @param centered_y Continuous outcome vector, centered.
 #' @param K Similarity matrix used to rotate the data. This should either be:
 #'            (1) a known matrix that reflects the covariance of y,
 #'            (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
-#'            (3) a list with components 's' and 'U', as returned by a previous `plmm()` model fit on the same data.
+#'            (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
 #' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param fbm_flag Logical: is std_X an FBM type object? This is set internally by `plmm()`.
+#' @param fbm_flag Logical: is `std_X` an FBM type object? This is set internally by `plmm()`.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
 #'
-#' @returns List with these components:
-#' * centered_y: The vector of centered outcomes
-#' * std_X: standardized design matrix
-#' * K: a list with 2 elements. (1) s: vector with the eigenvalues of K,
-#'  and (2) U: the eigenvectors of K (same as left singular values of X).
-#' * eta: the numeric value of the estimated eta parameter
-#' * trace: logical.
+#' @return List with these components:
+#' * `std_X`: Standardized design matrix. If design matrix is filebacked, the descriptor for the filebacked data is returned using `bigmemory::describe()`.
+#' * `centered_y`: Vector of centered outcomes
+#' * `K`: Similarity matrix
+#' * `s`: Vector of the non-zero eigenvalues of `K`
+#' * `U`: Matrix of eigenvectors of `K` associated with `s` (same as left singular values of X).
+#' * `eta`: The numeric value of the estimated eta parameter
+#' * `trace`: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process
 #'
 #' @keywords internal
-
+#'
 plmm_prep <- function(std_X,
                       std_X_n,
                       std_X_p,
@@ -38,14 +40,13 @@ plmm_prep <- function(std_X,
                       trace = NULL,
                       ...) {
 
-
   ## coercion
   U <- s <- eta <- NULL
 
   # First: handle the cases where no decomposition is needed ------------------
 
   # case 1: K is user-supplied diagonal matrix (like a weighted lm())
-  flag1 <- !is.null(K) & ifelse(!("matrix" %in% class(K) || "dcGMatrix" %in% class(K)),
+  flag1 <- !is.null(K) & ifelse(!(inherits(K, "matrix") || inherits(K, "dcGMatrix")),
                                 FALSE,
                                 Matrix::isDiagonal(K))
   if (flag1) {
@@ -56,13 +57,13 @@ plmm_prep <- function(std_X,
     U <- diag(nrow = n)[, order(diag(K), decreasing = TRUE)]
   }
   # case 2: K is a user-supplied list
-  flag2 <- !is.null(K) & ("list" %in% class(K))
+  flag2 <- !is.null(K) & inherits(K, "list")
   if (flag2) {
     if (trace) {
       cat("K is a list; will pass U,s components from list to model fitting.\n")
     }
     s <- K$s # no need to adjust singular values by p
-    if ("FBM" %in% class(K$U)) {
+    if (inherits(K$U, "FBM")) {
       U <- K$U[,]
     } else {
       U <- K$U
@@ -110,14 +111,12 @@ plmm_prep <- function(std_X,
   }
 
   # return values to be passed into plmm_fit():
-  ret <- structure(list(
+  list(
     std_X = std_X,
     centered_y = centered_y,
     K = K, # Note: need this for CV (see call to construct_variance() within cv_plmm())
     s = s,
     U = U,
     eta = eta, # carry eta over to fit
-    trace = trace))
-
-  return(ret)
+    trace = trace)
 }

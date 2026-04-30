@@ -7,12 +7,12 @@
 find_example_data(path, parent = FALSE)
 }
 \arguments{
-\item{path}{Argument (string) specifying a path (filename) for an external data file in \code{extdata/}.}
+\item{path}{Argument (string) specifying a path (filename) for an external data file in \verb{extdata/}.}
 
-\item{parent}{If the user wants the name of the parent directory where the example data is located, set \code{parent=TRUE}. Defaults to FALSE.}
+\item{parent}{If the user wants the name of the parent directory where the example data is located, set \code{parent = TRUE}. Defaults to FALSE.}
 }
 \value{
-If \code{path=NULL}, a character vector of file names is returned. If path is given, then a character string
+If \code{path = NULL}, a character vector of file names is returned. If path is given, then a character string
 with the full file path.
 }
 \description{
@@ -20,5 +20,4 @@ A function to help with accessing example PLINK files.
 }
 \examples{
 find_example_data(parent = TRUE)
-
 }

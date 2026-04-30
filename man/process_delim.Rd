@@ -21,27 +21,26 @@ process_delim(
 
 \item{data_file}{The file to be read in, without the filepath. This should be a file of numeric values.
 Example: use \code{data_file = "myfile.txt"}, not \code{data_file = "~/mydirectory/myfile.txt"}
-Note: if your file has headers/column names, set 'header = TRUE' -- this will be passed into \code{bigmemory::read.big.matrix()}.}
+Note: if your file has headers/column names, set \code{header = TRUE} -- this will be passed into \code{bigmemory::read.big.matrix()}.}
 
 \item{feature_id}{A string specifying the column in the data X (the feature data) with the row IDs (e.g., identifiers for each row/sample/participant/, etc.). No duplicates allowed.}
 
-\item{rds_dir}{The directory where the user wants to create the '.rds' and '.bk' files.
-Defaults to \code{data_dir}}
+\item{rds_dir}{The directory where the user wants to create the \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
-\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder).
-Note: 'rds_prefix' cannot be the same as 'data_prefix'}
+\item{rds_prefix}{String specifying the user's preferred filename for the to-be-created \code{.rds} file (will be create inside \code{rds_dir} folder).
+Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
 \item{logfile}{Optional: the name (character string) of the prefix of the
 logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.}
 
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+\item{overwrite}{Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
-\item{quiet}{Logical: should the messages printed to the console be silenced? Defaults to FALSE.}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 
-\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: 'sep' is an option to pass here, as is 'header'.}
+\item{...}{Optional: other arguments to be passed to \code{bigmemory::read.big.matrix()}. Note: \code{sep} is an option to pass here, as is \code{header}.}
 }
 \value{
-The file path to the newly created '.rds' file
+The file path to the newly created \code{.rds} file
 }
 \description{
 A function to read in large data files as an FBM
@@ -54,5 +53,4 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
-
 }

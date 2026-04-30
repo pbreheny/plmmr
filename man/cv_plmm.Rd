@@ -22,8 +22,8 @@ cv_plmm(
   init = NULL,
   cluster,
   nfolds = 5,
-  seed,
   fold = NULL,
+  seed,
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
@@ -33,7 +33,7 @@ cv_plmm(
 \arguments{
 \item{design}{The first argument must be one of three things:
 (1) \code{plmm_design} object (as created by \code{create_design()})
-(2) a string with the file path to a design object (the file path must end in '.rds')
+(2) a string with the file path to a design object (the file path must end in \code{.rds})
 (3) a \code{matrix} or \code{data.frame} object representing the design matrix of interest}
 
 \item{y}{Optional: In the case where \code{design} is a \code{matrix} or \code{data.frame}, the user must also supply
@@ -43,30 +43,31 @@ internally to \code{create_design(X = design, y = y)}.}
 \item{K}{Similarity matrix used to rotate the data. This should either be
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
-(3) a list with components 's' and 'U', as returned by a previous \code{plmm()} model fit on the same data.
+(3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.
 Note: if a user provides their own matrix, it is decomposed as provided and will \emph{not} be scaled.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-Note: Setting eta = 1 will change the default of \code{type} to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying type='blup', but should be done with caution.}
+Note: Setting \code{eta = 1} will change the default of \code{type} to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying \code{type = 'blup'}, but should be done with caution.}
 
 \item{penalty}{The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".}
 
-\item{type}{A character argument indicating what should be returned from predict.plmm(). If type == 'lp', predictions are
-based on the linear predictor, X beta. If type == 'blup', predictions are based on the sum of the linear predictor
+\item{type}{A character argument indicating what should be returned from \code{predict.plmm()}. If \code{type = 'lp'}, predictions are
+based on the linear predictor, X beta. If \code{type = 'blup'}, predictions are based on the sum of the linear predictor
 and the estimated random effect (BLUP). Defaults to 'blup', as this has shown to be a superior prediction method
 in many applications.}
 
 \item{gamma}{The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha = 1} is equivalent to MCP/SCAD penalty, while \code{alpha = 0} would be equivalent to ridge regression.
+However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
 \item{lambda_min}{The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.}
 
 \item{nlambda}{Length of the sequence of lambda. Default is 100.}
 
-\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.}
+\item{lambda}{A user-specified sequence of lambda values. By default, a sequence of values of length \code{nlambda} is computed, equally spaced on the log scale.}
 
-\item{eps}{Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.}
+\item{eps}{Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than \code{eps}. Default is \code{1e-4}.}
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
@@ -74,21 +75,21 @@ in many applications.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
 
-\item{cluster}{Option for \strong{in-memory data only}: cv_plmm() can be run in parallel across a cluster using the parallel package.
-The cluster must be set up in advance using parallel::makeCluster(). The cluster must then be passed to cv_plmm().
+\item{cluster}{Option for \strong{in-memory data only}: \code{cv_plmm()} can be run in parallel across a cluster using the parallel package.
+The cluster must be set up in advance using \code{parallel::makeCluster()}. The cluster must then be passed to \code{cv_plmm()}.
 \strong{Note}: this option is not yet implemented for filebacked data.}
 
 \item{nfolds}{The number of cross-validation folds. Default is 5.}
 
-\item{seed}{You may set the seed of the random number generator in order to obtain reproducible results.}
-
 \item{fold}{Which fold each observation belongs to. By default, the observations are randomly assigned.}
+
+\item{seed}{You may set the seed of the random number generator in order to obtain reproducible results.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each CV fold. Default is FALSE.}
 
-\item{save_rds}{Optional: if a filepath and name \emph{without} the '.rds' suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
+\item{save_rds}{Optional: if a filepath and name \emph{without} the \code{.rds} suffix is specified (e.g., \code{save_rds = "~/dir/my_results"}), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
 Defaults to NULL, which does not save the result.
-\strong{Note}: Along with the model results, two '.rds' files ('loss' and 'yhat') will be created in the same directory as 'save_rds'.
+\strong{Note}: Along with the model results, two \code{.rds} files ('loss' and 'yhat') will be created in the same directory as \code{save_rds}.
 These files contain the loss and predicted outcome values in each fold; both files will be updated during after prediction within each fold.}
 
 \item{return_fit}{Optional: a logical value indicating whether the fitted model should be returned as a \code{plmm} object in the current (assumed interactive) session. Defaults to TRUE.}
@@ -96,26 +97,26 @@ These files contain the loss and predicted outcome values in each fold; both fil
 \item{...}{Additional arguments to \code{plmm_fit}}
 }
 \value{
-A list that includes 15 items:
+A list that includes 14 items:
 \itemize{
-\item type: The type of prediction used ('lp' or 'blup')
-\item cve: A numeric vector with the cross validation error (CVE) at each value of \code{lambda}
-\item cvse: A numeric vector with the estimated standard error associated with each value of \code{cve}
-\item fold: A numeric \code{n} length vector of integers indicating the fold to which each observation was assigned
-\item lambda: A numeric vector of \code{lambda} values
-\item fit: The overall fit of the object, including all predictors; this is a list as returned by \code{plmm()}
-\item min: The index corresponding to the value of \code{lambda} that minimizes \code{cve}
-\item lambda_min: The \code{lambda} value at which \code{cve} is minimized
-\item min1se: The index corresponding to the value of \code{lambda} within 1 standard error of
+\item \code{type}: The type of prediction used ('lp' or 'blup')
+\item \code{cve}: A numeric vector with the cross validation error (CVE) at each value of \code{lambda}
+\item \code{cvse}: A numeric vector with the estimated standard error associated with each value of \code{cve}
+\item \code{fold}: A numeric \code{n} length vector of integers indicating the fold to which each observation was assigned
+\item \code{lambda}: A numeric vector of \code{lambda} values
+\item \code{fit}: The overall fit of the object, including all predictors; this is a list as returned by \code{plmm()}
+\item \code{min}: The index corresponding to the value of \code{lambda} that minimizes \code{cve}
+\item \code{lambda_min}: The \code{lambda} value at which \code{cve} is minimized
+\item \code{min1se}: The index corresponding to the value of \code{lambda} within 1 standard error of
 that which minimizes \code{cve}
-\item lambda1se: The largest value of lambda such that \code{cve} is within 1 standard error of the minimum
-\item null.dev: A numeric value representing the deviance for the intercept-only model. If you have supplied
+\item \code{lambda1se}: The largest value of lambda such that \code{cve} is within 1 standard error of the minimum
+\item \code{null.dev}: A numeric value representing the deviance for the intercept-only model. If you have supplied
 your own \code{lambda} sequence, this quantity may not be meaningful.
-\item Y: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of \code{lambda}.
+\item \code{Y}: A matrix with the predicted outcome (\eqn{\hat{y}}) values at each value of \code{lambda}.
 Rows are observations, columns are values of \code{lambda}.
-\item loss: A matrix with the loss values at each value of lambda. Rows are observations,
+\item \code{loss}: A matrix with the loss values at each value of lambda. Rows are observations,
 columns are values of \code{lambda}.
-\item estimated_Sigma: An n x n matrix representing the estimated covariance matrix.
+\item \code{estimated_Sigma}: If \code{type = 'blup'}, an n x n matrix representing the estimated covariance matrix.
 }
 }
 \description{

@@ -2,16 +2,17 @@
 % Please edit documentation in R/plot-plmm.R
 \name{plot.plmm}
 \alias{plot.plmm}
-\title{Plot method for plmm class}
+\title{Plot method for \code{plmm} class}
 \usage{
 \method{plot}{plmm}(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...)
 }
 \arguments{
 \item{x}{An object of class \code{plmm}}
 
-\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha=1} is equivalent to MCP/SCAD penalty, while \code{alpha=0} would be equivalent to ridge regression. However, \code{alpha=0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
+\item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty.
+\code{alpha = 1} is equivalent to MCP/SCAD penalty, while \code{alpha = 0} would be equivalent to ridge regression. However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
-\item{log.l}{Logical to indicate the plot should be returned on the natural log scale. Defaults to \code{log.l = FALSE}.}
+\item{log.l}{Logical to indicate the plot should be returned on the natural log scale. Defaults to FALSE.}
 
 \item{shade}{Logical to indicate whether a local nonconvex region should be shaded. Defaults to TRUE.}
 
@@ -24,7 +25,7 @@ Nothing is returned; instead, a plot of the coefficient paths is drawn
 at each value of lambda (one 'path' for each coefficient).
 }
 \description{
-Plot method for plmm class
+Plot method for \code{plmm} class
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)

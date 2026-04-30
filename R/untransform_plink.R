@@ -1,17 +1,18 @@
 #' Untransform coefficient values back to the original scale for **file-backed** data
 #'
 #' This function unwinds the initial standardization of the data to obtain
-#' coefficient values on their original scale. It is called by plmm_format().
+#' coefficient values on their original scale. It is called by `plmm_format()`.
 #'
 #' @param std_scale_beta The estimated coefficients on the standardized scale
 #' @param p  The number of columns in the original design matrix
-#' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'
-#' @param use_names Logical: should names be added? Defaults to TRUE. Set to FALSE inside of `cvf()` helper, as 'ns' will vary within CV folds.
+#' @param std_X_details A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements `scale`, `center`, and `ns`
+#' @param use_names Logical: should names be added? Defaults to TRUE. Set to FALSE inside of `cvf()` helper, as `ns` will vary within CV folds.
+#'
+#' @return a matrix of estimated coefficients, `untransformed_beta`, that is on the scale of the original data.
+#'
 #' @keywords internal
 #'
-#' @returns a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
-untransform_plink <- function(std_scale_beta, p, std_X_details, plink_flag,
-                              use_names = TRUE) {
+untransform_plink <- function(std_scale_beta, p, std_X_details, use_names = TRUE) {
 
   # goal: reverse the PRE-ROTATION standardization #
   # partition the values from Step 1 into intercept and non-intercept parts
@@ -40,7 +41,7 @@ untransform_plink <- function(std_scale_beta, p, std_X_details, plink_flag,
 
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns + 1, ] <- untransformed_b2 # again, the + 1 is for the intercept
-    cp <- apply(X = untransformed_b2, 2, function(c) { crossprod(std_X_details$center, c) })
+    cp <- apply(X = untransformed_b2, 2, function(c) crossprod(std_X_details$center, c))
     untransformed_beta[1, ] <- a - cp
   } else {
     # case 2: ns and center/scale values **do not** have same length
@@ -53,7 +54,7 @@ untransform_plink <- function(std_scale_beta, p, std_X_details, plink_flag,
 
     # fill in the un-transformed values
     untransformed_beta[std_X_details$ns + 1, ] <- untransformed_b2 # again, the + 1 is for the intercept
-    cp <- apply(X = untransformed_b2, 2, function(c) { crossprod(std_X_details$center[std_X_details$ns], c) })
+    cp <- apply(X = untransformed_b2, 2, function(c) crossprod(std_X_details$center[std_X_details$ns], c))
     untransformed_beta[1, ] <- a - cp
   }
 
@@ -69,7 +70,5 @@ untransform_plink <- function(std_scale_beta, p, std_X_details, plink_flag,
     }
   }
 
-
-  # Final step: return un-transformed beta values
-  return(untransformed_beta)
+  untransformed_beta
 }

@@ -2,31 +2,29 @@
 % Please edit documentation in R/get_data.R
 \name{get_data}
 \alias{get_data}
-\title{Read in processed data
-This function is intended to be called after either \code{process_plink()} or \code{process_delim()} has been called once.}
+\title{Read in processed data}
 \usage{
 get_data(path, returnX = FALSE, trace = TRUE)
 }
 \arguments{
-\item{path}{The file path to the RDS object containing the processed data. Do not add the '.rds' extension to the path.}
+\item{path}{The file path to the RDS object containing the processed data. Do not add the \code{.rds} extension to the path.}
 
-\item{returnX}{Logical: Should the design matrix be returned as a numeric matrix that will be stored in memory. By default, this will be FALSE.}
+\item{returnX}{Logical: should the design matrix be returned as a numeric matrix that will be stored in memory? Default is FALSE.}
 
-\item{trace}{Logical: Should trace messages be shown? Default is TRUE.}
+\item{trace}{Logical: should trace messages be shown? Default is TRUE.}
 }
 \value{
 A list with these components:
 \itemize{
-\item std_X, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
-\item (if PLINK data) fam, a data frame containing the pedigree information (like a .fam file in PLINK)
-\item (if PLINK data) map, a data frame containing the feature information (like a .bim file in PLINK)
-\item ns: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0.
-\item center: A vector of values for centering each column in X
-\item scale: A vector of values for scaling each column in X
+\item \code{std_X}, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
+\item (if PLINK data) \code{fam}, a data frame containing the pedigree information (like a \code{.fam} file in PLINK)
+\item (if PLINK data) \code{map}, a data frame containing the feature information (like a \code{.bim} file in PLINK)
+\item \code{ns}: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0).
+\item \code{center}: A vector of values for centering each column in X
+\item \code{scale}: A vector of values for scaling each column in X
 }
 }
 \description{
-Read in processed data
 This function is intended to be called after either \code{process_plink()} or \code{process_delim()} has been called once.
 }
 \keyword{internal}

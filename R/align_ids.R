@@ -1,12 +1,15 @@
-#' A helper function to support `process_plink()`
+#' A helper function to support `create_design_filebacked()`
+#'
 #' @param id_var String specifying the variable name of the ID column
-#' @param quiet Logical: should a message be printed?
-#' @param add_predictor External data to include in design matrix. This is the add_predictors... arg in `process_plink()`
+#' @param add_predictor External data to include in design matrix. This is the `add_predictor` arg in `create_design_filebacked()`
 #' @param og_ids Character vector with the PLINK ids (FID or IID) from the *original* data (i.e., the data before any subsetting from handling missing phenotypes)
+#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return A matrix with the same dimensions as add_predictor
+#'
 #' @keywords internal
-align_ids <- function(id_var, quiet, add_predictor, og_ids) {
+#'
+align_ids <- function(id_var, add_predictor, og_ids, quiet) {
 
   if (is.numeric(add_predictor[, id_var])) {
     add_predictor[, id_var] <- as.character(add_predictor[, id_var])
@@ -48,5 +51,5 @@ align_ids <- function(id_var, quiet, add_predictor, og_ids) {
   rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[, "ID", with = FALSE]) |>
     as.character()
 
-  return(new_add_predictor_mat)
+  new_add_predictor_mat
 }

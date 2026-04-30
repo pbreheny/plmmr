@@ -6,7 +6,8 @@
 #' @param unpen         An optional character vector with the names of columns to mark as unpenalized (i.e., these features would always be included in a model).
 #'                      **Note**: if you choose to use this option, X must have column names.
 #'
-#' @return A list with elements including a standardized X and model design information
+#' @return A named list containing the standardized design matrix, outcome, penalty factor vector, and other details needed for fitting a model
+#'
 #' @keywords internal
 #'
 create_design_in_memory <- function(X, y, unpen = NULL) {
@@ -39,5 +40,6 @@ create_design_in_memory <- function(X, y, unpen = NULL) {
     design$unpen <- which_unpen <- which(unpen %in% design$std_X_colnames)
     design$penalty_factor[which_unpen] <- 0
   }
-  return(structure(design, class = "plmm_design"))
+
+  structure(design, class = "plmm_design")
 }

@@ -18,7 +18,7 @@ untransform(
 
 \item{p}{The number of columns in the original design matrix}
 
-\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements 'scale', 'center', and 'ns'}
+\item{std_X_details}{A list with 3 elements describing the standardized design matrix BEFORE rotation; this should have elements \code{scale}, \code{center}, and \code{ns}}
 
 \item{fbm_flag}{Logical: is the corresponding design matrix filebacked?}
 
@@ -30,13 +30,13 @@ files, \code{p} does include unpenalized columns. This difference has
 implications for how the \code{untransform()} function determines the
 appropriate dimensions for the estimated coefficient matrix it returns.}
 
-\item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as 'ns' will vary within CV folds.}
+\item{use_names}{Logical: should names be added? Defaults to TRUE. Set to FALSE inside of \code{cvf()} helper, as \code{ns} will vary within CV folds.}
 }
 \value{
-a matrix of estimated coeffcients, 'beta_vals', that is on the scale of the original data.
+a matrix of estimated coefficients, \code{untransformed_beta}, that is on the scale of the original data.
 }
 \description{
 This function unwinds the initial standardization of the data to obtain
-coefficient values on their original scale. It is called by plmm_format().
+coefficient values on their original scale. It is called by \code{plmm_format()}.
 }
 \keyword{internal}

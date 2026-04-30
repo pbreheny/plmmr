@@ -2,23 +2,23 @@
 % Please edit documentation in R/align_ids.R
 \name{align_ids}
 \alias{align_ids}
-\title{A helper function to support \code{process_plink()}}
+\title{A helper function to support \code{create_design_filebacked()}}
 \usage{
-align_ids(id_var, quiet, add_predictor, og_ids)
+align_ids(id_var, add_predictor, og_ids, quiet)
 }
 \arguments{
 \item{id_var}{String specifying the variable name of the ID column}
 
-\item{quiet}{Logical: should a message be printed?}
-
-\item{add_predictor}{External data to include in design matrix. This is the add_predictors... arg in \code{process_plink()}}
+\item{add_predictor}{External data to include in design matrix. This is the \code{add_predictor} arg in \code{create_design_filebacked()}}
 
 \item{og_ids}{Character vector with the PLINK ids (FID or IID) from the \emph{original} data (i.e., the data before any subsetting from handling missing phenotypes)}
+
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
 A matrix with the same dimensions as add_predictor
 }
 \description{
-A helper function to support \code{process_plink()}
+A helper function to support \code{create_design_filebacked()}
 }
 \keyword{internal}

@@ -2,18 +2,18 @@
 % Please edit documentation in R/coef-plmm.R
 \name{coef.plmm}
 \alias{coef.plmm}
-\title{Coef method for "plmm" class}
+\title{Coef method for \code{plmm} class}
 \usage{
 \method{coef}{plmm}(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...)
 }
 \arguments{
-\item{object}{An object of class "plmm."}
+\item{object}{An object of class \code{plmm}.}
 
 \item{lambda}{A numeric vector of lambda values.}
 
-\item{which}{Vector of lambda indices for which coefficients to return.}
+\item{which}{Vector of lambda indices for which to return coefficients.}
 
-\item{drop}{Logical.}
+\item{drop}{Logical. Should returned object be coerced to a vector if possible?}
 
 \item{...}{Additional arguments.}
 }
@@ -23,7 +23,7 @@ or a sparse matrix (if model was fit on data stored filebacked). Rownames are
 feature names, columns are values of \code{lambda}.
 }
 \description{
-Coef method for "plmm" class
+Coef method for \code{plmm} class
 }
 \examples{
 admix_design <- create_design(X = admix$X, y = admix$y)

@@ -11,10 +11,10 @@ count_constant_features(fbm, outfile, quiet)
 
 \item{outfile}{String specifying name of log file}
 
-\item{quiet}{Logical: should a message be printed to the console}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
-ns A numeric vector with the indices of the non-singular columns of the matrix associated with \code{counts}
+A numeric vector with the indices of the non-singular columns of the matrix associated with \code{fbm}
 }
 \description{
 A helper function to count constant features

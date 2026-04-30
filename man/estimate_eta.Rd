@@ -2,25 +2,23 @@
 % Please edit documentation in R/estimate_eta.R
 \name{estimate_eta}
 \alias{estimate_eta}
-\title{Estimate eta (to be used in rotating the data)
-This function is called internally by \code{plmm()}}
+\title{Estimate eta (to be used in rotating the data)}
 \usage{
 estimate_eta(n, s, U, y)
 }
 \arguments{
 \item{n}{The number of observations}
 
-\item{s}{The singular values of K, the realized relationship matrix}
+\item{s}{The non-zero eigenvalues of K, the realized relationship matrix}
 
-\item{U}{The left-singular vectors of the \emph{standardized} design matrix}
+\item{U}{The eigenvectors of K associated with s}
 
-\item{y}{Continuous outcome vector.}
+\item{y}{Continuous outcome vector}
 }
 \value{
 a numeric value with the estimated value of eta, the variance parameter
 }
 \description{
-Estimate eta (to be used in rotating the data)
 This function is called internally by \code{plmm()}
 }
 \keyword{internal}

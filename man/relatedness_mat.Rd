@@ -10,11 +10,11 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 \item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data).
 Note: This matrix should \emph{not} include non-genetic features.}
 
-\item{std}{Logical: should X be standardized? If you set this to FALSE (which can only be done
+\item{std}{Logical: should \code{X} be standardized? If you set this to FALSE (which can only be done
 if data are stored in memory), you should have a good reason for doing so, as standardization
 is a best practice.}
 
-\item{fbm}{Logical: is X stored as an FBM? Defaults to FALSE}
+\item{fbm}{Logical: is \code{X} stored as an FBM? Defaults to FALSE}
 
 \item{ns}{Optional vector of values indicating the indices of nonsingular features}
 
@@ -28,7 +28,7 @@ this is also known as the GRM or RRM.
 \description{
 Given a matrix of genotypes, this function estimates the genetic relatedness matrix (GRM,
 also known as the RRM, see Hayes et al. 2009, \doi{10.1017/S0016672308009981}) among
-the subjects: XX'/p, where X is standardized.
+the subjects: \eqn{\frac{1}{p}(XX^T)}, where X is standardized.
 }
 \examples{
 RRM <- relatedness_mat(X = admix$X)

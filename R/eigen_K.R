@@ -1,10 +1,14 @@
 #' A function to take the eigendecomposition of K
+#'
 #' Note: This is faster than taking SVD of X when p >> n
 #'
-#' @param std_X The *standardized* design matrix, stored as big.matrix object.
-#' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
+#' @param std_X The *standardized* design matrix.
+#' @param fbm_flag Logical: is `std_X` an FBM object? Passed from `plmm()`.
 #'
-#' @return A list with the eigenvectors and eigenvalues of K
+#' @return A list with three elements:
+#' * `s`: The non-zero eigenvalues of K
+#' * `U`: The eigenvectors of K associated with s
+#' * `K`: The fully computed K matrix
 #'
 #' @keywords internal
 #'
@@ -12,8 +16,6 @@ eigen_K <- function(std_X, fbm_flag) {
   # Note: std_X has already been scaled, so no need to do that here
   # calculate K (which will be stored in memory regardless of how std_X is stored)
   if (fbm_flag) {
-    # TODO: explore ways to make this multiplication faster
-    # TODO: explore ways to exclude specified columns from XX (e.g, in GWAS, maybe non-genomic predictors should be excluded)
     XX <- bigalgebra::dgemm(TRANSA = "N",
                             TRANSB = "T",
                             A = std_X,
@@ -25,7 +27,6 @@ eigen_K <- function(std_X, fbm_flag) {
   }
 
   # take eigendecomposition
-  # TODO: explore ways to make this faster
   decomp <- eigen(K, symmetric = TRUE)
   nz <- decomp$values > 1e-4
   list(

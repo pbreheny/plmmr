@@ -1,11 +1,12 @@
-#'  a version of cbind() for file-backed matrices
+#'  A version of `cbind()` for file-backed matrices
 #'
 #' @param A in-memory data
 #' @param B file-backed data
 #' @param C file-backed placeholder for combined data
-#' @param quiet Logical
+#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return C, filled in with all column values of A and B combined
+#'
 #' @keywords internal
 #'
 big_cbind <- function(A, B, C, quiet) {
@@ -38,5 +39,5 @@ big_cbind <- function(A, B, C, quiet) {
     close(pb)
   }
 
-  return(C)
+  C
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cvf.R
 \name{cvf}
 \alias{cvf}
-\title{Cross-validation internal function for cv_plmm}
+\title{Cross-validation internal function for \code{cv_plmm()}}
 \usage{
 cvf(i, fold, type, cv_args, ...)
 }
@@ -11,21 +11,22 @@ cvf(i, fold, type, cv_args, ...)
 
 \item{fold}{n-length vector of fold-assignments.}
 
-\item{type}{A character argument indicating what should be returned from predict.plmm. If \code{type == 'lp'} predictions are based on the linear predictor, \code{$X beta$}. If \code{type == 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).}
+\item{type}{A character argument indicating what should be returned from \code{predict.plmm()}. If \code{type = 'lp'} predictions are based on the linear predictor, \eqn{X \beta}.
+If \code{type = 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).}
 
 \item{cv_args}{List of additional arguments to be passed to plmm.}
 
-\item{...}{Optional arguments to \code{predict_within_cv}}
+\item{...}{Optional arguments to \code{predict_within_cv()}}
 }
 \value{
-a list with three elements:
+A list with three elements:
 \itemize{
-\item a numeric vector with the loss at each value of lambda
-\item a numeric value indicating the number of lambda values used
-\item a numeric value with the predicted outcome (y hat) values at each lambda
+\item \code{loss}: a numeric vector with the loss at each value of lambda
+\item \code{nl}: a numeric value indicating the number of lambda values used
+\item \code{yhat}: a numeric value with the predicted outcome values at each lambda
 }
 }
 \description{
-Internal function for cv_plmm which calls plmm on a fold subset of the original data.
+Internal function for \code{cv_plmm()} which calls \code{plmm()} on a fold subset of the original data.
 }
 \keyword{internal}

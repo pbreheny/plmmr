@@ -1,16 +1,15 @@
 #' A function to help with accessing example PLINK files.
 #'
-#' @param path Argument (string) specifying a path (filename) for an external data file in \code{extdata/}.
-#' @param parent If the user wants the name of the parent directory where the example data is located, set \code{parent=TRUE}. Defaults to FALSE.
+#' @param path Argument (string) specifying a path (filename) for an external data file in `extdata/`.
+#' @param parent If the user wants the name of the parent directory where the example data is located, set `parent = TRUE`. Defaults to FALSE.
 #'
-#' @returns If \code{path=NULL}, a character vector of file names is returned. If path is given, then a character string
+#' @return If `path = NULL`, a character vector of file names is returned. If path is given, then a character string
 #' with the full file path.
 #'
 #' @export
 #'
 #' @examples
 #' find_example_data(parent = TRUE)
-#'
 find_example_data <- function(path, parent = FALSE) {
   if (parent) {
     # if parent option selected, will return path to folder
@@ -21,13 +20,13 @@ find_example_data <- function(path, parent = FALSE) {
   }
 }
 
-#' Companion function to unzip the .gz files that ship with the `plmmr` package.
+#' Companion function to unzip the `.gz` files that ship with the `plmmr` package.
 #'
-#' @param outdir The file path to the directory to which the .gz files should be written.
+#' @param outdir The file path to the directory to which the `.gz` files should be written.
 #'
 #' @details For an example of this function, look at `vignette('plink_files', package = "plmmr")`.
 #'
-#' @returns Nothing is returned; the PLINK files that ship with the `plmmr` package are stored in the directory specified by 'outdir'.
+#' @return Nothing is returned; the PLINK files that ship with the `plmmr` package are stored in the directory specified by `outdir`.
 #'
 #' @export
 #'
@@ -41,7 +40,7 @@ unzip_example_data <- function(outdir) {
   gc()
 
   # Loop through and unzip each .gz file
-  for(i in seq_along(gz_files)) {
+  for (i in seq_along(gz_files)) {
     file_base <- tools::file_path_sans_ext(basename(gz_files[i]))
     R.utils::gunzip(gz_files[i],
                     destname = file.path(outdir, file_base),

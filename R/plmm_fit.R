@@ -1,25 +1,50 @@
-#' PLMM fit: a function that fits a PLMM using the values returned by plmm_prep()
+#' PLMM fit: A function that fits a PLMM using the values returned by `plmm_prep()`
 #'
-#' @param prep A list as returned from \code{plmm_prep}
+#' @param prep A list as returned from `plmm_prep`
 #' @param y    The original (not centered) outcome vector. Need this for intercept estimate
-#' @param std_X_details A list with components 'center' (values used to center X), 'scale' (values used to scale X), and 'ns' (indices for nonsingular columns of X)
-#' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, penalty_factor must be a numeric vector of length equal to the number of columns of X. The purpose of penalty_factor is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, penalty_factor can be 0, in which case the coefficient is always in the model without shrinkage.
+#' @param std_X_details A list with components `center` (values used to center X), `scale` (values used to scale X), and `ns` (indices for nonsingular columns of X)
+#' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, `penalty_factor` must be a numeric vector of length equal to the number of columns of X.
+#'                       The purpose of `penalty_factor` is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, `penalty_factor` can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
-#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. alpha=1 is equivalent to MCP/SCAD penalty, while alpha=0 would be equivalent to ridge regression. However, alpha=0 is not supported; alpha may be arbitrarily small, but not exactly 0.
-#' @param lambda_min The smallest value for lambda, as a fraction of lambda.max. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
+#' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would be equivalent to ridge regression.
+#'              However, `alpha = 0` is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param lambda_min The smallest value for lambda, as a fraction of the maximum lambda. Default is .001 if the number of observations is larger than the number of covariates and .05 otherwise.
 #' @param nlambda Length of the sequence of lambda. Default is 100.
-#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length nlambda is computed, equally spaced on the log scale.
-#' @param eps Convergence threshold. The algorithm iterates until the RMSD for the change in linear predictors for each coefficient is less than eps. Default is \code{1e-4}.
+#' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length `nlambda` is computed, equally spaced on the log scale.
+#' @param eps Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than `eps`. Default is `1e-4`.
 #' @param max_iter Maximum number of iterations (total across entire path). Default is 10000.
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
 #'
+#' @return A list which includes 21 items:
+#'  * `y`: The outcome vector used in model fitting.
+#'  * `std_scale_beta`: The matrix of estimated coefficients on the standardized scale. Rows are predictors (with the first row being the intercept), and columns are values of `lambda`.
+#'  * `std_Xbeta`: A matrix of the linear predictors on the scale of the standardized design matrix. Rows are predictors, columns are values of `lambda`.
+#'              **Note**: `std_Xbeta` will not include rows for the intercept or for constant features.
+#'  * `centered_y`: The centered outcome vector.
+#'  * `s`: a vector of the non-zero eigenvalues of the relatedness matrix K (note: K is the kinship matrix for genetic/genomic data; see the article on notation for details)
+#'  * `U`: a matrix of the eigenvectors of K associated with `s`
+#'  * `lambda`: A numeric vector of the tuning parameter values used in model fitting.
+#'  * `penalty`: A character string indicating the penalty with which the model was fit (e.g., 'MCP')
+#'  * `penalty_factor`: A vector of indicators corresponding to each predictor, where 1 = predictor was penalized.
+#'  * `iter`: An integer vector with the number of iterations needed in model fitting for each value of `lambda`
+#'  * `converged`: A vector of logical values indicating whether the model fitting converged at each value of `lambda`
+#'  * `loss`: A vector with the numeric values of the loss at each value of `lambda` (calculated on the ~rotated~ scale)
+#'  * `eta`: A double between 0 and 1 representing the estimated proportion of the variance in the outcome attributable to population/correlation structure.
+#'  * `gamma`: A numeric value indicating the tuning parameter used for the SCAD or MCP penalties. Not relevant for lasso models.
+#'  * `alpha`: A numeric value indicating the elastic net tuning parameter.
+#'  * `nlambda` Length of the sequence of lambda.
+#'  * `eps`: Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than `eps`
+#'  * `max_iter`: Maximum number of iterations (total across entire path)
+#'  * `warn`: Return warning messages for failures to converge and model saturation?
+#'  * `trace`: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process
+#'  * `std_X`: If design matrix is filebacked, the descriptor for the filebacked data is returned using `bigmemory::describe()`.
+#'
 #' @keywords internal
 #'
-
 plmm_fit <- function(prep,
                      y,
                      std_X_details,
@@ -82,14 +107,12 @@ plmm_fit <- function(prep,
                            nlambda = nlambda,
                            lambda_min = lambda_min,
                            penalty_factor = penalty_factor)
-    user.lambda <- FALSE
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
     if (length(lambda) > 1 && max(diff(lambda)) > 0) {
       stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
     }
     nlambda <- length(lambda)
-    user.lambda <- TRUE
   }
 
   # placeholders for results ---------------------------------
@@ -238,5 +261,5 @@ plmm_fit <- function(prep,
     ret$std_X <- bigmemory::describe(prep$std_X)
   }
 
-  return(ret)
+  ret
 }

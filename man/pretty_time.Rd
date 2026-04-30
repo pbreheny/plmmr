@@ -2,7 +2,7 @@
 % Please edit documentation in R/pretty_time.R
 \name{pretty_time}
 \alias{pretty_time}
-\title{a function to format the time}
+\title{A function to format the time}
 \usage{
 pretty_time()
 }
@@ -10,6 +10,6 @@ pretty_time()
 A string with the formatted current date and time
 }
 \description{
-a function to format the time
+A function to format the time
 }
 \keyword{internal}

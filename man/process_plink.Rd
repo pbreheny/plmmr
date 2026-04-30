@@ -24,23 +24,23 @@ process_plink(
 
 \item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{data_prefix = 'mydata'})}
 
-\item{rds_dir}{The path to the directory in which you want to create the new '.rds' and '.bk' files. Defaults to \code{data_dir}}
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
 \item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
-Note: 'rds_prefix' cannot be the same as 'data_prefix'}
+Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
-\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in 'rds_dir'. Default to NULL (no log file written).
+\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written).
 Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 
-\item{impute_method}{If 'impute' = TRUE, this argument will specify the kind of imputation desired. Options are:
+\item{impute_method}{If \code{impute = TRUE}, this argument will specify the kind of imputation desired. Options are:
 \itemize{
-\item mode (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
-\item random: Imputes sampling according to allele frequencies.
-\item mean0: Imputes the rounded mean.
-\item mean2: Imputes the mean rounded to 2 decimal places.
-\item xgboost: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
+\item \code{mode} (default): Imputes the most frequent call. See \code{bigsnpr::snp_fastImputeSimple()} for details.
+\item \code{random}: Imputes sampling according to allele frequencies.
+\item \code{mean0}: Imputes the rounded mean.
+\item \code{mean2}: Imputes the mean rounded to 2 decimal places.
+\item \code{xgboost}: Imputes using an algorithm based on local XGBoost models. See \code{bigsnpr::snp_fastImpute()} for details. Note: this can take several minutes, even for a relatively small data set.
 }}
 
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers. Options are "IID" (default) and "FID"}
@@ -48,14 +48,14 @@ Note: if you supply a file path in this argument, it will error out with a "file
 \item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
 In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}
 
-\item{quiet}{Logical: should messages to be printed to the console be silenced? Defaults to FALSE}
+\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 
-\item{overwrite}{Logical: if existing \code{.bk}/\code{.rds} files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
+\item{overwrite}{Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 
-\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if impute_method = "xgboost")}
+\item{...}{Optional: additional arguments to \code{bigsnpr::snp_fastImpute()} (relevant only if \code{impute_method = 'xgboost'})}
 }
 \value{
-The filepath to the '.rds' object created; see details for explanation.
+The filepath to the \code{.rds} object created; see details for explanation.
 }
 \description{
 Preprocess PLINK files using the \code{bigsnpr} package
@@ -63,17 +63,17 @@ Preprocess PLINK files using the \code{bigsnpr} package
 \details{
 Three files are created in the location specified by \code{rds_dir}:
 \itemize{
-\item 'rds_prefix.rds': This is a list with three items:
+\item \code{rds_prefix.rds}: This is a list with three items:
 (1) \code{X}: the filebacked \code{bigmemory::big.matrix} object pointing to the imputed genotype data.
-This matrix has type 'double', which is important for downstream operations in \code{create_design()}
-(2) \code{map}: a data.frame with the PLINK 'bim' data (i.e., the variant information)
-(3) \code{fam}: a data.frame with the PLINK 'fam' data (i.e., the pedigree information)
-\item 'rds_prefix.bk': This is the backing file that stores the numeric data of the genotype matrix.
-\item 'rds_prefix.desc' This is the description file, needed to attach the genotype matrix to the R session.
+This matrix has type \code{double}, which is important for downstream operations in \code{create_design()}
+(2) \code{map}: a data.frame with the PLINK \code{bim} data (i.e., the variant information)
+(3) \code{fam}: a data.frame with the PLINK \code{fam} data (i.e., the pedigree information)
+\item \code{rds_prefix.bk}: This is the backing file that stores the numeric data of the genotype matrix.
+\item \code{rds_prefix.desc} This is the description file, needed to attach the genotype matrix to the R session.
 }
 
 Note that \code{process_plink()} need only be run once for a given set of PLINK
-files; in subsequent data analysis/scripts, \code{get_data()} will access the '.rds' file.
+files; in subsequent data analysis/scripts, \code{get_data()} will access the \code{.rds} file.
 
-For an example, see vignette on processing PLINK files
+For an example, see vignette on processing PLINK files.
 }
