@@ -101,11 +101,11 @@ create_design_filebacked <- function(obj,
   if (any(file.exists(to_remove))) {
     if (overwrite) {
       # notify
-      cat("\nOverwriting existing files: ", new_file, ".bk/.rds\n",
+      cat("Overwriting existing files: ", new_file, ".bk/.rds\n",
           sep = "", file = logfile, append = TRUE)
 
       if (!quiet) {
-        cat("\nOverwriting existing files: ", new_file, ".bk/.rds\n", sep = "")
+        cat("Overwriting existing files: ", new_file, ".bk/.rds\n", sep = "")
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
@@ -214,6 +214,7 @@ create_design_filebacked <- function(obj,
     aligned_add_predictor <- align_ids(id_var = predictor_id,
                                        add_predictor = add_predictor,
                                        og_ids = og_ids,
+                                       outfile = logfile,
                                        quiet = quiet)
     gc()
     # add predictors from external files --------------------------------------
@@ -221,6 +222,7 @@ create_design_filebacked <- function(obj,
                               add_predictor = aligned_add_predictor,
                               id_var = feature_id,
                               rds_dir = rds_dir,
+                              outfile = logfile,
                               quiet = quiet)
     # save items to return
     design$unpen <- unstd_X$unpen # save indices for unpenalized covariates
@@ -310,6 +312,16 @@ create_design_filebacked <- function(obj,
   # return -------------------------------------------------------------
   saveRDS(structure(design, class = "plmm_design"),
           file.path(rds_dir, paste0(new_file, ".rds")))
+
+  if (!quiet) {
+    cat("create_design() completed. \nProcessed files now saved as",
+        file.path(rds_dir, new_file))
+  }
+
+  cat("create_design() completed. \nProcessed files now saved as",
+      file.path(rds_dir, new_file),
+      "at", pretty_time(),
+      file = logfile, append = TRUE)
 
   file.path(rds_dir, paste0(new_file, ".rds"))
 

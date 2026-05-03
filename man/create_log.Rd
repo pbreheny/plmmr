@@ -11,6 +11,7 @@ create_log(outfile)
 }
 \value{
 Nothing is returned, instead a text file with the suffix \code{.log} is created.
+If outfile is NULL, the path to the null device is returned.
 }
 \description{
 Create the \code{.log} file

@@ -51,7 +51,7 @@ Additional arguments for \strong{all filebacked} data:
 \item \strong{outcome_col}             A string specifying the name of the phenotype column in \code{add_outcome}
 \item \strong{na_outcome_vals}        Optional: a vector of numeric values used to code NA values in the outcome. Defaults to \code{c(-9, NA_integer)} (the -9 matches PLINK conventions).
 \item \strong{overwrite}              Optional: logical - should existing .rds files be overwritten? Defaults to FALSE.
-\item \strong{logfile}                Optional: name of the \code{.log} file to be written -- \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.
+\item \strong{logfile}                Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written). \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.
 \item \strong{quiet}                  Optional: logical - should console messages be silenced? Defaults to FALSE
 }
 

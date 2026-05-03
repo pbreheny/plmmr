@@ -29,8 +29,7 @@ process_plink(
 \item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
-\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written).
-Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.}
+\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written). \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
 
 \item{impute}{Logical: should data be imputed? Default to TRUE.}
 

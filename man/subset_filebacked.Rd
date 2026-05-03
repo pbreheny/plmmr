@@ -17,7 +17,7 @@ subset_filebacked(X, new_file, complete_samples, ns, rds_dir, outfile, quiet)
 
 \item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
-\item{outfile}{Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+\item{outfile}{Optional: the name (character string) of the logfile to be written.}
 
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }

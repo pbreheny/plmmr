@@ -25,7 +25,7 @@ read_plink_files(
 \item{rds_prefix}{String specifying the user's preferred filename for the to-be-created \code{.rds} file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to NULL (no log written).}
 
 \item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
 In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}

@@ -5,7 +5,7 @@
 #' @param complete_samples      Numeric vector with indices marking the rows of the original data which have a non-missing entry in the 6th column of the `.fam` file
 #' @param ns                    Numeric vector with the indices of the non-singular columns
 #' @param rds_dir               The path to the directory in which you want to create the new `.rds` and `.bk` files. Defaults to `data_dir`
-#' @param outfile               Optional: the name (character string) of the new_file of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile               Optional: the name (character string) of the logfile to be written.
 #' @param quiet                 Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return A list with two components. First, a `big.matrix` object, `subset_X`, representing a design matrix wherein:

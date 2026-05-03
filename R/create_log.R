@@ -3,6 +3,7 @@
 #' @param outfile String specifying the name of the to-be-created file, *without* extension
 #'
 #' @return Nothing is returned, instead a text file with the suffix `.log` is created.
+#' If outfile is NULL, the path to the null device is returned.
 #'
 #' @keywords internal
 #'
@@ -11,7 +12,11 @@ create_log <- function(outfile) {
     stop("You must specify a name for the output file(s) via the outfile argument.")
   }
 
-  logfile <- paste0(outfile, ".log")
+  if (is.null(outfile)) {
+    logfile <- nullfile()
+  } else {
+    logfile <- paste0(outfile, ".log")
+  }
 
   # open the log file for writing
   log_con <- file(logfile)
@@ -27,7 +32,8 @@ create_log <- function(outfile) {
       file = logfile, append = TRUE)
 
   # get the name of the calling function
-  calling_function <- deparse(sys.call(-1))
+  syscall <- sys.calls()
+  calling_function <- deparse(syscall[[1]])
   cat("Call:", trimws(calling_function), "\n", file = logfile, append = TRUE)
 
   # close the log file

@@ -4,7 +4,7 @@
 \alias{add_predictors}
 \title{A helper function to add predictors to a filebacked matrix of data}
 \usage{
-add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
+add_predictors(obj, add_predictor, id_var, rds_dir, outfile, quiet)
 }
 \arguments{
 \item{obj}{A \code{bigSNP} object}
@@ -14,6 +14,8 @@ add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
 \item{id_var}{String specifying which column of the PLINK \code{.fam} file has the unique sample identifiers.}
 
 \item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}(from \code{process_plink()} call)}
+
+\item{outfile}{A string with the name of the filepath for the log file}
 
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }

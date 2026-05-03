@@ -9,7 +9,7 @@ standardize_filebacked(X, outfile, quiet, tocenter = TRUE)
 \arguments{
 \item{X}{A \code{big.matrix} object that has been subset &/or had any additional predictors appended as columns}
 
-\item{outfile}{Optional: the name (character string) of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+\item{outfile}{Optional: the name (character string) of the logfile to be written.}
 
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 

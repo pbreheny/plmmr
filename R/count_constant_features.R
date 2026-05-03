@@ -20,10 +20,10 @@ count_constant_features <- function(fbm, outfile, quiet) {
   constants_idx <- sum(colstats$sd_vals < 1e-4)
 
   if (!quiet) {
-    cat("There are", sum(constants_idx), "constant features in the data\n")
+    cat("There are", sum(constants_idx), "constant features in the data.\n")
   }
 
-  cat("There are", sum(constants_idx), "constant features in the data\n",
+  cat("There are", sum(constants_idx), "constant features in the data.\n",
       file = outfile, append = TRUE)
 
   ns

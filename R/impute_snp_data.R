@@ -11,7 +11,7 @@
 #'  * `xgboost`: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
 #' @param parallel Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
 #'                  In particular, the user should be aware that too much parallelization can make computations *slower*.
-#' @param outfile Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile Optional: the name (character string) of the prefix of the logfile to be written.
 #' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #' @param seed Numeric value to be passed as the seed for `impute_method = 'xgboost'`. Defaults to `as.numeric(Sys.Date())`
 #' @param ... Optional: additional arguments to `bigsnpr::snp_fastImpute()` (relevant only if `impute_method = 'xgboost'`)
@@ -36,11 +36,11 @@ impute_snp_data <- function(obj,
       stop("\nImpute method is misspecified or misspelled. Please use one of the
            \n5 options listed in the documentation.")
     }
-    cat("\nImputing the missing (genotype) values using", impute_method, "method\n")
+    cat("Imputing the missing (genotype) values using", impute_method, "method...\n")
   }
 
   if (impute) {
-    cat("Imputing the missing values using", impute_method, "method\n",
+    cat("Imputing the missing values using", impute_method, "method...\n",
         file = outfile, append = TRUE)
 
     if (impute_method %in% c("mode", "random", "mean0", "mean2")) {
@@ -87,6 +87,10 @@ impute_snp_data <- function(obj,
 
     # save the imputed data
     obj <- bigsnpr::snp_save(obj)
+
+    if (!quiet) {
+      cat("Done with imputation.\n")
+    }
 
     cat("Done with imputation.\n",
         file = outfile, append = TRUE)

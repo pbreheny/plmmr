@@ -35,7 +35,7 @@ impute_snp_data(
 \item{parallel}{Logical: should the computations within this function be run in parallel? Defaults to TRUE. See \code{count_cores()} and \code{?bigparallelr::assert_cores} for more details.
 In particular, the user should be aware that too much parallelization can make computations \emph{slower}.}
 
-\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.}
+\item{outfile}{Optional: the name (character string) of the prefix of the logfile to be written.}
 
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 

@@ -4,7 +4,7 @@
 \alias{align_ids}
 \title{A helper function to support \code{create_design_filebacked()}}
 \usage{
-align_ids(id_var, add_predictor, og_ids, quiet)
+align_ids(id_var, add_predictor, og_ids, outfile, quiet)
 }
 \arguments{
 \item{id_var}{String specifying the variable name of the ID column}
@@ -12,6 +12,8 @@ align_ids(id_var, add_predictor, og_ids, quiet)
 \item{add_predictor}{External data to include in design matrix. This is the \code{add_predictor} arg in \code{create_design_filebacked()}}
 
 \item{og_ids}{Character vector with the PLINK ids (FID or IID) from the \emph{original} data (i.e., the data before any subsetting from handling missing phenotypes)}
+
+\item{outfile}{A string with the name of the filepath for the log file}
 
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }

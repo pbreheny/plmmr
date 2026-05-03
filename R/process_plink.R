@@ -5,8 +5,7 @@
 #' @param rds_dir               The path to the directory in which you want to create the new `.rds` and `.bk` files. Defaults to `data_dir`
 #' @param rds_prefix            String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 #'                              Note: `rds_prefix` cannot be the same as `data_prefix`
-#' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in `rds_dir`. Default to NULL (no log file written).
-#'                              Note: if you supply a file path in this argument, it will error out with a "file not found" error. Only supply the string; e.g., if you want my_log.log, supply 'my_log', the my_log.log file will appear in rds_dir.
+#' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in `rds_dir`. Default to NULL (no log file written). **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If `impute = TRUE`, this argument will specify the kind of imputation desired. Options are:
 #' * `mode` (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -14,7 +13,6 @@
 #' * `mean0`: Imputes the rounded mean.
 #' * `mean2`: Imputes the mean rounded to 2 decimal places.
 #' * `xgboost`: Imputes using an algorithm based on local XGBoost models. See `bigsnpr::snp_fastImpute()` for details. Note: this can take several minutes, even for a relatively small data set.
-
 #' @param id_var              String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID"
 #' @param parallel            Logical: should the computations within this function be run in parallel? Defaults to TRUE. See `count_cores()` and `?bigparallelr::assert_cores` for more details.
 #'                            In particular, the user should be aware that too much parallelization can make computations *slower*.
@@ -63,16 +61,14 @@ process_plink <- function(data_dir,
 
   # start log -----------------------------------------
   if (!is.null(logfile)) {
-    logfile <- create_log(file.path(rds_dir, logfile))
-    cat("\nLogging to", logfile)
-  } else {
-    logfile <- tempfile()
+    logfile <- file.path(rds_dir, logfile)
   }
+  logfile <- create_log(logfile)
 
   if (!quiet) {
-    cat("\nPreprocessing", data_prefix, "data:")
+    cat("Preprocessing", data_prefix, "data...\n")
   }
-  cat("\nPreprocessing", data_prefix, "data\n", file = logfile, append = TRUE)
+  cat("Preprocessing", data_prefix, "data...\n", file = logfile, append = TRUE)
 
   # remove old data backing files --------------------
 
@@ -109,14 +105,14 @@ process_plink <- function(data_dir,
   na_idx <- step2$na_counts > 0
   prop_na <- step2$na_counts / nrow(step2$X)
 
-  cat("There are a total of", sum(na_idx), "SNPs with missing values\n",
+  cat("There are a total of", sum(na_idx), "SNPs with missing values.\n",
       file = logfile, append = TRUE)
   cat("Of these,", sum(prop_na > 0.5),
-      "are missing in at least 50% of the samples\n",
+      "are missing in at least 50% of the samples.\n",
       file = logfile, append = TRUE)
   if (!quiet) {
-    cat("There are a total of", sum(na_idx), "SNPs with missing values\n")
-    cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples\n")
+    cat("There are a total of", sum(na_idx), "SNPs with missing values.\n")
+    cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples.\n")
   }
 
   # imputation ------------------------------------------------------------------
@@ -159,10 +155,15 @@ process_plink <- function(data_dir,
       unlink()
   }
 
-  if (!quiet) cat("\nprocess_plink() completed")
+  if (!quiet) cat("process_plink() completed.")
+
+  cat("process_plink() completed.", file = logfile, append = TRUE)
 
   if (!is.null(rds_prefix)) {
     cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename))
+
+    cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename),
+        "at", pretty_time(), file = logfile, append = TRUE)
 
     file.path(rds_dir, rds_filename)
   } else {

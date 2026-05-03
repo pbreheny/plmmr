@@ -30,8 +30,7 @@ Note: if your file has headers/column names, set \code{header = TRUE} -- this wi
 \item{rds_prefix}{String specifying the user's preferred filename for the to-be-created \code{.rds} file (will be create inside \code{rds_dir} folder).
 Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 
-\item{logfile}{Optional: the name (character string) of the prefix of the
-logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.}
+\item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written). \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
 
 \item{overwrite}{Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.}
 

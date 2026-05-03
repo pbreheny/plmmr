@@ -30,11 +30,11 @@ read_data_files <- function(data_file,
   if (any(file.exists(to_remove))) {
     if (overwrite) {
       # notify
-      cat("\nOverwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n",
+      cat("Overwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n",
           sep = "", file = outfile, append = TRUE)
 
       if (!quiet) {
-        cat("\nOverwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n", sep = "")
+        cat("Overwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n", sep = "")
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise

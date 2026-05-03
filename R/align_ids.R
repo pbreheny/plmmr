@@ -3,13 +3,14 @@
 #' @param id_var String specifying the variable name of the ID column
 #' @param add_predictor External data to include in design matrix. This is the `add_predictor` arg in `create_design_filebacked()`
 #' @param og_ids Character vector with the PLINK ids (FID or IID) from the *original* data (i.e., the data before any subsetting from handling missing phenotypes)
+#' @param outfile A string with the name of the filepath for the log file
 #' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return A matrix with the same dimensions as add_predictor
 #'
 #' @keywords internal
 #'
-align_ids <- function(id_var, add_predictor, og_ids, quiet) {
+align_ids <- function(id_var, add_predictor, og_ids, outfile, quiet) {
 
   if (is.numeric(add_predictor[, id_var])) {
     add_predictor[, id_var] <- as.character(add_predictor[, id_var])
@@ -36,6 +37,10 @@ align_ids <- function(id_var, add_predictor, og_ids, quiet) {
   if (!quiet) {
     cat("\nAligning external data with the feature data by", id_var, "\n")
   }
+
+  cat("\nAligning external data with the feature data by", id_var, "\n",
+      file = outfile, append = TRUE)
+
   # make original IDs into a table with which the added predictors can be merged
   og_ids <- data.table::as.data.table(data.frame(ID = og_ids))
   add_predictor <- data.table::data.table(add_predictor)

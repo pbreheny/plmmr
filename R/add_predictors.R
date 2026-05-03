@@ -4,6 +4,7 @@
 #' @param add_predictor     Optional: add additional covariates/predictors/features from an external file (i.e., not a PLINK file).
 #' @param id_var            String specifying which column of the PLINK `.fam` file has the unique sample identifiers.
 #' @param rds_dir           The path to the directory in which you want to create the new `.rds` and `.bk` files. Defaults to `data_dir`(from `process_plink()` call)
+#' @param outfile           A string with the name of the filepath for the log file
 #' @param quiet             Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return A list of 2 components:
@@ -12,7 +13,7 @@
 #'
 #' @keywords internal
 #'
-add_predictors <- function(obj, add_predictor, id_var, rds_dir, quiet) {
+add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) {
 
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
@@ -22,6 +23,9 @@ add_predictors <- function(obj, add_predictor, id_var, rds_dir, quiet) {
   if (!quiet) {
     cat("Adding predictors from external data.\n")
   }
+
+  cat("Adding predictors from external data.\n", file = outfile, append = TRUE)
+
   if (is.data.frame(add_predictor)) {
     add_predictor <- as.matrix(add_predictor)
   }
@@ -38,7 +42,11 @@ add_predictors <- function(obj, add_predictor, id_var, rds_dir, quiet) {
          call. = FALSE)
   }
 
-  if (!quiet) cat("Aligning IDs between fam and predictor files\n")
+  if (!quiet) {
+    cat("Aligning IDs between fam and predictor files\n")
+  }
+
+  cat("Aligning IDs between fam and predictor files\n", file = outfile, append = TRUE)
 
   # save unpen: an index marking added columns as *unpenalized* predictors
   unpen <- seq_len(ncol(add_predictor))

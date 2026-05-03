@@ -8,8 +8,7 @@
 #' @param rds_dir       The directory where the user wants to create the `.rds` and `.bk` files. Defaults to `data_dir`
 #' @param rds_prefix    String specifying the user's preferred filename for the to-be-created `.rds` file (will be create inside `rds_dir` folder).
 #'                      Note: `rds_prefix` cannot be the same as `data_prefix`
-#' @param logfile       Optional: the name (character string) of the prefix of the
-#'                      logfile to be written. Defaults to 'process_delim', i.e. you will get 'process_delim.log' as the outfile.
+#' @param logfile       Optional: the name (character string) of the prefix of the logfile to be written in `rds_dir`. Default to NULL (no log file written). **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param overwrite     Logical: if existing .bk/.rds files exist for the specified directory/prefix, should these be overwritten? Defaults to FALSE. Set to TRUE if you want to change the imputation method you're using, etc.
 #' @param quiet         Logical: should console messages be silenced? Defaults to FALSE
 #' @param ...           Optional: other arguments to be passed to `bigmemory::read.big.matrix()`. Note: `sep` is an option to pass here, as is `header`.
@@ -46,12 +45,13 @@ process_delim <- function(data_dir,
 
   # start log ------------------------------------------
   if (!is.null(logfile)) {
-    logfile <- create_log(file.path(rds_dir, logfile))
-    cat("\nLogging to", logfile)
-    cat("Preprocessing", prefix, "data\n", file = logfile, append = TRUE)
-  } else {
-    logfile <- tempfile()
+    logfile <- file.path(rds_dir, logfile)
   }
+  logfile <- create_log(logfile)
+
+  if (!quiet) cat("Preprocessing", prefix, "data...", "\n")
+
+  cat("Preprocessing", prefix, "data...", "\n", file = logfile, append = TRUE)
 
   # read in data files --------------------------------
   X <- read_data_files(data_file = data_file,
@@ -87,11 +87,11 @@ process_delim <- function(data_dir,
   saveRDS(ret, file = file.path(rds_dir, rds_filename))
 
   if (!quiet) {
-    cat("\nprocess_plink() completed \nProcessed files now saved as",
+    cat("process_plink() completed. \nProcessed files now saved as",
         file.path(rds_dir, rds_filename))
   }
 
-  cat("\nprocess_plink() completed. \nProcessed files now saved as",
+  cat("process_plink() completed. \nProcessed files now saved as",
       file.path(rds_dir, rds_filename),
       "at", pretty_time(),
       file = logfile, append = TRUE)

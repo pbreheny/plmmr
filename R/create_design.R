@@ -45,7 +45,7 @@
 #'
 #'    - **overwrite**              Optional: logical - should existing .rds files be overwritten? Defaults to FALSE.
 #'
-#'    - **logfile**                Optional: name of the `.log` file to be written -- **Note:** do not append a `.log` to the filename; this is done automatically.
+#'    - **logfile**                Optional: the name (character string) of the prefix of the logfile to be written in `rds_dir`. Default to NULL (no log file written). **Note:** do not append a `.log` to the filename; this is done automatically.
 #'
 #'    - **quiet**                  Optional: logical - should console messages be silenced? Defaults to FALSE
 #'

@@ -1,7 +1,7 @@
 #' A helper function to standardize a filebacked matrix
 #'
 #' @param X             A `big.matrix` object that has been subset &/or had any additional predictors appended as columns
-#' @param outfile       Optional: the name (character string) of the logfile to be written. Defaults to 'process_plink', i.e. you will get 'process_plink.log' as the outfile.
+#' @param outfile       Optional: the name (character string) of the logfile to be written.
 #' @param quiet         Logical: should console messages be silenced? Defaults to FALSE
 #' @param tocenter      Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
@@ -16,6 +16,8 @@ standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
   if (!quiet) {
     cat("Column-standardizing the design matrix...\n")
   }
+
+  cat("Column-standardizing the design matrix...\n", file = outfile, append = TRUE)
   # centering & scaling
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call("big_std",
@@ -31,15 +33,19 @@ standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
     cat("Standardization completed at", pretty_time())
   }
 
-  cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
+  cat("Standardization completed at", pretty_time(),
+      file = outfile, append = TRUE)
 
   # label return object ------------------------------------------------
   # naming these center and scale values so that I know they relate to the first
   # standardization; there will be another standardization after the rotation
   # in plmm_fit().
   if (!quiet) {
-    cat("Done with standardization. File formatting in progress\n")
+    cat("Done with standardization. File formatting in progress...\n")
   }
+
+  cat("Done with standardization. File formatting in progress...\n",
+      file = outfile, append = TRUE)
 
   list(
     std_X = bigmemory::describe(X),

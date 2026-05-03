@@ -2,8 +2,8 @@
 #'
 #' @param obj a `bigSNP` object, possibly subset by `add_external_phenotype()`
 #' @param id_var String specifying which column of the PLINK `.fam` file has the unique sample identifiers. Options are "IID" (default) and "FID".
-#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #' @param outfile The string with the name of the `.log` file
+#' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
 #' @return a list with 7 components:
 #' * `na_counts`: vector of missing SNP counts in `genotypes`
@@ -17,7 +17,7 @@
 #'
 #' @keywords internal
 #'
-name_and_count_bigsnp <- function(obj, id_var, quiet, outfile) {
+name_and_count_bigsnp <- function(obj, id_var, outfile, quiet) {
 
   X <- obj$genotypes
 
@@ -36,13 +36,13 @@ name_and_count_bigsnp <- function(obj, id_var, quiet, outfile) {
   obj$p <- X$ncol
 
   if (!quiet) {
-    cat("\nThere are", obj$n, "observations and",
+    cat("There are", obj$n, "observations and",
         obj$p, "genomic features in the specified data files, representing chromosomes",
-        chr_range[1], "-", chr_range[2], "\n")
+        chr_range[1], "-", chr_range[2], ".\n")
   }
-  cat("\nThere are", obj$n, "observations and",
+  cat("There are", obj$n, "observations and",
       obj$p, "genomic features in the specified data files, representing chromosomes",
-      chr_range[1], "-", chr_range[2], "\n",
+      chr_range[1], "-", chr_range[2], ".\n",
       file = outfile, append = TRUE)
 
   # save these counts
