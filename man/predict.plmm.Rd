@@ -18,7 +18,7 @@
 \item{object}{An object of class \code{plmm}.}
 
 \item{newX}{Matrix of values at which predictions are to be made (not used for \code{type} = "coefficients", "vars", or "nvars").
-This can be either a FBM object or a matrix object. Note: Columns of this argument must be named!}
+This can be either a filebacked \code{big.matrix} or a matrix object. Note: Columns of this argument must be named!}
 
 \item{type}{A character argument indicating what type of prediction should be
 returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}

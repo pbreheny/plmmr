@@ -4,25 +4,23 @@
 \alias{relatedness_mat}
 \title{Calculate a relatedness matrix}
 \usage{
-relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
+relatedness_mat(X, std = TRUE, ns = NULL)
 }
 \arguments{
 \item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data).
-Note: This matrix should \emph{not} include non-genetic features.}
+Note: This matrix should \emph{not} include non-genetic features. Can be a filebacked \code{big.matrix} object.}
 
 \item{std}{Logical: should \code{X} be standardized? If you set this to FALSE (which can only be done
 if data are stored in memory), you should have a good reason for doing so, as standardization
 is a best practice.}
 
-\item{fbm}{Logical: is \code{X} stored as an FBM? Defaults to FALSE}
-
-\item{ns}{Optional vector of values indicating the indices of nonsingular features}
-
-\item{...}{Other optional arguments to \code{bigstatsr::bigapply()} (like \code{ncores = ...})}
+\item{ns}{Optional vector of values indicating the indices of nonsingular features.
+\strong{Note}: If a filebacked \code{big.matrix} is passed to \code{X} along with a non-null \code{ns},
+a temporary deep copy will be created.}
 }
 \value{
 An n x n numeric matrix capturing the genomic relatedness of the
-samples represented in \code{X}. In our notation, we call this matrix K for 'kinship';
+samples represented in \code{X}. In our notation, we call this matrix \code{K} for 'kinship';
 this is also known as the GRM or RRM.
 }
 \description{

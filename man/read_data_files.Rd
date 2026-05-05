@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_data_files.R
 \name{read_data_files}
 \alias{read_data_files}
-\title{A function to read in a large file as a numeric file-backed matrix (FBM)}
+\title{A function to read in a large file as a numeric file-backed matrix}
 \usage{
 read_data_files(
   data_file,
@@ -37,6 +37,6 @@ Note: \code{rds_prefix} cannot be the same as \code{data_file}}
 \code{.rds}, \code{.bk}, and \code{.desc} files are created in \code{data_dir}, and \code{obj} (a filebacked \verb{bigmemory big.matrix} object) is returned. See \code{bigmemory} documentation for more info on the \code{big.matrix} class.
 }
 \description{
-Note: this function is a wrapper for \code{bigstatsr::big_read()}
+Note: this function is a wrapper for \code{bigmemory::read.big.matrix()}
 }
 \keyword{internal}

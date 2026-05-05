@@ -5,7 +5,7 @@
 #' @param quiet         Logical: should console messages be silenced? Defaults to FALSE
 #' @param tocenter      Should the matrix be centered in addition to scaled? Defaults to TRUE.
 #'
-#' @return A list with a component called `std_X` - this is an FBM with column-standardized data.
+#' @return A list with a component called `std_X` - this is a filebacked `big.matrix` with column-standardized data.
 #' List also includes several other indices/meta-data on the standardized matrix
 #'
 #' @keywords internal

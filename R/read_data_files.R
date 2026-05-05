@@ -1,6 +1,6 @@
-#' A function to read in a large file as a numeric file-backed matrix (FBM)
+#' A function to read in a large file as a numeric file-backed matrix
 #'
-#' Note: this function is a wrapper for `bigstatsr::big_read()`
+#' Note: this function is a wrapper for `bigmemory::read.big.matrix()`
 #'
 #' @param data_file The name of the file to read, not including its directory. Directory should be specified in `data_dir`
 #' @param data_dir  The path to the directory where `data_file` is

@@ -27,18 +27,17 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, rds_prefix, outfile
     }
   }
 
-  to_remove <- lapply(c(file.path(rds_dir, data_prefix), file.path(rds_dir, rds_prefix)),
-                      \(x) paste0(x, c(".rds", ".desc", ".bk"))) |> unlist()
+  to_remove <- paste0(file.path(rds_dir, rds_prefix), c(".rds", ".desc", ".bk"))
 
   # check for overwrite:
   if (any(file.exists(to_remove))) {
     if (overwrite) {
-      cat("Overwriting existing files: ", data_prefix, ".bk/.rds and ",
-          rds_prefix, ".bk/.rds/.desc\n", sep = "", file = outfile, append = TRUE)
+      cat("Overwriting existing files: ", rds_prefix,
+          ".bk/.rds/.desc\n", sep = "", file = outfile, append = TRUE)
 
       if (!quiet) {
-        cat("Overwriting existing files: ", data_prefix, ".bk/.rds and ",
-            rds_prefix, ".bk/.rds/.desc\n", sep = "")
+        cat("Overwriting existing files: ", rds_prefix,
+            ".bk/.rds/.desc\n", sep = "")
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise

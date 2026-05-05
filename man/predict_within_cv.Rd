@@ -14,7 +14,7 @@ predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 \item{type}{A character argument indicating what type of prediction should be returned. Passed from \code{cvf()}.
 Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.}
 
-\item{fbm}{Logical: is \code{trainX} an FBM object? If so, this function expects that \code{testX} is also an FBM. The two X matrices must be stored the same way.}
+\item{fbm}{Logical: is \code{trainX} a filebacked \code{big.matrix} object? If so, this function expects that \code{testX} is also an FBM. The two X matrices must be stored the same way.}
 
 \item{Sigma_21}{Covariance matrix between the training and the testing data. Required if \code{type == 'blup'}.}
 }

@@ -7,7 +7,7 @@
 #' @param trace   Logical: should trace messages be shown? Default is TRUE.
 #'
 #' @return A list with these components:
-#'  * `std_X`, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See `bigstatsr::FBM()` and `bigsnpr::bigSnp-class` documentation for details.
+#'  * `std_X`, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked `big.matrix` object.
 #'  * (if PLINK data) `fam`, a data frame containing the pedigree information (like a `.fam` file in PLINK)
 #'  * (if PLINK data) `map`, a data frame containing the feature information (like a `.bim` file in PLINK)
 #'  * `ns`: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0).

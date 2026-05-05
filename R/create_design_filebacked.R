@@ -117,9 +117,6 @@ create_design_filebacked <- function(obj,
     }
   }
 
-  # remove leftover intermediate files
-  unlink(list.files(rds_dir, "unstd_design_matrix.(bk|desc)", full.names = TRUE))
-
   # attach the processed data -------------------------------
   obj$X <- bigmemory::attach.big.matrix(obj$X)
 
@@ -306,9 +303,10 @@ create_design_filebacked <- function(obj,
 
   # cleanup -------------------------------------------------------------------
   list.files(rds_dir,
-             pattern = paste0("^unstd_design.*"),
-             full.names = TRUE) |> file.remove()
+             pattern = paste0("^unstd_design_matrix\\.(bk|desc)"),
+             full.names = TRUE) |> unlink(force = TRUE)
   gc()
+
   # return -------------------------------------------------------------
   saveRDS(structure(design, class = "plmm_design"),
           file.path(rds_dir, paste0(new_file, ".rds")))

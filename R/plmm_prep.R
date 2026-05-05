@@ -13,7 +13,7 @@
 #'            (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'            (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
 #' @param eta Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#' @param fbm_flag Logical: is `std_X` an FBM type object? This is set internally by `plmm()`.
+#' @param fbm_flag Logical: is `std_X` a filebacked `big.matrix` object? This is set internally by `plmm()`.
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param ... Not used yet
 #'
@@ -63,11 +63,7 @@ plmm_prep <- function(std_X,
       cat("K is a list; will pass U,s components from list to model fitting.\n")
     }
     s <- K$s # no need to adjust singular values by p
-    if (inherits(K$U, "FBM")) {
-      U <- K$U[,]
-    } else {
-      U <- K$U
-    }
+    U <- K$U
   }
 
   # otherwise, need to do eigendecomposition -----------------------------
@@ -80,7 +76,7 @@ plmm_prep <- function(std_X,
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
 
       if (trace) cat("Calculating the eigendecomposition of K\n")
-      eigen_res <- eigen_K(std_X, fbm_flag = fbm_flag)
+      eigen_res <- eigen_K(std_X)
       K <- eigen_res$K
       s <- eigen_res$s
       U <- eigen_res$U

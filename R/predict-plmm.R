@@ -2,7 +2,7 @@
 #'
 #' @param object    An object of class `plmm`.
 #' @param newX      Matrix of values at which predictions are to be made (not used for `type` = "coefficients", "vars", or "nvars").
-#'                  This can be either a FBM object or a matrix object. Note: Columns of this argument must be named!
+#'                  This can be either a filebacked `big.matrix` or a matrix object. Note: Columns of this argument must be named!
 #' @param type      A character argument indicating what type of prediction should be
 #'                  returned. Options are "lp," "coefficients," "vars," "nvars," and "blup." See details.
 #' @param X         Optional: if `type = 'blup'` and the model was fit in-memory, the design matrix used to fit the model represented in `object` must be supplied.

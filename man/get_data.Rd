@@ -16,7 +16,7 @@ get_data(path, returnX = FALSE, trace = TRUE)
 \value{
 A list with these components:
 \itemize{
-\item \code{std_X}, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See \code{bigstatsr::FBM()} and \code{bigsnpr::bigSnp-class} documentation for details.
+\item \code{std_X}, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked \code{big.matrix} object.
 \item (if PLINK data) \code{fam}, a data frame containing the pedigree information (like a \code{.fam} file in PLINK)
 \item (if PLINK data) \code{map}, a data frame containing the feature information (like a \code{.bim} file in PLINK)
 \item \code{ns}: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0).

@@ -33,7 +33,7 @@ plmm_fit(
 \item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, \code{penalty_factor} must be a numeric vector of length equal to the number of columns of X.
 The purpose of \code{penalty_factor} is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, \code{penalty_factor} can be 0, in which case the coefficient is always in the model without shrinkage.}
 
-\item{fbm_flag}{Logical: is std_X an FBM object? Passed from \code{plmm()}.}
+\item{fbm_flag}{Logical: is std_X a filebacked \code{big.matrix} object? Passed from \code{plmm()}.}
 
 \item{penalty}{The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".}
 

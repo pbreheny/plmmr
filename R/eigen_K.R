@@ -3,7 +3,6 @@
 #' Note: This is faster than taking SVD of X when p >> n
 #'
 #' @param std_X The *standardized* design matrix.
-#' @param fbm_flag Logical: is `std_X` an FBM object? Passed from `plmm()`.
 #'
 #' @return A list with three elements:
 #' * `s`: The non-zero eigenvalues of K
@@ -12,19 +11,10 @@
 #'
 #' @keywords internal
 #'
-eigen_K <- function(std_X, fbm_flag) {
+eigen_K <- function(std_X) {
   # Note: std_X has already been scaled, so no need to do that here
   # calculate K (which will be stored in memory regardless of how std_X is stored)
-  if (fbm_flag) {
-    XX <- bigalgebra::dgemm(TRANSA = "N",
-                            TRANSB = "T",
-                            A = std_X,
-                            B = std_X)
-    K <- XX[,] / ncol(std_X)
-  } else {
-    XX <- tcrossprod(std_X)
-    K <- XX / ncol(std_X)
-  }
+  K <- relatedness_mat(std_X, std = FALSE)
 
   # take eigendecomposition
   decomp <- eigen(K, symmetric = TRUE)

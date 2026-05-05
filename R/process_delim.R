@@ -1,4 +1,4 @@
-#' A function to read in large data files as an FBM
+#' A function to read in large data files as a filebacked `big.matrix`
 #'
 #' @param data_dir      The directory to the file.
 #' @param data_file     The file to be read in, without the filepath. This should be a file of numeric values.

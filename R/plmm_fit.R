@@ -5,7 +5,7 @@
 #' @param std_X_details A list with components `center` (values used to center X), `scale` (values used to scale X), and `ns` (indices for nonsingular columns of X)
 #' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, `penalty_factor` must be a numeric vector of length equal to the number of columns of X.
 #'                       The purpose of `penalty_factor` is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, `penalty_factor` can be 0, in which case the coefficient is always in the model without shrinkage.
-#' @param fbm_flag Logical: is std_X an FBM object? Passed from `plmm()`.
+#' @param fbm_flag Logical: is std_X a filebacked `big.matrix` object? Passed from `plmm()`.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would be equivalent to ridge regression.

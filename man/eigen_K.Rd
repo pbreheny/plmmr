@@ -4,12 +4,10 @@
 \alias{eigen_K}
 \title{A function to take the eigendecomposition of K}
 \usage{
-eigen_K(std_X, fbm_flag)
+eigen_K(std_X)
 }
 \arguments{
 \item{std_X}{The \emph{standardized} design matrix.}
-
-\item{fbm_flag}{Logical: is \code{std_X} an FBM object? Passed from \code{plmm()}.}
 }
 \value{
 A list with three elements:

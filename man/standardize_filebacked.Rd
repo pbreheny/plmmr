@@ -16,7 +16,7 @@ standardize_filebacked(X, outfile, quiet, tocenter = TRUE)
 \item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE.}
 }
 \value{
-A list with a component called \code{std_X} - this is an FBM with column-standardized data.
+A list with a component called \code{std_X} - this is a filebacked \code{big.matrix} with column-standardized data.
 List also includes several other indices/meta-data on the standardized matrix
 }
 \description{

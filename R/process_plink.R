@@ -115,7 +115,7 @@ process_plink <- function(data_dir,
     cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples.\n")
   }
 
-  # imputation ------------------------------------------------------------------
+  # imputation -------------------------------------------------
   step3 <- impute_snp_data(step2$obj,
                            step2$X,
                            impute = impute,
@@ -124,7 +124,7 @@ process_plink <- function(data_dir,
                            outfile = logfile,
                            quiet = quiet, ...)
 
-  # format return object --------------------------------------------------------
+  # format return object ----------------------------------------
   X  <- bigmemory::deepcopy(
     x = step3$genotypes$bm(),
     row = seq_len(nrow(step3$genotypes)),
@@ -141,7 +141,7 @@ process_plink <- function(data_dir,
                         n = step3$n,
                         p = step3$p), class = "processed_plink")
 
-  # handle return format -------------------------------------------------------
+  # handle return format -----------------------------------
 
   if (!is.null(rds_prefix)) {
     rds_filename <- paste0(rds_prefix, ".rds")
@@ -150,9 +150,12 @@ process_plink <- function(data_dir,
     # TODO: add warning if object size is greater than some threshold
     ret$X <- bigmemory::attach.big.matrix(ret$X)[,]
 
-    list.files(rds_dir, pattern = paste0("^", rds_prefix, "\\.(bk|desc)"),
+    on.exit({
+      gc()
+      list.files(rds_dir, pattern = paste0("^", rds_prefix, "\\.(bk|desc)"),
                full.names = TRUE) |>
-      unlink()
+      unlink(force = TRUE)
+    })
   }
 
   if (!quiet) cat("process_plink() completed.")

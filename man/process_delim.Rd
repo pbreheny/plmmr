@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_delim.R
 \name{process_delim}
 \alias{process_delim}
-\title{A function to read in large data files as an FBM}
+\title{A function to read in large data files as a filebacked \code{big.matrix}}
 \usage{
 process_delim(
   data_dir,
@@ -42,7 +42,7 @@ Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
 The file path to the newly created \code{.rds} file
 }
 \description{
-A function to read in large data files as an FBM
+A function to read in large data files as a filebacked \code{big.matrix}
 }
 \examples{
 temp_dir <- tempdir()

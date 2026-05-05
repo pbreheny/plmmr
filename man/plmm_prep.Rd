@@ -38,7 +38,7 @@ plmm_prep(
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
-\item{fbm_flag}{Logical: is \code{std_X} an FBM type object? This is set internally by \code{plmm()}.}
+\item{fbm_flag}{Logical: is \code{std_X} a filebacked \code{big.matrix} object? This is set internally by \code{plmm()}.}
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 

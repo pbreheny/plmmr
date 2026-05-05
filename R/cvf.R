@@ -215,10 +215,10 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # cleanup -----------------------------------------------------------------
   # delete files created in cross-validation, if data is filebacked
   if (cv_args$fbm_flag) {
+    gc() # release the pointer
     list.files(path = bigmemory::dir.name(full_cv_prep$std_X),
                pattern = paste0("fold", i),
-               full.names = TRUE) |> file.remove()
-    gc() # release the pointer
+               full.names = TRUE) |> unlink(force = TRUE)
   }
 
   # return -----------------------------------------------------------------
