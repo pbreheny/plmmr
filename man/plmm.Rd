@@ -18,6 +18,7 @@ plmm(
   lambda,
   eps = 1e-04,
   max_iter = 10000,
+  dfmax = NULL,
   warn = TRUE,
   trace = FALSE,
   save_rds = NULL,
@@ -39,7 +40,7 @@ internally to \code{create_design(X = design, y = y)}.}
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 (3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.
-Note: if a user provides their own matrix, it is decomposed as provided and will \emph{not} be scaled.}
+\strong{Note}: if a user provides their own matrix, it is decomposed as provided and will \emph{not} be scaled.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 
@@ -61,6 +62,8 @@ However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but 
 \item{eps}{Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than \code{eps}. Default is \code{1e-4}.}
 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
+
+\item{dfmax}{Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 

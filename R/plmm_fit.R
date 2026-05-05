@@ -15,6 +15,7 @@
 #' @param lambda A user-specified sequence of lambda values. By default, a sequence of values of length `nlambda` is computed, equally spaced on the log scale.
 #' @param eps Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than `eps`. Default is `1e-4`.
 #' @param max_iter Maximum number of iterations (total across entire path). Default is 10000.
+#' @param dfmax Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum).
 #' @param init Initial values for coefficients. Default is 0 for all columns of X.
 #' @param warn Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param ... Additional arguments that can be passed to `biglasso::biglasso_simple_path()`
@@ -59,6 +60,7 @@ plmm_fit <- function(prep,
                      eps = 1e-04,
                      max_iter = 10000,
                      init = NULL,
+                     dfmax = NULL,
                      warn = TRUE,
                      ...) {
 
@@ -166,23 +168,23 @@ plmm_fit <- function(prep,
       if (prep$trace) {
         utils::setTxtProgressBar(pb, ll)
       }
+      if(sum(res$beta != 0) > dfmax) {
+        iter[ll:nlambda] <- NA
+        break
+      }
     }
     if (prep$trace) close(pb)
 
-    # reverse the POST-ROTATION standardization on estimated betas
+    ind <- !is.na(iter)
+    iter <- iter[ind]
+    converged <- converged[ind]
+    loss <- loss[ind]
+    lambda <- lambda[ind]
+    stdrot_scale_beta <- stdrot_scale_beta[, ind, drop = FALSE]
+
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1,
                              ncol = ncol(stdrot_scale_beta))
-
-    stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-    bb <-  stdrot_scale_beta / (stdrot_unscale)
-    std_scale_beta[-1, ] <- bb
-    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
-
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
-
   } else {
     res <- biglasso::biglasso_path(
       X = stdrot_X,
@@ -197,6 +199,7 @@ plmm_fit <- function(prep,
       eps = eps,
       max.iter = max_iter,
       penalty.factor = penalty_factor,
+      dfmax = dfmax,
       warn = warn,
       ...)
 
@@ -206,22 +209,25 @@ plmm_fit <- function(prep,
     converged <- iter < max_iter
     loss <- res$loss
     r <- res$resid
+    lambda <- res$lambda
 
-    # reverse the POST-ROTATION standardization on estimated betas
-    # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
     std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
                                            j = seq_len(ncol(stdrot_scale_beta)),
                                            x = mean(y),
                                            dims = c(nrow(stdrot_scale_beta) + 1,
                                                     ncol = ncol(stdrot_scale_beta)))
-    bb <-  stdrot_scale_beta / stdrot_X_details$scale
-    std_scale_beta[-1, ] <- bb
-    std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
-
-    # calculate linear predictors on the scale of std_X
-    std_Xbeta <- prep$std_X %*% bb
-    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
   }
+
+  # reverse the POST-ROTATION standardization on estimated betas
+  # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
+  stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
+  bb <-  stdrot_scale_beta / (stdrot_unscale)
+  std_scale_beta[-1, ] <- bb
+  std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+
+  # calculate linear predictors on the scale of std_X
+  std_Xbeta <- prep$std_X %*% bb
+  std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
 
   if (prep$trace) {
     cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")

@@ -12,7 +12,7 @@ cvf(i, fold, type, cv_args, ...)
 \item{fold}{n-length vector of fold-assignments.}
 
 \item{type}{A character argument indicating what should be returned from \code{predict.plmm()}. If \code{type = 'lp'} predictions are based on the linear predictor, \eqn{X \beta}.
-If \code{type = 'individual'} predictions are based on the linear predictor plus the estimated random effect (BLUP).}
+If \code{type = 'blup'}, predictions are based on the linear predictor plus the estimated random effect (BLUP).}
 
 \item{cv_args}{List of additional arguments to be passed to plmm.}
 

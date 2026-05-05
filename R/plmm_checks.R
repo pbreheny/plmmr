@@ -11,6 +11,7 @@
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
 #' @param alpha Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would be equivalent to ridge regression.
 #'              However, `alpha = 0` is not supported; alpha may be arbitrarily small, but not exactly 0.
+#' @param dfmax Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)
 #' @param trace If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds  Optional: if a filepath and name is specified (e.g., `save_rds = "~/dir/my_results.rds"`), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.
 #' @param return_fit Optional: a logical value indicating whether the fitted model should be returned as a `plmm` object in the current (assumed interactive) session. Defaults to TRUE.
@@ -28,9 +29,10 @@
 #'  * `eta`: Estimated proportion of the variance in the outcome attributable to population/correlation structure (as passed by `plmm()`, may be NULL)
 #'  * `fbm_flag`: Logical, is `std_X` filebacked?
 #'  * `plink_flag`: Logical, does `std_X` originate from PLINK files?
-#'  * `penalty`: A character string indicating the penalty type
+#'  * `penalty`: A character string indicating the penalty type.
 #'  * `gamma`: Tuning parameter for the SCAD or MCP penalties.
 #'  * `init`: Initialized values for beta coefficients.
+#'  * `dfmax`: Maximum number of non-zero coefficients that may enter the model.
 #'  * `n`: Number of rows in the original design matrix prior to standardization procedures.
 #'  * `p`: Number of columns in the original design matrix prior to standardization procedures.
 #'
@@ -43,6 +45,7 @@ plmm_checks <- function(design,
                         init = NULL,
                         gamma,
                         alpha = 1,
+                        dfmax = NULL,
                         trace = FALSE,
                         save_rds = NULL,
                         return_fit = TRUE,
@@ -101,6 +104,13 @@ plmm_checks <- function(design,
   # set default gamma (gamma not used in 'lasso' option)
   if (missing(gamma)) gamma <- switch(penalty, SCAD = 3.7, MCP = 3, lasso = 1)
 
+  # set default dfmax
+  if (is.null(dfmax)) {
+    dfmax <- std_X_p + 1
+  } else if (fbm_flag) {
+    message("Currently, to set dfmax in a file-backed framework, you must install the newest version of biglasso from its Github repository: https://github.com/pbreheny/biglasso")
+  }
+
   # error checking design matrix  ---------------------------------------------
   if (length(y) != std_X_n) stop("X and y do not have the same number of observations", call. = FALSE)
   if (length(penalty_factor) != std_X_p) stop("Dimensions of penalty_factor and X do not match; something is off in the supplied design", call. = FALSE)
@@ -158,6 +168,7 @@ plmm_checks <- function(design,
     penalty_factor = penalty_factor,
     gamma = gamma,
     init = init,
+    dfmax = dfmax,
     n = design$n,
     p = design$p)
 

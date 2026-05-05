@@ -6,7 +6,7 @@ expect_message(unzip_example_data(tmp), pattern = "Unzipped")
 
 expect_silent(local({
   # using PennCath data that ships with the package
-  temp_dir <- tempdir(check = TRUE)
+  temp_dir <- withr::local_tempdir()
   unzip_example_data(outdir = temp_dir)
 
   plink_data <- process_plink(data_dir = temp_dir,

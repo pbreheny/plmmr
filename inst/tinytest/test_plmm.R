@@ -37,12 +37,11 @@ K_diagonal <- diag(x = (rnorm(n = nrow(admix$X))^2),
 plmm1 <- plmm(
   design = admix_design,
   K = K_diagonal,
-  # TODO: Need to fix plmm so that lambda can be a single value
   lambda = c(0.001, 0),
   penalty = "lasso",
   eps = 1e-15)
 
-v1 <- diag(K_diagonal) * plmm1$eta + 1
+v1 <- diag(K_diagonal) * plmm1$eta + (1 - plmm1$eta)
 print(summary(plmm1, lambda = 0))
 
 A1 <- plmm1$beta_vals[,"0.0000"]
@@ -71,7 +70,7 @@ plmm2 <- plmm(
   penalty = "lasso",
   eps = 1e-15)
 
-v2 <- diag(K_diagonal) * plmm2$eta + 1
+v2 <- diag(K_diagonal) * plmm2$eta + (1 - plmm2$eta)
 
 lasso2 <- glmnet::glmnet(
   x = admix$X,
@@ -81,7 +80,6 @@ lasso2 <- glmnet::glmnet(
   # weights are by INVERSE variance
   weights = 1/v2,
   thres = 1e-15)
-
 
 A2 <- as.matrix(plmm2$beta_vals[2:10, ])
 dimnames(A2) <- NULL
@@ -161,6 +159,58 @@ local({
   b2 <- coef(fit)
   expect_equivalent(b1, b2, tolerance = 0.01)
 })
+
+# Test 4: confirm dfmax halts path fitting -------------------------------------
+
+dfmax <- 5
+
+fit <- plmm(admix$X, admix$y, dfmax = dfmax)
+nvar <- predict(fit, type = "nvar")
+expect_true(max(nvar) <= dfmax)
+
+# local({
+#   temp_dir <- withr::local_tempdir()
+#   # log-transform the colon data
+#   colon_path <- find_example_data("colon2.txt")
+#   colon_X <- read.delim(colon_path)
+#   colon_X[,-1] <- log(colon_X[,-1])
+#   write.table(colon_X,
+#               file.path(temp_dir, "colon2_log.txt"),
+#               sep = "\t", quote = FALSE, row.names = FALSE)
+#
+#   # process delimited files
+#   colon_dat <- process_delim(
+#     data_file = "colon2_log.txt",
+#     data_dir = temp_dir,
+#     rds_dir = temp_dir,
+#     rds_prefix = "processed_colon2",
+#     sep = "\t",
+#     overwrite = TRUE,
+#     header = TRUE)
+#
+#   # prepare outcome data
+#   colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
+#
+#   # filebacked
+#   fb_design <- create_design(
+#     data_file = colon_dat,
+#     rds_dir = temp_dir,
+#     new_file = "std_colon2",
+#     add_outcome = colon_outcome,
+#     outcome_id = "ID",
+#     outcome_col = "y",
+#     logfile = "fb_design",
+#     overwrite = TRUE)
+#
+#   fb_fit <- plmm(
+#     design = fb_design,
+#     trace = TRUE,
+#     return_fit = TRUE,
+#     dfmax = 5)
+#
+#   nvar <- predict(fb_fit, type = "nvar")
+#   tinytest::expect_true(max(nvar) <= dfmax)
+# })
 
 
 # Test 5: make sure predict method is working ----------------------------------

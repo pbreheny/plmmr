@@ -12,6 +12,7 @@ plmm_checks(
   init = NULL,
   gamma,
   alpha = 1,
+  dfmax = NULL,
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
@@ -37,6 +38,8 @@ plmm_checks(
 \item{alpha}{Tuning parameter for the Mnet estimator which controls the relative contributions from the MCP/SCAD penalty and the ridge, or L2 penalty. \code{alpha = 1} is equivalent to MCP/SCAD penalty, while \code{alpha = 0} would be equivalent to ridge regression.
 However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but not exactly 0.}
 
+\item{dfmax}{Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)}
+
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
 \item{save_rds}{Optional: if a filepath and name is specified (e.g., \code{save_rds = "~/dir/my_results.rds"}), then the model results are saved to the provided location. Defaults to NULL, which does not save the result.}
@@ -59,9 +62,10 @@ A list which includes 16 items:
 \item \code{eta}: Estimated proportion of the variance in the outcome attributable to population/correlation structure (as passed by \code{plmm()}, may be NULL)
 \item \code{fbm_flag}: Logical, is \code{std_X} filebacked?
 \item \code{plink_flag}: Logical, does \code{std_X} originate from PLINK files?
-\item \code{penalty}: A character string indicating the penalty type
+\item \code{penalty}: A character string indicating the penalty type.
 \item \code{gamma}: Tuning parameter for the SCAD or MCP penalties.
 \item \code{init}: Initialized values for beta coefficients.
+\item \code{dfmax}: Maximum number of non-zero coefficients that may enter the model.
 \item \code{n}: Number of rows in the original design matrix prior to standardization procedures.
 \item \code{p}: Number of columns in the original design matrix prior to standardization procedures.
 }

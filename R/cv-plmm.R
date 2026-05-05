@@ -14,7 +14,7 @@
 #'                          (1) a known matrix that reflects the covariance of y,
 #'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                          (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
-#'                        Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
+#'                        **Note**: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #'                        Note: Setting `eta = 1` will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying `type = 'blup'`, but should be done with caution.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
@@ -183,6 +183,7 @@ cv_plmm <- function(design,
     nlambda = nlambda,
     max_iter = max_iter,
     eps = eps,
+    dfmax = checked_data$dfmax,
     warn = warn))
 
   if (!missing(lambda)) {
@@ -341,7 +342,7 @@ cv_plmm <- function(design,
   # eliminate saturated lambda values, if any
   ind <- which(apply(is.finite(E), 2, all)) # index for lambda values to keep
   E <- E[, ind, drop = FALSE]
-  Y <- Y[, ind]
+  Y <- Y[, ind, drop = FALSE]
   lambda <- fit$lambda[ind]
 
   # return min lambda idx

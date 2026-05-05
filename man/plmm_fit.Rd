@@ -19,6 +19,7 @@ plmm_fit(
   eps = 1e-04,
   max_iter = 10000,
   init = NULL,
+  dfmax = NULL,
   warn = TRUE,
   ...
 )
@@ -53,6 +54,8 @@ However, \code{alpha = 0} is not supported; alpha may be arbitrarily small, but 
 \item{max_iter}{Maximum number of iterations (total across entire path). Default is 10000.}
 
 \item{init}{Initial values for coefficients. Default is 0 for all columns of X.}
+
+\item{dfmax}{Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum).}
 
 \item{warn}{Return warning messages for failures to converge and model saturation? Default is TRUE.}
 

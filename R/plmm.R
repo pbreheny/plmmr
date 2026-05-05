@@ -10,7 +10,7 @@
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                                  (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
-#'                                Note: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
+#'                                **Note**: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
 #' @param eta                     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty                 The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
@@ -22,6 +22,7 @@
 #' @param lambda                  A user-specified sequence of lambda values. By default, a sequence of values of length `nlambda` is computed, equally spaced on the log scale.
 #' @param eps                     Convergence threshold. The algorithm iterates until the RMSE for the change in linear predictors for each coefficient is less than `eps`. Default is `1e-4`.
 #' @param max_iter                Maximum number of iterations (total across entire path). Default is 10000.
+#' @param dfmax                   Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)
 #' @param warn                    Return warning messages for failures to converge and model saturation? Default is TRUE.
 #' @param trace                   If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.
 #' @param save_rds                Optional: if a filepath and name *without* the `.rds` suffix is specified (e.g., `save_rds = "~/dir/my_results"`), then the model results are saved to the provided location (e.g., "~/dir/my_results.rds").
@@ -84,6 +85,7 @@ plmm <- function(design,
                  lambda,
                  eps = 1e-04,
                  max_iter = 10000,
+                 dfmax = NULL,
                  warn = TRUE,
                  trace = FALSE,
                  save_rds = NULL,
@@ -130,6 +132,7 @@ plmm <- function(design,
                               init = init,
                               gamma = gamma,
                               alpha = alpha,
+                              dfmax = dfmax,
                               trace = trace,
                               ...)
 
@@ -178,6 +181,7 @@ plmm <- function(design,
                       lambda = lambda,
                       eps = eps,
                       max_iter = max_iter,
+                      dfmax = checked_data$dfmax,
                       warn = warn)
 
   if (trace) cat("Beta values are estimated -- almost done!\n")

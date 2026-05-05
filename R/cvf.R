@@ -5,7 +5,7 @@
 #' @param i       Fold number to be excluded from fit.
 #' @param fold    n-length vector of fold-assignments.
 #' @param type    A character argument indicating what should be returned from `predict.plmm()`. If `type = 'lp'` predictions are based on the linear predictor, \eqn{X \beta}.
-#'                If `type = 'individual'` predictions are based on the linear predictor plus the estimated random effect (BLUP).
+#'                If `type = 'blup'`, predictions are based on the linear predictor plus the estimated random effect (BLUP).
 #' @param cv_args List of additional arguments to be passed to plmm.
 #' @param ...     Optional arguments to `predict_within_cv()`
 #'
@@ -35,6 +35,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     lambda_min = cv_args$lambda_min,
                     max_iter = cv_args$max_iter,
                     eps = cv_args$eps,
+                    dfmax = cv_args$dfmax,
                     warn = cv_args$warn,
                     lambda = cv_args$lambda)
 
@@ -147,6 +148,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     lambda = fold_args$lambda,
                     eps = fold_args$eps,
                     max_iter = fold_args$max_iter,
+                    dfmax = fold_args$dfmax,
                     warn = fold_args$warn)
 
   format.i <- plmm_format(fit = fit.i,
