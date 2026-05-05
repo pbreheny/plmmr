@@ -67,7 +67,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with these components:</p><ul><li><p><code>std_X</code>, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked matrix (FBM). See <code><a href="https://privefl.github.io/bigstatsr/reference/FBM-class.html" class="external-link">bigstatsr::FBM()</a></code> and <code>bigsnpr::bigSnp-class</code> documentation for details.</p></li>
+    <p>A list with these components:</p><ul><li><p><code>std_X</code>, the column-standardized design matrix as either (1) a numeric matrix or (2) a filebacked <code>big.matrix</code> object.</p></li>
 <li><p>(if PLINK data) <code>fam</code>, a data frame containing the pedigree information (like a <code>.fam</code> file in PLINK)</p></li>
 <li><p>(if PLINK data) <code>map</code>, a data frame containing the feature information (like a <code>.bim</code> file in PLINK)</p></li>
 <li><p><code>ns</code>: A vector indicating the which columns of X contain nonsingular features (i.e., features with variance != 0).</p></li>

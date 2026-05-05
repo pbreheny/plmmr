@@ -1,6 +1,6 @@
-# A function to read in large data files as an FBM
+# A function to read in large data files as a filebacked `big.matrix`
 
-A function to read in large data files as an FBM
+A function to read in large data files as a filebacked `big.matrix`
 
 ## Usage
 
@@ -52,8 +52,9 @@ process_delim(
 - logfile:
 
   Optional: the name (character string) of the prefix of the logfile to
-  be written. Defaults to 'process_delim', i.e. you will get
-  'process_delim.log' as the outfile.
+  be written in `rds_dir`. Default to NULL (no log file written).
+  **Note:** do not append a `.log` to the filename; this is done
+  automatically.
 
 - overwrite:
 
@@ -82,14 +83,13 @@ temp_dir <- tempdir()
 colon_dat <- process_delim(data_file = "colon2.txt",
  data_dir = find_example_data(parent = TRUE), overwrite = TRUE,
  rds_dir = temp_dir, rds_prefix = "processed_colon2", sep = "\t", header = TRUE)
-#> 
+#> Preprocessing colon2 data... 
 #> Overwriting existing files: processed_colon2.bk/.rds/.desc
 #> There are 62 observations and 2001 features in the specified data files.
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
-#> 
-#> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmp8aehFv/processed_colon2.rds
+#> process_plink() completed. 
+#> Processed files now saved as /tmp/Rtmp0RSZbo/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -98,7 +98,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp8aehFv/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmp0RSZbo/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62

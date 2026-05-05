@@ -67,7 +67,8 @@ plmm_prep(
 
 - fbm_flag:
 
-  Logical: is `std_X` an FBM type object? This is set internally by
+  Logical: is `std_X` a filebacked `big.matrix` object? This is set
+  internally by
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 - trace:

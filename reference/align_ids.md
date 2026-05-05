@@ -6,7 +6,7 @@ A helper function to support
 ## Usage
 
 ``` r
-align_ids(id_var, add_predictor, og_ids, quiet)
+align_ids(id_var, add_predictor, og_ids, outfile, quiet)
 ```
 
 ## Arguments
@@ -26,6 +26,10 @@ align_ids(id_var, add_predictor, og_ids, quiet)
   Character vector with the PLINK ids (FID or IID) from the *original*
   data (i.e., the data before any subsetting from handling missing
   phenotypes)
+
+- outfile:
+
+  A string with the name of the filepath for the log file
 
 - quiet:
 

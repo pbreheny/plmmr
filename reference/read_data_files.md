@@ -1,7 +1,7 @@
-# A function to read in a large file as a numeric file-backed matrix (FBM)
+# A function to read in a large file as a numeric file-backed matrix
 
 Note: this function is a wrapper for
-[`bigstatsr::big_read()`](https://privefl.github.io/bigstatsr/reference/big_read.html)
+[`bigmemory::read.big.matrix()`](https://rdrr.io/pkg/bigmemory/man/write.big.matrix.html)
 
 ## Usage
 

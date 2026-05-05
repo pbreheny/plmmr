@@ -55,7 +55,7 @@ the subjects: \(\frac{1}{p}(XX^T)\), where X is standardized.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">relatedness_mat</span><span class="op">(</span><span class="va">X</span>, std <span class="op">=</span> <span class="cn">TRUE</span>, fbm <span class="op">=</span> <span class="cn">FALSE</span>, ns <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">relatedness_mat</span><span class="op">(</span><span class="va">X</span>, std <span class="op">=</span> <span class="cn">TRUE</span>, ns <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -64,7 +64,7 @@ the subjects: \(\frac{1}{p}(XX^T)\), where X is standardized.</p>
 
 <dl><dt id="arg-x">X<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>An n x p numeric matrix of genotypes (from <em>fully-imputed</em> data).
-Note: This matrix should <em>not</em> include non-genetic features.</p></dd>
+Note: This matrix should <em>not</em> include non-genetic features. Can be a filebacked <code>big.matrix</code> object.</p></dd>
 
 
 <dt id="arg-std">std<a class="anchor" aria-label="anchor" href="#arg-std"></a></dt>
@@ -73,22 +73,16 @@ if data are stored in memory), you should have a good reason for doing so, as st
 is a best practice.</p></dd>
 
 
-<dt id="arg-fbm">fbm<a class="anchor" aria-label="anchor" href="#arg-fbm"></a></dt>
-<dd><p>Logical: is <code>X</code> stored as an FBM? Defaults to FALSE</p></dd>
-
-
 <dt id="arg-ns">ns<a class="anchor" aria-label="anchor" href="#arg-ns"></a></dt>
-<dd><p>Optional vector of values indicating the indices of nonsingular features</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Other optional arguments to <code>bigstatsr::bigapply()</code> (like <code>ncores = ...</code>)</p></dd>
+<dd><p>Optional vector of values indicating the indices of nonsingular features.
+<strong>Note</strong>: If a filebacked <code>big.matrix</code> is passed to <code>X</code> along with a non-null <code>ns</code>,
+a temporary deep copy will be created.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An n x n numeric matrix capturing the genomic relatedness of the
-samples represented in <code>X</code>. In our notation, we call this matrix K for 'kinship';
+samples represented in <code>X</code>. In our notation, we call this matrix <code>K</code> for 'kinship';
 this is also known as the GRM or RRM.</p>
     </div>
 

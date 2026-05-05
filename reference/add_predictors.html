@@ -46,7 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_predictors</span><span class="op">(</span><span class="va">obj</span>, <span class="va">add_predictor</span>, <span class="va">id_var</span>, <span class="va">rds_dir</span>, <span class="va">quiet</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_predictors</span><span class="op">(</span><span class="va">obj</span>, <span class="va">add_predictor</span>, <span class="va">id_var</span>, <span class="va">rds_dir</span>, <span class="va">outfile</span>, <span class="va">quiet</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +67,10 @@
 
 <dt id="arg-rds-dir">rds_dir<a class="anchor" aria-label="anchor" href="#arg-rds-dir"></a></dt>
 <dd><p>The path to the directory in which you want to create the new <code>.rds</code> and <code>.bk</code> files. Defaults to <code>data_dir</code>(from <code><a href="process_plink.html">process_plink()</a></code> call)</p></dd>
+
+
+<dt id="arg-outfile">outfile<a class="anchor" aria-label="anchor" href="#arg-outfile"></a></dt>
+<dd><p>A string with the name of the filepath for the log file</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>

@@ -8,7 +8,7 @@ relatedness matrix (GRM, also known as the RRM, see Hayes et al. 2009,
 ## Usage
 
 ``` r
-relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
+relatedness_mat(X, std = TRUE, ns = NULL)
 ```
 
 ## Arguments
@@ -16,7 +16,8 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
 - X:
 
   An n x p numeric matrix of genotypes (from *fully-imputed* data).
-  Note: This matrix should *not* include non-genetic features.
+  Note: This matrix should *not* include non-genetic features. Can be a
+  filebacked `big.matrix` object.
 
 - std:
 
@@ -24,24 +25,16 @@ relatedness_mat(X, std = TRUE, fbm = FALSE, ns = NULL, ...)
   can only be done if data are stored in memory), you should have a good
   reason for doing so, as standardization is a best practice.
 
-- fbm:
-
-  Logical: is `X` stored as an FBM? Defaults to FALSE
-
 - ns:
 
   Optional vector of values indicating the indices of nonsingular
-  features
-
-- ...:
-
-  Other optional arguments to `bigstatsr::bigapply()` (like
-  `ncores = ...`)
+  features. **Note**: If a filebacked `big.matrix` is passed to `X`
+  along with a non-null `ns`, a temporary deep copy will be created.
 
 ## Value
 
 An n x n numeric matrix capturing the genomic relatedness of the samples
-represented in `X`. In our notation, we call this matrix K for
+represented in `X`. In our notation, we call this matrix `K` for
 'kinship'; this is also known as the GRM or RRM.
 
 ## Examples

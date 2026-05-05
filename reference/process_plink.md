@@ -48,11 +48,9 @@ process_plink(
 - logfile:
 
   Optional: the name (character string) of the prefix of the logfile to
-  be written in `rds_dir`. Default to NULL (no log file written). Note:
-  if you supply a file path in this argument, it will error out with a
-  "file not found" error. Only supply the string; e.g., if you want
-  my_log.log, supply 'my_log', the my_log.log file will appear in
-  rds_dir.
+  be written in `rds_dir`. Default to NULL (no log file written).
+  **Note:** do not append a `.log` to the filename; this is done
+  automatically.
 
 - impute:
 

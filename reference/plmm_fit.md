@@ -55,7 +55,7 @@ plmm_fit(
 
 - fbm_flag:
 
-  Logical: is std_X an FBM object? Passed from
+  Logical: is std_X a filebacked `big.matrix` object? Passed from
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 - penalty:

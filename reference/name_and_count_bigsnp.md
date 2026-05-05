@@ -5,7 +5,7 @@ A helper function to label and summarize the contents of a `bigSNP`
 ## Usage
 
 ``` r
-name_and_count_bigsnp(obj, id_var, quiet, outfile)
+name_and_count_bigsnp(obj, id_var, outfile, quiet)
 ```
 
 ## Arguments
@@ -19,13 +19,13 @@ name_and_count_bigsnp(obj, id_var, quiet, outfile)
   String specifying which column of the PLINK `.fam` file has the unique
   sample identifiers. Options are "IID" (default) and "FID".
 
-- quiet:
-
-  Logical: should console messages be silenced? Defaults to FALSE
-
 - outfile:
 
   The string with the name of the `.log` file
+
+- quiet:
+
+  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 

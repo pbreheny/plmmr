@@ -34,9 +34,7 @@ subset_filebacked(X, new_file, complete_samples, ns, rds_dir, outfile, quiet)
 
 - outfile:
 
-  Optional: the name (character string) of the new_file of the logfile
-  to be written. Defaults to 'process_plink', i.e. you will get
-  'process_plink.log' as the outfile.
+  Optional: the name (character string) of the logfile to be written.
 
 - quiet:
 

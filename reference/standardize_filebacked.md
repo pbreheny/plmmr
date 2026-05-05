@@ -18,8 +18,6 @@ standardize_filebacked(X, outfile, quiet, tocenter = TRUE)
 - outfile:
 
   Optional: the name (character string) of the logfile to be written.
-  Defaults to 'process_plink', i.e. you will get 'process_plink.log' as
-  the outfile.
 
 - quiet:
 
@@ -31,6 +29,6 @@ standardize_filebacked(X, outfile, quiet, tocenter = TRUE)
 
 ## Value
 
-A list with a component called `std_X` - this is an FBM with
-column-standardized data. List also includes several other
-indices/meta-data on the standardized matrix
+A list with a component called `std_X` - this is a filebacked
+`big.matrix` with column-standardized data. List also includes several
+other indices/meta-data on the standardized matrix

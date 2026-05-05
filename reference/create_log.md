@@ -18,4 +18,4 @@ create_log(outfile)
 ## Value
 
 Nothing is returned, instead a text file with the suffix `.log` is
-created.
+created. If outfile is NULL, the path to the null device is returned.

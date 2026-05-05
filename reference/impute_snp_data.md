@@ -68,8 +68,7 @@ impute_snp_data(
 - outfile:
 
   Optional: the name (character string) of the prefix of the logfile to
-  be written. Defaults to 'process_plink', i.e. you will get
-  'process_plink.log' as the outfile.
+  be written.
 
 - quiet:
 

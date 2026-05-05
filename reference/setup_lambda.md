@@ -14,7 +14,7 @@ setup_lambda(X, y, alpha, lambda_min, nlambda, penalty_factor)
 
   Rotated and standardized design matrix which *includes* the intercept
   column if present. May include clinical covariates and other non-SNP
-  data. This can be either a 'matrix' or 'FBM' object.
+  data. This can be either a matrix or a filebacked `big.matrix` object.
 
 - y:
 

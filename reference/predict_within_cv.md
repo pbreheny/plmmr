@@ -29,9 +29,9 @@ predict_within_cv(fit, testX, type, fbm = FALSE, Sigma_21 = NULL)
 
 - fbm:
 
-  Logical: is `trainX` an FBM object? If so, this function expects that
-  `testX` is also an FBM. The two X matrices must be stored the same
-  way.
+  Logical: is `trainX` a filebacked `big.matrix` object? If so, this
+  function expects that `testX` is also an FBM. The two X matrices must
+  be stored the same way.
 
 - Sigma_21:
 

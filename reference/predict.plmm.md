@@ -26,9 +26,9 @@ predict(
 - newX:
 
   Matrix of values at which predictions are to be made (not used for
-  `type` = "coefficients", "vars", or "nvars"). This can be either a FBM
-  object or a matrix object. Note: Columns of this argument must be
-  named!
+  `type` = "coefficients", "vars", or "nvars"). This can be either a
+  filebacked `big.matrix` or a matrix object. Note: Columns of this
+  argument must be named!
 
 - type:
 

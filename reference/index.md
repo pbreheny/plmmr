@@ -41,7 +41,9 @@
   Preprocess PLINK files using the `bigsnpr` package
 
 - [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md)
-  : A function to read in large data files as an FBM
+  :
+
+  A function to read in large data files as a filebacked `big.matrix`
 
 - [`relatedness_mat()`](https://pbreheny.github.io/plmmr/reference/relatedness_mat.md)
   : Calculate a relatedness matrix

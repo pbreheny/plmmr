@@ -5,7 +5,7 @@ Note: This is faster than taking SVD of X when p \>\> n
 ## Usage
 
 ``` r
-eigen_K(std_X, fbm_flag)
+eigen_K(std_X)
 ```
 
 ## Arguments
@@ -13,11 +13,6 @@ eigen_K(std_X, fbm_flag)
 - std_X:
 
   The *standardized* design matrix.
-
-- fbm_flag:
-
-  Logical: is `std_X` an FBM object? Passed from
-  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
 
 ## Value
 

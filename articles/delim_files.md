@@ -27,12 +27,12 @@ colon_dat <- process_delim(data_file = "colon2.txt",
   sep = "\t",
   overwrite = TRUE,
   header = TRUE)
+#> Preprocessing colon2 data... 
 #> There are 62 observations and 2001 features in the specified data files.
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
-#> 
-#> process_plink() completed 
-#> Processed files now saved as /tmp/Rtmp0e5CGF/processed_colon2.rds
+#> process_plink() completed. 
+#> Processed files now saved as /tmp/RtmpJGtwrq/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -85,11 +85,13 @@ colon_design <- create_design(data_file = colon_dat,
                               unpen = "sex", # this will keep 'sex' in the final model
                               logfile = "colon_design")
 #> No feature_id supplied; will assume data X are in same row-order as add_outcome.
-#> There are 0 constant features in the data
+#> There are 0 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-05-01 13:23:11
-#> Done with standardization. File formatting in progress
+#> Standardization completed at 2026-05-05 01:51:19
+#> Done with standardization. File formatting in progress...
+#> create_design() completed. 
+#> Processed files now saved as /tmp/RtmpJGtwrq/std_colon2
 ```
 
 As with
@@ -124,7 +126,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp0e5CGF/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpJGtwrq/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -152,18 +154,18 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-05-01 13:23:11
+#> Input data passed all checks at  2026-05-05 01:51:20
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-05-01 13:23:11
+#> Eigendecomposition finished at  2026-05-05 01:51:20
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-01 13:23:11
+#> Rotation (preconditioning) finished at  2026-05-05 01:51:20
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-01 13:23:11 
+#> Model fitting finished at  2026-05-05 01:51:20 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-05-01 13:23:11
+#> Model ready at  2026-05-05 01:51:20
 ```
 
 Notice the messages that are printed out – this documentation may be

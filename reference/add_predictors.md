@@ -5,7 +5,7 @@ A helper function to add predictors to a filebacked matrix of data
 ## Usage
 
 ``` r
-add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
+add_predictors(obj, add_predictor, id_var, rds_dir, outfile, quiet)
 ```
 
 ## Arguments
@@ -30,6 +30,10 @@ add_predictors(obj, add_predictor, id_var, rds_dir, quiet)
   and `.bk` files. Defaults to `data_dir`(from
   [`process_plink()`](https://pbreheny.github.io/plmmr/reference/process_plink.md)
   call)
+
+- outfile:
+
+  A string with the name of the filepath for the log file
 
 - quiet:
 

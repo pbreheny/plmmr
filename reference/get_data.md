@@ -33,9 +33,7 @@ get_data(path, returnX = FALSE, trace = TRUE)
 A list with these components:
 
 - `std_X`, the column-standardized design matrix as either (1) a numeric
-  matrix or (2) a filebacked matrix (FBM). See
-  [`bigstatsr::FBM()`](https://privefl.github.io/bigstatsr/reference/FBM-class.html)
-  and `bigsnpr::bigSnp-class` documentation for details.
+  matrix or (2) a filebacked `big.matrix` object.
 
 - (if PLINK data) `fam`, a data frame containing the pedigree
   information (like a `.fam` file in PLINK)
