@@ -21,6 +21,7 @@ plmm_fit(
   eps = 1e-04,
   max_iter = 10000,
   init = NULL,
+  dfmax = NULL,
   warn = TRUE,
   ...
 )
@@ -106,6 +107,11 @@ plmm_fit(
 - init:
 
   Initial values for coefficients. Default is 0 for all columns of X.
+
+- dfmax:
+
+  Maximum number of non-zero coefficients that may enter the model.
+  Default is NULL (no maximum).
 
 - warn:
 

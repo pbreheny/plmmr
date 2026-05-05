@@ -60,6 +60,7 @@
 <span>  <span class="va">lambda</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -90,7 +91,7 @@ internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
 (3) a list with components <code>s</code> and <code>U</code>, as returned by a previous <code>plmm()</code> model fit on the same data.
-Note: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
+<strong>Note</strong>: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
 
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>
@@ -132,6 +133,10 @@ However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small
 
 <dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
 <dd><p>Maximum number of iterations (total across entire path). Default is 10000.</p></dd>
+
+
+<dt id="arg-dfmax">dfmax<a class="anchor" aria-label="anchor" href="#arg-dfmax"></a></dt>
+<dd><p>Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)</p></dd>
 
 
 <dt id="arg-warn">warn<a class="anchor" aria-label="anchor" href="#arg-warn"></a></dt>

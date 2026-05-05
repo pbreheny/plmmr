@@ -13,6 +13,7 @@ plmm_checks(
   init = NULL,
   gamma,
   alpha = 1,
+  dfmax = NULL,
   trace = FALSE,
   save_rds = NULL,
   return_fit = TRUE,
@@ -63,6 +64,11 @@ plmm_checks(
   `alpha = 1` is equivalent to MCP/SCAD penalty, while `alpha = 0` would
   be equivalent to ridge regression. However, `alpha = 0` is not
   supported; alpha may be arbitrarily small, but not exactly 0.
+
+- dfmax:
+
+  Maximum number of non-zero coefficients that may enter the model.
+  Default is NULL (no maximum)
 
 - trace:
 
@@ -120,11 +126,14 @@ A list which includes 16 items:
 
 - `plink_flag`: Logical, does `std_X` originate from PLINK files?
 
-- `penalty`: A character string indicating the penalty type
+- `penalty`: A character string indicating the penalty type.
 
 - `gamma`: Tuning parameter for the SCAD or MCP penalties.
 
 - `init`: Initialized values for beta coefficients.
+
+- `dfmax`: Maximum number of non-zero coefficients that may enter the
+  model.
 
 - `n`: Number of rows in the original design matrix prior to
   standardization procedures.

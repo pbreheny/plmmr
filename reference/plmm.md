@@ -19,6 +19,7 @@ plmm(
   lambda,
   eps = 1e-04,
   max_iter = 10000,
+  dfmax = NULL,
   warn = TRUE,
   trace = FALSE,
   save_rds = NULL,
@@ -51,8 +52,8 @@ plmm(
   a known matrix that reflects the covariance of y, (2) an estimate
   (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components `s`
   and `U`, as returned by a previous `plmm()` model fit on the same
-  data. Note: if a user provides their own matrix, it is decomposed as
-  provided and will *not* be scaled.
+  data. **Note**: if a user provides their own matrix, it is decomposed
+  as provided and will *not* be scaled.
 
 - eta:
 
@@ -108,6 +109,11 @@ plmm(
 
   Maximum number of iterations (total across entire path). Default is
   10000.
+
+- dfmax:
+
+  Maximum number of non-zero coefficients that may enter the model.
+  Default is NULL (no maximum)
 
 - warn:
 

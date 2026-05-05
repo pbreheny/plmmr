@@ -27,7 +27,7 @@ cvf(i, fold, type, cv_args, ...)
   A character argument indicating what should be returned from
   [`predict.plmm()`](https://pbreheny.github.io/plmmr/reference/predict.plmm.md).
   If `type = 'lp'` predictions are based on the linear predictor, \\X
-  \beta\\. If `type = 'individual'` predictions are based on the linear
+  \beta\\. If `type = 'blup'`, predictions are based on the linear
   predictor plus the estimated random effect (BLUP).
 
 - cv_args:

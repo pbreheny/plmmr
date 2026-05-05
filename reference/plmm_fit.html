@@ -61,6 +61,7 @@
 <span>  eps <span class="op">=</span> <span class="fl">1e-04</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  warn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -126,6 +127,10 @@ However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small
 
 <dt id="arg-init">init<a class="anchor" aria-label="anchor" href="#arg-init"></a></dt>
 <dd><p>Initial values for coefficients. Default is 0 for all columns of X.</p></dd>
+
+
+<dt id="arg-dfmax">dfmax<a class="anchor" aria-label="anchor" href="#arg-dfmax"></a></dt>
+<dd><p>Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum).</p></dd>
 
 
 <dt id="arg-warn">warn<a class="anchor" aria-label="anchor" href="#arg-warn"></a></dt>

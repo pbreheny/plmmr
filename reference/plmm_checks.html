@@ -54,6 +54,7 @@
 <span>  init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">gamma</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  dfmax <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  trace <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_rds <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  return_fit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -97,6 +98,10 @@
 However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small, but not exactly 0.</p></dd>
 
 
+<dt id="arg-dfmax">dfmax<a class="anchor" aria-label="anchor" href="#arg-dfmax"></a></dt>
+<dd><p>Maximum number of non-zero coefficients that may enter the model. Default is NULL (no maximum)</p></dd>
+
+
 <dt id="arg-trace">trace<a class="anchor" aria-label="anchor" href="#arg-trace"></a></dt>
 <dd><p>If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.</p></dd>
 
@@ -126,9 +131,10 @@ However, <code>alpha = 0</code> is not supported; alpha may be arbitrarily small
 <li><p><code>eta</code>: Estimated proportion of the variance in the outcome attributable to population/correlation structure (as passed by <code><a href="plmm.html">plmm()</a></code>, may be NULL)</p></li>
 <li><p><code>fbm_flag</code>: Logical, is <code>std_X</code> filebacked?</p></li>
 <li><p><code>plink_flag</code>: Logical, does <code>std_X</code> originate from PLINK files?</p></li>
-<li><p><code>penalty</code>: A character string indicating the penalty type</p></li>
+<li><p><code>penalty</code>: A character string indicating the penalty type.</p></li>
 <li><p><code>gamma</code>: Tuning parameter for the SCAD or MCP penalties.</p></li>
 <li><p><code>init</code>: Initialized values for beta coefficients.</p></li>
+<li><p><code>dfmax</code>: Maximum number of non-zero coefficients that may enter the model.</p></li>
 <li><p><code>n</code>: Number of rows in the original design matrix prior to standardization procedures.</p></li>
 <li><p><code>p</code>: Number of columns in the original design matrix prior to standardization procedures.</p></li>
 </ul></div>
