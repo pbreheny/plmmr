@@ -37,4 +37,4 @@ align_ids(id_var, add_predictor, og_ids, outfile, quiet)
 
 ## Value
 
-A matrix with the same dimensions as add_predictor
+A matrix with the same dimensions as `add_predictor`

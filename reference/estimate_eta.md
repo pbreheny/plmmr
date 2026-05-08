@@ -6,7 +6,7 @@ This function is called internally by
 ## Usage
 
 ``` r
-estimate_eta(n, s, U, y)
+estimate_eta(n, s, U, y, incpt_flag)
 ```
 
 ## Arguments
@@ -26,6 +26,10 @@ estimate_eta(n, s, U, y)
 - y:
 
   Continuous outcome vector
+
+- incpt_flag:
+
+  Logical: Does the model require fitting an intercept?
 
 ## Value
 

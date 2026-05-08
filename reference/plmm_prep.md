@@ -13,6 +13,7 @@ plmm_prep(
   n,
   p,
   centered_y,
+  penalty_factor,
   K = NULL,
   eta = NULL,
   fbm_flag,
@@ -50,6 +51,10 @@ plmm_prep(
 
   Continuous outcome vector, centered.
 
+- penalty_factor:
+
+  A multiplicative factor for the penalty applied to each coefficient.
+
 - K:
 
   Similarity matrix used to rotate the data. This should either be: (1)
@@ -78,7 +83,7 @@ plmm_prep(
 
 - ...:
 
-  Not used yet
+  Not used
 
 ## Value
 
@@ -98,6 +103,11 @@ List with these components:
   singular values of X).
 
 - `eta`: The numeric value of the estimated eta parameter
+
+- `penalty_factor` A multiplicative factor for the penalty applied to
+  each coefficient.
+
+- `incpt_flag` Logical: Does the model require fitting an intercept?
 
 - `trace`: If set to TRUE, inform the user of progress by announcing the
   beginning of each step of the modeling process

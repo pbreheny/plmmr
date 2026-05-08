@@ -32,7 +32,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
 #> process_plink() completed. 
-#> Processed files now saved as /tmp/Rtmp71IZS3/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmprGeO41/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -88,18 +88,18 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-05-06 03:11:16
+#> Standardization completed at 2026-05-08 17:50:39
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmp71IZS3/std_colon2
+#> Processed files now saved as /tmp/RtmprGeO41/std_colon2.rds
 ```
 
 As with
 [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md),
 the
 [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
-function returns a filepath: . The output messages document the steps in
-the create design procedure, and these messages are saved to the text
+function returns a filepath. The output messages document the steps in
+the design creation procedure, and these messages are saved to the text
 file `colon_design.log` in the `rds_dir` folder.
 
 For didactic purposes, we can look at the design:
@@ -126,7 +126,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp71IZS3/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmprGeO41/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -154,22 +154,23 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-05-06 03:11:16
+#> Input data passed all checks at  2026-05-08 17:50:39
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-05-06 03:11:16
+#> Eigendecomposition finished at  2026-05-08 17:50:39
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:11:16
+#> Rotation (preconditioning) finished at  2026-05-08 17:50:39
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:11:17 
+#> Model fitting finished at  2026-05-08 17:50:39 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-05-06 03:11:17
+#> Model ready at  2026-05-08 17:50:39
 ```
 
-Notice the messages that are printed out – this documentation may be
-optionally saved to another `.log` file using the `logfile` argument.
+Notice the messages that are printed out – this documentation may
+optionally be saved to another `.log` file using the `save_rds`
+argument.
 
 We can examine the results at a specific \lambda value:
 
@@ -184,7 +185,7 @@ summary(colon_fit, idx = 50)
 #> -------------------------------------------------
 ```
 
-We may also plot of the paths of the estimated coefficients:
+We may also plot the paths of the estimated coefficients:
 
 ``` r
 
@@ -195,14 +196,14 @@ plot(colon_fit)
 
 ## Prediction for filebacked data
 
-This example shows an experimental option, wherein we are working to add
-a prediction method for filebacked outside of cross-validation.
+The `predict` method can also be employed directly on filebacked data by
+passing the `newX` argument a `bigmemory` `big.matrix`.
 
 ``` r
 
 # linear predictor 
 yhat_lp <- predict(object = colon_fit,
-        newX = attach.big.matrix(colon$X),
+        newX = bigmemory::attach.big.matrix(colon$X),
         type = "lp")
 
 # best linear unbiased predictor 
@@ -210,9 +211,9 @@ yhat_blup <- predict(object = colon_fit,
         newX = bigmemory::attach.big.matrix(colon$X),
         type = "blup")
 
-# look at mean squared prediction error 
-mspe_lp <- apply(yhat_lp, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
-mspe_blup <- apply(yhat_blup, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
+# look at mean squared prediction error
+mspe_lp <- apply(yhat_lp, 2, function(c) crossprod(colon_outcome$y - c) / length(c))
+mspe_blup <- apply(yhat_blup, 2, function(c) crossprod(colon_outcome$y - c) / length(c))
 min(mspe_lp)
 #> [1] 0.002021684
 min(mspe_blup)

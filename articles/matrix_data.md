@@ -34,13 +34,6 @@ The `admix` dataset is now ready to analyze with a call to
 ``` r
 
 admix_fit <- plmm(admix$X, admix$y)
-summary(admix_fit, lambda = admix_fit$lambda[50])
-#> lasso-penalized regression model with n=197, p=101 at lambda=0.01404
-#> -------------------------------------------------
-#> The model converged 
-#> -------------------------------------------------
-#> # of non-zero coefficients:  89 
-#> -------------------------------------------------
 ```
 
 Notice: We are passing `admix$X` as the `design` argument in
@@ -109,11 +102,11 @@ fit](matrix_data_files/figure-html/admix_plots-1.png)
 
 Plot of path for model fit
 
-Suppose we also know the ancestry groups with which for each person in
-the `admix` data self-identified. We would probably want to include this
-in the model as an unpenalized covariate (i.e., we would want ‘ancestry’
-to always be in the model). To specify an unpenalized covariate, we need
-to use the
+Suppose we also know the ancestry groups with which each person in the
+`admix` data self-identified. We would probably want to include this in
+the model as an unpenalized covariate (i.e., we would want ‘ancestry’ to
+always be in the model). To specify an unpenalized covariate, we need to
+use the
 [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
 function prior to calling
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md). Here is
@@ -153,7 +146,7 @@ summary(admix_fit2, idx = 25)
 plot(admix_fit2)
 ```
 
-![](matrix_data_files/figure-html/unnamed-chunk-5-1.png)
+![](matrix_data_files/figure-html/unnamed-chunk-6-1.png)
 
 ## Cross validation
 
@@ -163,15 +156,15 @@ cross-validation error:
 
 ``` r
 
-admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
-admix_cv_s <- summary(admix_cv, lambda = "min")
-print(admix_cv_s)
+# using default 5-fold CV
+admix_cv <- cv_plmm(design = admix_design2, seed = 1)
+summary(admix_cv, lambda = "min")
 #> lasso-penalized model with n=197 and p=102
 #> At minimum cross-validation error (lambda=0.1869):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.38
-#>   Scale estimate (sigma): 1.175
+#>   Cross-validation error (deviance): 1.29
+#>   Scale estimate (sigma): 1.136
 ```
 
 We can also plot the cross-validation error (CVE) versus \lambda (on the
@@ -188,7 +181,7 @@ Plot of CVE
 
 ### Parallelization
 
-As an option for cross-validation, with data stored in-memory you may
+As an option for cross-validation with data stored in-memory, you may
 choose to implement CV in parallel using the `cluster` argument in
 [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md).
 Here is an example of setting up CV in parallel:
@@ -203,21 +196,27 @@ print(cl) # check to see what kind of cluster you've made
 cv_fit_parallel <- cv_plmm(design = admix_design2,
                            type = "blup",
                            cluster = cl,
-                           return_fit = T,
+                           seed = 1,
                            trace = FALSE) 
 
-# note: the results closely correspond to the above
+# note: results match the above
 summary(cv_fit_parallel)
 #> lasso-penalized model with n=197 and p=102
 #> At minimum cross-validation error (lambda=0.1869):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.33
-#>   Scale estimate (sigma): 1.153
+#>   Cross-validation error (deviance): 1.29
+#>   Scale estimate (sigma): 1.136
+```
+
+``` r
+
 plot(cv_fit_parallel)
 ```
 
-![](matrix_data_files/figure-html/unnamed-chunk-6-1.png)
+![Plot of CVE](matrix_data_files/figure-html/cvplot_par-1.png)
+
+Plot of CVE
 
 ## Prediction
 
@@ -240,13 +239,13 @@ lower is better:
 ``` r
 
 # intercept-only (or 'null') model
-crossprod(admix$y - mean(admix$y))/length(admix$y)
+crossprod(admix$y - mean(admix$y)) / length(admix$y)
 #>          [,1]
 #> [1,] 5.928528
 
 # our model at its best value of lambda
-apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
-min(mse)
+mspe <- apply(y_hat, 2, function(c) crossprod(admix$y - c) / length(c))
+min(mspe)
 #> [1] 0.6820412
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```

@@ -15,21 +15,21 @@ relatedness_mat(X, std = TRUE, ns = NULL)
 
 - X:
 
-  An n x p numeric matrix of genotypes (from *fully-imputed* data).
-  Note: This matrix should *not* include non-genetic features. Can be a
-  filebacked `big.matrix` object.
+  An n x p numeric matrix of genotypes (from *fully-imputed* data). Can
+  be a filebacked `big.matrix` object. Note: This matrix should *not*
+  include non-genetic features.
 
 - std:
 
-  Logical: should `X` be standardized? If you set this to FALSE (which
-  can only be done if data are stored in memory), you should have a good
-  reason for doing so, as standardization is a best practice.
+  Logical: should `X` be standardized? If you set this to FALSE, you
+  should have a good reason for doing so, as standardization is a best
+  practice.
 
 - ns:
 
   Optional vector of values indicating the indices of nonsingular
-  features. **Note**: If a filebacked `big.matrix` is passed to `X`
-  along with a non-null `ns`, a temporary deep copy will be created.
+  features. Note: If a filebacked `big.matrix` is passed to `X` along
+  with a non-null `ns`, a temporary deep copy will be created.
 
 ## Value
 

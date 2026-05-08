@@ -1,11 +1,10 @@
 # Notes on notation
 
-The purpose of this short vignette is to document the notation
-conventions for the math and programming related to PLMM. We begin with
-the math, and then translate our math notation into naming objects in
-our source code.
+The purpose of this short vignette is to document the notation for the
+math and programming related to `plmmr`. We begin with the math, and
+then translate our math notation into naming objects in our source code.
 
-Throughout this document, the reader will notice some notation
+Throughout this document, the reader will notice some notational
 conventions:
 
 - Matrices are denoted with **boldface**, UPPERCASE letters
@@ -48,12 +47,12 @@ or equivalently as \mathbf{y} =
 - \mathbf{Z} is a n \times b matrix of indicators corresponding to a
   grouping structure, and \boldsymbol{\gamma} is the vector of values
   describing how each grouping is associated with \mathbf{y}. In real
-  data, these values typically unknown.
+  data, these values are typically unknown.
 
 - \boldsymbol{\epsilon} is the n \times 1 vector of noise.
 
 We define the realized (or empirical) relatedness matrix as \mathbf{K}
-\equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top
+\equiv \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top.
 
 This model assumes:
 
@@ -62,7 +61,7 @@ This model assumes:
 - \mathbf{u} \sim N(0, \sigma^2\_{s}\mathbf{K})
 
 Under these assumptions, we may write \mathbf{y} \sim
-N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})
+N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma}).
 
 **Indices**:
 
@@ -73,15 +72,15 @@ N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})
 
 ### Decomposition and rotation (prep and first part of fit)
 
-- Beginning with an eigendecomposition, we have \mathbf{U} and
-  \mathbf{s} are the eigenvectors and eigenvalues of \mathbf{K}, as one
+- Beginning with an eigendecomposition, \mathbf{U} and \mathbf{s} are
+  the eigenvectors and eigenvalues of \mathbf{K}, respectively, as one
   would obtain from \text{eigen}(\mathbf{K)} \equiv
   \mathbf{U}\mathbf{S}\mathbf{U}^\top. The elements of \mathbf{s} are
   the diagonal values of \mathbf{S}. Note, random effect \mathbf{u} is
   distinct from the columns of matrix \mathbf{U}.
 
 - k represents the number of nonzero eigenvalues represented in
-  \mathbf{U} and \mathbf{d}, so k \leq \text{min}(n,p).
+  \mathbf{U} and \mathbf{s}, so k \leq \text{min}(n,p).
 
 - Again, \mathbf{K} \equiv
   \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top} is often referred
@@ -89,7 +88,7 @@ N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}}, \boldsymbol{\Sigma})
   genomic relatedness matrix (GRM). \mathbf{K} has dimension n \times n.
 
 - \eta is the ratio \frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}. We
-  estimate \hat{\eta} from a null model (more details to come).
+  estimate \hat{\eta} from an intercept-only null model.
 
 - \mathbf{\Sigma} is the variance of the outcome, where
   \mathbb{V}({\mathbf{y}}) \propto \eta \mathbf{K} + (1 -
@@ -142,7 +141,7 @@ In the code, we denote the objects above in this way:
 
 - \tilde{\dot{\mathbf{X}}} is `rot_X`
 
-- \ddot{\tilde{\mathbf{X}}} is `stdrot_X`
+- \tilde{\ddot{\mathbf{X}}} is `stdrot_X`
 
 - \hat{\boldsymbol{\beta}} is named `og_scale_beta` in helper functions
   (for clarity) and returned in `plmm` objects as `beta_vals`.

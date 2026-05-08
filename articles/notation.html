@@ -71,11 +71,11 @@
 
     
     
-<p>The purpose of this short vignette is to document the notation
-conventions for the math and programming related to PLMM. We begin with
+<p>The purpose of this short vignette is to document the notation for
+the math and programming related to <code>plmmr</code>. We begin with
 the math, and then translate our math notation into naming objects in
 our source code.</p>
-<p>Throughout this document, the reader will notice some notation
+<p>Throughout this document, the reader will notice some notational
 conventions:</p>
 <ul>
 <li>Matrices are denoted with <strong>boldface</strong>, UPPERCASE
@@ -123,13 +123,13 @@ features (columns of constants) in the original <span class="math inline">\mathb
 represents the coefficients on the standardized scale.</p></li>
 <li><p><span class="math inline">\mathbf{Z}</span> is a <span class="math inline">n \times b</span> matrix of indicators corresponding
 to a grouping structure, and <span class="math inline">\boldsymbol{\gamma}</span> is the vector of values
-describing how each grouping is associated with <span class="math inline">\mathbf{y}</span>. In real data, these values
+describing how each grouping is associated with <span class="math inline">\mathbf{y}</span>. In real data, these values are
 typically unknown.</p></li>
 <li><p><span class="math inline">\boldsymbol{\epsilon}</span> is the
 <span class="math inline">n \times 1</span> vector of noise.</p></li>
 </ul>
 <p>We define the realized (or empirical) relatedness matrix as <span class="math inline">\mathbf{K} \equiv
-\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top</span></p>
+\frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^\top</span>.</p>
 <p>This model assumes:</p>
 <ul>
 <li><span class="math inline">\boldsymbol{\epsilon} \perp
@@ -141,7 +141,7 @@ typically unknown.</p></li>
 </ul>
 <p>Under these assumptions, we may write <span class="math inline">\mathbf{y} \sim
 N(\dot{\mathbf{X}}\dot{\boldsymbol{\beta}},
-\boldsymbol{\Sigma})</span></p>
+\boldsymbol{\Sigma})</span>.</p>
 <p><strong>Indices</strong>:</p>
 <ul>
 <li>
@@ -160,21 +160,21 @@ etc.)</li>
 <h3 id="decomposition-and-rotation-prep-and-first-part-of-fit">Decomposition and rotation (prep and first part of fit)<a class="anchor" aria-label="anchor" href="#decomposition-and-rotation-prep-and-first-part-of-fit"></a>
 </h3>
 <ul>
-<li><p>Beginning with an eigendecomposition, we have <span class="math inline">\mathbf{U}</span> and <span class="math inline">\mathbf{s}</span> are the eigenvectors and
-eigenvalues of <span class="math inline">\mathbf{K}</span>, as one would
-obtain from <span class="math inline">\text{eigen}(\mathbf{K)} \equiv
+<li><p>Beginning with an eigendecomposition, <span class="math inline">\mathbf{U}</span> and <span class="math inline">\mathbf{s}</span> are the eigenvectors and
+eigenvalues of <span class="math inline">\mathbf{K}</span>,
+respectively, as one would obtain from <span class="math inline">\text{eigen}(\mathbf{K)} \equiv
 \mathbf{U}\mathbf{S}\mathbf{U}^\top</span>. The elements of <span class="math inline">\mathbf{s}</span> are the diagonal values of <span class="math inline">\mathbf{S}</span>. Note, random effect <span class="math inline">\mathbf{u}</span> is distinct from the columns of
 matrix <span class="math inline">\mathbf{U}</span>.</p></li>
 <li><p><span class="math inline">k</span> represents the number of
-nonzero eigenvalues represented in <span class="math inline">\mathbf{U}</span> and <span class="math inline">\mathbf{d}</span>, so <span class="math inline">k
+nonzero eigenvalues represented in <span class="math inline">\mathbf{U}</span> and <span class="math inline">\mathbf{s}</span>, so <span class="math inline">k
 \leq \text{min}(n,p)</span>.</p></li>
 <li><p>Again, <span class="math inline">\mathbf{K} \equiv
 \frac{1}{p}\dot{\mathbf{X}}\dot{\mathbf{X}}^{\top}</span> is often
 referred to in the literature as the realized relatedness matrix (RRM)
 or genomic relatedness matrix (GRM). <span class="math inline">\mathbf{K}</span> has dimension <span class="math inline">n \times n</span>.</p></li>
 <li><p><span class="math inline">\eta</span> is the ratio <span class="math inline">\frac{\sigma^2_s}{\sigma^2_e + \sigma^2_s}</span>.
-We estimate <span class="math inline">\hat{\eta}</span> from a null
-model (more details to come).</p></li>
+We estimate <span class="math inline">\hat{\eta}</span> from an
+intercept-only null model.</p></li>
 <li><p><span class="math inline">\mathbf{\Sigma}</span> is the variance
 of the outcome, where <span class="math inline">\mathbb{V}({\mathbf{y}})
 \propto \eta \mathbf{K} + (1 - \eta)\mathbf{I}_n</span>.</p></li>
@@ -231,7 +231,7 @@ written <span class="math inline">\hat{\ddot{\boldsymbol{\beta}}}
 <code>std_X</code></p></li>
 <li><p><span class="math inline">\tilde{\dot{\mathbf{X}}}</span> is
 <code>rot_X</code></p></li>
-<li><p><span class="math inline">\ddot{\tilde{\mathbf{X}}}</span> is
+<li><p><span class="math inline">\tilde{\ddot{\mathbf{X}}}</span> is
 <code>stdrot_X</code></p></li>
 <li><p><span class="math inline">\hat{\boldsymbol{\beta}}</span> is
 named <code>og_scale_beta</code> in helper functions (for clarity) and

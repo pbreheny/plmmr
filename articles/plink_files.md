@@ -10,7 +10,7 @@ library(plmmr)
 A widely-used format for storing data from genome-wide association
 studies (GWAS) is the [PLINK file
 formats](https://www.cog-genomics.org/plink/1.9/formats), which consists
-of a triplet of ‘.bed’, ‘.bed’, and ‘.fam’ files. The `plmmr` package is
+of a triplet of `.bed`, `.bed`, and `.fam` files. The `plmmr` package is
 equipped to analyze data from PLINK files. If you have data in this
 format, keep reading – if you want to know more about what each of these
 files contains, see [this other
@@ -24,17 +24,17 @@ The `plmmr` package is designed to handle data so that users can analyze
 large data sets. For this reason, data must be preprocessed into a
 specific format. There are two steps to prepare for analysis: (1)
 process the data and (2) create a design. Processing the data means that
-we take the feature data and create a ‘.rds’ object that contains your
+we take the feature data and create a `.rds` object that contains your
 feature data in a format compatible with the `bigmemory`
 [package](https://cran.r-project.org/web/packages/bigmemory/index.html).
 Creating a design involves standardizing the input of the features,
-outcome, and penalty factor into the modeling functions
+outcome, and penalty factor for use in the modeling functions
 [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) and
 [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md).
 
 ## Processing PLINK files
 
-First, unzip your PLINK files if they are zipped. Our example data,
+First, unzip your PLINK files if they are zipped. Our example
 `penncath_lite` data that ships with `plmmr` is zipped; you can run this
 command to unzip:
 
@@ -42,7 +42,7 @@ command to unzip:
 
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/Rtmpj1bEij
+#> Unzipped files are saved in /tmp/RtmpwTlXj5
 ```
 
 For GWAS data, we have to tell `plmmr` how to combine information across
@@ -50,8 +50,8 @@ all three PLINK files (the `.bed`, `.bim`, and `.fam` files). We do this
 with
 [`process_plink()`](https://pbreheny.github.io/plmmr/reference/process_plink.md).
 
-Here, we will create the files we want in a temporary directory just for
-the sake of example. Users can specify the folder of their choice for
+Here, we will create the files we want in a temporary directory for the
+sake of example. Users can specify the folder of their choice for
 `rds_dir`, as shown below:
 
 ``` r
@@ -77,7 +77,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Imputing the missing (genotype) values using mode method...
 #> Done with imputation.
 #> process_plink() completed.
-#> Processed files now saved as /tmp/Rtmpj1bEij/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpwTlXj5/imputed_penncath_lite.rds
 ```
 
 You’ll see a lot of messages printed to the console here … the result of
@@ -102,7 +102,7 @@ str(pen) # note: genotype data is *not* in memory
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpj1bEij/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpwTlXj5/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4367
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -139,22 +139,19 @@ any(is.na(pen$genotypes[,]))
 
 Now we are ready to create a `plmm_design`, which is an object with the
 pieces we need for our model: a design matrix \mathbf{X}, an outcome
-vector \mathbf{y}, and a the vector with the penalty factor indicators
-(1 = feature will be penalized, 0 = feature will not be penalized).
+vector \mathbf{y}, and a vector with the penalty factor indicators (1 =
+feature will be penalized, 0 = feature will not be penalized).
 
 As a side note: in GWAS studies, it is typical to include some
-non-genomic factors as unpenalized covariates as part of the model. For
+non-genomic features as unpenalized covariates in the model. For
 instance, you may want to adjust for sex or age (as shown in the example
 below) – these are factors that you want to ensure are always included
 in the selected model. The `plmmr` package allows you to include these
-additional unpenalized predictors via the ‘add_predictor’ and
-‘predictor_id’ options, both of which are passed through
+additional unpenalized predictors via the `add_predictor` and
+`predictor_id` options, both of which are passed through
 [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
 to the internal function
 [`create_design_filebacked()`](https://pbreheny.github.io/plmmr/reference/create_design_filebacked.md).
-An example with these options is included in the
-[`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)
-documentation.
 
 ``` r
 
@@ -189,10 +186,10 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 62 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-05-06 03:11:40
+#> Standardization completed at 2026-05-08 17:51:04
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmpj1bEij/std_penncath_lite
+#> Processed files now saved as /tmp/RtmpwTlXj5/std_penncath_lite.rds
 
 # examine the design - notice the components of this object 
 pen_design_rds <- readRDS(pen_design)
@@ -215,7 +212,7 @@ str(pen_design_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpj1bEij/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpwTlXj5/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4307
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -256,32 +253,28 @@ apply(std_X[,], 2, var) |> summary() # ... & variance 1
 
 ## Fitting a model
 
-Now that we have a design object, we are ready to fit a model. By
-default, the model fitting results are saved as files in the folder
-specified in the `rds_dir` argument of `plmmm`. If you want to return
-the model fitting results, set `return_fit = TRUE` in
-[`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
+Now that we have a design object, we are ready to fit a model. [^2]
 
 ``` r
 
 pen_fit <- plmm(design = pen_design,
-                trace = T,
-                return_fit = T)
+                trace = TRUE,
+                return_fit = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-05-06 03:11:42
+#> Input data passed all checks at  2026-05-08 17:51:05
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-05-06 03:11:43
+#> Eigendecomposition finished at  2026-05-08 17:51:07
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:11:44
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:07
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:11:47 
+#> Model fitting finished at  2026-05-08 17:51:10 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-05-06 03:11:47
-# you can turn off the trace messages by letting trace = F (default)
+#> Model ready at  2026-05-08 17:51:10
+# you can turn off the trace messages by letting trace = FALSE (default)
 ```
 
 We examine our model results below:
@@ -309,17 +302,17 @@ validation method:
 
 cv_fit <- cv_plmm(design = pen_design,
                   type = "blup",
-                  return_fit = T,
-                  trace = T)
+                  return_fit = TRUE,
+                  trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:11:50
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:13
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:11:53 
+#> Model fitting finished at  2026-05-08 17:51:16 
 #> 'Fold' argument is either NULL or missing; assigning folds randomly (by default).
 #>           
 #> To specify folds for each observation, supply a vector with fold assignments.
@@ -330,41 +323,41 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 1
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:11:54
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:17
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:11:56 
+#> Model fitting finished at  2026-05-08 17:51:19 
 #> Beginning eigendecomposition in fold  2 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 2
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:11:58
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:21
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:12:00 
+#> Model fitting finished at  2026-05-08 17:51:23 
 #> Beginning eigendecomposition in fold  3 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 3
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:12:02
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:25
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:12:04 
+#> Model fitting finished at  2026-05-08 17:51:28 
 #> Beginning eigendecomposition in fold  4 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 4
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:12:06
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:29
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:12:08 
+#> Model fitting finished at  2026-05-08 17:51:32 
 #> Beginning eigendecomposition in fold  5 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 5
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-06 03:12:10
+#> Rotation (preconditioning) finished at  2026-05-08 17:51:33
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-06 03:12:12
+#> Model fitting finished at  2026-05-08 17:51:35
 ```
 
 There are plot and summary methods for CV models as well:
@@ -422,3 +415,7 @@ involves these steps:
 
 [^1]: Optionally, you can add a `.log` file via the `logfile` argument:
     a log file is a text file documenting the steps that were just done.
+
+[^2]: If you want to save the model fitting results, specify a file name
+    using the `save_rds` argument in
+    [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).

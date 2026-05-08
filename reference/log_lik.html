@@ -46,7 +46,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">log_lik</span><span class="op">(</span><span class="va">eta</span>, <span class="va">n</span>, <span class="va">s</span>, <span class="va">U</span>, <span class="va">y</span>, rot_y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">log_lik</span><span class="op">(</span><span class="va">eta</span>, <span class="va">n</span>, <span class="va">s</span>, <span class="va">U</span>, <span class="va">y</span>, <span class="va">incpt_flag</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,8 +73,8 @@
 <dd><p>Continuous outcome vector</p></dd>
 
 
-<dt id="arg-rot-y">rot_y<a class="anchor" aria-label="anchor" href="#arg-rot-y"></a></dt>
-<dd><p>Optional: if y has already been rotated, then this can be supplied</p></dd>
+<dt id="arg-incpt-flag">incpt_flag<a class="anchor" aria-label="anchor" href="#arg-incpt-flag"></a></dt>
+<dd><p>Logical: Does the model require fitting an intercept? Passed from <code>estimate_eta</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

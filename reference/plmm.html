@@ -77,7 +77,7 @@
 <dd><p>The first argument must be one of three things:
 (1) <code>plmm_design</code> object (as created by <code><a href="create_design.html">create_design()</a></code>)
 (2) a string with the file path to a design object (the file path must end in <code>.rds</code>)
-(3) a <code>matrix</code> or <code>data.frame</code> object representing the design matrix of interest</p></dd>
+(3) a <code>matrix</code> or <code>data.frame</code> object representing the design matrix of interest.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
@@ -91,7 +91,8 @@ internally to <code>create_design(X = design, y = y)</code>.</p></dd>
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \(\frac{1}{p}(XX^T)\)), or
 (3) a list with components <code>s</code> and <code>U</code>, as returned by a previous <code>plmm()</code> model fit on the same data.
-<strong>Note</strong>: if a user provides their own matrix, it is decomposed as provided and will <em>not</em> be scaled.</p></dd>
+<br><strong>Note</strong>: If a user provides their own <code>K</code> matrix, it is decomposed as provided and will <em>not</em> be scaled. If <code>design</code> was created using filebacked data and <code>K</code> is provided by the user,
+it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final <code>.rds</code> object in <code><a href="create_design.html">create_design()</a></code>.</p></dd>
 
 
 <dt id="arg-eta">eta<a class="anchor" aria-label="anchor" href="#arg-eta"></a></dt>

@@ -37,7 +37,7 @@ plmm(
   [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md)) (2)
   a string with the file path to a design object (the file path must end
   in `.rds`) (3) a `matrix` or `data.frame` object representing the
-  design matrix of interest
+  design matrix of interest.
 
 - y:
 
@@ -52,8 +52,14 @@ plmm(
   a known matrix that reflects the covariance of y, (2) an estimate
   (Default is \\\frac{1}{p}(XX^T)\\), or (3) a list with components `s`
   and `U`, as returned by a previous `plmm()` model fit on the same
-  data. **Note**: if a user provides their own matrix, it is decomposed
-  as provided and will *not* be scaled.
+  data.  
+  **Note**: If a user provides their own `K` matrix, it is decomposed as
+  provided and will *not* be scaled. If `design` was created using
+  filebacked data and `K` is provided by the user, it is possible that a
+  new design matrix containing an intercept will need to be created.
+  This file will be placed in the same directory used to save the final
+  `.rds` object in
+  [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md).
 
 - eta:
 

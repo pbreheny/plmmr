@@ -27,7 +27,7 @@ The novelties of `plmmr` are:
 2.  **Accessibility**: `plmmr` can be run from an `R` session on a
     typical desktop or laptop computer. The user does not need access to
     a supercomputer or have experience with the command line in order to
-    fit models `plmmr`.
+    fit models using `plmmr`.
 
 3.  **Handling correlation**: `plmmr` uses a transformation that (1)
     measures correlation among samples and (2) uses this correlation
@@ -82,9 +82,8 @@ equipped to analyze data using *filebacking* - a strategy that lets R
 ‘point’ to a file on disk, rather than reading the file into the R
 session. Many other packages use this technique -
 [bigstatsr](https://privefl.github.io/bigstatsr/) and
-[biglasso](https://pbreheny.github.io/biglasso/) are two examples of
-packages that use the filebacking technique. The package that `plmmr`
-uses to create and store filebacked objects is
+[biglasso](https://pbreheny.github.io/biglasso/) are two such examples.
+The package that `plmmr` uses to create and store filebacked objects is
 [bigmemory](https://CRAN.R-project.org/package=bigmemory). The
 filebacked computation relies on the
 [biglasso](https://pbreheny.github.io/biglasso/) package by [Yaohui
@@ -155,9 +154,9 @@ data input.
   small data set (197 observations, 100 SNPs) that describes individuals
   of different ancestry groups. The outcome of `admix` is simulated to
   include population structure effects (*i.e.* race/ethnicity have an
-  impact on the SNP associations). This data set is available as
-  whenever [`library(plmmr)`](https://pbreheny.github.io/plmmr/) is
-  called. An example analysis with the `admix` data is available in
+  impact on the SNP associations). This data set is available whenever
+  [`library(plmmr)`](https://pbreheny.github.io/plmmr/) is called. An
+  example analysis with the `admix` data is available in
   `vignette('matrix_data', package = "plmmr")`.
 
 - The `penncath_lite` data is our example of PLINK input data.
@@ -166,8 +165,8 @@ data input.
   dimensional data set (1401 observations, 4217 SNPs) with several
   health outcomes as well as age and sex information. The features in
   this data set represent a small subset of a much larger GWAS data set
-  (the original data has over 800K SNPs). For for information on this
-  data set, refer to the [original
+  (the original data has over 800K SNPs). For information on this data
+  set, refer to the [original
   publication](https://pubmed.ncbi.nlm.nih.gov/21239051/). An example
   analysis with the `penncath_lite` data is available in
   `vignette('plink_files', package = "plmmr")`.
@@ -175,7 +174,7 @@ data input.
 - The `colon2` data is our example of delimited-file input data.
   `colon2` is a variation of the `colon` data included in the
   [biglasso](https://pbreheny.github.io/biglasso/) package. `colon2` has
-  62 observations and 2,001 features representing a study of colon
+  62 observations and 2001 features representing a study of colon
   disease. 2000 features are original to the data, and the ‘sex’ feature
   is simulated. An example analysis with the `colon2` data is available
   in `vignette('delim_files', package = "plmmr")`.

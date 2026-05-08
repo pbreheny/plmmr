@@ -10,7 +10,6 @@ plmm_fit(
   prep,
   y,
   std_X_details,
-  penalty_factor,
   fbm_flag,
   penalty,
   gamma = 3,
@@ -43,16 +42,6 @@ plmm_fit(
   A list with components `center` (values used to center X), `scale`
   (values used to scale X), and `ns` (indices for nonsingular columns of
   X)
-
-- penalty_factor:
-
-  A multiplicative factor for the penalty applied to each coefficient.
-  If supplied, `penalty_factor` must be a numeric vector of length equal
-  to the number of columns of X. The purpose of `penalty_factor` is to
-  apply differential penalization if some coefficients are thought to be
-  more likely than others to be in the model. In particular,
-  `penalty_factor` can be 0, in which case the coefficient is always in
-  the model without shrinkage.
 
 - fbm_flag:
 

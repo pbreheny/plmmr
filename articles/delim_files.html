@@ -99,7 +99,7 @@ a design, and (3) fit a model.</p>
 <span><span class="co">#&gt; At this time, plmmr::process_delim() does not not handle missing values in delimited data.</span></span>
 <span><span class="co">#&gt;       Please make sure you have addressed missingness before you proceed.</span></span>
 <span><span class="co">#&gt; process_plink() completed. </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp71IZS3/processed_colon2.rds</span></span>
+<span><span class="co">#&gt; Processed files now saved as /tmp/RtmprGeO41/processed_colon2.rds</span></span>
 <span></span>
 <span><span class="co"># look at what is created </span></span>
 <span><span class="va">colon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">colon_dat</span><span class="op">)</span></span></code></pre></div>
@@ -149,13 +149,13 @@ differs from how PLINK file data are analyzed; look at the
 <span><span class="co">#&gt; There are 0 constant features in the data.</span></span>
 <span><span class="co">#&gt; Subsetting data to exclude constant features (e.g., monomorphic SNPs)</span></span>
 <span><span class="co">#&gt; Column-standardizing the design matrix...</span></span>
-<span><span class="co">#&gt; Standardization completed at 2026-05-06 03:11:16</span></span>
+<span><span class="co">#&gt; Standardization completed at 2026-05-08 17:50:39</span></span>
 <span><span class="co">#&gt; Done with standardization. File formatting in progress...</span></span>
 <span><span class="co">#&gt; create_design() completed. </span></span>
-<span><span class="co">#&gt; Processed files now saved as /tmp/Rtmp71IZS3/std_colon2</span></span></code></pre></div>
+<span><span class="co">#&gt; Processed files now saved as /tmp/RtmprGeO41/std_colon2.rds</span></span></code></pre></div>
 <p>As with <code><a href="../reference/process_delim.html">process_delim()</a></code>, the
-<code><a href="../reference/create_design.html">create_design()</a></code> function returns a filepath: . The output
-messages document the steps in the create design procedure, and these
+<code><a href="../reference/create_design.html">create_design()</a></code> function returns a filepath. The output
+messages document the steps in the design creation procedure, and these
 messages are saved to the text file <code>colon_design.log</code> in the
 <code>rds_dir</code> folder.</p>
 <p>For didactic purposes, we can look at the design:</p>
@@ -180,7 +180,7 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <span><span class="co">#&gt;   .. ..@ description:List of 13</span></span>
 <span><span class="co">#&gt;   .. .. ..$ sharedType: chr "FileBacked"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ filename  : chr "std_colon2.bk"</span></span>
-<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/Rtmp71IZS3/"</span></span>
+<span><span class="co">#&gt;   .. .. ..$ dirname   : chr "/tmp/RtmprGeO41/"</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalRows : int 62</span></span>
 <span><span class="co">#&gt;   .. .. ..$ totalCols : int 2001</span></span>
 <span><span class="co">#&gt;   .. .. ..$ rowOffset : num [1:2] 0 62</span></span>
@@ -206,21 +206,21 @@ messages are saved to the text file <code>colon_design.log</code> in the
 <code class="sourceCode R"><span><span class="va">colon_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plmm.html">plmm</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">colon_design</span>, return_fit <span class="op">=</span> <span class="cn">TRUE</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.</span></span>
 <span><span class="co">#&gt; Reminder: the X that is returned here is column-standardized</span></span>
-<span><span class="co">#&gt; Input data passed all checks at  2026-05-06 03:11:16</span></span>
+<span><span class="co">#&gt; Input data passed all checks at  2026-05-08 17:50:39</span></span>
 <span><span class="co">#&gt; Starting decomposition.</span></span>
 <span><span class="co">#&gt; Calculating the eigendecomposition of K</span></span>
-<span><span class="co">#&gt; Eigendecomposition finished at  2026-05-06 03:11:16</span></span>
+<span><span class="co">#&gt; Eigendecomposition finished at  2026-05-08 17:50:39</span></span>
 <span><span class="co">#&gt; Beginning rotation ('preconditioning').</span></span>
-<span><span class="co">#&gt; Rotation (preconditioning) finished at  2026-05-06 03:11:16</span></span>
+<span><span class="co">#&gt; Rotation (preconditioning) finished at  2026-05-08 17:50:39</span></span>
 <span><span class="co">#&gt; Setting up lambda/preparing for model fitting.</span></span>
 <span><span class="co">#&gt; Beginning model fitting.</span></span>
-<span><span class="co">#&gt; Model fitting finished at  2026-05-06 03:11:17 </span></span>
+<span><span class="co">#&gt; Model fitting finished at  2026-05-08 17:50:39 </span></span>
 <span><span class="co">#&gt; Beta values are estimated -- almost done!</span></span>
 <span><span class="co">#&gt; Formatting results (backtransforming coefs. to original scale).</span></span>
-<span><span class="co">#&gt; Model ready at  2026-05-06 03:11:17</span></span></code></pre></div>
-<p>Notice the messages that are printed out – this documentation may be
-optionally saved to another <code>.log</code> file using the
-<code>logfile</code> argument.</p>
+<span><span class="co">#&gt; Model ready at  2026-05-08 17:50:39</span></span></code></pre></div>
+<p>Notice the messages that are printed out – this documentation may
+optionally be saved to another <code>.log</code> file using the
+<code>save_rds</code> argument.</p>
 <p>We can examine the results at a specific <span class="math inline">\lambda</span> value:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">colon_fit</span>, idx <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
@@ -230,7 +230,7 @@ optionally saved to another <code>.log</code> file using the
 <span><span class="co">#&gt; -------------------------------------------------</span></span>
 <span><span class="co">#&gt; # of non-zero coefficients:  29 </span></span>
 <span><span class="co">#&gt; -------------------------------------------------</span></span></code></pre></div>
-<p>We may also plot of the paths of the estimated coefficients:</p>
+<p>We may also plot the paths of the estimated coefficients:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">colon_fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="delim_files_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="700"></p>
@@ -238,12 +238,13 @@ optionally saved to another <code>.log</code> file using the
 <div class="section level2">
 <h2 id="prediction-for-filebacked-data">Prediction for filebacked data<a class="anchor" aria-label="anchor" href="#prediction-for-filebacked-data"></a>
 </h2>
-<p>This example shows an experimental option, wherein we are working to
-add a prediction method for filebacked outside of cross-validation.</p>
+<p>The <code>predict</code> method can also be employed directly on
+filebacked data by passing the <code>newX</code> argument a
+<code>bigmemory</code> <code>big.matrix</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># linear predictor </span></span>
 <span><span class="va">yhat_lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">colon_fit</span>,</span>
-<span>        newX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">colon</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span>
+<span>        newX <span class="op">=</span> <span class="fu">bigmemory</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">colon</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span>
 <span>        type <span class="op">=</span> <span class="st">"lp"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># best linear unbiased predictor </span></span>
@@ -251,9 +252,9 @@ add a prediction method for filebacked outside of cross-validation.</p>
 <span>        newX <span class="op">=</span> <span class="fu">bigmemory</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/bigmemory/man/attach.big.matrix.html" class="external-link">attach.big.matrix</a></span><span class="op">(</span><span class="va">colon</span><span class="op">$</span><span class="va">X</span><span class="op">)</span>,</span>
 <span>        type <span class="op">=</span> <span class="st">"blup"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># look at mean squared prediction error </span></span>
-<span><span class="va">mspe_lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_lp</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">mspe_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_blup</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co"># look at mean squared prediction error</span></span>
+<span><span class="va">mspe_lp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_lp</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mspe_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">yhat_blup</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">colon_outcome</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe_lp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.002021684</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe_blup</span><span class="op">)</span></span>

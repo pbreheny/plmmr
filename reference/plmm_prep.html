@@ -53,6 +53,7 @@
 <span>  <span class="va">n</span>,</span>
 <span>  <span class="va">p</span>,</span>
 <span>  <span class="va">centered_y</span>,</span>
+<span>  <span class="va">penalty_factor</span>,</span>
 <span>  K <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">fbm_flag</span>,</span>
@@ -89,6 +90,10 @@
 <dd><p>Continuous outcome vector, centered.</p></dd>
 
 
+<dt id="arg-penalty-factor">penalty_factor<a class="anchor" aria-label="anchor" href="#arg-penalty-factor"></a></dt>
+<dd><p>A multiplicative factor for the penalty applied to each coefficient.</p></dd>
+
+
 <dt id="arg-k">K<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
 <dd><p>Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
@@ -109,7 +114,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Not used yet</p></dd>
+<dd><p>Not used</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -120,6 +125,8 @@
 <li><p><code>s</code>: Vector of the non-zero eigenvalues of <code>K</code></p></li>
 <li><p><code>U</code>: Matrix of eigenvectors of <code>K</code> associated with <code>s</code> (same as left singular values of X).</p></li>
 <li><p><code>eta</code>: The numeric value of the estimated eta parameter</p></li>
+<li><p><code>penalty_factor</code> A multiplicative factor for the penalty applied to each coefficient.</p></li>
+<li><p><code>incpt_flag</code> Logical: Does the model require fitting an intercept?</p></li>
 <li><p><code>trace</code>: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process</p></li>
 </ul></div>
 

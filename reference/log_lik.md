@@ -7,7 +7,7 @@ estimate the variance parameter, eta.
 ## Usage
 
 ``` r
-log_lik(eta, n, s, U, y, rot_y = NULL)
+log_lik(eta, n, s, U, y, incpt_flag)
 ```
 
 ## Arguments
@@ -33,9 +33,10 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
   Continuous outcome vector
 
-- rot_y:
+- incpt_flag:
 
-  Optional: if y has already been rotated, then this can be supplied
+  Logical: Does the model require fitting an intercept? Passed from
+  `estimate_eta`.
 
 ## Value
 

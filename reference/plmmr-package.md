@@ -9,7 +9,7 @@ single nucleotide polymorphisms (SNPs) measured in a genome-wide
 association study (GWAS), 'plmmr' eliminates the need for
 subpopulation-specific analyses and post-analysis p-value adjustments.
 Functions for the appropriate processing of 'PLINK' files are also
-supplied. For examples, see the package homepage.
+supplied. For examples, see the package homepage
 <https://pbreheny.github.io/plmmr/>.
 
 ## See also
