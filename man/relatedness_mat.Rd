@@ -7,15 +7,14 @@
 relatedness_mat(X, std = TRUE, ns = NULL)
 }
 \arguments{
-\item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data).
-Note: This matrix should \emph{not} include non-genetic features. Can be a filebacked \code{big.matrix} object.}
+\item{X}{An n x p numeric matrix of genotypes (from \emph{fully-imputed} data). Can be a filebacked \code{big.matrix} object.
+Note: This matrix should \emph{not} include non-genetic features.}
 
-\item{std}{Logical: should \code{X} be standardized? If you set this to FALSE (which can only be done
-if data are stored in memory), you should have a good reason for doing so, as standardization
+\item{std}{Logical: should \code{X} be standardized? If you set this to FALSE, you should have a good reason for doing so, as standardization
 is a best practice.}
 
 \item{ns}{Optional vector of values indicating the indices of nonsingular features.
-\strong{Note}: If a filebacked \code{big.matrix} is passed to \code{X} along with a non-null \code{ns},
+Note: If a filebacked \code{big.matrix} is passed to \code{X} along with a non-null \code{ns},
 a temporary deep copy will be created.}
 }
 \value{

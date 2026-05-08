@@ -4,7 +4,7 @@
 \alias{estimate_eta}
 \title{Estimate eta (to be used in rotating the data)}
 \usage{
-estimate_eta(n, s, U, y)
+estimate_eta(n, s, U, y, incpt_flag)
 }
 \arguments{
 \item{n}{The number of observations}
@@ -14,6 +14,8 @@ estimate_eta(n, s, U, y)
 \item{U}{The eigenvectors of K associated with s}
 
 \item{y}{Continuous outcome vector}
+
+\item{incpt_flag}{Logical: Does the model require fitting an intercept?}
 }
 \value{
 a numeric value with the estimated value of eta, the variance parameter

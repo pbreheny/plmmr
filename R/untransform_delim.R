@@ -29,7 +29,7 @@ untransform_delim <- function(std_scale_beta, p, std_X_details, use_names = TRUE
 
   # next, unscale the beta values for non-singular, non-intercept columns
   # NB: this requires the details of standardization (centering/scaling values
-  # and indices of nonsingular columns). The details of how these details are
+  # and indices of nonsingular columns). The details of how these values are
   # passed around varies depending on whether data are stored filebacked,
   # hence, the division into cases below:
   if (length(std_X_details$ns) == length(std_X_details$scale)) {

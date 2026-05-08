@@ -30,7 +30,7 @@ plmm(
 \item{design}{The first argument must be one of three things:
 (1) \code{plmm_design} object (as created by \code{create_design()})
 (2) a string with the file path to a design object (the file path must end in \code{.rds})
-(3) a \code{matrix} or \code{data.frame} object representing the design matrix of interest}
+(3) a \code{matrix} or \code{data.frame} object representing the design matrix of interest.}
 
 \item{y}{Optional: In the case where \code{design} is a \code{matrix} or \code{data.frame}, the user must also supply
 a numeric outcome vector as the \code{y} argument. In this case, \code{design} and \code{y} will be passed
@@ -40,7 +40,8 @@ internally to \code{create_design(X = design, y = y)}.}
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 (3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.
-\strong{Note}: if a user provides their own matrix, it is decomposed as provided and will \emph{not} be scaled.}
+\cr \strong{Note}: If a user provides their own \code{K} matrix, it is decomposed as provided and will \emph{not} be scaled. If \code{design} was created using filebacked data and \code{K} is provided by the user,
+it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final \code{.rds} object in \code{create_design()}.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 

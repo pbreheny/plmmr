@@ -10,7 +10,7 @@
 #' @details
 #' This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
 #' NOTE: this function returns a matrix **in memory**. For standardizing filebacked
-#' data, use `standardize_filebacked()`  -- see `src/big_standardize.cpp`
+#' data, use `standardize_filebacked()` -- see `src/big_standardize.cpp`
 #'
 standardize_in_memory <- function(X, tocenter = TRUE) {
 

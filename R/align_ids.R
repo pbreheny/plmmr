@@ -6,7 +6,7 @@
 #' @param outfile A string with the name of the filepath for the log file
 #' @param quiet Logical: should console messages be silenced? Defaults to FALSE
 #'
-#' @return A matrix with the same dimensions as add_predictor
+#' @return A matrix with the same dimensions as `add_predictor`
 #'
 #' @keywords internal
 #'

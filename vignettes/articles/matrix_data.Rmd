@@ -13,6 +13,10 @@ knitr::opts_chunk$set(
 library(plmmr)
 ```
 
+```{r, include = FALSE}
+set.seed(123) # Prevents parallel package warning about NULL seed when knitting
+```
+
 In this overview, we will provide a demo of the main functions in `plmmr` using the `admix` data. Check out the other vignettes to see examples of analyzing data from PLINK files or delimited files.
 
 Examine what we have in the `admix` data: 
@@ -27,7 +31,6 @@ The `admix` dataset is now ready to analyze with a call to `plmmr::plmm()` (one 
 
 ```{r admix_fit}
 admix_fit <- plmm(admix$X, admix$y)
-summary(admix_fit, lambda = admix_fit$lambda[50])
 ```
 
 Notice: We are passing `admix$X` as the `design` argument in `plmm()`; internally, `plmm()` has taken this `X` input and created a `plmm_design` object. You could also supply `X` and `y` to `create_design()` to make this step explicit. 
@@ -55,7 +58,7 @@ We can also plot the path of the fit to see how model coefficients vary with $\l
 plot(admix_fit)
 ```
 
-Suppose we also know the ancestry groups with which for each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). To specify an unpenalized covariate, we need to use the `create_design()` function prior to calling `plmm()`. Here is how that would look: 
+Suppose we also know the ancestry groups with which each person in the `admix` data self-identified. We would probably want to include this in the model as an unpenalized covariate (i.e., we would want 'ancestry' to always be in the model). To specify an unpenalized covariate, we need to use the `create_design()` function prior to calling `plmm()`. Here is how that would look: 
 
 ```{r}
 # add ancestry to design matrix
@@ -87,9 +90,9 @@ plot(admix_fit2)
 To select a $\lambda$ value, we often use cross validation. Below is an example of using `cv_plmm` to select a $\lambda$ that minimizes cross-validation error: 
 
 ```{r admix_cv}
-admix_cv <- cv_plmm(design = admix_design2, return_fit = T)
-admix_cv_s <- summary(admix_cv, lambda = "min")
-print(admix_cv_s)
+# using default 5-fold CV
+admix_cv <- cv_plmm(design = admix_design2, seed = 1)
+summary(admix_cv, lambda = "min")
 ```
 
 We can also plot the cross-validation error (CVE) versus $\lambda$ (on the log scale):
@@ -100,7 +103,7 @@ plot(admix_cv)
 
 ### Parallelization 
 
-As an option for cross-validation, with data stored in-memory you may choose to implement CV in parallel using the `cluster` argument in `cv_plmm()`. Here is an example of setting up CV in parallel: 
+As an option for cross-validation with data stored in-memory, you may choose to implement CV in parallel using the `cluster` argument in `cv_plmm()`. Here is an example of setting up CV in parallel: 
 
 ```{r}
 # make a cluster
@@ -110,11 +113,14 @@ print(cl) # check to see what kind of cluster you've made
 cv_fit_parallel <- cv_plmm(design = admix_design2,
                            type = "blup",
                            cluster = cl,
-                           return_fit = T,
+                           seed = 1,
                            trace = FALSE) 
 
-# note: the results closely correspond to the above
+# note: results match the above
 summary(cv_fit_parallel)
+```
+
+```{r cvplot_par, fig.align='center', fig.width=8, fig.cap="Plot of CVE"}
 plot(cv_fit_parallel)
 ```
 
@@ -136,11 +142,11 @@ We can compare these predictions with the predictions we would get from an inter
 
 ```{r}
 # intercept-only (or 'null') model
-crossprod(admix$y - mean(admix$y))/length(admix$y)
+crossprod(admix$y - mean(admix$y)) / length(admix$y)
 
 # our model at its best value of lambda
-apply(y_hat, 2, function(c){crossprod(admix$y - c)/length(c)}) -> mse
-min(mse)
+mspe <- apply(y_hat, 2, function(c) crossprod(admix$y - c) / length(c))
+min(mspe)
 # ^ across all values of lambda, our model has MSPE lower than the null model
 ```
 

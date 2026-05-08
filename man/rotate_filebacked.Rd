@@ -4,10 +4,12 @@
 \alias{rotate_filebacked}
 \title{A function to rotate filebacked data}
 \usage{
-rotate_filebacked(prep, tocenter = TRUE, ...)
+rotate_filebacked(prep, y, incpt_flag, tocenter = TRUE, ...)
 }
 \arguments{
 \item{prep}{The object returned by \code{plmm_prep()}}
+
+\item{y}{The continuous outcome vector.}
 
 \item{tocenter}{Should the matrix be centered in addition to scaled? Defaults to TRUE}
 

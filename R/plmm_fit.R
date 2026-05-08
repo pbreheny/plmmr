@@ -3,8 +3,6 @@
 #' @param prep A list as returned from `plmm_prep`
 #' @param y    The original (not centered) outcome vector. Need this for intercept estimate
 #' @param std_X_details A list with components `center` (values used to center X), `scale` (values used to scale X), and `ns` (indices for nonsingular columns of X)
-#' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient. If supplied, `penalty_factor` must be a numeric vector of length equal to the number of columns of X.
-#'                       The purpose of `penalty_factor` is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, `penalty_factor` can be 0, in which case the coefficient is always in the model without shrinkage.
 #' @param fbm_flag Logical: is std_X a filebacked `big.matrix` object? Passed from `plmm()`.
 #' @param penalty The penalty to be applied to the model. Either "MCP" (the default), "SCAD", or "lasso".
 #' @param gamma The tuning parameter of the MCP/SCAD penalty (see details). Default is 3 for MCP and 3.7 for SCAD.
@@ -49,7 +47,6 @@
 plmm_fit <- function(prep,
                      y,
                      std_X_details,
-                     penalty_factor,
                      fbm_flag,
                      penalty,
                      gamma = 3,
@@ -79,7 +76,11 @@ plmm_fit <- function(prep,
     w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- prep$U %*% wUt %*% prep$std_X
-    rot_y <- prep$U %*% wUt %*% prep$centered_y # remember: we're using the centered outcome vector
+    if (prep$incpt_flag) {
+      rot_y <- prep$U %*% wUt %*% y
+    } else {
+      rot_y <- prep$U %*% wUt %*% prep$centered_y # remember: we're using the centered outcome vector
+    }
 
     # re-standardize rot_X
     stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
@@ -87,7 +88,7 @@ plmm_fit <- function(prep,
     stdrot_X_details <- stdrot_info$std_X_details
 
   } else {
-    rot_res <- rotate_filebacked(prep, tocenter = FALSE)
+    rot_res <- rotate_filebacked(prep, y, tocenter = FALSE)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
     stdrot_X_details <- list(center = rot_res$stdrot_X_center,
@@ -108,7 +109,7 @@ plmm_fit <- function(prep,
                            alpha = alpha,
                            nlambda = nlambda,
                            lambda_min = lambda_min,
-                           penalty_factor = penalty_factor)
+                           penalty_factor = prep$penalty_factor)
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
     if (length(lambda) > 1 && max(diff(lambda)) > 0) {
@@ -157,7 +158,7 @@ plmm_fit <- function(prep,
                             lambda = lam,
                             eps = eps,
                             max.iter = max_iter,
-                            penalty.factor = penalty_factor,
+                            penalty.factor = prep$penalty_factor,
                             warn = warn)
 
       stdrot_scale_beta[, ll] <- init <- res$beta
@@ -182,8 +183,9 @@ plmm_fit <- function(prep,
     lambda <- lambda[ind]
     stdrot_scale_beta <- stdrot_scale_beta[, ind, drop = FALSE]
 
+    # adjust dimensions of beta matrix based on whether the intercept was included
     std_scale_beta <- matrix(0,
-                             nrow = nrow(stdrot_scale_beta) + 1,
+                             nrow = nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
                              ncol = ncol(stdrot_scale_beta))
   } else {
     res <- biglasso::biglasso_path(
@@ -198,7 +200,7 @@ plmm_fit <- function(prep,
       gamma = gamma,
       eps = eps,
       max.iter = max_iter,
-      penalty.factor = penalty_factor,
+      penalty.factor = prep$penalty_factor,
       dfmax = dfmax,
       warn = warn,
       ...)
@@ -214,20 +216,27 @@ plmm_fit <- function(prep,
     std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
                                            j = seq_len(ncol(stdrot_scale_beta)),
                                            x = mean(y),
-                                           dims = c(nrow(stdrot_scale_beta) + 1,
+                                           dims = c(nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
                                                     ncol = ncol(stdrot_scale_beta)))
   }
 
   # reverse the POST-ROTATION standardization on estimated betas
   # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
   stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-  bb <-  stdrot_scale_beta / (stdrot_unscale)
-  std_scale_beta[-1, ] <- bb
-  std_scale_beta[1, ] <- mean(y) - crossprod(stdrot_X_details$center, bb)
+  bb <- stdrot_scale_beta / (stdrot_unscale)
 
-  # calculate linear predictors on the scale of std_X
-  std_Xbeta <- prep$std_X %*% bb
-  std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+  if (prep$incpt_flag) {
+    std_scale_beta <- bb
+    # calculate linear predictors on the scale of std_X
+    std_Xbeta <- prep$std_X %*% std_scale_beta
+  } else {
+    std_scale_beta[-1, ] <- bb
+    std_scale_beta[1, ] <- mean(y)
+
+    # calculate linear predictors on the scale of std_X
+    std_Xbeta <- prep$std_X %*% bb
+    std_Xbeta <- sweep(std_Xbeta, 2, std_scale_beta[1, ], "+")
+  }
 
   if (prep$trace) {
     cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
@@ -250,7 +259,7 @@ plmm_fit <- function(prep,
     U = prep$U,
     lambda = lambda,
     penalty = penalty,
-    penalty_factor = penalty_factor,
+    penalty_factor = prep$penalty_factor,
     iter = iter,
     converged = converged,
     loss = loss,

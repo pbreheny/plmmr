@@ -15,13 +15,13 @@ knitr::opts_chunk$set(
 library(plmmr)
 ```
 
-A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of '.bed', '.bed', and '.fam' files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the article on analyzing data from delimited files at `vignette("delim_files", package = "plmmr")`.
+A widely-used format for storing data from genome-wide association studies (GWAS) is the [PLINK file formats](https://www.cog-genomics.org/plink/1.9/formats), which consists of a triplet of `.bed`, `.bed`, and `.fam` files. The `plmmr` package is equipped to analyze data from PLINK files. If you have data in this format, keep reading -- if you want to know more about what each of these files contains, see [this other tutorial](https://pbreheny.github.io/adv-gwas-tutorial/quality_control.html) or the [PLINK documentation](https://www.cog-genomics.org/plink/1.9). If your data is in delimited files (e.g., `.txt`, `.csv`, etc.), read the article on analyzing data from delimited files at `vignette("delim_files", package = "plmmr")`.
 
-The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. Processing the data means that we take the feature data and create a '.rds' object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). Creating a design involves standardizing the input of the features, outcome, and penalty factor into the modeling functions `plmm()` and `cv_plmm()`. 
+The `plmmr` package is designed to handle data so that users can analyze large data sets. For this reason, data must be preprocessed into a specific format. There are two steps to prepare for analysis: (1) process the data and (2) create a design. Processing the data means that we take the feature data and create a `.rds` object that contains your feature data in a format compatible with the `bigmemory` [package](https://cran.r-project.org/web/packages/bigmemory/index.html). Creating a design involves standardizing the input of the features, outcome, and penalty factor for use in the modeling functions `plmm()` and `cv_plmm()`. 
 
 ## Processing PLINK files 
 
-First, unzip your PLINK files if they are zipped. Our example data, `penncath_lite` data that ships with `plmmr` is zipped; you can run this command to unzip: 
+First, unzip your PLINK files if they are zipped. Our example `penncath_lite` data that ships with `plmmr` is zipped; you can run this command to unzip: 
 
 ```{r}
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
@@ -30,7 +30,7 @@ unzip_example_data(outdir = temp_dir)
 
 For GWAS data, we have to tell `plmmr` how to combine information across all three PLINK files (the `.bed`, `.bim`, and `.fam` files). We do this with `process_plink()`. 
 
-Here, we will create the files we want in a temporary directory just for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
+Here, we will create the files we want in a temporary directory for the sake of example. Users can specify the folder of their choice for `rds_dir`, as shown below:
 
 ```{r}
 # temp_dir <- tempdir() # using a temporary directory (if you didn't already create one above)
@@ -62,9 +62,9 @@ any(is.na(pen$genotypes[,]))
 
 ## Creating a design 
 
-Now we are ready to create a `plmm_design`, which is an object with the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a the vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
+Now we are ready to create a `plmm_design`, which is an object with the pieces we need for our model: a design matrix $\mathbf{X}$, an outcome vector $\mathbf{y}$, and a vector with the penalty factor indicators (1 = feature will be penalized, 0 = feature will not be penalized). 
 
-As a side note: in GWAS studies, it is typical to include some non-genomic factors as unpenalized covariates as part of the model. For instance, you may want to adjust for sex or age (as shown in the example below) -- these are factors that you want to ensure are always included in the selected model. The `plmmr` package allows you to include these additional unpenalized predictors via the 'add_predictor' and 'predictor_id' options, both of which are passed through `create_design()` to the internal function `create_design_filebacked()`. An example with these options is included in the `create_design()` documentation. 
+As a side note: in GWAS studies, it is typical to include some non-genomic features as unpenalized covariates in the model. For instance, you may want to adjust for sex or age (as shown in the example below) -- these are factors that you want to ensure are always included in the selected model. The `plmmr` package allows you to include these additional unpenalized predictors via the `add_predictor` and `predictor_id` options, both of which are passed through `create_design()` to the internal function `create_design_filebacked()`.
 
 ```{r}
 # get outcome data 
@@ -107,13 +107,13 @@ apply(std_X[,], 2, var) |> summary() # ... & variance 1
 
 ## Fitting a model 
 
-Now that we have a design object, we are ready to fit a model. By default, the model fitting results are saved as files in the folder specified in the `rds_dir` argument of `plmmm`. If you want to return the model fitting results, set `return_fit = TRUE` in `plmm()`. 
+Now that we have a design object, we are ready to fit a model. ^[If you want to save the model fitting results, specify a file name using the `save_rds` argument in `plmm()`.]
 
 ```{r}
 pen_fit <- plmm(design = pen_design,
-                trace = T,
-                return_fit = T)
-# you can turn off the trace messages by letting trace = F (default)
+                trace = TRUE,
+                return_fit = TRUE)
+# you can turn off the trace messages by letting trace = FALSE (default)
 ```
 
 We examine our model results below:
@@ -130,8 +130,8 @@ To choose a tuning parameter for a model, `plmmr` offers a cross validation meth
 ```{r}
 cv_fit <- cv_plmm(design = pen_design,
                   type = "blup",
-                  return_fit = T,
-                  trace = T)
+                  return_fit = TRUE,
+                  trace = TRUE)
 ```
 
 There are plot and summary methods for CV models as well: 

@@ -56,13 +56,9 @@ RcppExport SEXP big_std(SEXP X_,
   }
   scale_cols(X, n, p, scale_vals);
 
-  // save the means of the square values of each column (will pass to xtx in model fitting)
-  //NumericVector xtx = mean_sqsum(X, r ,p);
-
   Rcpp::List result;
   result["std_X"] = X; // the 'std' cues that this matrix has been standardized
   result["std_X_center"] = center_vals;
   result["std_X_scale"] = scale_vals;
-  //result["xtx"] = xtx;
   return result;
 }

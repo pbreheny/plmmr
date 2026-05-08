@@ -28,7 +28,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     fbm_flag = cv_args$fbm_flag,
                     plink_flag = cv_args$plink_flag,
                     penalty = cv_args$penalty,
-                    penalty_factor = cv_args$penalty_factor,
                     gamma = cv_args$gamma,
                     alpha = cv_args$alpha,
                     nlambda = cv_args$nlambda,
@@ -71,7 +70,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
     singular <- std_trainX_info$std_X_scale < 1e-3
 
     # do not fit a model on singular features!
-    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
+    if (sum(singular) >= 1) full_cv_prep$penalty_factor[singular] <- Inf
 
   } else {
 
@@ -88,7 +87,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
     # do not fit a model on these (near) singular features!
     singular <- fold_args$std_X_details$scale < 1e-3
-    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
+    if (sum(singular) >= 1) full_cv_prep$penalty_factor[singular] <- Inf
   }
 
   # subset outcome vector to include outcomes for training data only
@@ -119,6 +118,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   if (cv_args$prep$trace) {
     cat("Beginning eigendecomposition in fold ", i, ":\n")
   }
+
   fold_prep <- plmm_prep(std_X = fold_args$std_X,
                          std_X_n = nrow(fold_args$std_X),
                          std_X_p = ncol(fold_args$std_X),
@@ -127,6 +127,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
                          eta = cv_args$eta,
+                         penalty_factor = full_cv_prep$penalty_factor,
                          trace = cv_args$prep$trace)
   fold_args$prep <- fold_prep
   # fit a plmm within each fold at each value of lambda
@@ -138,7 +139,6 @@ cvf <- function(i, fold, type, cv_args, ...) {
   fit.i <- plmm_fit(prep = fold_prep,
                     y = fold_args$y,
                     std_X_details = fold_args$std_X_details,
-                    penalty_factor = fold_args$penalty_factor,
                     fbm_flag = fold_args$fbm_flag,
                     penalty = fold_args$penalty,
                     gamma = fold_args$gamma,

@@ -150,7 +150,6 @@ local({
   fit <- plmm(
     design = in_mem_design,
     lambda = fb_fit$lambda,
-    K = fb_fit$fit$K,
     trace = TRUE,
     return_fit = TRUE)
 
@@ -158,9 +157,29 @@ local({
   b1 <- coef(fb_fit) |> as.matrix()
   b2 <- coef(fit)
   expect_equivalent(b1, b2, tolerance = 0.01)
+
+  # Test 4b: confirm that they give the same results
+  #          for a provided K (requiring an intercept)
+  fb_fit2 <- plmm(
+    design = fb_design,
+    K = diag(rnorm(nrow(colon_X))^2),
+    trace = TRUE,
+    return_fit = TRUE)
+
+  fit2 <- plmm(
+    design = in_mem_design,
+    lambda = fb_fit2$lambda,
+    K = fb_fit2$K,
+    trace = TRUE,
+    return_fit = TRUE)
+
+  # check: these results match
+  b1 <- coef(fb_fit2) |> as.matrix()
+  b2 <- coef(fit2)
+  expect_equivalent(b1, b2, tolerance = 0.01)
 })
 
-# Test 4: confirm dfmax halts path fitting -------------------------------------
+# Test 5: confirm dfmax halts path fitting -------------------------------------
 
 dfmax <- 5
 

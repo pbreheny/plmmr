@@ -19,8 +19,8 @@ Description: Fits penalized linear mixed models that correct for
     multivariate analysis of single nucleotide polymorphisms (SNPs)
     measured in a genome-wide association study (GWAS), 'plmmr' eliminates
     the need for subpopulation-specific analyses and post-analysis p-value
-    adjustments.  Functions for the appropriate processing of 'PLINK'
-    files are also supplied. For examples, see the package homepage.
+    adjustments. Functions for the appropriate processing of 'PLINK'
+    files are also supplied. For examples, see the package homepage
     <https://pbreheny.github.io/plmmr/>.
 License: GPL-3
 URL: https://pbreheny.github.io/plmmr/, https://github.com/pbreheny/plmmr/

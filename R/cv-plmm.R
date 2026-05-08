@@ -14,7 +14,8 @@
 #'                          (1) a known matrix that reflects the covariance of y,
 #'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                          (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
-#'                        **Note**: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
+#'                        \cr **Note**: If a user provides their own `K` matrix, it is decomposed as provided and will *not* be scaled. If `design` was created using filebacked data and `K` is provided by the user,
+#'                        it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final `.rds` object in `create_design()`.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #'                        Note: Setting `eta = 1` will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying `type = 'blup'`, but should be done with caution.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
@@ -101,8 +102,9 @@ cv_plmm <- function(design,
   # check filepaths for saving results ------------------------------
   if (!is.null(save_rds)) {
     save_rds <- tools::file_path_sans_ext(save_rds)
-    logfile <- create_log(outfile = save_rds)
   }
+
+  logfile <- create_log(outfile = save_rds)
 
   # check eta and type congruence ----------------------------
   if (is.null(type)) {
@@ -144,11 +146,8 @@ cv_plmm <- function(design,
                               trace = trace,
                               ...)
 
-  if (!is.null(save_rds)) {
-    cat("\nInput data passed all checks at ",
-        pretty_time(),
-        file = logfile, append = TRUE)
-  }
+  cat("\nInput data passed all checks at ",
+      pretty_time(), file = logfile, append = TRUE)
 
   # prep  ------------------------
   prep_args <- c(list(std_X = checked_data$std_X,
@@ -159,23 +158,20 @@ cv_plmm <- function(design,
                       centered_y = checked_data$centered_y,
                       K = checked_data$K,
                       eta = checked_data$eta,
+                      penalty_factor = checked_data$penalty_factor,
                       fbm_flag = checked_data$fbm_flag,
                       trace = trace))
 
   prep <- do.call("plmm_prep", prep_args)
 
-  if (!is.null(save_rds)) {
-    cat("\nEigendecomposition finished at ",
-        pretty_time(),
-        file = logfile, append = TRUE)
-  }
+  cat("\nEigendecomposition finished at ",
+      pretty_time(), file = logfile, append = TRUE)
 
   # full model fit ----------------------------------
   fit_args <- c(list(
     prep = prep,
     y = checked_data$y,
     std_X_details = checked_data$std_X_details,
-    penalty_factor = checked_data$penalty_factor,
     fbm_flag = checked_data$fbm_flag,
     penalty = checked_data$penalty,
     gamma = checked_data$gamma,
@@ -194,11 +190,8 @@ cv_plmm <- function(design,
 
   fit <- do.call("plmm_fit", fit_args)
 
-  if (!is.null(save_rds)) {
-    cat("\nFull model fit finished at",
-        pretty_time(),
-        file = logfile, append = TRUE)
-  }
+  cat("\nFull model fit finished at",
+      pretty_time(), file = logfile, append = TRUE)
 
   fit_to_return <- plmm_format(fit = fit,
                                p = checked_data$p,
@@ -206,17 +199,14 @@ cv_plmm <- function(design,
                                fbm_flag = checked_data$fbm_flag,
                                plink_flag = checked_data$plink_flag)
 
-  if (!is.null(save_rds)) {
-    cat("\nFormatting for full model finished at",
-        pretty_time(),
-        file = logfile, append = TRUE)
-  }
+  cat("\nFormatting for full model finished at",
+      pretty_time(), file = logfile, append = TRUE)
 
   if (!is.null(save_rds)) {
     saveRDS(fit_to_return, paste0(save_rds, ".rds"))
+    if (trace) cat("Results saved to:", paste0(save_rds, ".rds"))
     cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-        pretty_time(),
-        file = logfile, append = TRUE)
+        pretty_time(), file = logfile, append = TRUE)
   }
   gc()
 
@@ -226,6 +216,12 @@ cv_plmm <- function(design,
   cv_args$lambda <- fit$lambda
   cv_args$eta <- fit$eta # note: here we use the same eta estimate in each fold of CV
   cv_args$plink_flag <- checked_data$plink_flag
+
+  # if an intercept was fit in the full model, this needs to be dropped in CV
+  if (prep$incpt_flag) {
+    cv_args$prep$std_X <- checked_data$std_X
+    cv_args$prep$penalty_factor <- prep$penalty_factor[-1]
+  }
 
   estimated_Sigma <- NULL
   if (type == "blup") {
@@ -294,12 +290,8 @@ cv_plmm <- function(design,
   # carry out CV -------------------------------------
   if (trace) cat("\nStarting cross validation\n")
 
-  if (!is.null(save_rds)) {
-    cat("\nCross validation started at: ",
-        pretty_time(),
-        file = logfile,
-        append = TRUE)
-  }
+  cat("\nCross validation started at: ",
+      pretty_time(), file = logfile, append = TRUE)
 
   for (i in 1:nfolds) {
     # case 1: user-specified cluster
@@ -307,10 +299,8 @@ cv_plmm <- function(design,
       res <- fold_results[[i]] # refers to lines from above
     } else {
       # case 2: cluster NOT user specified
-      if (!is.null(save_rds)) {
-        cat("Started fold", i, "at", pretty_time(),
-            file = logfile, append = TRUE)
-      }
+      cat("Started fold", i, "at", pretty_time(),
+          file = logfile, append = TRUE)
 
       res <- cvf(i = i,
                  fold = fold,

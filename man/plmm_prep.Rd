@@ -11,6 +11,7 @@ plmm_prep(
   n,
   p,
   centered_y,
+  penalty_factor,
   K = NULL,
   eta = NULL,
   fbm_flag,
@@ -31,6 +32,8 @@ plmm_prep(
 
 \item{centered_y}{Continuous outcome vector, centered.}
 
+\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient.}
+
 \item{K}{Similarity matrix used to rotate the data. This should either be:
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
@@ -42,7 +45,7 @@ plmm_prep(
 
 \item{trace}{If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process. Default is FALSE.}
 
-\item{...}{Not used yet}
+\item{...}{Not used}
 }
 \value{
 List with these components:
@@ -53,6 +56,8 @@ List with these components:
 \item \code{s}: Vector of the non-zero eigenvalues of \code{K}
 \item \code{U}: Matrix of eigenvectors of \code{K} associated with \code{s} (same as left singular values of X).
 \item \code{eta}: The numeric value of the estimated eta parameter
+\item \code{penalty_factor} A multiplicative factor for the penalty applied to each coefficient.
+\item \code{incpt_flag} Logical: Does the model require fitting an intercept?
 \item \code{trace}: If set to TRUE, inform the user of progress by announcing the beginning of each step of the modeling process
 }
 }

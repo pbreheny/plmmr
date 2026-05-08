@@ -61,7 +61,7 @@ colon_design <- create_design(data_file = colon_dat,
                               logfile = "colon_design")
 ```
 
-As with `process_delim()`, the `create_design()` function returns a filepath: `r str(colon_design)`. The output messages document the steps in the create design procedure, and these messages are saved to the text file `colon_design.log` in the `rds_dir` folder. 
+As with `process_delim()`, the `create_design()` function returns a filepath. The output messages document the steps in the design creation procedure, and these messages are saved to the text file `colon_design.log` in the `rds_dir` folder. 
 
 For didactic purposes, we can look at the design: 
 
@@ -71,7 +71,6 @@ colon_rds <- readRDS(colon_design)
 str(colon_rds)
 ```
 
-
 ## Fit a model 
 
 We fit a model using our design as follows: 
@@ -80,7 +79,7 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 ```
 
-Notice the messages that are printed out -- this documentation may be optionally saved to another `.log` file using the `logfile` argument. 
+Notice the messages that are printed out -- this documentation may optionally be saved to another `.log` file using the `save_rds` argument. 
 
 We can examine the results at a specific $\lambda$ value: 
 
@@ -88,7 +87,7 @@ We can examine the results at a specific $\lambda$ value:
 summary(colon_fit, idx = 50)
 ```
 
-We may also plot of the paths of the estimated coefficients: 
+We may also plot the paths of the estimated coefficients: 
 
 ```{r}
 plot(colon_fit)
@@ -96,12 +95,12 @@ plot(colon_fit)
 
 ## Prediction for filebacked data
 
-This example shows an experimental option, wherein we are working to add a prediction method for filebacked outside of cross-validation. 
+The `predict` method can also be employed directly on filebacked data by passing the `newX` argument a `bigmemory` `big.matrix`.
 
 ```{r}
 # linear predictor 
 yhat_lp <- predict(object = colon_fit,
-        newX = attach.big.matrix(colon$X),
+        newX = bigmemory::attach.big.matrix(colon$X),
         type = "lp")
 
 # best linear unbiased predictor 
@@ -109,10 +108,9 @@ yhat_blup <- predict(object = colon_fit,
         newX = bigmemory::attach.big.matrix(colon$X),
         type = "blup")
 
-# look at mean squared prediction error 
-mspe_lp <- apply(yhat_lp, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
-mspe_blup <- apply(yhat_blup, 2, function(c){crossprod(colon_outcome$y - c)/length(c)})
+# look at mean squared prediction error
+mspe_lp <- apply(yhat_lp, 2, function(c) crossprod(colon_outcome$y - c) / length(c))
+mspe_blup <- apply(yhat_blup, 2, function(c) crossprod(colon_outcome$y - c) / length(c))
 min(mspe_lp)
 min(mspe_blup)
 ```
-

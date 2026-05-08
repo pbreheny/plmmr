@@ -8,7 +8,6 @@ plmm_fit(
   prep,
   y,
   std_X_details,
-  penalty_factor,
   fbm_flag,
   penalty,
   gamma = 3,
@@ -30,9 +29,6 @@ plmm_fit(
 \item{y}{The original (not centered) outcome vector. Need this for intercept estimate}
 
 \item{std_X_details}{A list with components \code{center} (values used to center X), \code{scale} (values used to scale X), and \code{ns} (indices for nonsingular columns of X)}
-
-\item{penalty_factor}{A multiplicative factor for the penalty applied to each coefficient. If supplied, \code{penalty_factor} must be a numeric vector of length equal to the number of columns of X.
-The purpose of \code{penalty_factor} is to apply differential penalization if some coefficients are thought to be more likely than others to be in the model. In particular, \code{penalty_factor} can be 0, in which case the coefficient is always in the model without shrinkage.}
 
 \item{fbm_flag}{Logical: is std_X a filebacked \code{big.matrix} object? Passed from \code{plmm()}.}
 

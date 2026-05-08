@@ -20,6 +20,6 @@ A helper function to standardize matrices
 \details{
 This function is adapted from https://github.com/pbreheny/ncvreg/blob/master/R/std.R
 NOTE: this function returns a matrix \strong{in memory}. For standardizing filebacked
-data, use \code{standardize_filebacked()}  -- see \code{src/big_standardize.cpp}
+data, use \code{standardize_filebacked()} -- see \code{src/big_standardize.cpp}
 }
 \keyword{internal}

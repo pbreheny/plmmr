@@ -4,15 +4,13 @@
 #' also known as the RRM, see Hayes et al. 2009, \doi{10.1017/S0016672308009981}) among
 #' the subjects: \eqn{\frac{1}{p}(XX^T)}, where X is standardized.
 #'
-#' @param X An n x p numeric matrix of genotypes (from *fully-imputed* data).
-#' Note: This matrix should *not* include non-genetic features. Can be a filebacked `big.matrix` object.
-#' @param std Logical: should `X` be standardized? If you set this to FALSE (which can only be done
-#' if data are stored in memory), you should have a good reason for doing so, as standardization
+#' @param X An n x p numeric matrix of genotypes (from *fully-imputed* data). Can be a filebacked `big.matrix` object.
+#' Note: This matrix should *not* include non-genetic features.
+#' @param std Logical: should `X` be standardized? If you set this to FALSE, you should have a good reason for doing so, as standardization
 #' is a best practice.
 #' @param ns Optional vector of values indicating the indices of nonsingular features.
-#' **Note**: If a filebacked `big.matrix` is passed to `X` along with a non-null `ns`,
+#' Note: If a filebacked `big.matrix` is passed to `X` along with a non-null `ns`,
 #' a temporary deep copy will be created.
-#'
 #' @export
 #'
 #' @return An n x n numeric matrix capturing the genomic relatedness of the
@@ -25,8 +23,11 @@
 relatedness_mat <- function(X, std = TRUE, ns = NULL) {
   p <- ncol(X)
 
+  # subset to ns actually contained within X
+  ns <- ns[ns %in% 1:p]
+
   if (length(ns) %in% 1:(ncol(X) - 1)) {
-    if(inherits(X, "big.matrix")) {
+    if (inherits(X, "big.matrix")) {
       X <- subset_filebacked(X,
                              new_file = "temp_X",
                              complete_samples = NULL,
@@ -47,7 +48,7 @@ relatedness_mat <- function(X, std = TRUE, ns = NULL) {
   }
 
   if (inherits(X, "big.matrix")) {
-    if(std) {
+    if (std) {
       Xdesc <- standardize_filebacked(X, outfile = nullfile(), quiet = TRUE)
       X <- bigmemory::attach.big.matrix(Xdesc$std_X)
     }
@@ -57,11 +58,11 @@ relatedness_mat <- function(X, std = TRUE, ns = NULL) {
                             A = X,
                             B = X)[,]
   } else if (std) {
-    XX <- tcrossprod(ncvreg::std(X))
+    XX <- tcrossprod(standardize_in_memory(X)$std_X)
   } else {
     XX <- tcrossprod(X)
   }
 
-  # scale by p, the number of columns in the design matrix (including constant features)
+  # scale by p, the number of columns in the design matrix
   XX / p
 }

@@ -6,7 +6,7 @@
 \alias{plmmr-package}
 \title{plmmr: Penalized Linear Mixed Models for Correlated Data}
 \description{
-Fits penalized linear mixed models that correct for unobserved confounding factors. 'plmmr' infers and corrects for the presence of unobserved confounding effects such as population stratification and environmental heterogeneity. It then fits a linear model via penalized maximum likelihood. Originally designed for the multivariate analysis of single nucleotide polymorphisms (SNPs) measured in a genome-wide association study (GWAS), 'plmmr' eliminates the need for subpopulation-specific analyses and post-analysis p-value adjustments. Functions for the appropriate processing of 'PLINK' files are also supplied. For examples, see the package homepage. \url{https://pbreheny.github.io/plmmr/}.
+Fits penalized linear mixed models that correct for unobserved confounding factors. 'plmmr' infers and corrects for the presence of unobserved confounding effects such as population stratification and environmental heterogeneity. It then fits a linear model via penalized maximum likelihood. Originally designed for the multivariate analysis of single nucleotide polymorphisms (SNPs) measured in a genome-wide association study (GWAS), 'plmmr' eliminates the need for subpopulation-specific analyses and post-analysis p-value adjustments. Functions for the appropriate processing of 'PLINK' files are also supplied. For examples, see the package homepage \url{https://pbreheny.github.io/plmmr/}.
 }
 \seealso{
 Useful links:

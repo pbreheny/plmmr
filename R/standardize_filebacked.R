@@ -37,9 +37,6 @@ standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
       file = outfile, append = TRUE)
 
   # label return object ------------------------------------------------
-  # naming these center and scale values so that I know they relate to the first
-  # standardization; there will be another standardization after the rotation
-  # in plmm_fit().
   if (!quiet) {
     cat("Done with standardization. File formatting in progress...\n")
   }

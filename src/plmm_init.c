@@ -27,9 +27,9 @@ extern SEXP big_crossprod(SEXP X_,
 
 static const R_CallMethodDef callMethods[] = {
   {"big_crossprod", (DL_FUNC) &big_crossprod, 3},
-  {"big_std", (DL_FUNC) &big_std, 4},
+  {"big_std", (DL_FUNC) &big_std, 5},
   {"big_sd", (DL_FUNC) &big_sd, 2},
-  {"in_mem_std", (DL_FUNC) &in_mem_std, 1},
+  {"in_mem_std", (DL_FUNC) &in_mem_std, 2},
   {NULL, NULL, 0}
 };
 

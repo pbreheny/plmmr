@@ -2,7 +2,7 @@
 #' @param design                  The first argument must be one of three things:
 #'                                  (1) `plmm_design` object (as created by `create_design()`)
 #'                                  (2) a string with the file path to a design object (the file path must end in `.rds`)
-#'                                  (3) a `matrix` or `data.frame` object representing the design matrix of interest
+#'                                  (3) a `matrix` or `data.frame` object representing the design matrix of interest.
 #' @param y                       Optional: In the case where `design` is a `matrix` or `data.frame`, the user must also supply
 #'                                a numeric outcome vector as the `y` argument. In this case, `design` and `y` will be passed
 #'                                internally to `create_design(X = design, y = y)`.
@@ -10,7 +10,8 @@
 #'                                  (1) a known matrix that reflects the covariance of y,
 #'                                  (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                                  (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
-#'                                **Note**: if a user provides their own matrix, it is decomposed as provided and will *not* be scaled.
+#'                                \cr **Note**: If a user provides their own `K` matrix, it is decomposed as provided and will *not* be scaled. If `design` was created using filebacked data and `K` is provided by the user,
+#'                                it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final `.rds` object in `create_design()`.
 #' @param eta                     Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
 #' @param penalty                 The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param init                    Initial values for coefficients. Default is 0 for all columns of X.
@@ -96,17 +97,10 @@ plmm <- function(design,
 
   if (!is.null(save_rds)) {
     save_rds <- tools::file_path_sans_ext(save_rds)
-    # ^^ internally, we need to take off the extension from the file name
-
-    # start the log file
-    logfile <- create_log(outfile = ifelse(!is.null(save_rds),
-                                           save_rds,
-                                           file.path(".", "plmm")))
-
   }
+  logfile <- create_log(outfile = save_rds)
 
-
-  # create a design if needed -------------
+  # create a design if needed ------------------------------------------
   if (inherits(design, "data.frame") || inherits(design, "matrix")) {
     # error check: if 'design' is matrix/data.frame, user must specify 'y'
     if (is.null(y)) {
@@ -141,11 +135,8 @@ plmm <- function(design,
     cat("Input data passed all checks at ",
         pretty_time())
   }
-  if (!is.null(save_rds)) {
-    cat("Input data passed all checks at ",
-        pretty_time(),
-        "\n", file = logfile, append = TRUE)
-  }
+  cat("Input data passed all checks at ",
+      pretty_time(), "\n", file = logfile, append = TRUE)
 
   the_prep <- plmm_prep(std_X = checked_data$std_X,
                         std_X_n = checked_data$std_X_n,
@@ -155,23 +146,20 @@ plmm <- function(design,
                         centered_y = checked_data$centered_y,
                         K = checked_data$K,
                         eta = checked_data$eta,
+                        penalty_factor = checked_data$penalty_factor,
                         fbm_flag = checked_data$fbm_flag,
                         trace = trace)
 
   if (trace) (cat("Eigendecomposition finished at ", pretty_time()))
 
-  if (!is.null(save_rds)) {
-    cat("Eigendecomposition finished at ",
-        pretty_time(),
-        "\n", file = logfile, append = TRUE)
-  }
+  cat("Eigendecomposition finished at ", pretty_time(),
+      "\n", file = logfile, append = TRUE)
 
 
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(prep = the_prep,
                       y = checked_data$y,
                       std_X_details = checked_data$std_X_details,
-                      penalty_factor = checked_data$penalty_factor,
                       fbm_flag = checked_data$fbm_flag,
                       penalty = checked_data$penalty,
                       gamma = checked_data$gamma,
@@ -197,22 +185,17 @@ plmm <- function(design,
 
   if (trace) (cat("Model ready at ", pretty_time()))
 
-  if (!is.null(save_rds)) {
-    cat("Model ready at ",
-        pretty_time(),
-        file = logfile, append = TRUE)
-  }
+  cat("Model ready at ", pretty_time(), file = logfile, append = TRUE)
 
   # handle output
   if (!is.null(save_rds)) {
     # save all output in one file (default); *not* including std_X
     saveRDS(the_final_product[c(1:3, 5:19)],
             paste0(save_rds, ".rds"))
+    if (trace) cat("Results saved to:", paste0(save_rds, ".rds"))
     cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-        pretty_time(),
-        file = logfile, append = TRUE)
+        pretty_time(), file = logfile, append = TRUE)
   }
-
 
   # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
   if (is.null(save_rds) && !return_fit) {

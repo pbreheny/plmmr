@@ -14,11 +14,9 @@ using namespace Rcpp;
 
 // double prod(XPtr<BigMatrix> X_, double *y, int i, int p);
 double crossprod(XPtr<BigMatrix> X_, double *y, int j, int n);
-NumericVector mean_sqsum(XPtr<BigMatrix> X_, int n, int p);
 NumericVector col_means(XPtr<BigMatrix> X_, int n, int p);
 NumericVector colwise_l2mean(XPtr<BigMatrix> X_, int n, int p);
 void center_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector centers);
 void scale_cols(XPtr<BigMatrix> X_, int n, int p, NumericVector scales);
 NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p);
-double g_loss(double *r, int n);
 #endif

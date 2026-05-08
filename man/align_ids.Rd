@@ -18,7 +18,7 @@ align_ids(id_var, add_predictor, og_ids, outfile, quiet)
 \item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
-A matrix with the same dimensions as add_predictor
+A matrix with the same dimensions as \code{add_predictor}
 }
 \description{
 A helper function to support \code{create_design_filebacked()}

@@ -4,7 +4,7 @@
 \alias{log_lik}
 \title{Evaluate the negative log-likelihood of an intercept-only Gaussian plmm model}
 \usage{
-log_lik(eta, n, s, U, y, rot_y = NULL)
+log_lik(eta, n, s, U, y, incpt_flag)
 }
 \arguments{
 \item{eta}{Estimated proportion of the variance in the outcome attributable to population/correlation structure}
@@ -17,7 +17,7 @@ log_lik(eta, n, s, U, y, rot_y = NULL)
 
 \item{y}{Continuous outcome vector}
 
-\item{rot_y}{Optional: if y has already been rotated, then this can be supplied}
+\item{incpt_flag}{Logical: Does the model require fitting an intercept? Passed from \code{estimate_eta}.}
 }
 \value{
 the value of the log-likelihood of the PLMM, evaluated with the supplied parameters

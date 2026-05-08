@@ -1,4 +1,4 @@
-## Use the R_HOME indirection to support installations of multiple R version
+## Use the R_HOME indirection to support installations of multiple R versions
 ## NOTE: the definition of these variables may vary by OS...
 
 # CXX11FLAGS=-O0 -g # Uncomment this FOR DEBUGGING ONLY

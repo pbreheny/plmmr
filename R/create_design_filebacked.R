@@ -312,14 +312,14 @@ create_design_filebacked <- function(obj,
           file.path(rds_dir, paste0(new_file, ".rds")))
 
   if (!quiet) {
-    cat("create_design() completed. \nProcessed files now saved as",
-        file.path(rds_dir, new_file))
+    cat("create_design() completed. \nProcessed files now saved as ",
+        file.path(rds_dir, new_file), ".rds", sep = "")
   }
 
-  cat("create_design() completed. \nProcessed files now saved as",
-      file.path(rds_dir, new_file),
-      "at", pretty_time(),
-      file = logfile, append = TRUE)
+  cat("create_design() completed. \nProcessed files now saved as ",
+      file.path(rds_dir, new_file), ".rds",
+      " at ", pretty_time(),
+      file = logfile, append = TRUE, sep = "")
 
   file.path(rds_dir, paste0(new_file, ".rds"))
 

@@ -1,4 +1,4 @@
-# Test 1 - make sure in-memory and filebacked LOOCV match ----------------------
+# Test 1 - make sure in-memory and filebacked CV match ----------------------
 
 local({
   temp_dir <- withr::local_tempdir() # using a temp dir -- change to fit your preference
@@ -39,7 +39,7 @@ local({
     design = fb_design,
     trace = TRUE,
     return_fit = TRUE,
-    nfolds = n,
+    seed = 1,
     warn = FALSE) # need for small epsilon
 
   # in-memory
@@ -48,14 +48,37 @@ local({
   fit <- cv_plmm(
     design = in_mem_design,
     lambda = fb_fit$lambda,
-    K = fb_fit$fit$K,
     trace = TRUE,
     return_fit = TRUE,
-    fold = fb_fit$fold,
+    seed = 1,
     warn = FALSE)
 
   # check: these results match
   b1 <- coef(fb_fit) |> as.numeric()
   b2 <- coef(fit)
+  expect_equivalent(b1, b2, tolerance = 0.01)
+
+  # Test 4b: confirm that they give the same results
+  #          for a provided K (requiring an intercept)
+  fb_fit2 <- cv_plmm(
+    design = fb_design,
+    K = diag(rnorm(nrow(colon_X))^2),
+    trace = TRUE,
+    return_fit = TRUE,
+    seed = 1,
+    warn = FALSE)
+
+  fit2 <- cv_plmm(
+    design = in_mem_design,
+    lambda = fb_fit2$lambda,
+    K = fb_fit2$fit$K,
+    trace = TRUE,
+    return_fit = TRUE,
+    seed = 1,
+    warn = FALSE)
+
+  # check: these results match
+  b1 <- coef(fb_fit2) |> as.numeric()
+  b2 <- coef(fit2)
   expect_equivalent(b1, b2, tolerance = 0.01)
 })

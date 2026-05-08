@@ -7,13 +7,13 @@
 #' @param s The non-zero eigenvalues of K, the realized relationship matrix
 #' @param U The eigenvectors of K associated with s
 #' @param y Continuous outcome vector
-#' @param rot_y Optional: if y has already been rotated, then this can be supplied
+#' @param incpt_flag Logical: Does the model require fitting an intercept? Passed from `estimate_eta`.
 #'
 #' @return the value of the log-likelihood of the PLMM, evaluated with the supplied parameters
 #'
 #' @keywords internal
 #'
-log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
+log_lik <- function(eta, n, s, U, y, incpt_flag) {
 
   # first, the constant (comes from 1st term in derivation)
   constant <- n * log(2 * pi)
@@ -28,13 +28,23 @@ log_lik <- function(eta, n, s, U, y, rot_y = NULL) {
   w <- w2^(-1/2)
   wUt <- sweep(x = t(U), MARGIN = 1, STATS = w, FUN = "*")
 
+  rot_y <- U %*% wUt %*% y
 
-  if (is.null(rot_y) && !(missing(y))) {
-    rot_y <- U %*% wUt %*% y
+  if (incpt_flag) {
+    incpt <- rep(1, n)
+    rot_incpt <- U %*% wUt %*% incpt
+    # calculate the term representing the \hat\beta(\eta) MLE
+    incpt_crossprod <- crossprod(rot_incpt)
+    incpt_y_crossprod <- crossprod(rot_incpt, rot_y)
+    hat_beta_mle <- drop(incpt_y_crossprod / incpt_crossprod)
+    # using hat_beta_mle, calculate the quadratic term from the log likelihood
+    rot_e <- rot_y - (rot_incpt * hat_beta_mle)
+  } else {
+    rot_e <- rot_y
   }
 
   # rotated intercept is the only term in the null model
-  rot_sqe <- crossprod(rot_y) # mse = sq. error
+  rot_sqe <- crossprod(rot_e) # mse = sq. error
   quad_term <- (1/n) * rot_sqe/sum(w2)
 
   # put all the pieces together -- evaluate the **negative** log likelihood
