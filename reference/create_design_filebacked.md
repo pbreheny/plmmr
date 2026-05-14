@@ -65,15 +65,19 @@ create_design_filebacked(
 
   A string specifying the column in the data X (the feature data) with
   the row IDs (e.g., identifiers for each row/sample/participant/,
-  etc.). No duplicates allowed. - for PLINK data: a string specifying an
-  ID column of the PLINK `.fam` file. Options are "IID" (default) and
-  "FID" - for all other filebacked data: a character vector of unique
-  identifiers (IDs) for each row of the feature data (i.e., the data
-  processed with
-  [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md)) -
-  if left NULL (default), X is assumed to have the same row-order as
-  add_outcome. **Note**: if this assumption is made in error,
-  calculations downstream will be incorrect. Pay close attention here.
+  etc.). No duplicates allowed.
+
+  - for PLINK data: a string specifying an ID column of the PLINK `.fam`
+    file. Options are "IID" (default) and "FID"
+
+  - for all other filebacked data: a character vector of unique
+    identifiers (IDs) for each row of the feature data (i.e., the data
+    processed with
+    [`process_delim()`](https://pbreheny.github.io/plmmr/reference/process_delim.md))
+
+  - if left NULL (default), X is assumed to have the same row-order as
+    add_outcome. **Note**: if this assumption is made in error,
+    calculations downstream will be incorrect. Pay close attention here.
 
 - add_predictor:
 

@@ -8,6 +8,7 @@ A function to impute SNP data
 impute_snp_data(
   obj,
   X,
+  chr,
   impute,
   impute_method,
   parallel,
@@ -29,6 +30,10 @@ impute_snp_data(
 
   A matrix of genotype data as returned by
   [`name_and_count_bigsnp()`](https://pbreheny.github.io/plmmr/reference/name_and_count_bigsnp.md)
+
+- chr:
+
+  A numeric vector of chromosomal locations of the SNPs.
 
 - impute:
 

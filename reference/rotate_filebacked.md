@@ -5,7 +5,7 @@ A function to rotate filebacked data
 ## Usage
 
 ``` r
-rotate_filebacked(prep, y, incpt_flag, tocenter = TRUE, ...)
+rotate_filebacked(prep, y, tocenter = TRUE, ...)
 ```
 
 ## Arguments
