@@ -2,6 +2,7 @@
 #'
 #' @param obj A `bigSNP` object (as created by `read_plink_files()`)
 #' @param X A matrix of genotype data as returned by `name_and_count_bigsnp()`
+#' @param chr A numeric vector of chromosomal locations of the SNPs.
 #' @param impute Logical: should data be imputed? Defaults to TRUE.
 #' @param impute_method If `impute = TRUE`, this argument will specify the kind of imputation desired. Options are:
 #'  * `mode` (default): Imputes the most frequent call. See `bigsnpr::snp_fastImputeSimple()` for details.
@@ -22,6 +23,7 @@
 #'
 impute_snp_data <- function(obj,
                             X,
+                            chr,
                             impute,
                             impute_method,
                             parallel,
@@ -29,7 +31,6 @@ impute_snp_data <- function(obj,
                             quiet,
                             seed = as.numeric(Sys.Date()),
                             ...) {
-
   if (!quiet && impute) {
     # catch for misspellings
     if (!(impute_method %in% c("mode", "random", "mean0", "mean2", "xgboost"))) {
@@ -56,33 +57,39 @@ impute_snp_data <- function(obj,
 
     } else if (impute_method == "xgboost") {
 
-      if (parallel) {
-        obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
-                                                 ncores = count_cores(),
-                                                 infos.chr = obj$chr,
-                                                 seed = seed,
-                                                 ...) # dots can pass other args
-      } else {
-        obj$genotypes <- bigsnpr::snp_fastImpute(Gna = X,
-                                                 infos.chr = obj$chr,
-                                                 seed = seed,
-                                                 ...) # dots can pass other args
-      }
-
-      cat("\n ***************** NOTE ********************************
-          \nAugust 2023: With the xgboost imputation method, there
-          \nhave been some issues (particularly on Mac OS) with warnings
-          \nthat appear saying 'NA or NaN values in the resulting correlation matrix.'
-          \nHowever, we (plmm authors) have
-          \n not seen missing values appear in the results -- the imputed data
-          \n does not show any NA or NaN values, and models fit on these data run without issue.
-          \n We are actively investigating this warning message, and will
-          \n make a note in a future release. If using xgboost, proceed with
-          \n caution and file an issue if you notice any problems downstream.
-          \n ********************************************************")
+      withCallingHandlers({
+        if (parallel) {
+          bigsnpr::snp_fastImpute(Gna = X,
+                                  ncores = count_cores(),
+                                  infos.chr = chr,
+                                  seed = seed,
+                                  ...) # dots can pass other args
+        } else {
+          bigsnpr::snp_fastImpute(Gna = X,
+                                  infos.chr = chr,
+                                  seed = seed,
+                                  ...) # dots can pass other args
+        }
+      },
+      warning = function(w) {
+        if(!.plmmr_env$xgboost_warning_shown) {
+          cat("\n*************************** NOTE ***************************\n",
+          "With the xgboost imputation method, you may receive the warning",
+          "\n'NA or NaN values in the resulting correlation matrix.' This",
+          "\nis thrown by the bigsnpr package and likely results from several",
+          "\nof your SNPs having extremely small minor allele counts. These",
+          "\nvalues are excluded by the imputation algorithm, but if you would",
+          "\nlike to remedy the warnings, it is easiest to filter your data by",
+          "\nMAC (or MAF) using PLINK. For example:\n",
+          "\n",
+          "plink --bfile penncath_lite --mac 20 --make-bed --out penncath_filt",
+          "\n***************************************************************")
+          .plmmr_env$xgboost_warning_shown <- TRUE
+        }
+      })
 
       # save imputed values (NB: will overwrite obj$genotypes)
-      obj$genotypes$code256 <- bigsnpr::CODE_IMPUTE_PRED
+      X$code256 <- bigsnpr::CODE_IMPUTE_PRED
     }
 
     # save the imputed data

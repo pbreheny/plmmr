@@ -21,10 +21,10 @@ add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) 
   unpen <- NULL
 
   if (!quiet) {
-    cat("Adding predictors from external data.\n")
+    cat("Adding predictors from external data\n")
   }
 
-  cat("Adding predictors from external data.\n", file = outfile, append = TRUE)
+  cat("Adding predictors from external data\n", file = outfile, append = TRUE)
 
   if (is.data.frame(add_predictor)) {
     add_predictor <- as.matrix(add_predictor)
@@ -41,12 +41,6 @@ add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) 
              constant column (a column that does not vary over the given samples).",
          call. = FALSE)
   }
-
-  if (!quiet) {
-    cat("Aligning IDs between fam and predictor files\n")
-  }
-
-  cat("Aligning IDs between fam and predictor files\n", file = outfile, append = TRUE)
 
   # save unpen: an index marking added columns as *unpenalized* predictors
   unpen <- seq_len(ncol(add_predictor))

@@ -15,7 +15,6 @@
 #'
 rotate_filebacked <- function(prep,
                               y,
-                              incpt_flag,
                               tocenter = TRUE,
                               ...) {
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)

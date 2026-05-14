@@ -55,7 +55,7 @@ create_design_filebacked <- function(obj,
   if (grepl(pattern = "fold", x = new_file, fixed = TRUE)) {
     warning("The string 'fold' is a keyword that is used to create intermediate files in cv_plmm().
             If you call cv_plmm() on this design, there is a big possiblity that you will lose files unintentionally.
-            I recommend you either (1) choose a different 'new_file' name (best option) or (2)
+            We recommend you either (1) choose a different 'new_file' name (best option) or (2)
             double check that the folder where you will save your results from
             downstream analysis is not the same folder where you are saving this design.")
   }

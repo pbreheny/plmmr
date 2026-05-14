@@ -7,6 +7,7 @@
 impute_snp_data(
   obj,
   X,
+  chr,
   impute,
   impute_method,
   parallel,
@@ -20,6 +21,8 @@ impute_snp_data(
 \item{obj}{A \code{bigSNP} object (as created by \code{read_plink_files()})}
 
 \item{X}{A matrix of genotype data as returned by \code{name_and_count_bigsnp()}}
+
+\item{chr}{A numeric vector of chromosomal locations of the SNPs.}
 
 \item{impute}{Logical: should data be imputed? Defaults to TRUE.}
 

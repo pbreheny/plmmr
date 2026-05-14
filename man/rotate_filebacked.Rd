@@ -4,7 +4,7 @@
 \alias{rotate_filebacked}
 \title{A function to rotate filebacked data}
 \usage{
-rotate_filebacked(prep, y, incpt_flag, tocenter = TRUE, ...)
+rotate_filebacked(prep, y, tocenter = TRUE, ...)
 }
 \arguments{
 \item{prep}{The object returned by \code{plmm_prep()}}

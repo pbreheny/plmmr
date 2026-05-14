@@ -28,9 +28,8 @@ align_ids <- function(id_var, add_predictor, og_ids, outfile, quiet) {
   if (length(og_ids) > nrow(add_predictor)) {
     stop("There are more rows (samples) in the supplied PLINK data than there are rows in the 'add_predictor' data.
          For now, this is not supported by plmmr. You need to subset your PLINK data to represent
-         only the rows represented in your 'add_predictor' file.
-         There are at least two ways to do this: use the PLINK software directly, or use methods from the R package 'bigsnpr'.
-         If you don't have a lot of background in computing, I'd recommend the 'bigsnpr' approach.",
+         only the rows represented in your 'add_predictor' file. There are at least two ways to do this:
+         (1) using the PLINK software directly, or (2) using methods from the R package 'bigsnpr'.",
          call. = FALSE)
   }
 

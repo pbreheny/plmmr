@@ -118,6 +118,7 @@ process_plink <- function(data_dir,
   # imputation -------------------------------------------------
   step3 <- impute_snp_data(step2$obj,
                            step2$X,
+                           step2$chr,
                            impute = impute,
                            impute_method = impute_method,
                            parallel = parallel,
@@ -126,7 +127,7 @@ process_plink <- function(data_dir,
 
   # format return object ----------------------------------------
   X  <- bigmemory::deepcopy(
-    x = step3$genotypes$bm(),
+    x = step3$genotypes,
     row = seq_len(nrow(step3$genotypes)),
     col = seq_len(ncol(step3$genotypes)),
     type = "double", # this is why we're making a copy -- need type 'double' downstream

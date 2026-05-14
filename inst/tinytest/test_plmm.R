@@ -16,7 +16,7 @@ lasso0 <- glmnet::glmnet(
   y = admix$y,
   family = "gaussian",
   lambda = lambda0,
-  thres = 1e-15)
+  control = list(thresh = 1e-15))
 
 A0 <- coef(plmm0)
 dimnames(A0) <- NULL
@@ -79,7 +79,7 @@ lasso2 <- glmnet::glmnet(
   lambda = lambda2,
   # weights are by INVERSE variance
   weights = 1/v2,
-  thres = 1e-15)
+  control = list(thresh = 1e-15))
 
 A2 <- as.matrix(plmm2$beta_vals[2:10, ])
 dimnames(A2) <- NULL
