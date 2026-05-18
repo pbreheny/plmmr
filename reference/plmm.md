@@ -54,12 +54,8 @@ plmm(
   and `U`, as returned by a previous `plmm()` model fit on the same
   data.  
   **Note**: If a user provides their own `K` matrix, it is decomposed as
-  provided and will *not* be scaled. If `design` was created using
-  filebacked data and `K` is provided by the user, it is possible that a
-  new design matrix containing an intercept will need to be created.
-  This file will be placed in the same directory used to save the final
-  `.rds` object in
-  [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md).
+  provided and will *not* be scaled. User-provided K functionality is
+  currently not supported for filebacked data.
 
 - eta:
 

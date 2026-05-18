@@ -10,8 +10,6 @@ plmm_prep(
   std_X,
   std_X_n,
   std_X_p,
-  n,
-  p,
   centered_y,
   penalty_factor,
   K = NULL,
@@ -36,16 +34,6 @@ plmm_prep(
 - std_X_p:
 
   The number of features in `std_X` (integer)
-
-- n:
-
-  The number of instances in the *original* design matrix X. This should
-  not be altered by standardization.
-
-- p:
-
-  The number of features in the *original* design matrix X, including
-  constant features
 
 - centered_y:
 

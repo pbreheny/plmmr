@@ -61,21 +61,17 @@ cv_plmm(
   [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) model
   fit on the same data.  
   **Note**: If a user provides their own `K` matrix, it is decomposed as
-  provided and will *not* be scaled. If `design` was created using
-  filebacked data and `K` is provided by the user, it is possible that a
-  new design matrix containing an intercept will need to be created.
-  This file will be placed in the same directory used to save the final
-  `.rds` object in
-  [`create_design()`](https://pbreheny.github.io/plmmr/reference/create_design.md).
+  provided and will *not* be scaled. Providing K will change the default
+  of `type` to 'lp' as a safeguard against potential data leakage. This
+  can be overridden by specifying `type = 'blup'`, but should be done
+  with caution. Cross-validation with a user-provided K is not currently
+  implemented for filebacked data.
 
 - eta:
 
   Optional argument to input a specific eta term rather than estimate it
   from the data. If K is a known covariance matrix that is full rank,
-  this should be 1. Note: Setting `eta = 1` will change the default of
-  `type` to 'lp', as K is always calculated empirically in each fold.
-  This can be overridden by specifying `type = 'blup'`, but should be
-  done with caution.
+  this should be 1.
 
 - penalty:
 
