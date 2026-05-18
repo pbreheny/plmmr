@@ -14,10 +14,9 @@
 #'                          (1) a known matrix that reflects the covariance of y,
 #'                          (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 #'                          (3) a list with components `s` and `U`, as returned by a previous `plmm()` model fit on the same data.
-#'                        \cr **Note**: If a user provides their own `K` matrix, it is decomposed as provided and will *not* be scaled. If `design` was created using filebacked data and `K` is provided by the user,
-#'                        it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final `.rds` object in `create_design()`.
+#'                        \cr **Note**: If a user provides their own `K` matrix, it is decomposed as provided and will *not* be scaled. Providing K will change the default of `type` to 'lp' as a safeguard against potential data leakage.
+#'                        This can be overridden by specifying `type = 'blup'`, but should be done with caution. Cross-validation with a user-provided K is not currently implemented for filebacked data.
 #' @param eta             Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.
-#'                        Note: Setting `eta = 1` will change the default of `type` to 'lp', as K is always calculated empirically in each fold. This can be overridden by specifying `type = 'blup'`, but should be done with caution.
 #' @param penalty         The penalty to be applied to the model. Either "lasso" (the default), "SCAD", or "MCP".
 #' @param type            A character argument indicating what should be returned from `predict.plmm()`. If `type = 'lp'`, predictions are
 #'                        based on the linear predictor, X beta. If `type = 'blup'`, predictions are based on the sum of the linear predictor
@@ -106,9 +105,9 @@ cv_plmm <- function(design,
 
   logfile <- create_log(outfile = save_rds)
 
-  # check eta and type congruence ----------------------------
+  # check K requirements for CV ----------------------------
   if (is.null(type)) {
-    if (!is.null(eta) && eta == 1) {
+    if (!is.null(K)) {
       type <- "lp"
     } else {
       type <- "blup"
@@ -153,8 +152,6 @@ cv_plmm <- function(design,
   prep_args <- c(list(std_X = checked_data$std_X,
                       std_X_n = checked_data$std_X_n,
                       std_X_p = checked_data$std_X_p,
-                      n = checked_data$n,
-                      p = checked_data$p,
                       centered_y = checked_data$centered_y,
                       K = checked_data$K,
                       eta = checked_data$eta,
@@ -216,8 +213,9 @@ cv_plmm <- function(design,
   cv_args$lambda <- fit$lambda
   cv_args$eta <- fit$eta # note: here we use the same eta estimate in each fold of CV
   cv_args$plink_flag <- checked_data$plink_flag
+  cv_args$prep$K <- checked_data$K # will set to K if provided, otherwise NULL
 
-  # if an intercept was fit in the full model, this needs to be dropped in CV
+  # if an intercept was fit in the full model, this needs to be dropped before CV
   if (prep$incpt_flag) {
     cv_args$prep$std_X <- checked_data$std_X
     cv_args$prep$penalty_factor <- prep$penalty_factor[-1]

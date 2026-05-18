@@ -1,7 +1,6 @@
 #' A function to rotate filebacked data
 #'
 #' @param prep The object returned by `plmm_prep()`
-#' @param y The continuous outcome vector.
 #' @param tocenter Should the matrix be centered in addition to scaled? Defaults to TRUE
 #' @param ... Not used
 #'
@@ -14,7 +13,6 @@
 #' @keywords internal
 #'
 rotate_filebacked <- function(prep,
-                              y,
                               tocenter = TRUE,
                               ...) {
   w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
@@ -25,12 +23,7 @@ rotate_filebacked <- function(prep,
   rot_X <- prep$U %*% wUt %*% std_X # using %*% method from bigalgebra
   stdrot_X <- bigmemory::big.matrix(nrow = nrow(prep$U), ncol = ncol(std_X))
 
-  # rotate y
-  if (prep$incpt_flag) {
-    rot_y <- prep$U %*% wUt %*% y
-  } else {
-    rot_y <- prep$U %*% wUt %*% prep$centered_y
-  }
+  rot_y <- prep$U %*% wUt %*% prep$centered_y
 
   # re-standardize (since std_X is big, we do this in C++)
   std_rot <- .Call("big_std",

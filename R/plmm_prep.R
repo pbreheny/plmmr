@@ -5,8 +5,6 @@
 #' @param std_X Column standardized design matrix. May include clinical covariates and other non-SNP data.
 #' @param std_X_n The number of observations in `std_X` (integer)
 #' @param std_X_p The number of features in `std_X` (integer)
-#' @param n The number of instances in the *original* design matrix X. This should not be altered by standardization.
-#' @param p The number of features in the *original* design matrix X, including constant features
 #' @param centered_y Continuous outcome vector, centered.
 #' @param penalty_factor A multiplicative factor for the penalty applied to each coefficient.
 #' @param K Similarity matrix used to rotate the data. This should either be:
@@ -34,8 +32,6 @@
 plmm_prep <- function(std_X,
                       std_X_n,
                       std_X_p,
-                      n,
-                      p,
                       centered_y,
                       penalty_factor,
                       K = NULL,
@@ -58,7 +54,7 @@ plmm_prep <- function(std_X,
       cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n")
     }
     s <- sort(diag(K), decreasing = TRUE)
-    U <- diag(nrow = n)[, order(diag(K), decreasing = TRUE)]
+    U <- diag(nrow = std_X_n)[, order(diag(K), decreasing = TRUE)]
   }
   # case 2: K is a user-supplied list
   flag2 <- !is.null(K) & inherits(K, "list")
@@ -66,7 +62,7 @@ plmm_prep <- function(std_X,
     if (trace) {
       cat("K is a list; will pass U,s components from list to model fitting.\n")
     }
-    s <- K$s # no need to adjust singular values by p
+    s <- K$s
     U <- K$U
   }
 
@@ -78,7 +74,6 @@ plmm_prep <- function(std_X,
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     if (is.null(K) && is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
-
       if (trace) cat("Calculating the eigendecomposition of K\n")
       eigen_res <- eigen_K(std_X)
       K <- eigen_res$K
@@ -109,38 +104,8 @@ plmm_prep <- function(std_X,
   incpt_flag <- !isTRUE(all.equal(rep(0, ncol(U)), colSums(U)))
 
   if (incpt_flag) {
-    if (!fbm_flag) {
-      std_X <- cbind(1, std_X)
-      penalty_factor <- c(0, penalty_factor)
-    } else {
-      incpt <- as.matrix(rep(1, std_X_n), ncol = std_X_n)
-
-      filename <- bigmemory::describe(std_X)@description$filename |> tools::file_path_sans_ext()
-      dirname <- bigmemory::describe(std_X)@description$dirname
-
-      if (trace) {
-        cat("\nNote: Due to the format of your provided K, the model will require an intercept in the design matrix. ",
-	    "This will be written to a filebacked big.matrix in the same directory where you created your design as ",
-            filename, "_incpt.bk/desc. \n", sep = "")
-      }
-
-      # Overwrite old backing files
-      list.files(dirname, pattern = paste0(filename, "_incpt"), full.names = TRUE) |>
-        unlink(force = TRUE)
-
-      tmp_matrix <- big.matrix(nrow = std_X_n,
-                               ncol = std_X_p + 1,
-                               type = "double",
-                               backingfile = paste0(filename, "_incpt.bk"),
-                               backingpath = dirname,
-                               descriptorfile = paste0(filename, "_incpt.desc"))
-
-      std_X <- big_cbind(A = incpt,
-                         B = std_X,
-                         C = tmp_matrix,
-                         quiet = TRUE)
-      penalty_factor <- c(0, penalty_factor)
-    }
+    std_X <- cbind(1, std_X)
+    penalty_factor <- c(0, penalty_factor)
   }
 
   # estimate eta if needed; otherwise, use the user-supplied value (this option is mainly used for simulation studies)

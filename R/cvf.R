@@ -36,7 +36,14 @@ cvf <- function(i, fold, type, cv_args, ...) {
                     eps = cv_args$eps,
                     dfmax = cv_args$dfmax,
                     warn = cv_args$warn,
-                    lambda = cv_args$lambda)
+                    lambda = cv_args$lambda,
+                    penalty_factor = full_cv_prep$penalty_factor)
+
+  # If the K provided by the user was non-null, subset variance blocks
+  if(!is.null(full_cv_prep$K)) {
+    fold_args$K <- full_cv_prep$K[fold != i, fold != i]
+    Sigma_21 <- full_cv_prep$K[fold == i, fold != i]
+  }
 
   # subset std_X, U, and y to match fold indices ------------------------
   #   (and in so doing, leave out the ith fold)
@@ -70,7 +77,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
     singular <- std_trainX_info$std_X_scale < 1e-3
 
     # do not fit a model on singular features!
-    if (sum(singular) >= 1) full_cv_prep$penalty_factor[singular] <- Inf
+    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
 
   } else {
 
@@ -87,7 +94,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
     # do not fit a model on these (near) singular features!
     singular <- fold_args$std_X_details$scale < 1e-3
-    if (sum(singular) >= 1) full_cv_prep$penalty_factor[singular] <- Inf
+    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
   }
 
   # subset outcome vector to include outcomes for training data only
@@ -122,12 +129,11 @@ cvf <- function(i, fold, type, cv_args, ...) {
   fold_prep <- plmm_prep(std_X = fold_args$std_X,
                          std_X_n = nrow(fold_args$std_X),
                          std_X_p = ncol(fold_args$std_X),
-                         n = nrow(full_cv_prep$std_X),
-                         p = ncol(full_cv_prep$std_X),
                          centered_y = fold_args$centered_y,
                          fbm_flag = fold_args$fbm_flag,
                          eta = cv_args$eta,
-                         penalty_factor = full_cv_prep$penalty_factor,
+                         penalty_factor = fold_args$penalty_factor,
+                         K = fold_args$K,
                          trace = cv_args$prep$trace)
   fold_args$prep <- fold_prep
   # fit a plmm within each fold at each value of lambda
@@ -194,7 +200,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
                                B = fold_args$std_X)
       Sigma_21 <- const * XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
-    } else {
+    } else if (!exists("Sigma_21")) {
       # don't rescale columns that were singular features in std_train_X;
       #   these features will have an estimated beta of 0 anyway
       if (length(singular) >= 1) fold_args$std_X_details$scale[singular] <- 1

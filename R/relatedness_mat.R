@@ -6,11 +6,8 @@
 #'
 #' @param X An n x p numeric matrix of genotypes (from *fully-imputed* data). Can be a filebacked `big.matrix` object.
 #' Note: This matrix should *not* include non-genetic features.
-#' @param std Logical: should `X` be standardized? If you set this to FALSE, you should have a good reason for doing so, as standardization
-#' is a best practice.
-#' @param ns Optional vector of values indicating the indices of nonsingular features.
-#' Note: If a filebacked `big.matrix` is passed to `X` along with a non-null `ns`,
-#' a temporary deep copy will be created.
+#' @param std Logical: should `X` be standardized? If you set this to FALSE, you should have a good reason for doing so,
+#' as standardization is a best practice.
 #' @export
 #'
 #' @return An n x n numeric matrix capturing the genomic relatedness of the
@@ -20,37 +17,14 @@
 #' @examples
 #' RRM <- relatedness_mat(X = admix$X)
 #' RRM[1:5, 1:5]
-relatedness_mat <- function(X, std = TRUE, ns = NULL) {
+relatedness_mat <- function(X, std = TRUE) {
   p <- ncol(X)
-
-  # subset to ns actually contained within X
-  ns <- ns[ns %in% 1:p]
-
-  if (length(ns) %in% 1:(ncol(X) - 1)) {
-    if (inherits(X, "big.matrix")) {
-      X <- subset_filebacked(X,
-                             new_file = "temp_X",
-                             complete_samples = NULL,
-                             ns = ns,
-                             rds_dir = tempdir(),
-                             outfile = nullfile(),
-                             quiet = TRUE)$subset_X
-
-      on.exit({
-        gc()
-        unlink(list.files(tempdir(), pattern = paste0("temp_X", "\\.(bk|desc)"),
-                          full.names = TRUE),
-               force = TRUE)
-      })
-    } else {
-      X <- X[, ns]
-    }
-  }
 
   if (inherits(X, "big.matrix")) {
     if (std) {
       Xdesc <- standardize_filebacked(X, outfile = nullfile(), quiet = TRUE)
       X <- bigmemory::attach.big.matrix(Xdesc$std_X)
+      p <- p - sum(Xdesc$std_X_scale < 1e-3) # Don't count singular columns
     }
 
     XX <- bigalgebra::dgemm(TRANSA = "N",
@@ -58,11 +32,13 @@ relatedness_mat <- function(X, std = TRUE, ns = NULL) {
                             A = X,
                             B = X)[,]
   } else if (std) {
-    XX <- tcrossprod(standardize_in_memory(X)$std_X)
+    std_X <- ncvreg::std(X)
+    XX <- tcrossprod(std_X)
+    p <- ncol(std_X)
   } else {
     XX <- tcrossprod(X)
   }
 
-  # scale by p, the number of columns in the design matrix
+  # scale by the number of non-singular columns in the design matrix
   XX / p
 }

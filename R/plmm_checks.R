@@ -117,6 +117,10 @@ plmm_checks <- function(design,
 
   # check K types -------------------------------------------------------
   if (!is.null(K)) {
+    if (fbm_flag) {
+      stop("A user-provided K matrix is currently not supported for filebacked / big.matrix data.",
+           call. = FALSE)
+    }
     # first, check type/class:
     if (!inherits(K, "matrix") && !is.list(K)) {
       tmp <- try(K <- stats::model.matrix(~0+., data = K), silent = TRUE)

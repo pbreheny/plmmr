@@ -49,10 +49,8 @@ predict_within_cv <- function(fit,
   # for linear predictor, return mean values
   if (type == "lp") {
     Xb
-  }
-
-  # for blup, will incorporate the estimated variance
-  if (type == "blup") {
+  } else if (type == "blup") {
+    # for blup, will incorporate the estimated variance
     compute_blup(fit, Xb, Sigma_21, idx = seq_along(fit$lambda))
   }
 

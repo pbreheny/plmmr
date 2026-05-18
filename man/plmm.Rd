@@ -40,8 +40,7 @@ internally to \code{create_design(X = design, y = y)}.}
 (1) a known matrix that reflects the covariance of y,
 (2) an estimate (Default is \eqn{\frac{1}{p}(XX^T)}), or
 (3) a list with components \code{s} and \code{U}, as returned by a previous \code{plmm()} model fit on the same data.
-\cr \strong{Note}: If a user provides their own \code{K} matrix, it is decomposed as provided and will \emph{not} be scaled. If \code{design} was created using filebacked data and \code{K} is provided by the user,
-it is possible that a new design matrix containing an intercept will need to be created. This file will be placed in the same directory used to save the final \code{.rds} object in \code{create_design()}.}
+\cr \strong{Note}: If a user provides their own \code{K} matrix, it is decomposed as provided and will \emph{not} be scaled. User-provided K functionality is currently not supported for filebacked data.}
 
 \item{eta}{Optional argument to input a specific eta term rather than estimate it from the data. If K is a known covariance matrix that is full rank, this should be 1.}
 

@@ -8,8 +8,6 @@ plmm_prep(
   std_X,
   std_X_n,
   std_X_p,
-  n,
-  p,
   centered_y,
   penalty_factor,
   K = NULL,
@@ -25,10 +23,6 @@ plmm_prep(
 \item{std_X_n}{The number of observations in \code{std_X} (integer)}
 
 \item{std_X_p}{The number of features in \code{std_X} (integer)}
-
-\item{n}{The number of instances in the \emph{original} design matrix X. This should not be altered by standardization.}
-
-\item{p}{The number of features in the \emph{original} design matrix X, including constant features}
 
 \item{centered_y}{Continuous outcome vector, centered.}
 

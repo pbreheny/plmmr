@@ -88,7 +88,7 @@ plmm_fit <- function(prep,
     stdrot_X_details <- stdrot_info$std_X_details
 
   } else {
-    rot_res <- rotate_filebacked(prep, y, tocenter = FALSE)
+    rot_res <- rotate_filebacked(prep, tocenter = FALSE)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
     stdrot_X_details <- list(center = rot_res$stdrot_X_center,
@@ -216,14 +216,14 @@ plmm_fit <- function(prep,
     std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
                                            j = seq_len(ncol(stdrot_scale_beta)),
                                            x = mean(y),
-                                           dims = c(nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
+                                           dims = c(nrow(stdrot_scale_beta) + 1,
                                                     ncol = ncol(stdrot_scale_beta)))
   }
 
   # reverse the POST-ROTATION standardization on estimated betas
   # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
   stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-  bb <- stdrot_scale_beta / (stdrot_unscale)
+  bb <- stdrot_scale_beta / stdrot_unscale
 
   if (prep$incpt_flag) {
     std_scale_beta <- bb
