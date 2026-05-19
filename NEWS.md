@@ -1,3 +1,31 @@
+# plmmr 4.3.0
+
+- **New:** Package now has a `predict.cv_plmm()` method.
+- **New:** `dfmax` argument added to `plmm()`.
+- **Enhancement:** `find_example_data()` is now platform-independent.
+- **Fixed:** `create_design_in_memory()` was improperly handling the penalty factor when unpenalized covariates were not located in the first columns of `X`.
+- **Fixed:** An intercept may be required if the user provides a `K`. This is now accounted for (allowed for in-memory model fits only).
+- **Fixed:** A user-provided lambda sequence was not properly passed to the fitting functions in `cv_plmm()`.
+- **Fixed:** The `warn` option was not properly passed to `biglasso` when fitting a model on filebacked data.
+- **Fixed:** `plot.cv_plmm()` would throw an error if `selected = FALSE`.
+- **Change:** Reformulated preconditioning matrix to maintain original dimensions. See #85 for discussion.
+- **Change:** The option to provide an external `K` was removed for a filebacked design matrix.
+- **Change:** Linear predictor is now the default in `cv_plmm()` when the user provides a `K` matrix.
+- **Change:** If the user provides a `K` and requests BLUP prediction, `cv_plmm()` will use this `K` matrix to obtain `Sigma_11` and `Sigma_21` rather than estimate them empirically.
+- **Change:** `relatedness_mat()` redesigned; `ns` argument removed.
+- **Change:** `diag_K` is no longer an argument to `plmm()`; this is checked internally.
+- **Change:** `plmm_prep()` no longer scales a user-provided `K` matrix.
+- **Change:** `eta_star` argument to `plmm()` and `cv_plmm()` renamed to `eta`.
+- **Change:** Provided more detail on `xgboost` imputation warning.
+- **Change:** Package citation updated to `plmmr`'s Briefings in Bioinformatics publication.
+- **Change:** Updated source for raw `admix` dataset.
+- **Documentation:** Extensive documentation updates.
+- **Internal:** `fbm2bm()` and `get_hostname()` functions removed.
+- **Internal:** New internal function `compute_blup()`.
+- **Internal:** Switch from `file.remove()` to `unlink()` for backing file cleanup. This resolves persistent permissions errors.
+- **Internal:** If the user does not create a log file, the stream is now directed to the null device instead of a temporary file.
+- **Internal:** Expanded automatic package tests to include filebacking functions.
+
 # plmmr 4.2.3
 
 - **Bug fix:** Fixing LTO mismatch error.

@@ -26,7 +26,7 @@ Authors:
   \item Tabitha K. Peter \email{tabitha.peter15@gmail.com} (\href{https://orcid.org/0009-0005-2524-4751}{ORCID})
   \item Anna C. Reisetter \email{anna-reisetter@uiowa.edu} (\href{https://orcid.org/0000-0001-8332-4585}{ORCID})
   \item Yujing Lu
-  \item Oscar A. Rysavy \email{oscar-rysavy@uiowa.edu}
+  \item Oscar A. Rysavy \email{oscar-rysavy@uiowa.edu} (\href{https://orcid.org/0000-0002-1019-5724}{ORCID})
 }
 
 }

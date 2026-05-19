@@ -7,7 +7,8 @@ Authors@R: c(
     person("Anna C.", "Reisetter", , "anna-reisetter@uiowa.edu", role = "aut",
            comment = c(ORCID = "0000-0001-8332-4585")),
     person("Yujing", "Lu", role = "aut"),
-    person("Oscar A.", "Rysavy", , "oscar-rysavy@uiowa.edu", role = "aut"),
+    person("Oscar A.", "Rysavy", , "oscar-rysavy@uiowa.edu", role = "aut",
+           comment = c(ORCID = "0000-0002-1019-5724")),
     person("Patrick J.", "Breheny", , "patrick-breheny@uiowa.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0650-1119"))
   )
