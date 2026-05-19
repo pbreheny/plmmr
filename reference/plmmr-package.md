@@ -41,3 +41,4 @@ Authors:
 - Yujing Lu
 
 - Oscar A. Rysavy <oscar-rysavy@uiowa.edu>
+  ([ORCID](https://orcid.org/0000-0002-1019-5724))

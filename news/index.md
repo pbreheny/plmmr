@@ -1,5 +1,71 @@
 # Changelog
 
+## plmmr 4.3.0
+
+- **New:** Package now has a
+  [`predict.cv_plmm()`](https://pbreheny.github.io/plmmr/reference/predict.cv_plmm.md)
+  method.
+- **New:** `dfmax` argument added to
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md).
+- **Enhancement:**
+  [`find_example_data()`](https://pbreheny.github.io/plmmr/reference/find_example_data.md)
+  is now platform-independent.
+- **Fixed:**
+  [`create_design_in_memory()`](https://pbreheny.github.io/plmmr/reference/create_design_in_memory.md)
+  was improperly handling the penalty factor when unpenalized covariates
+  were not located in the first columns of `X`.
+- **Fixed:** An intercept may be required if the user provides a `K`.
+  This is now accounted for (allowed for in-memory model fits only).
+- **Fixed:** A user-provided lambda sequence was not properly passed to
+  the fitting functions in
+  [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md).
+- **Fixed:** The `warn` option was not properly passed to `biglasso`
+  when fitting a model on filebacked data.
+- **Fixed:**
+  [`plot.cv_plmm()`](https://pbreheny.github.io/plmmr/reference/plot.cv_plmm.md)
+  would throw an error if `selected = FALSE`.
+- **Change:** Reformulated preconditioning matrix to maintain original
+  dimensions. See [\#85](https://github.com/pbreheny/plmmr/issues/85)
+  for discussion.
+- **Change:** The option to provide an external `K` was removed for a
+  filebacked design matrix.
+- **Change:** Linear predictor is now the default in
+  [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md)
+  when the user provides a `K` matrix.
+- **Change:** If the user provides a `K` and requests BLUP prediction,
+  [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md)
+  will use this `K` matrix to obtain `Sigma_11` and `Sigma_21` rather
+  than estimate them empirically.
+- **Change:**
+  [`relatedness_mat()`](https://pbreheny.github.io/plmmr/reference/relatedness_mat.md)
+  redesigned; `ns` argument removed.
+- **Change:** `diag_K` is no longer an argument to
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md); this
+  is checked internally.
+- **Change:**
+  [`plmm_prep()`](https://pbreheny.github.io/plmmr/reference/plmm_prep.md)
+  no longer scales a user-provided `K` matrix.
+- **Change:** `eta_star` argument to
+  [`plmm()`](https://pbreheny.github.io/plmmr/reference/plmm.md) and
+  [`cv_plmm()`](https://pbreheny.github.io/plmmr/reference/cv_plmm.md)
+  renamed to `eta`.
+- **Change:** Provided more detail on `xgboost` imputation warning.
+- **Change:** Package citation updated to `plmmr`’s Briefings in
+  Bioinformatics publication.
+- **Change:** Updated source for raw `admix` dataset.
+- **Documentation:** Extensive documentation updates.
+- **Internal:** `fbm2bm()` and `get_hostname()` functions removed.
+- **Internal:** New internal function
+  [`compute_blup()`](https://pbreheny.github.io/plmmr/reference/compute_blup.md).
+- **Internal:** Switch from
+  [`file.remove()`](https://rdrr.io/r/base/files.html) to
+  [`unlink()`](https://rdrr.io/r/base/unlink.html) for backing file
+  cleanup. This resolves persistent permissions errors.
+- **Internal:** If the user does not create a log file, the stream is
+  now directed to the null device instead of a temporary file.
+- **Internal:** Expanded automatic package tests to include filebacking
+  functions.
+
 ## plmmr 4.2.3
 
 CRAN release: 2026-01-26

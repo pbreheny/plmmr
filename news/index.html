@@ -40,6 +40,59 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.3.0" id="plmmr-430">plmmr 4.3.0<a class="anchor" aria-label="anchor" href="#plmmr-430"></a></h2>
+<ul><li>
+<strong>New:</strong> Package now has a <code><a href="../reference/predict.cv_plmm.html">predict.cv_plmm()</a></code> method.</li>
+<li>
+<strong>New:</strong> <code>dfmax</code> argument added to <code><a href="../reference/plmm.html">plmm()</a></code>.</li>
+<li>
+<strong>Enhancement:</strong> <code><a href="../reference/find_example_data.html">find_example_data()</a></code> is now platform-independent.</li>
+<li>
+<strong>Fixed:</strong> <code><a href="../reference/create_design_in_memory.html">create_design_in_memory()</a></code> was improperly handling the penalty factor when unpenalized covariates were not located in the first columns of <code>X</code>.</li>
+<li>
+<strong>Fixed:</strong> An intercept may be required if the user provides a <code>K</code>. This is now accounted for (allowed for in-memory model fits only).</li>
+<li>
+<strong>Fixed:</strong> A user-provided lambda sequence was not properly passed to the fitting functions in <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code>.</li>
+<li>
+<strong>Fixed:</strong> The <code>warn</code> option was not properly passed to <code>biglasso</code> when fitting a model on filebacked data.</li>
+<li>
+<strong>Fixed:</strong> <code><a href="../reference/plot.cv_plmm.html">plot.cv_plmm()</a></code> would throw an error if <code>selected = FALSE</code>.</li>
+<li>
+<strong>Change:</strong> Reformulated preconditioning matrix to maintain original dimensions. See <a href="https://github.com/pbreheny/plmmr/issues/85" class="external-link">#85</a> for discussion.</li>
+<li>
+<strong>Change:</strong> The option to provide an external <code>K</code> was removed for a filebacked design matrix.</li>
+<li>
+<strong>Change:</strong> Linear predictor is now the default in <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> when the user provides a <code>K</code> matrix.</li>
+<li>
+<strong>Change:</strong> If the user provides a <code>K</code> and requests BLUP prediction, <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> will use this <code>K</code> matrix to obtain <code>Sigma_11</code> and <code>Sigma_21</code> rather than estimate them empirically.</li>
+<li>
+<strong>Change:</strong> <code><a href="../reference/relatedness_mat.html">relatedness_mat()</a></code> redesigned; <code>ns</code> argument removed.</li>
+<li>
+<strong>Change:</strong> <code>diag_K</code> is no longer an argument to <code><a href="../reference/plmm.html">plmm()</a></code>; this is checked internally.</li>
+<li>
+<strong>Change:</strong> <code><a href="../reference/plmm_prep.html">plmm_prep()</a></code> no longer scales a user-provided <code>K</code> matrix.</li>
+<li>
+<strong>Change:</strong> <code>eta_star</code> argument to <code><a href="../reference/plmm.html">plmm()</a></code> and <code><a href="../reference/cv_plmm.html">cv_plmm()</a></code> renamed to <code>eta</code>.</li>
+<li>
+<strong>Change:</strong> Provided more detail on <code>xgboost</code> imputation warning.</li>
+<li>
+<strong>Change:</strong> Package citation updated to <code>plmmr</code>’s Briefings in Bioinformatics publication.</li>
+<li>
+<strong>Change:</strong> Updated source for raw <code>admix</code> dataset.</li>
+<li>
+<strong>Documentation:</strong> Extensive documentation updates.</li>
+<li>
+<strong>Internal:</strong> <code>fbm2bm()</code> and <code>get_hostname()</code> functions removed.</li>
+<li>
+<strong>Internal:</strong> New internal function <code><a href="../reference/compute_blup.html">compute_blup()</a></code>.</li>
+<li>
+<strong>Internal:</strong> Switch from <code><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove()</a></code> to <code><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink()</a></code> for backing file cleanup. This resolves persistent permissions errors.</li>
+<li>
+<strong>Internal:</strong> If the user does not create a log file, the stream is now directed to the null device instead of a temporary file.</li>
+<li>
+<strong>Internal:</strong> Expanded automatic package tests to include filebacking functions.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.2.3" id="plmmr-423">plmmr 4.2.3<a class="anchor" aria-label="anchor" href="#plmmr-423"></a></h2><p class="text-muted">CRAN release: 2026-01-26</p>
 <ul><li>
 <strong>Bug fix:</strong> Fixing LTO mismatch error.</li>

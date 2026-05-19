@@ -10,7 +10,7 @@
 
 - **Yujing Lu**. Author.
 
-- **Oscar A. Rysavy**. Author.
+- **Oscar A. Rysavy**. Author. [](https://orcid.org/0000-0002-1019-5724)
 
 - **Patrick J. Breheny**. Author, maintainer.
   [](https://orcid.org/0000-0002-0650-1119)
@@ -22,14 +22,14 @@ Source:
 
 Peter T, Reisetter A, Lu Y, Rysavy O, Breheny P (2026). “plmmr: an R
 package to fit penalized linear mixed models for genome-wide association
-data with complex correlation structure.” *Briefings in bioinformatics*,
+data with complex correlation structure.” *Briefings in Bioinformatics*,
 **27**(1).
 [doi:10.1093/bib/bbaf672](https://doi.org/10.1093/bib/bbaf672).
 
     @Article{,
       author = {Tabitha K. Peter and Anna C. Reisetter and Yujing Lu and Oscar A. Rysavy and Patrick J. Breheny},
       title = {plmmr: an R package to fit penalized linear mixed models for genome-wide association data with complex correlation structure},
-      journal = {Briefings in bioinformatics},
+      journal = {Briefings in Bioinformatics},
       year = {2026},
       volume = {27},
       number = {1},
