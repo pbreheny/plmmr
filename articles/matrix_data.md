@@ -163,8 +163,8 @@ summary(admix_cv, lambda = "min")
 #> At minimum cross-validation error (lambda=0.1869):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.29
-#>   Scale estimate (sigma): 1.136
+#>   Cross-validation error (deviance): 1.28
+#>   Scale estimate (sigma): 1.130
 ```
 
 We can also plot the cross-validation error (CVE) versus \lambda (on the
@@ -205,8 +205,8 @@ summary(cv_fit_parallel)
 #> At minimum cross-validation error (lambda=0.1869):
 #> -------------------------------------------------
 #>   Nonzero coefficients: 3
-#>   Cross-validation error (deviance): 1.29
-#>   Scale estimate (sigma): 1.136
+#>   Cross-validation error (deviance): 1.28
+#>   Scale estimate (sigma): 1.130
 ```
 
 ``` r

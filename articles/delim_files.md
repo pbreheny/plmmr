@@ -32,7 +32,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
 #> process_plink() completed. 
-#> Processed files now saved as /tmp/Rtmpl9aop6/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmp3rA77E/processed_colon2.rds
 
 # look at what is created 
 colon <- readRDS(colon_dat)
@@ -88,10 +88,10 @@ colon_design <- create_design(data_file = colon_dat,
 #> There are 0 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-05-19 13:32:37
+#> Standardization completed at 2026-05-21 15:49:52
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmpl9aop6/std_colon2.rds
+#> Processed files now saved as /tmp/Rtmp3rA77E/std_colon2.rds
 ```
 
 As with
@@ -126,7 +126,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpl9aop6/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmp3rA77E/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -154,18 +154,18 @@ We fit a model using our design as follows:
 colon_fit <- plmm(design = colon_design, return_fit = TRUE, trace = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-05-19 13:32:38
+#> Input data passed all checks at  2026-05-21 15:49:53
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-05-19 13:32:38
+#> Eigendecomposition finished at  2026-05-21 15:49:53
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-05-19 13:32:38
+#> Rotation (preconditioning) finished at  2026-05-21 15:49:53
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-05-19 13:32:38 
+#> Model fitting finished at  2026-05-21 15:49:53 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-05-19 13:32:38
+#> Model ready at  2026-05-21 15:49:53
 ```
 
 Notice the messages that are printed out – this documentation may

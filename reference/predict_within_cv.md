@@ -48,7 +48,7 @@ A numeric vector of predicted values
   coefficients of `fit` to predict new values of the outcome. This does
   not incorporate the correlation structure of the data.
 
-- `blup` (acronym for Best Linear Unbiased Predictor): adds to the \`lp“
+- `blup` (acronym for Best Linear Unbiased Predictor): adds to the `lp`
   a value that represents the estimated random effect. This addition is
   a way of incorporating the estimated correlation structure of data
   into our prediction of the outcome.
