@@ -27,7 +27,7 @@ Predict method to use in cross-validation (within \code{cvf()})
 \details{
 \itemize{
 \item \code{lp} (linear predictor): uses the product of \code{testX} and the beta coefficients of \code{fit} to predict new values of the outcome. This does not incorporate the correlation structure of the data.
-\item \code{blup} (acronym for Best Linear Unbiased Predictor): adds to the `lp`` a value that represents the estimated random effect. This addition is a way of incorporating
+\item \code{blup} (acronym for Best Linear Unbiased Predictor): adds to the \code{lp} a value that represents the estimated random effect. This addition is a way of incorporating
 the estimated correlation structure of data into our prediction of the outcome.
 \item \code{coefficients}: returns the estimated beta-hat
 \item \code{vars}: returns the \emph{indices} of variables (e.g., SNPs) with nonzero coefficients at each value of lambda. EXCLUDES intercept.

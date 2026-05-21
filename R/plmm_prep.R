@@ -41,7 +41,7 @@ plmm_prep <- function(std_X,
                       ...) {
 
   ## coercion
-  U <- s <- eta <- NULL
+  U <- s <- NULL
 
   # First: handle the cases where no decomposition is needed ------------------
 
