@@ -13,7 +13,11 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: r-lib/actions/setup-r@v2
-      - run: install.packages("bigmemory", repos="https://cloud.r-project.org")
+      - run: install.packages("pak", repos="https://cloud.r-project.org")
+        shell: Rscript {0}
+      - run: pak::pkg_install("bigmemory")
+        shell: Rscript {0}
+      - run: pak::pkg_install("pbreheny/plmmr")
         shell: Rscript {0}
       - name: Run reprex
         timeout-minutes: 1
