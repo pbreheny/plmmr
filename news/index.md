@@ -2,6 +2,8 @@
 
 ## plmmr 4.3.0
 
+CRAN release: 2026-06-11
+
 - **New:** Package now has a
   [`predict.cv_plmm()`](https://pbreheny.github.io/plmmr/reference/predict.cv_plmm.md)
   method.
