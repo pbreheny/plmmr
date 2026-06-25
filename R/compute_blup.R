@@ -19,7 +19,7 @@ compute_blup <- function(fit, Xb, Sigma_21, idx) {
       decomp <- eigen(K, symmetric = TRUE)
       nz <- decomp$values > 1e-4
       U <- decomp$vectors[, nz, drop = FALSE]
-      s <-  decomp$values[nz]
+      s <- decomp$values[nz]
     } else {
       # case 2: K is a list with U,s
       U <- K$U
@@ -30,10 +30,9 @@ compute_blup <- function(fit, Xb, Sigma_21, idx) {
   }
 
   resid_old <- drop(fit$y) - fit$std_Xbeta[, idx]
-  Ut_r   <- drop(t(U) %*% resid_old)
+  Ut_r <- drop(t(U) %*% resid_old)
   tmp <- U %*% (Ut_r / (eta * s + (1 - eta)))
   ranef <- Sigma_21 %*% tmp
 
   Xb + ranef
-
 }

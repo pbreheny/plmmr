@@ -72,26 +72,27 @@
 #' s <- summary(fit, idx = 50)
 #' print(s)
 #' plot(fit)
-plmm <- function(design,
-                 y = NULL,
-                 K = NULL,
-                 eta = NULL,
-                 penalty = "lasso",
-                 init = NULL,
-                 gamma,
-                 alpha = 1,
-                 lambda_min, # passed to internal function setup_lambda()
-                 nlambda = 100,
-                 lambda,
-                 eps = 1e-04,
-                 max_iter = 10000,
-                 dfmax = NULL,
-                 warn = TRUE,
-                 trace = FALSE,
-                 save_rds = NULL,
-                 return_fit = TRUE,
-                 ...) {
-
+plmm <- function(
+  design,
+  y = NULL,
+  K = NULL,
+  eta = NULL,
+  penalty = "lasso",
+  init = NULL,
+  gamma,
+  alpha = 1,
+  lambda_min, # passed to internal function setup_lambda()
+  nlambda = 100,
+  lambda,
+  eps = 1e-04,
+  max_iter = 10000,
+  dfmax = NULL,
+  warn = TRUE,
+  trace = FALSE,
+  save_rds = NULL,
+  return_fit = TRUE,
+  ...
+) {
   # check filepaths for saving results, if requested  --------------------------
 
   if (!is.null(save_rds)) {
@@ -103,101 +104,136 @@ plmm <- function(design,
   if (inherits(design, "data.frame") || inherits(design, "matrix")) {
     # error check: if 'design' is matrix/data.frame, user must specify 'y'
     if (is.null(y)) {
-      stop("If you supply a matrix or data frame as 'design', you
+      stop(
+        "If you supply a matrix or data frame as 'design', you
                          must also specify a numeric vector as the outcome of your
-                         model to the 'y' argument.")
+                         model to the 'y' argument."
+      )
     }
 
     design <- create_design_in_memory(X = design, y = y)
-
-
   } else if (!is.null(y)) {
-    stop("If you are supplying a plmm_design object or filepath to
+    stop(
+      "If you are supplying a plmm_design object or filepath to
                           the 'design' argument, that design already has a 'y' --
-                          please do not specify a 'y' argument here in plmm()")
+                          please do not specify a 'y' argument here in plmm()"
+    )
   }
 
   # run checks ------------------------------
-  checked_data <- plmm_checks(design,
-                              K = K,
-                              eta = eta,
-                              penalty = penalty,
-                              init = init,
-                              gamma = gamma,
-                              alpha = alpha,
-                              dfmax = dfmax,
-                              trace = trace,
-                              ...)
+  checked_data <- plmm_checks(
+    design,
+    K = K,
+    eta = eta,
+    penalty = penalty,
+    init = init,
+    gamma = gamma,
+    alpha = alpha,
+    dfmax = dfmax,
+    trace = trace,
+    ...
+  )
 
   # prep (SVD)-------------------------------------------------
   if (trace) {
-    cat("Input data passed all checks at ",
-        pretty_time())
+    cat("Input data passed all checks at ", pretty_time())
   }
-  cat("Input data passed all checks at ",
-      pretty_time(), "\n", file = logfile, append = TRUE)
+  cat(
+    "Input data passed all checks at ",
+    pretty_time(),
+    "\n",
+    file = logfile,
+    append = TRUE
+  )
 
-  the_prep <- plmm_prep(std_X = checked_data$std_X,
-                        std_X_n = checked_data$std_X_n,
-                        std_X_p = checked_data$std_X_p,
-                        centered_y = checked_data$centered_y,
-                        K = checked_data$K,
-                        eta = checked_data$eta,
-                        penalty_factor = checked_data$penalty_factor,
-                        fbm_flag = checked_data$fbm_flag,
-                        trace = trace)
+  the_prep <- plmm_prep(
+    std_X = checked_data$std_X,
+    std_X_n = checked_data$std_X_n,
+    std_X_p = checked_data$std_X_p,
+    centered_y = checked_data$centered_y,
+    K = checked_data$K,
+    eta = checked_data$eta,
+    penalty_factor = checked_data$penalty_factor,
+    fbm_flag = checked_data$fbm_flag,
+    trace = trace
+  )
 
-  if (trace) (cat("Eigendecomposition finished at ", pretty_time()))
+  if (trace) {
+    (cat("Eigendecomposition finished at ", pretty_time()))
+  }
 
-  cat("Eigendecomposition finished at ", pretty_time(),
-      "\n", file = logfile, append = TRUE)
-
+  cat(
+    "Eigendecomposition finished at ",
+    pretty_time(),
+    "\n",
+    file = logfile,
+    append = TRUE
+  )
 
   # rotate & fit -------------------------------------------------------------
-  the_fit <- plmm_fit(prep = the_prep,
-                      y = checked_data$y,
-                      std_X_details = checked_data$std_X_details,
-                      fbm_flag = checked_data$fbm_flag,
-                      penalty = checked_data$penalty,
-                      gamma = checked_data$gamma,
-                      alpha = alpha,
-                      lambda_min = lambda_min,
-                      nlambda = nlambda,
-                      lambda = lambda,
-                      eps = eps,
-                      max_iter = max_iter,
-                      dfmax = checked_data$dfmax,
-                      warn = warn)
+  the_fit <- plmm_fit(
+    prep = the_prep,
+    y = checked_data$y,
+    std_X_details = checked_data$std_X_details,
+    fbm_flag = checked_data$fbm_flag,
+    penalty = checked_data$penalty,
+    gamma = checked_data$gamma,
+    alpha = alpha,
+    lambda_min = lambda_min,
+    nlambda = nlambda,
+    lambda = lambda,
+    eps = eps,
+    max_iter = max_iter,
+    dfmax = checked_data$dfmax,
+    warn = warn
+  )
 
-  if (trace) cat("Beta values are estimated -- almost done!\n")
+  if (trace) {
+    cat("Beta values are estimated -- almost done!\n")
+  }
 
   # format results ---------------------------------------------------
-  if (trace) cat("Formatting results (backtransforming coefs. to original scale).\n")
+  if (trace) {
+    cat("Formatting results (backtransforming coefs. to original scale).\n")
+  }
 
-  the_final_product <- plmm_format(fit = the_fit,
-                                   p = checked_data$p,
-                                   std_X_details = checked_data$std_X_details,
-                                   fbm_flag = checked_data$fbm_flag,
-                                   plink_flag = checked_data$plink_flag)
+  the_final_product <- plmm_format(
+    fit = the_fit,
+    p = checked_data$p,
+    std_X_details = checked_data$std_X_details,
+    fbm_flag = checked_data$fbm_flag,
+    plink_flag = checked_data$plink_flag
+  )
 
-  if (trace) (cat("Model ready at ", pretty_time()))
+  if (trace) {
+    (cat("Model ready at ", pretty_time()))
+  }
 
   cat("Model ready at ", pretty_time(), file = logfile, append = TRUE)
 
   # handle output
   if (!is.null(save_rds)) {
     # save all output in one file (default); *not* including std_X
-    saveRDS(the_final_product[c(1:3, 5:19)],
-            paste0(save_rds, ".rds"))
-    if (trace) cat("Results saved to:", paste0(save_rds, ".rds"))
-    cat("Results saved to:", paste0(save_rds, ".rds"), "at",
-        pretty_time(), file = logfile, append = TRUE)
+    saveRDS(the_final_product[c(1:3, 5:19)], paste0(save_rds, ".rds"))
+    if (trace) {
+      cat("Results saved to:", paste0(save_rds, ".rds"))
+    }
+    cat(
+      "Results saved to:",
+      paste0(save_rds, ".rds"),
+      "at",
+      pretty_time(),
+      file = logfile,
+      append = TRUE
+    )
   }
 
   # create a failsafe -- if save_rds is NULL, make sure return_fit = TRUE
   if (is.null(save_rds) && !return_fit) {
-    cat("You accidentally left save_rds = NULL and return_fit = FALSE;
-        to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE")
+    cat(
+      "You accidentally left save_rds = NULL and return_fit = FALSE;
+        to prevent you from losing your work, plmm() is returning the output as if return_fit = TRUE"
+    )
 
     return_fit <- TRUE
   }
@@ -205,5 +241,4 @@ plmm <- function(design,
   if (return_fit) {
     the_final_product
   }
-
 }

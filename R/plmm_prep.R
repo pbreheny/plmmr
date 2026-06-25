@@ -29,29 +29,35 @@
 #'
 #' @keywords internal
 #'
-plmm_prep <- function(std_X,
-                      std_X_n,
-                      std_X_p,
-                      centered_y,
-                      penalty_factor,
-                      K = NULL,
-                      eta = NULL,
-                      fbm_flag,
-                      trace = NULL,
-                      ...) {
-
+plmm_prep <- function(
+  std_X,
+  std_X_n,
+  std_X_p,
+  centered_y,
+  penalty_factor,
+  K = NULL,
+  eta = NULL,
+  fbm_flag,
+  trace = NULL,
+  ...
+) {
   ## coercion
   U <- s <- NULL
 
   # First: handle the cases where no decomposition is needed ------------------
 
   # case 1: K is user-supplied diagonal matrix (like a weighted lm())
-  flag1 <- !is.null(K) & ifelse(!(inherits(K, "matrix") || inherits(K, "dcGMatrix")),
-                                FALSE,
-                                Matrix::isDiagonal(K))
+  flag1 <- !is.null(K) &
+    ifelse(
+      !(inherits(K, "matrix") || inherits(K, "dcGMatrix")),
+      FALSE,
+      Matrix::isDiagonal(K)
+    )
   if (flag1) {
     if (trace) {
-      cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n")
+      cat(
+        "Using supplied diagonal matrix for K, similar to a lm() with weights.\n"
+      )
     }
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = std_X_n)[, order(diag(K), decreasing = TRUE)]
@@ -74,12 +80,13 @@ plmm_prep <- function(std_X,
     # set default K: if not specified and not diagonal, use realized relatedness matrix
     if (is.null(K) && is.null(s)) {
       # NB: the is.null(s) keeps you from overwriting the 3 preceding special cases
-      if (trace) cat("Calculating the eigendecomposition of K\n")
+      if (trace) {
+        cat("Calculating the eigendecomposition of K\n")
+      }
       eigen_res <- eigen_K(std_X)
       K <- eigen_res$K
       s <- eigen_res$s
       U <- eigen_res$U
-
     } else {
       # last case: K is a user-supplied matrix
       eigen_res <- eigen(K, symmetric = TRUE)
@@ -87,17 +94,18 @@ plmm_prep <- function(std_X,
       s <- eigen_res$values[nz]
       U <- eigen_res$vectors[, nz, drop = FALSE]
     }
-
   }
 
   # error check: what if the combination of args. supplied was none of the cases above?
   if (is.null(s) || is.null(U)) {
-    stop("\nSomething is wrong in the eigendecomposition.
+    stop(
+      "\nSomething is wrong in the eigendecomposition.
     \nThe combination of supplied arguments does not match any cases handled in
          \n plmm_prep(), the internal function called by plmm() to do this step of the modeling process.
          \n Re-examine the supplied arguments -- here are some common mistakes:
          \n Is the K argument you supplied something other than a list, a matrix, or a filepath to an RDS file with one of those objects?
-         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'.")
+         \n \tDid you supply a list to K? Check its element names -- they must be 's' and 'U'."
+    )
   }
 
   # check if an intercept is required for model fitting based on U - not required if column means of U are 0
@@ -110,7 +118,13 @@ plmm_prep <- function(std_X,
 
   # estimate eta if needed; otherwise, use the user-supplied value (this option is mainly used for simulation studies)
   if (is.null(eta)) {
-    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y, incpt_flag = incpt_flag)
+    eta <- estimate_eta(
+      n = std_X_n,
+      s = s,
+      U = U,
+      y = centered_y,
+      incpt_flag = incpt_flag
+    )
   }
 
   # return values to be passed into plmm_fit():
@@ -123,5 +137,6 @@ plmm_prep <- function(std_X,
     eta = eta, # carry eta over to fit
     penalty_factor = penalty_factor,
     incpt_flag = incpt_flag,
-    trace = trace)
+    trace = trace
+  )
 }

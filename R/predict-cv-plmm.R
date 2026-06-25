@@ -46,7 +46,22 @@
 #'
 #' pred1 <- predict(object = fit, newX = test$X, X = train$X) # Minimum CVE lambda
 #' pred2 <- predict(object = fit, newX = test$X, X = train$X, idx = fit$min1se) # 1 SE lambda
-predict.cv_plmm <- function(object, newX, type = c("blup", "coefficients", "vars", "nvars", "lp"),
-                            X, lambda, idx = object$min, ...) {
-  predict(object$fit, newX = newX, type = type, X = X, lambda = lambda, idx = idx, ...)
+predict.cv_plmm <- function(
+  object,
+  newX,
+  type = c("blup", "coefficients", "vars", "nvars", "lp"),
+  X,
+  lambda,
+  idx = object$min,
+  ...
+) {
+  predict(
+    object$fit,
+    newX = newX,
+    type = type,
+    X = X,
+    lambda = lambda,
+    idx = idx,
+    ...
+  )
 }

@@ -11,48 +11,61 @@
 #' @keywords internal
 #'
 align_ids <- function(id_var, add_predictor, og_ids, outfile, quiet) {
-
   if (is.numeric(add_predictor[, id_var])) {
     add_predictor[, id_var] <- as.character(add_predictor[, id_var])
   }
 
   # check for alignment
   if (length(intersect(og_ids, add_predictor[, id_var])) == 0) {
-    stop("You supplied an argument to 'add_predictor', but the IDs do not align with either of the ID columns in the feature data file.
+    stop(
+      "You supplied an argument to 'add_predictor', but the IDs do not align with either of the ID columns in the feature data file.
          \nPlease create or align the names of this vector - alignment is essential for accurate analysis.\n",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   # check alignment between the geno/pheno data we've already merged in step 1
   #   and the supplied predictor file.
   if (length(og_ids) > nrow(add_predictor)) {
-    stop("There are more rows (samples) in the supplied PLINK data than there are rows in the 'add_predictor' data.
+    stop(
+      "There are more rows (samples) in the supplied PLINK data than there are rows in the 'add_predictor' data.
          For now, this is not supported by plmmr. You need to subset your PLINK data to represent
          only the rows represented in your 'add_predictor' file. There are at least two ways to do this:
          (1) using the PLINK software directly, or (2) using methods from the R package 'bigsnpr'.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   if (!quiet) {
     cat("\nAligning external data with the feature data by", id_var, "\n")
   }
 
-  cat("\nAligning external data with the feature data by", id_var, "\n",
-      file = outfile, append = TRUE)
+  cat(
+    "\nAligning external data with the feature data by",
+    id_var,
+    "\n",
+    file = outfile,
+    append = TRUE
+  )
 
   # make original IDs into a table with which the added predictors can be merged
   og_ids <- data.table::as.data.table(data.frame(ID = og_ids))
   add_predictor <- data.table::data.table(add_predictor)
-  new_add_predictor <- data.table::merge.data.table(x = og_ids,
-                                                    y = add_predictor,
-                                                    by.x = "ID",
-                                                    by.y = id_var,
-                                                    all = FALSE,
-                                                    sort = FALSE)
+  new_add_predictor <- data.table::merge.data.table(
+    x = og_ids,
+    y = add_predictor,
+    by.x = "ID",
+    by.y = id_var,
+    all = FALSE,
+    sort = FALSE
+  )
 
   # for downstream calls, output *must* be a numeric matrix
   new_add_predictor_mat <- as.matrix(new_add_predictor[, -1])
-  rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[, "ID", with = FALSE]) |>
+  rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[,
+    "ID",
+    with = FALSE
+  ]) |>
     as.character()
 
   new_add_predictor_mat

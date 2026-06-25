@@ -13,8 +13,14 @@
 #'
 #' @keywords internal
 #'
-add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) {
-
+add_predictors <- function(
+  obj,
+  add_predictor,
+  id_var,
+  rds_dir,
+  outfile,
+  quiet
+) {
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
@@ -32,30 +38,38 @@ add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) 
 
   # make sure types match
   if (!is.numeric(add_predictor[, 1])) {
-    stop("\nThe matrix supplied to the 'add_predictor' argument must have numeric values only.",
-         call. = FALSE)
+    stop(
+      "\nThe matrix supplied to the 'add_predictor' argument must have numeric values only.",
+      call. = FALSE
+    )
   }
 
   if (any(apply(add_predictor, 2, var) < 1e-4)) {
-    stop("\nThe matrix supplied to the 'add_predictor' argument has at least one
+    stop(
+      "\nThe matrix supplied to the 'add_predictor' argument has at least one
              constant column (a column that does not vary over the given samples).",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   # save unpen: an index marking added columns as *unpenalized* predictors
   unpen <- seq_len(ncol(add_predictor))
 
-  design_matrix <- big.matrix(nrow = nrow(obj$X),
-                              ncol = ncol(obj$X) + length(unpen),
-                              type = "double",
-                              backingfile = "unstd_design_matrix.bk",
-                              backingpath = rds_dir,
-                              descriptorfile = "unstd_design_matrix.desc")
+  design_matrix <- big.matrix(
+    nrow = nrow(obj$X),
+    ncol = ncol(obj$X) + length(unpen),
+    type = "double",
+    backingfile = "unstd_design_matrix.bk",
+    backingpath = rds_dir,
+    descriptorfile = "unstd_design_matrix.desc"
+  )
 
-  design_matrix <- big_cbind(A = add_predictor,
-                             B = obj$X,
-                             C = design_matrix,
-                             quiet = quiet)
+  design_matrix <- big_cbind(
+    A = add_predictor,
+    B = obj$X,
+    C = design_matrix,
+    quiet = quiet
+  )
 
   ret <- list(design_matrix = design_matrix, unpen = unpen)
 

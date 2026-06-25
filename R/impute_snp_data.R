@@ -21,72 +21,91 @@
 #'
 #' @keywords internal
 #'
-impute_snp_data <- function(obj,
-                            X,
-                            chr,
-                            impute,
-                            impute_method,
-                            parallel,
-                            outfile,
-                            quiet,
-                            seed = as.numeric(Sys.Date()),
-                            ...) {
+impute_snp_data <- function(
+  obj,
+  X,
+  chr,
+  impute,
+  impute_method,
+  parallel,
+  outfile,
+  quiet,
+  seed = as.numeric(Sys.Date()),
+  ...
+) {
   if (!quiet && impute) {
     # catch for misspellings
-    if (!(impute_method %in% c("mode", "random", "mean0", "mean2", "xgboost"))) {
-      stop("\nImpute method is misspecified or misspelled. Please use one of the
-           \n5 options listed in the documentation.")
+    if (
+      !(impute_method %in% c("mode", "random", "mean0", "mean2", "xgboost"))
+    ) {
+      stop(
+        "\nImpute method is misspecified or misspelled. Please use one of the
+           \n5 options listed in the documentation."
+      )
     }
-    cat("Imputing the missing (genotype) values using", impute_method, "method...\n")
+    cat(
+      "Imputing the missing (genotype) values using",
+      impute_method,
+      "method...\n"
+    )
   }
 
   if (impute) {
-    cat("Imputing the missing values using", impute_method, "method...\n",
-        file = outfile, append = TRUE)
+    cat(
+      "Imputing the missing values using",
+      impute_method,
+      "method...\n",
+      file = outfile,
+      append = TRUE
+    )
 
     if (impute_method %in% c("mode", "random", "mean0", "mean2")) {
-
       if (parallel) {
-        obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
-                                                       ncores = count_cores(),
-                                                       method = impute_method)
+        obj$genotypes <- bigsnpr::snp_fastImputeSimple(
+          Gna = X,
+          ncores = count_cores(),
+          method = impute_method
+        )
       } else {
-        obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X,
-                                                       method = impute_method)
+        obj$genotypes <- bigsnpr::snp_fastImputeSimple(
+          Gna = X,
+          method = impute_method
+        )
       }
-
     } else if (impute_method == "xgboost") {
-
-      withCallingHandlers({
-        if (parallel) {
-          bigsnpr::snp_fastImpute(Gna = X,
-                                  ncores = count_cores(),
-                                  infos.chr = chr,
-                                  seed = seed,
-                                  ...) # dots can pass other args
-        } else {
-          bigsnpr::snp_fastImpute(Gna = X,
-                                  infos.chr = chr,
-                                  seed = seed,
-                                  ...) # dots can pass other args
+      withCallingHandlers(
+        {
+          if (parallel) {
+            bigsnpr::snp_fastImpute(
+              Gna = X,
+              ncores = count_cores(),
+              infos.chr = chr,
+              seed = seed,
+              ...
+            ) # dots can pass other args
+          } else {
+            bigsnpr::snp_fastImpute(Gna = X, infos.chr = chr, seed = seed, ...) # dots can pass other args
+          }
+        },
+        warning = function(w) {
+          if (!.plmmr_env$xgboost_warning_shown) {
+            cat(
+              "\n*************************** NOTE ***************************\n",
+              "With the xgboost imputation method, you may receive the warning",
+              "\n'NA or NaN values in the resulting correlation matrix.' This",
+              "\nis thrown by the bigsnpr package and likely results from several",
+              "\nof your SNPs having extremely small minor allele counts. These",
+              "\nvalues are excluded by the imputation algorithm, but if you would",
+              "\nlike to remedy the warnings, it is easiest to filter your data by",
+              "\nMAC (or MAF) using PLINK. For example:\n",
+              "\n",
+              "plink --bfile penncath_lite --mac 20 --make-bed --out penncath_filt",
+              "\n***************************************************************"
+            )
+            .plmmr_env$xgboost_warning_shown <- TRUE
+          }
         }
-      },
-      warning = function(w) {
-        if(!.plmmr_env$xgboost_warning_shown) {
-          cat("\n*************************** NOTE ***************************\n",
-          "With the xgboost imputation method, you may receive the warning",
-          "\n'NA or NaN values in the resulting correlation matrix.' This",
-          "\nis thrown by the bigsnpr package and likely results from several",
-          "\nof your SNPs having extremely small minor allele counts. These",
-          "\nvalues are excluded by the imputation algorithm, but if you would",
-          "\nlike to remedy the warnings, it is easiest to filter your data by",
-          "\nMAC (or MAF) using PLINK. For example:\n",
-          "\n",
-          "plink --bfile penncath_lite --mac 20 --make-bed --out penncath_filt",
-          "\n***************************************************************")
-          .plmmr_env$xgboost_warning_shown <- TRUE
-        }
-      })
+      )
 
       # save imputed values (NB: will overwrite obj$genotypes)
       X$code256 <- bigsnpr::CODE_IMPUTE_PRED
@@ -99,8 +118,7 @@ impute_snp_data <- function(obj,
       cat("Done with imputation.\n")
     }
 
-    cat("Done with imputation.\n",
-        file = outfile, append = TRUE)
+    cat("Done with imputation.\n", file = outfile, append = TRUE)
   }
 
   obj

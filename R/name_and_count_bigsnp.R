@@ -18,7 +18,6 @@
 #' @keywords internal
 #'
 name_and_count_bigsnp <- function(obj, id_var, outfile, quiet) {
-
   X <- obj$genotypes
 
   # set object names
@@ -36,23 +35,42 @@ name_and_count_bigsnp <- function(obj, id_var, outfile, quiet) {
   obj$p <- X$ncol
 
   if (!quiet) {
-    cat("There are", obj$n, "observations and",
-        obj$p, "genomic features in the specified data files, representing chromosomes",
-        chr_range[1], "-", chr_range[2], ".\n")
+    cat(
+      "There are",
+      obj$n,
+      "observations and",
+      obj$p,
+      "genomic features in the specified data files, representing chromosomes",
+      chr_range[1],
+      "-",
+      chr_range[2],
+      ".\n"
+    )
   }
-  cat("There are", obj$n, "observations and",
-      obj$p, "genomic features in the specified data files, representing chromosomes",
-      chr_range[1], "-", chr_range[2], ".\n",
-      file = outfile, append = TRUE)
+  cat(
+    "There are",
+    obj$n,
+    "observations and",
+    obj$p,
+    "genomic features in the specified data files, representing chromosomes",
+    chr_range[1],
+    "-",
+    chr_range[2],
+    ".\n",
+    file = outfile,
+    append = TRUE
+  )
 
   # save these counts
   counts <- bigstatsr::big_counts(X) # NB: this is a matrix
 
-  list(na_counts = counts[4, ],
-       obj = obj,
-       og_plink_ids = obj$rownames,
-       chr = obj$map$chromosome,
-       X = X,
-       pos = obj$map$physical.pos,
-       chr_range = chr_range)
+  list(
+    na_counts = counts[4, ],
+    obj = obj,
+    og_plink_ids = obj$rownames,
+    chr = obj$map$chromosome,
+    X = X,
+    pos = obj$map$physical.pos,
+    chr_range = chr_range
+  )
 }

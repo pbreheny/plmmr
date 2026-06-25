@@ -23,12 +23,15 @@
 #' cvfit <- cv_plmm(design = admix_design)
 #' plot(cvfit)
 ## from cv.ncvreg
-plot.cv_plmm <- function(x,
-                         log.l = TRUE,
-                         type = c("cve", "rsq", "scale", "snr", "all"),
-                         selected = TRUE,
-                         vertical.line = TRUE,
-                         col = "red", ...) {
+plot.cv_plmm <- function(
+  x,
+  log.l = TRUE,
+  type = c("cve", "rsq", "scale", "snr", "all"),
+  selected = TRUE,
+  vertical.line = TRUE,
+  col = "red",
+  ...
+) {
   type <- match.arg(type)
   if (type == "all") {
     plot(x, log.l = log.l, type = "cve", selected = selected, ...)
@@ -61,7 +64,7 @@ plot.cv_plmm <- function(x,
       y <- rsq
       L <- rsql
       U <- rsqu
-      ylab <- ~R^2
+      ylab <- ~ R^2
     } else if (type == "snr") {
       y <- rsq / (1 - rsq)
       L <- rsql / (1 - rsql)
@@ -72,25 +75,43 @@ plot.cv_plmm <- function(x,
     y <- sqrt(x$cve)
     L <- sqrt(L.cve)
     U <- sqrt(U.cve)
-    ylab <- ~hat(sigma)
+    ylab <- ~ hat(sigma)
   }
 
   ind <- which(is.finite(l[seq_along(x$cve)]))
   ylim <- if (is.null(x$cvse)) range(y[ind]) else range(c(L[ind], U[ind]))
   aind <- intersect(ind, which((U - L) / diff(ylim) > 1e-3))
-  plot.args <- list(x = l[ind], y = y[ind], ylim = ylim, xlab = xlab, ylab = ylab,
-                    type = "n", xlim = rev(range(l[ind])), las = 1)
+  plot.args <- list(
+    x = l[ind],
+    y = y[ind],
+    ylim = ylim,
+    xlab = xlab,
+    ylab = ylab,
+    type = "n",
+    xlim = rev(range(l[ind])),
+    las = 1
+  )
   new.args <- list(...)
 
-  if (length(new.args)) plot.args[names(new.args)] <- new.args
+  if (length(new.args)) {
+    plot.args[names(new.args)] <- new.args
+  }
   do.call("plot", plot.args)
 
   if (vertical.line) {
     graphics::abline(v = l[x$min], lty = 1, lwd = 0.5)
     graphics::abline(v = l[x$min1se], lty = 2, lwd = 0.5)
   }
-  suppressWarnings(graphics::arrows(x0 = l[aind], x1 = l[aind], y0 = L[aind], y1 = U[aind],
-                                    code = 3, angle = 90, col = "gray80", length = 0.05))
+  suppressWarnings(graphics::arrows(
+    x0 = l[aind],
+    x1 = l[aind],
+    y0 = L[aind],
+    y1 = U[aind],
+    code = 3,
+    angle = 90,
+    col = "gray80",
+    length = 0.05
+  ))
   graphics::points(l[ind], y[ind], col = col, pch = 19, cex = 0.5)
 
   if (selected) {

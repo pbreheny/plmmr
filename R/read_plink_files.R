@@ -15,15 +15,26 @@
 #'
 #' @keywords internal
 #'
-read_plink_files <- function(data_dir, data_prefix, rds_dir, rds_prefix, outfile,
-                             parallel, overwrite, quiet) {
-
+read_plink_files <- function(
+  data_dir,
+  data_prefix,
+  rds_dir,
+  rds_prefix,
+  outfile,
+  parallel,
+  overwrite,
+  quiet
+) {
   # check for compressed files
   if (!file.exists(file.path(data_dir, paste0(data_prefix, ".bed")))) {
     if (file.exists(file.path(data_dir, paste0(data_prefix, ".bed.gz")))) {
-      cat("\nIt looks like your files are zipped -- please unzip them before calling process_plink().")
+      cat(
+        "\nIt looks like your files are zipped -- please unzip them before calling process_plink()."
+      )
     } else {
-      cat("\nThe PLINK files with the specified prefix do not appear in the provided data_dir folder.")
+      cat(
+        "\nThe PLINK files with the specified prefix do not appear in the provided data_dir folder."
+      )
     }
   }
 
@@ -32,33 +43,51 @@ read_plink_files <- function(data_dir, data_prefix, rds_dir, rds_prefix, outfile
   # check for overwrite:
   if (any(file.exists(to_remove))) {
     if (overwrite) {
-      cat("Overwriting existing files: ", rds_prefix,
-          ".bk/.rds/.desc\n", sep = "", file = outfile, append = TRUE)
+      cat(
+        "Overwriting existing files: ",
+        rds_prefix,
+        ".bk/.rds/.desc\n",
+        sep = "",
+        file = outfile,
+        append = TRUE
+      )
 
       if (!quiet) {
-        cat("Overwriting existing files: ", rds_prefix,
-            ".bk/.rds/.desc\n", sep = "")
+        cat(
+          "Overwriting existing files: ",
+          rds_prefix,
+          ".bk/.rds/.desc\n",
+          sep = ""
+        )
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
       unlink(to_remove, force = TRUE)
     } else {
-      stop("\nThere are existing .rds and .bk files in the specified directory with the given prefix.
+      stop(
+        "\nThere are existing .rds and .bk files in the specified directory with the given prefix.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.
-           \nOtherwise, choose a different prefix.")
+           \nOtherwise, choose a different prefix."
+      )
     }
   }
 
   # create the RDS file  ------------------------
-  if (!quiet) cat("Creating ", data_prefix, ".rds\n", sep = "")
+  if (!quiet) {
+    cat("Creating ", data_prefix, ".rds\n", sep = "")
+  }
 
   if (parallel) {
-    bigsnpr::snp_readBed2(bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
-                          backingfile = file.path(rds_dir, data_prefix),
-                          ncores = count_cores())
+    bigsnpr::snp_readBed2(
+      bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
+      backingfile = file.path(rds_dir, data_prefix),
+      ncores = count_cores()
+    )
   } else {
-    bigsnpr::snp_readBed2(bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
-                          backingfile = file.path(rds_dir, data_prefix))
+    bigsnpr::snp_readBed2(
+      bedfile = paste0(file.path(data_dir, data_prefix), ".bed"),
+      backingfile = file.path(rds_dir, data_prefix)
+    )
   }
 
   bigsnpr::snp_attach(paste0(file.path(rds_dir, data_prefix), ".rds"))

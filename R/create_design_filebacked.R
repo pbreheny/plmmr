@@ -27,25 +27,28 @@
 #'
 #' @keywords internal
 #'
-create_design_filebacked <- function(obj,
-                                     rds_dir,
-                                     new_file,
-                                     add_outcome,
-                                     outcome_id,
-                                     outcome_col,
-                                     na_outcome_vals = c(-9, NA_integer_),
-                                     feature_id = NULL,
-                                     add_predictor = NULL,
-                                     predictor_id = NULL,
-                                     unpen = NULL,
-                                     logfile = NULL,
-                                     overwrite = FALSE,
-                                     quiet = FALSE) {
-
+create_design_filebacked <- function(
+  obj,
+  rds_dir,
+  new_file,
+  add_outcome,
+  outcome_id,
+  outcome_col,
+  na_outcome_vals = c(-9, NA_integer_),
+  feature_id = NULL,
+  add_predictor = NULL,
+  predictor_id = NULL,
+  unpen = NULL,
+  logfile = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+) {
   # check for input errors ----------------------------------------
   if (any(add_outcome[, outcome_col] %in% na_outcome_vals)) {
-    stop("It appears that you have some missing values in the outcome data.
-         Please remove these samples; missing values are not permitted in the design.")
+    stop(
+      "It appears that you have some missing values in the outcome data.
+         Please remove these samples; missing values are not permitted in the design."
+    )
   }
 
   if (is.null(colnames(add_outcome))) {
@@ -53,18 +56,21 @@ create_design_filebacked <- function(obj,
   }
 
   if (grepl(pattern = "fold", x = new_file, fixed = TRUE)) {
-    warning("The string 'fold' is a keyword that is used to create intermediate files in cv_plmm().
+    warning(
+      "The string 'fold' is a keyword that is used to create intermediate files in cv_plmm().
             If you call cv_plmm() on this design, there is a big possiblity that you will lose files unintentionally.
             We recommend you either (1) choose a different 'new_file' name (best option) or (2)
             double check that the folder where you will save your results from
-            downstream analysis is not the same folder where you are saving this design.")
+            downstream analysis is not the same folder where you are saving this design."
+    )
   }
 
   # additional checks for case where add_predictor is specified
   if (!is.null(add_predictor)) {
-
     if (is.null(predictor_id)) {
-      stop("If add_predictor is specified, the user must also specify predictor_id.")
+      stop(
+        "If add_predictor is specified, the user must also specify predictor_id."
+      )
     }
 
     if (is.null(colnames(add_predictor))) {
@@ -72,17 +78,20 @@ create_design_filebacked <- function(obj,
     }
 
     if (anyNA(add_predictor[,])) {
-      stop("It appears that there are missing values in the predictor data.
-         Please remove these samples; missing values are not permitted in the design.")
+      stop(
+        "It appears that there are missing values in the predictor data.
+         Please remove these samples; missing values are not permitted in the design."
+      )
     }
 
     if (!identical(add_outcome[, outcome_id], add_predictor[, predictor_id])) {
-      stop("Something is off in the supplied outcome and/or predictor data.
+      stop(
+        "Something is off in the supplied outcome and/or predictor data.
          Make sure the indicated ID columns are character type, represent the same samples, and have the same order.
            Note: 'create_design()' will align the two external data items (outcome and predictors) with
-           the PLINK data. It is your responsibility to align the external data items with each other.\n")
+           the PLINK data. It is your responsibility to align the external data items with each other.\n"
+      )
     }
-
   }
 
   # initial setup --------------------------------------------------
@@ -101,8 +110,14 @@ create_design_filebacked <- function(obj,
   if (any(file.exists(to_remove))) {
     if (overwrite) {
       # notify
-      cat("Overwriting existing files: ", new_file, ".bk/.rds\n",
-          sep = "", file = logfile, append = TRUE)
+      cat(
+        "Overwriting existing files: ",
+        new_file,
+        ".bk/.rds\n",
+        sep = "",
+        file = logfile,
+        append = TRUE
+      )
 
       if (!quiet) {
         cat("Overwriting existing files: ", new_file, ".bk/.rds\n", sep = "")
@@ -111,9 +126,11 @@ create_design_filebacked <- function(obj,
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
       unlink(to_remove, force = TRUE)
     } else {
-      stop("\nThere are existing new_file.rds and new_file.bk files in the specified directory.
+      stop(
+        "\nThere are existing new_file.rds and new_file.bk files in the specified directory.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.
-           \nOtherwise, choose a different prefix.")
+           \nOtherwise, choose a different prefix."
+      )
     }
   }
 
@@ -125,28 +142,39 @@ create_design_filebacked <- function(obj,
 
   # determine which IDs to use ---------------------------------
   if (is.null(feature_id)) {
-    if (!quiet) cat("No feature_id supplied; will assume data X are in same row-order as add_outcome.\n")
-    cat("No feature_id supplied; will assume data X are in same row-order as add_outcome.\n",
-        file = logfile, append = TRUE)
+    if (!quiet) {
+      cat(
+        "No feature_id supplied; will assume data X are in same row-order as add_outcome.\n"
+      )
+    }
+    cat(
+      "No feature_id supplied; will assume data X are in same row-order as add_outcome.\n",
+      file = logfile,
+      append = TRUE
+    )
   } else if (length(feature_id) == 1) {
     if (feature_id == "IID") {
       indiv_id <- "sample.ID"
       og_ids <- as.character(obj$fam[, indiv_id])
-
     } else if (feature_id == "FID") {
       indiv_id <- "family.ID"
       og_ids <- as.character(obj$fam[, indiv_id])
-
     }
   } else if (length(feature_id) == nrow(obj$X)) {
-    if (!inherits(feature_id, "character")) feature_id <- as.character(feature_id)
+    if (!inherits(feature_id, "character")) {
+      feature_id <- as.character(feature_id)
+    }
     og_ids <- feature_id
   } else {
-    stop("The feature_id argument is misspecified (see documentation for options).")
+    stop(
+      "The feature_id argument is misspecified (see documentation for options)."
+    )
   }
 
   # check for any duplicated row IDs, if applicable
-  if (exists("og_ids") && anyDuplicated(og_ids)) stop("Duplicated feature_id values detected.\n")
+  if (exists("og_ids") && anyDuplicated(og_ids)) {
+    stop("Duplicated feature_id values detected.\n")
+  }
 
   # save these original dim names
   if (is_plink) {
@@ -161,12 +189,10 @@ create_design_filebacked <- function(obj,
     design$X_rownames <- paste0("row", seq_len(nrow(obj$X)))
   }
 
-
   # save colnames of add_predictor (if supplied)
   if (is.null(colnames(add_outcome))) {
     stop("The matrix supplied to add_outcome must have column names.")
   }
-
 
   # save original dimensions
   design$n <- obj$n
@@ -180,19 +206,22 @@ create_design_filebacked <- function(obj,
   #   samples/observations should be pruned out; observations with no feature
   #   data will be removed from analysis
   if (exists("og_ids")) {
-    sample_idx <- index_samples(obj = obj,
-                                rds_dir = rds_dir,
-                                indiv_id = og_ids,
-                                add_outcome = add_outcome,
-                                outcome_id = outcome_id,
-                                outcome_col = outcome_col,
-                                na_outcome_vals = na_outcome_vals,
-                                outfile = logfile,
-                                quiet = quiet)
+    sample_idx <- index_samples(
+      obj = obj,
+      rds_dir = rds_dir,
+      indiv_id = og_ids,
+      add_outcome = add_outcome,
+      outcome_id = outcome_id,
+      outcome_col = outcome_col,
+      na_outcome_vals = na_outcome_vals,
+      outfile = logfile,
+      quiet = quiet
+    )
 
     # save items to return
     design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
-    design$y <- sample_idx$complete_samples[, outcome_col, with = FALSE] |> unlist()
+    design$y <- sample_idx$complete_samples[, outcome_col, with = FALSE] |>
+      unlist()
     design$std_X_rownames <- sample_idx$complete_samples$ID
   } else {
     # save items to return
@@ -206,30 +235,40 @@ create_design_filebacked <- function(obj,
   # align IDs between feature data and external data -------------------------
   if (!is.null(add_predictor)) {
     if (is.null(predictor_id)) {
-      stop("If add_predictor is supplied, the predictor_id argument must also be supplied")
+      stop(
+        "If add_predictor is supplied, the predictor_id argument must also be supplied"
+      )
     }
-    aligned_add_predictor <- align_ids(id_var = predictor_id,
-                                       add_predictor = add_predictor,
-                                       og_ids = og_ids,
-                                       outfile = logfile,
-                                       quiet = quiet)
+    aligned_add_predictor <- align_ids(
+      id_var = predictor_id,
+      add_predictor = add_predictor,
+      og_ids = og_ids,
+      outfile = logfile,
+      quiet = quiet
+    )
     gc()
     # add predictors from external files --------------------------------------
-    unstd_X <- add_predictors(obj = obj,
-                              add_predictor = aligned_add_predictor,
-                              id_var = feature_id,
-                              rds_dir = rds_dir,
-                              outfile = logfile,
-                              quiet = quiet)
+    unstd_X <- add_predictors(
+      obj = obj,
+      add_predictor = aligned_add_predictor,
+      id_var = feature_id,
+      rds_dir = rds_dir,
+      outfile = logfile,
+      quiet = quiet
+    )
     # save items to return
     design$unpen <- unstd_X$unpen # save indices for unpenalized covariates
     design$unpen_colnames <- setdiff(colnames(add_predictor), predictor_id)
     gc()
   } else {
     # make sure 'unpen' was not specified by mistake
-    if (is_plink && !is_plink) stop("The 'unpen' argument is only for matrix data or delimited file data.
+    if (is_plink && !is_plink) {
+      stop(
+        "The 'unpen' argument is only for matrix data or delimited file data.
                                    To create unpenalized covariates with PLINK file data,
-                                   see the documentation for the 'add_predictor' argument.")
+                                   see the documentation for the 'add_predictor' argument."
+      )
+    }
 
     if (is.null(unpen)) {
       design$unpen <- NULL
@@ -253,27 +292,33 @@ create_design_filebacked <- function(obj,
   rm(obj)
 
   # index features for subsetting --------------------------------------------
-  design$ns <- count_constant_features(fbm = unstd_X$design_matrix,
-                                       outfile = logfile,
-                                       quiet = quiet)
+  design$ns <- count_constant_features(
+    fbm = unstd_X$design_matrix,
+    outfile = logfile,
+    quiet = quiet
+  )
   gc()
   # subsetting -----------------------------------------------------------------
-  subset_res <- subset_filebacked(X = unstd_X$design_matrix,
-                                  complete_samples = design$outcome_idx,
-                                  ns = design$ns,
-                                  rds_dir = rds_dir,
-                                  new_file = new_file,
-                                  outfile = logfile,
-                                  quiet = quiet)
+  subset_res <- subset_filebacked(
+    X = unstd_X$design_matrix,
+    complete_samples = design$outcome_idx,
+    ns = design$ns,
+    rds_dir = rds_dir,
+    new_file = new_file,
+    outfile = logfile,
+    quiet = quiet
+  )
   # clean up
   design$ns <- subset_res$ns
   design$std_X_colnames <- unstd_X$colnames[subset_res$ns]
   rm(unstd_X)
   gc()
   # standardization ------------------------------------------------------------
-  std_res <- standardize_filebacked(X = subset_res$subset_X,
-                                    outfile = logfile,
-                                    quiet = quiet)
+  std_res <- standardize_filebacked(
+    X = subset_res$subset_X,
+    outfile = logfile,
+    quiet = quiet
+  )
   rm(subset_res)
   gc()
 
@@ -283,8 +328,10 @@ create_design_filebacked <- function(obj,
   design$std_X_p <- std_res$std_X_p
   design$std_X_center <- std_res$std_X_center
   design$std_X_scale <- std_res$std_X_scale
-  design$penalty_factor <- c(rep(0, length(design$unpen)),
-                             rep(1, design$std_X_p - length(design$unpen)))
+  design$penalty_factor <- c(
+    rep(0, length(design$unpen)),
+    rep(1, design$std_X_p - length(design$unpen))
+  )
 
   #TODO: future work can add nuance to the way penalty.factor options are given
   #   below is one idea to hold onto...
@@ -302,25 +349,39 @@ create_design_filebacked <- function(obj,
   # }
 
   # cleanup -------------------------------------------------------------------
-  list.files(rds_dir,
-             pattern = paste0("^unstd_design_matrix\\.(bk|desc)"),
-             full.names = TRUE) |> unlink(force = TRUE)
+  list.files(
+    rds_dir,
+    pattern = paste0("^unstd_design_matrix\\.(bk|desc)"),
+    full.names = TRUE
+  ) |>
+    unlink(force = TRUE)
   gc()
 
   # return -------------------------------------------------------------
-  saveRDS(structure(design, class = "plmm_design"),
-          file.path(rds_dir, paste0(new_file, ".rds")))
+  saveRDS(
+    structure(design, class = "plmm_design"),
+    file.path(rds_dir, paste0(new_file, ".rds"))
+  )
 
   if (!quiet) {
-    cat("create_design() completed. \nProcessed files now saved as ",
-        file.path(rds_dir, new_file), ".rds", sep = "")
+    cat(
+      "create_design() completed. \nProcessed files now saved as ",
+      file.path(rds_dir, new_file),
+      ".rds",
+      sep = ""
+    )
   }
 
-  cat("create_design() completed. \nProcessed files now saved as ",
-      file.path(rds_dir, new_file), ".rds",
-      " at ", pretty_time(),
-      file = logfile, append = TRUE, sep = "")
+  cat(
+    "create_design() completed. \nProcessed files now saved as ",
+    file.path(rds_dir, new_file),
+    ".rds",
+    " at ",
+    pretty_time(),
+    file = logfile,
+    append = TRUE,
+    sep = ""
+  )
 
   file.path(rds_dir, paste0(new_file, ".rds"))
-
 }

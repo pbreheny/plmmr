@@ -8,18 +8,21 @@ colon2 <- cbind(sex, X)
 colnames(colon2)[1] <- c("sex")
 
 # table of input data
-write.table(colon2,
-            "inst/extdata/colon2.txt",
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE,
-            col.names = TRUE)
+write.table(
+  colon2,
+  "inst/extdata/colon2.txt",
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE,
+  col.names = TRUE
+)
 
 # table with outcome
-write.table(data.frame(ID = 1:length(colon$y),
-                       y = colon$y),
-            "inst/extdata/colon2_outcome.txt",
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE,
-            col.names = TRUE)
+write.table(
+  data.frame(ID = 1:length(colon$y), y = colon$y),
+  "inst/extdata/colon2_outcome.txt",
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE,
+  col.names = TRUE
+)

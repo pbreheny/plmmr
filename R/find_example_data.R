@@ -42,9 +42,12 @@ unzip_example_data <- function(outdir) {
   # Loop through and unzip each .gz file
   for (i in seq_along(gz_files)) {
     file_base <- tools::file_path_sans_ext(basename(gz_files[i]))
-    R.utils::gunzip(gz_files[i],
-                    destname = file.path(outdir, file_base),
-                    overwrite = TRUE, remove = FALSE)
+    R.utils::gunzip(
+      gz_files[i],
+      destname = file.path(outdir, file_base),
+      overwrite = TRUE,
+      remove = FALSE
+    )
   }
 
   # Print a success message

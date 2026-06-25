@@ -56,7 +56,8 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag) {
     p = p,
     std_X_details = std_X_details,
     fbm_flag = fbm_flag,
-    plink_flag = plink_flag)
+    plink_flag = plink_flag
+  )
 
   # give the matrix of beta_values readable names
   # features on the rows, lambda values on the columns
@@ -80,7 +81,8 @@ plmm_format <- function(fit, p, std_X_details, fbm_flag, plink_flag) {
     ns_idx = c(1, 1 + std_X_details$ns), # NOTE: this indexing is *very* important
     iter = fit$iter,
     converged = fit$converged,
-    K = list(s = fit$s, U = fit$U))
+    K = list(s = fit$s, U = fit$U)
+  )
 
   if (fbm_flag) {
     out$std_X <- fit$std_X

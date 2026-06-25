@@ -13,14 +13,15 @@
 #' @keywords internal
 #'
 estimate_eta <- function(n, s, U, y, incpt_flag) {
-
-  opt <- stats::optimize(f = log_lik,
-                         c(0.01, 0.99),
-                         n = n,
-                         s = s,
-                         U = U,
-                         y = y,
-                         incpt_flag = incpt_flag)
+  opt <- stats::optimize(
+    f = log_lik,
+    c(0.01, 0.99),
+    n = n,
+    s = s,
+    U = U,
+    y = y,
+    incpt_flag = incpt_flag
+  )
 
   opt$minimum
 }
