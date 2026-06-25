@@ -5,10 +5,14 @@ local({
   # log-transform the colon data
   colon_path <- find_example_data("colon2.txt")
   colon_X <- read.delim(colon_path)
-  colon_X[,-1] <- log(colon_X[,-1])
-  write.table(colon_X,
-              file.path(temp_dir, "colon2_log.txt"),
-              sep = "\t", quote = FALSE, row.names = FALSE)
+  colon_X[, -1] <- log(colon_X[, -1])
+  write.table(
+    colon_X,
+    file.path(temp_dir, "colon2_log.txt"),
+    sep = "\t",
+    quote = FALSE,
+    row.names = FALSE
+  )
 
   # process delimited files
   colon_dat <- process_delim(
@@ -18,7 +22,8 @@ local({
     rds_prefix = "processed_colon2",
     sep = "\t",
     overwrite = TRUE,
-    header = TRUE)
+    header = TRUE
+  )
 
   # prepare outcome data
   colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
@@ -33,14 +38,16 @@ local({
     outcome_id = "ID",
     outcome_col = "y",
     logfile = "fb_design",
-    overwrite = TRUE)
+    overwrite = TRUE
+  )
 
   fb_fit <- cv_plmm(
     design = fb_design,
     trace = TRUE,
     return_fit = TRUE,
     seed = 1,
-    warn = FALSE) # need for small epsilon
+    warn = FALSE
+  ) # need for small epsilon
 
   # in-memory
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
@@ -51,7 +58,8 @@ local({
     trace = TRUE,
     return_fit = TRUE,
     seed = 1,
-    warn = FALSE)
+    warn = FALSE
+  )
 
   # check: these results match
   b1 <- coef(fb_fit) |> as.numeric()

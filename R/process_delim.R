@@ -25,22 +25,24 @@
 #'
 #' colon2 <- readRDS(colon_dat)
 #' str(colon2)
-process_delim <- function(data_dir,
-                          data_file,
-                          feature_id,
-                          rds_dir = data_dir,
-                          rds_prefix,
-                          logfile = NULL,
-                          overwrite = FALSE,
-                          quiet = FALSE,
-                          ...) {
-
-
+process_delim <- function(
+  data_dir,
+  data_file,
+  feature_id,
+  rds_dir = data_dir,
+  rds_prefix,
+  logfile = NULL,
+  overwrite = FALSE,
+  quiet = FALSE,
+  ...
+) {
   prefix <- tools::file_path_sans_ext(data_file)
 
   if (identical(rds_prefix, prefix)) {
-    stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
-         call. = FALSE)
+    stop(
+      "rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
+      call. = FALSE
+    )
   }
 
   # start log ------------------------------------------
@@ -49,52 +51,81 @@ process_delim <- function(data_dir,
   }
   logfile <- create_log(logfile)
 
-  if (!quiet) cat("Preprocessing", prefix, "data...", "\n")
+  if (!quiet) {
+    cat("Preprocessing", prefix, "data...", "\n")
+  }
 
   cat("Preprocessing", prefix, "data...", "\n", file = logfile, append = TRUE)
 
   # read in data files --------------------------------
-  X <- read_data_files(data_file = data_file,
-                       data_dir = data_dir,
-                       rds_dir = rds_dir,
-                       rds_prefix = rds_prefix,
-                       outfile = logfile,
-                       overwrite = overwrite,
-                       quiet = quiet,
-                       ...)
+  X <- read_data_files(
+    data_file = data_file,
+    data_dir = data_dir,
+    rds_dir = rds_dir,
+    rds_prefix = rds_prefix,
+    outfile = logfile,
+    overwrite = overwrite,
+    quiet = quiet,
+    ...
+  )
 
-  cat("There are", nrow(X), "observations and", ncol(X), "features in the specified data files.\n",
-      file = logfile, append = TRUE)
+  cat(
+    "There are",
+    nrow(X),
+    "observations and",
+    ncol(X),
+    "features in the specified data files.\n",
+    file = logfile,
+    append = TRUE
+  )
 
   if (!quiet) {
-    cat("There are", nrow(X), "observations and", ncol(X),
-        "features in the specified data files.\n")
+    cat(
+      "There are",
+      nrow(X),
+      "observations and",
+      ncol(X),
+      "features in the specified data files.\n"
+    )
   }
 
   # notify about missing values ---------------------------------
   if (!quiet) {
-    cat("At this time, plmmr::process_delim() does not not handle missing values in delimited data.
-      Please make sure you have addressed missingness before you proceed.\n")
+    cat(
+      "At this time, plmmr::process_delim() does not not handle missing values in delimited data.
+      Please make sure you have addressed missingness before you proceed.\n"
+    )
   }
 
   # create return object --------------------------------------------
-  ret <- structure(list(X = bigmemory::describe(X),
-                        # save original dimensions
-                        n = nrow(X),
-                        p = ncol(X)), class = "processed_delim")
+  ret <- structure(
+    list(
+      X = bigmemory::describe(X),
+      # save original dimensions
+      n = nrow(X),
+      p = ncol(X)
+    ),
+    class = "processed_delim"
+  )
 
   rds_filename <- paste0(rds_prefix, ".rds")
   saveRDS(ret, file = file.path(rds_dir, rds_filename))
 
   if (!quiet) {
-    cat("process_plink() completed. \nProcessed files now saved as",
-        file.path(rds_dir, rds_filename))
+    cat(
+      "process_plink() completed. \nProcessed files now saved as",
+      file.path(rds_dir, rds_filename)
+    )
   }
 
-  cat("process_plink() completed. \nProcessed files now saved as",
-      file.path(rds_dir, rds_filename),
-      "at", pretty_time(),
-      file = logfile, append = TRUE)
+  cat(
+    "process_plink() completed. \nProcessed files now saved as",
+    file.path(rds_dir, rds_filename),
+    "at",
+    pretty_time(),
+    file = logfile,
+    append = TRUE
+  )
 
   file.path(rds_dir, rds_filename)
 }

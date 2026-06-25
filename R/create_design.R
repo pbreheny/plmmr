@@ -135,26 +135,32 @@
 #' # examine the design - notice the components of this object
 #' pen_design_rds <- readRDS(pen_design)
 #'}
-create_design <- function(data_file = NULL,
-                          rds_dir = NULL,
-                          X = NULL,
-                          y = NULL,
-                          ...) {
-
-  if (is.null(data_file)) { # case 1: in-memory matrix
-    processed_matrix = create_design_in_memory(X,
-                                               y,
-                                               ...)
-  } else { # case 2: filebacked data
+create_design <- function(
+  data_file = NULL,
+  rds_dir = NULL,
+  X = NULL,
+  y = NULL,
+  ...
+) {
+  if (is.null(data_file)) {
+    # case 1: in-memory matrix
+    processed_matrix = create_design_in_memory(X, y, ...)
+  } else {
+    # case 2: filebacked data
     obj <- readRDS(data_file)
-    switch(class(obj),
-           processed_plink = create_design_filebacked(obj = obj,
-                                                      rds_dir = rds_dir,
-                                                      ...),
+    switch(
+      class(obj),
+      processed_plink = create_design_filebacked(
+        obj = obj,
+        rds_dir = rds_dir,
+        ...
+      ),
 
-           processed_delim = create_design_filebacked(obj = obj,
-                                                      rds_dir = rds_dir,
-                                                      ...)
+      processed_delim = create_design_filebacked(
+        obj = obj,
+        rds_dir = rds_dir,
+        ...
+      )
     )
   }
 }

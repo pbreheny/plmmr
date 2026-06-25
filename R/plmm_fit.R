@@ -45,29 +45,41 @@
 #'
 #' @keywords internal
 #'
-plmm_fit <- function(prep,
-                     y,
-                     std_X_details,
-                     fbm_flag,
-                     penalty,
-                     gamma = 3,
-                     alpha = 1,
-                     lambda_min,
-                     nlambda = 100,
-                     lambda,
-                     eps = 1e-04,
-                     max_iter = 10000,
-                     init = NULL,
-                     dfmax = NULL,
-                     warn = TRUE,
-                     restandardize = TRUE,
-                     ...) {
-
+plmm_fit <- function(
+  prep,
+  y,
+  std_X_details,
+  fbm_flag,
+  penalty,
+  gamma = 3,
+  alpha = 1,
+  lambda_min,
+  nlambda = 100,
+  lambda,
+  eps = 1e-04,
+  max_iter = 10000,
+  init = NULL,
+  dfmax = NULL,
+  warn = TRUE,
+  restandardize = TRUE,
+  ...
+) {
   # error checking ------------------------------------------------------------
-  if (penalty == "MCP" && gamma <= 1) stop("gamma must be greater than 1 for the MC penalty", call. = FALSE)
-  if (penalty == "SCAD" && gamma <= 2) stop("gamma must be greater than 2 for the SCAD penalty", call. = FALSE)
-  if (nlambda < 2) stop("nlambda must be at least 2", call. = FALSE)
-  if (alpha <= 0) stop("alpha must be greater than 0; choose a small positive number instead", call. = FALSE)
+  if (penalty == "MCP" && gamma <= 1) {
+    stop("gamma must be greater than 1 for the MC penalty", call. = FALSE)
+  }
+  if (penalty == "SCAD" && gamma <= 2) {
+    stop("gamma must be greater than 2 for the SCAD penalty", call. = FALSE)
+  }
+  if (nlambda < 2) {
+    stop("nlambda must be at least 2", call. = FALSE)
+  }
+  if (alpha <= 0) {
+    stop(
+      "alpha must be greater than 0; choose a small positive number instead",
+      call. = FALSE
+    )
+  }
 
   if (prep$trace) {
     cat("Beginning rotation ('preconditioning').\n")
@@ -75,7 +87,7 @@ plmm_fit <- function(prep,
 
   # rotate data ----------------------------------------------------------------
   if (!fbm_flag) {
-    w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
+    w <- (prep$eta * prep$s + (1 - prep$eta))^(-1 / 2)
     wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
     rot_X <- prep$U %*% wUt %*% prep$std_X
     if (prep$incpt_flag) {
@@ -85,41 +97,49 @@ plmm_fit <- function(prep,
     }
 
     if (restandardize) {
-      # re-standardize rot_X
+      # scale rot_X
       stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
       stdrot_X <- stdrot_info$std_X
       stdrot_X_details <- stdrot_info$std_X_details
     } else {
       stdrot_X <- rot_X
     }
-
   } else {
     rot_res <- rotate_filebacked(prep, tocenter = FALSE, restandardize = restandardize)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
-    stdrot_X_details <- list(center = rot_res$stdrot_X_center,
-                             scale = rot_res$stdrot_X_scale)
+    stdrot_X_details <- list(
+      center = rot_res$stdrot_X_center,
+      scale = rot_res$stdrot_X_scale
+    )
   }
 
-
   if (prep$trace) {
-    (cat("Rotation (preconditioning) finished at ",
-         format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
+    (cat(
+      "Rotation (preconditioning) finished at ",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")
+    ))
   }
 
   # set up lambda -------------------------------------------------------
   if (missing(lambda)) {
-    if (prep$trace) cat("Setting up lambda/preparing for model fitting.\n")
-    lambda <- setup_lambda(X = stdrot_X,
-                           y = rot_y,
-                           alpha = alpha,
-                           nlambda = nlambda,
-                           lambda_min = lambda_min,
-                           penalty_factor = prep$penalty_factor)
+    if (prep$trace) {
+      cat("Setting up lambda/preparing for model fitting.\n")
+    }
+    lambda <- setup_lambda(
+      X = stdrot_X,
+      y = rot_y,
+      alpha = alpha,
+      nlambda = nlambda,
+      lambda_min = lambda_min,
+      penalty_factor = prep$penalty_factor
+    )
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
     if (length(lambda) > 1 && max(diff(lambda)) > 0) {
-      stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
+      stop(
+        "\nUser-supplied lambda sequence must be in descending (largest -> smallest) order"
+      )
     }
     nlambda <- length(lambda)
   }
@@ -148,7 +168,9 @@ plmm_fit <- function(prep,
   }
 
   # main attraction -----------------------------------------------------------
-  if (prep$trace) cat("Beginning model fitting.\n")
+  if (prep$trace) {
+    cat("Beginning model fitting.\n")
+  }
   if (!fbm_flag) {
     # set up progress bar -- this can take a while
     if (prep$trace) {
@@ -157,32 +179,36 @@ plmm_fit <- function(prep,
     for (ll in 1:nlambda) {
       lam <- lambda[ll]
       if (restandardize) {
-        res <- ncvreg::ncvfit(X = stdrot_X,
-                              y = rot_y,
-                              init = init,
-                              r = r,
-                              xtx = xtx,
-                              penalty = penalty,
-                              gamma = gamma,
-                              alpha = alpha,
-                              lambda = lam,
-                              eps = eps,
-                              max.iter = max_iter,
-                              penalty.factor = prep$penalty_factor,
-                              warn = warn)
+        res <- ncvreg::ncvfit(
+          X = stdrot_X,
+          y = rot_y,
+          init = init,
+          r = r,
+          xtx = xtx,
+          penalty = penalty,
+          gamma = gamma,
+          alpha = alpha,
+          lambda = lam,
+          eps = eps,
+          max.iter = max_iter,
+          penalty.factor = prep$penalty_factor,
+          warn = warn
+        )
       } else {
-        res <- ncvreg::ncvfit(X = stdrot_X,
-                              y = rot_y,
-                              init = init,
-                              r = r,
-                              penalty = penalty,
-                              gamma = gamma,
-                              alpha = alpha,
-                              lambda = lam,
-                              eps = eps,
-                              max.iter = max_iter,
-                              penalty.factor = prep$penalty_factor,
-                              warn = warn)
+        res <- ncvreg::ncvfit(
+          X = stdrot_X,
+          y = rot_y,
+          init = init,
+          r = r,
+          penalty = penalty,
+          gamma = gamma,
+          alpha = alpha,
+          lambda = lam,
+          eps = eps,
+          max.iter = max_iter,
+          penalty.factor = prep$penalty_factor,
+          warn = warn
+        )
       }
 
       stdrot_scale_beta[, ll] <- init <- res$beta
@@ -193,12 +219,14 @@ plmm_fit <- function(prep,
       if (prep$trace) {
         utils::setTxtProgressBar(pb, ll)
       }
-      if(sum(res$beta != 0) > dfmax) {
+      if (sum(res$beta != 0) > dfmax) {
         iter[ll:nlambda] <- NA
         break
       }
     }
-    if (prep$trace) close(pb)
+    if (prep$trace) {
+      close(pb)
+    }
 
     ind <- !is.na(iter)
     iter <- iter[ind]
@@ -207,6 +235,7 @@ plmm_fit <- function(prep,
     lambda <- lambda[ind]
     stdrot_scale_beta <- stdrot_scale_beta[, ind, drop = FALSE]
 
+    # adjust dimensions of beta matrix based on whether the intercept was included
     std_scale_beta <- matrix(0,
                              nrow = nrow(stdrot_scale_beta) + 1 * !(prep$incpt_flag),
                              ncol = ncol(stdrot_scale_beta))
@@ -254,17 +283,22 @@ plmm_fit <- function(prep,
     r <- res$resid
     lambda <- res$lambda
 
-    std_scale_beta <- Matrix::sparseMatrix(i = rep(1, ncol(stdrot_scale_beta)),
-                                           j = seq_len(ncol(stdrot_scale_beta)),
-                                           x = mean(y),
-                                           dims = c(nrow(stdrot_scale_beta) + 1,
-                                                    ncol = ncol(stdrot_scale_beta)))
+    std_scale_beta <- Matrix::sparseMatrix(
+      i = rep(1, ncol(stdrot_scale_beta)),
+      j = seq_len(ncol(stdrot_scale_beta)),
+      x = mean(y),
+      dims = c(nrow(stdrot_scale_beta) + 1, ncol = ncol(stdrot_scale_beta))
+    )
   }
 
   if (restandardize) {
     # reverse the POST-ROTATION standardization on estimated betas
-    stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
-    bb <- stdrot_scale_beta / (stdrot_unscale)
+    stdrot_unscale <- ifelse(
+      stdrot_X_details$scale < 1e-3,
+      1,
+      stdrot_X_details$scale
+    )
+    bb <- stdrot_scale_beta / stdrot_unscale
 
     if (prep$incpt_flag) {
       std_scale_beta <- bb
@@ -294,7 +328,11 @@ plmm_fit <- function(prep,
   }
 
   if (prep$trace) {
-    cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
+    cat(
+      "Model fitting finished at ",
+      format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+      "\n"
+    )
   }
 
   # eliminate saturated lambda values, if any
@@ -303,7 +341,9 @@ plmm_fit <- function(prep,
   converged <- converged[ind]
   lambda <- lambda[ind]
   loss <- loss[ind]
-  if (warn && sum(iter) == max_iter) warning("Maximum number of iterations reached")
+  if (warn && sum(iter) == max_iter) {
+    warning("Maximum number of iterations reached")
+  }
 
   ret <- structure(list(
     y = y,
@@ -325,7 +365,8 @@ plmm_fit <- function(prep,
     eps = eps,
     max_iter = max_iter,
     warn = warn,
-    trace = prep$trace))
+    trace = prep$trace
+  ))
 
   if (fbm_flag) {
     ret$std_X <- bigmemory::describe(prep$std_X)

@@ -22,7 +22,6 @@
 #' cv_fit <- cv_plmm(design = admix_design)
 #' summary(cv_fit)
 summary.cv_plmm <- function(object, lambda = "min", ...) {
-
   # determine the number of nonzero coefficients at specified lambda value
 
   if (lambda == "min") {
@@ -36,17 +35,25 @@ summary.cv_plmm <- function(object, lambda = "min", ...) {
   }
 
   if (is.numeric(lambda)) {
-    if (!(lambda %in% object$fit$lambda)) stop("The user-specified lambda is not one of the lambda values used to fit the model.")
+    if (!(lambda %in% object$fit$lambda)) {
+      stop(
+        "The user-specified lambda is not one of the lambda values used to fit the model."
+      )
+    }
 
     nvars <- predict(object$fit, type = "nvars", lambda = lambda)
   }
 
-  structure(list(lambda_min = object$lambda_min,
-                 lambda.1se = object$lambda.1se,
-                 penalty = object$fit$penalty,
-                 nvars = nvars,
-                 cve = object$cve,
-                 min = object$min,
-                 fit = object$fit),
-            class = "summary.cv_plmm")
+  structure(
+    list(
+      lambda_min = object$lambda_min,
+      lambda.1se = object$lambda.1se,
+      penalty = object$fit$penalty,
+      nvars = nvars,
+      cve = object$cve,
+      min = object$min,
+      fit = object$fit
+    ),
+    class = "summary.cv_plmm"
+  )
 }

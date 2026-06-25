@@ -59,14 +59,15 @@
 #' # compare the MSPE of our model to a null model, for reference
 #' # null model = intercept only -> y_hat is always mean(y)
 #' crossprod(mean(test$y) - test$y)/length(test$y)
-predict.plmm <- function(object,
-                         newX,
-                         type = c("blup", "coefficients", "vars", "nvars", "lp"),
-                         X = NULL,
-                         lambda,
-                         idx = seq_along(object$lambda),
-                         ...) {
-
+predict.plmm <- function(
+  object,
+  newX,
+  type = c("blup", "coefficients", "vars", "nvars", "lp"),
+  X = NULL,
+  lambda,
+  idx = seq_along(object$lambda),
+  ...
+) {
   # if predictions are to be made, make sure X is in the correct format...
   if (!missing(newX)) {
     # case 1: newX is a big.matrix
@@ -85,11 +86,17 @@ predict.plmm <- function(object,
 
   # addressing each type:
 
-  if (type == "coefficients") return(beta_vals)
+  if (type == "coefficients") {
+    return(beta_vals)
+  }
 
-  if (type == "nvars") return(apply(beta_vals[-1, , drop = FALSE] != 0, 2, sum)) # don't count intercept
+  if (type == "nvars") {
+    return(apply(beta_vals[-1, , drop = FALSE] != 0, 2, sum))
+  } # don't count intercept
 
-  if (type == "vars") return(drop(apply(beta_vals[-1, , drop = FALSE] != 0, 2, FUN = which))) # don't count intercept
+  if (type == "vars") {
+    return(drop(apply(beta_vals[-1, , drop = FALSE] != 0, 2, FUN = which)))
+  } # don't count intercept
 
   # calculate linear predictors with new data
   a <- beta_vals[1, ]
@@ -104,49 +111,59 @@ predict.plmm <- function(object,
   #   This is the scale at which object$K was constructed
   if (type == "blup") {
     # check for missing arguments
-    if (!fbm_flag && is.null(X)) stop("If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n")
+    if (!fbm_flag && is.null(X)) {
+      stop(
+        "If type = 'blup' and the data used to fit the model were stored in-memory, then the X argument must be supplied.\n"
+      )
+    }
 
     # Check for singularity -- this keeps us from scaling by a 0 value
     # Note: singular values have estimated coefficients of 0 at all values of lambda,
     #  so these columns are not included in the predictions
-    singular <- setdiff(seq_along(object$std_X_details$center),
-                        object$std_X_details$ns)
-    if (length(singular) >= 1) object$std_X_details$scale[singular] <- 1
+    singular <- setdiff(
+      seq_along(object$std_X_details$center),
+      object$std_X_details$ns
+    )
+    if (length(singular) >= 1) {
+      object$std_X_details$scale[singular] <- 1
+    }
 
     # Use center/scale values from the X in the model fit to standardize both X and newX -
     # This is *key* -- the components of the estimated Sigma must be consistently scaled, and
     # Sigma_11 is always calculated using *standardized* data.
     if (fbm_flag) {
       std_X <- bigmemory::attach.big.matrix(object$std_X)
-      std_test_info <- .Call("big_std",
-                             newX@address,
-                             as.integer(count_cores()),
-                             tocenter = TRUE,
-                             object$std_X_details$center,
-                             object$std_X_details$scale,
-                             PACKAGE = "plmmr")
+      std_test_info <- .Call(
+        "big_std",
+        newX@address,
+        as.integer(count_cores()),
+        tocenter = TRUE,
+        object$std_X_details$center,
+        object$std_X_details$scale,
+        PACKAGE = "plmmr"
+      )
       newX@address <- std_test_info$std_X # now, newX is standardized
     } else {
-      std_X <- scale(X,
-                     center = object$std_X_details$center,
-                     scale = object$std_X_details$scale)
-      std_newX <- scale(newX,
-                        center = object$std_X_details$center,
-                        scale = object$std_X_details$scale)
+      std_X <- scale(
+        X,
+        center = object$std_X_details$center,
+        scale = object$std_X_details$scale
+      )
+      std_newX <- scale(
+        newX,
+        center = object$std_X_details$center,
+        scale = object$std_X_details$scale
+      )
     }
 
     if (fbm_flag) {
       const <- (object$eta / ncol(newX))
-      XXt <- bigalgebra::dgemm(TRANSA = "N",
-                               TRANSB = "T",
-                               A = newX,
-                               B = std_X)
+      XXt <- bigalgebra::dgemm(TRANSA = "N", TRANSB = "T", A = newX, B = std_X)
       Sigma_21 <- const * XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else {
-      Sigma_21 <- object$eta * (1/p) * tcrossprod(std_newX, std_X)
+      Sigma_21 <- object$eta * (1 / p) * tcrossprod(std_newX, std_X)
     }
     compute_blup(object, Xb, Sigma_21, idx)
   }
-
 }

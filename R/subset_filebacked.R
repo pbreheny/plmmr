@@ -17,25 +17,39 @@
 #'
 #' @keywords internal
 #'
-subset_filebacked <- function(X, new_file, complete_samples, ns, rds_dir, outfile, quiet) {
+subset_filebacked <- function(
+  X,
+  new_file,
+  complete_samples,
+  ns,
+  rds_dir,
+  outfile,
+  quiet
+) {
   # goal here is to subset the features so that constant features (monomorphic SNPs) are not
   # included in analysis
   # NB: this is also where we remove observations with missing phenotypes, if that was requested
   if (!quiet) {
-    cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n")
+    cat(
+      "Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n"
+    )
   }
-  cat("Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
-      file = outfile, append = TRUE)
+  cat(
+    "Subsetting data to exclude constant features (e.g., monomorphic SNPs)\n",
+    file = outfile,
+    append = TRUE
+  )
 
-  subset_X <- bigmemory::deepcopy(x = X,
-                                  row = complete_samples, # filters out samples not represented in both feature data and outcome/predictor data
-                                  col = ns, # filters out singular (constant) features, including any constant predictors
-                                  type = "double", # note object storage type -- this is key...
-                                  backingfile = paste0(new_file, ".bk"),
-                                  backingpath = rds_dir,
-                                  descriptorfile = paste0(new_file, ".desc"))
+  subset_X <- bigmemory::deepcopy(
+    x = X,
+    row = complete_samples, # filters out samples not represented in both feature data and outcome/predictor data
+    col = ns, # filters out singular (constant) features, including any constant predictors
+    type = "double", # note object storage type -- this is key...
+    backingfile = paste0(new_file, ".bk"),
+    backingpath = rds_dir,
+    descriptorfile = paste0(new_file, ".desc")
+  )
 
   # save ns indices as part of our object
   list(subset_X = subset_X, ns = ns)
-
 }

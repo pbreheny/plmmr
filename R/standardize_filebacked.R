@@ -11,43 +11,56 @@
 #' @keywords internal
 #'
 standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
-
   # standardization ------------------------------------------------
   if (!quiet) {
     cat("Column-standardizing the design matrix...\n")
   }
 
-  cat("Column-standardizing the design matrix...\n", file = outfile, append = TRUE)
+  cat(
+    "Column-standardizing the design matrix...\n",
+    file = outfile,
+    append = TRUE
+  )
   # centering & scaling
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
-  std_res <- .Call("big_std",
-                   X@address,
-                   as.integer(count_cores()),
-                   tocenter,
-                   NULL, # no center values to pass here -- will calculate these
-                   NULL, # no scaling values to pass -- will calculate these
-                   PACKAGE = "plmmr")
+  std_res <- .Call(
+    "big_std",
+    X@address,
+    as.integer(count_cores()),
+    tocenter,
+    NULL, # no center values to pass here -- will calculate these
+    NULL, # no scaling values to pass -- will calculate these
+    PACKAGE = "plmmr"
+  )
   X@address <- std_res$std_X # saves standardized .bk
 
   if (!quiet) {
     cat("Standardization completed at", pretty_time())
   }
 
-  cat("Standardization completed at", pretty_time(),
-      file = outfile, append = TRUE)
+  cat(
+    "Standardization completed at",
+    pretty_time(),
+    file = outfile,
+    append = TRUE
+  )
 
   # label return object ------------------------------------------------
   if (!quiet) {
     cat("Done with standardization. File formatting in progress...\n")
   }
 
-  cat("Done with standardization. File formatting in progress...\n",
-      file = outfile, append = TRUE)
+  cat(
+    "Done with standardization. File formatting in progress...\n",
+    file = outfile,
+    append = TRUE
+  )
 
   list(
     std_X = bigmemory::describe(X),
     std_X_n = nrow(X),
     std_X_p = ncol(X),
     std_X_center = std_res$std_X_center,
-    std_X_scale = std_res$std_X_scale)
+    std_X_scale = std_res$std_X_scale
+  )
 }

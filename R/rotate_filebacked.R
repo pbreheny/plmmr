@@ -14,7 +14,7 @@
 #' @keywords internal
 #'
 rotate_filebacked <- function(prep, tocenter = TRUE, restandardize = TRUE, ...) {
-  w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/2)
+  w <- (prep$eta * prep$s + (1 - prep$eta))^(-1/ 2)
   wUt <- sweep(x = t(prep$U), MARGIN = 1, STATS = w, FUN = "*")
 
   # rotate X
@@ -42,9 +42,10 @@ rotate_filebacked <- function(prep, tocenter = TRUE, restandardize = TRUE, ...) 
 
   rot_y <- prep$U %*% wUt %*% prep$centered_y
 
-
-  list(stdrot_X = stdrot_X,
-       rot_y = rot_y,
-       stdrot_X_center = std_rot[[2]],
-       stdrot_X_scale = std_rot[[3]])
+  list(
+    stdrot_X = stdrot_X,
+    rot_y = rot_y,
+    stdrot_X_center = std_rot[[2]],
+    stdrot_X_scale = std_rot[[3]]
+  )
 }

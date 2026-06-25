@@ -14,7 +14,6 @@
 #' @keywords internal
 #'
 log_lik <- function(eta, n, s, U, y, incpt_flag) {
-
   # first, the constant (comes from 1st term in derivation)
   constant <- n * log(2 * pi)
 
@@ -25,7 +24,7 @@ log_lik <- function(eta, n, s, U, y, incpt_flag) {
   sum_det_log <- sum(log(w2))
 
   # rotate y
-  w <- w2^(-1/2)
+  w <- w2^(-1 / 2)
   wUt <- sweep(x = t(U), MARGIN = 1, STATS = w, FUN = "*")
 
   rot_y <- U %*% wUt %*% y
@@ -45,12 +44,11 @@ log_lik <- function(eta, n, s, U, y, incpt_flag) {
 
   # rotated intercept is the only term in the null model
   rot_sqe <- crossprod(rot_e) # mse = sq. error
-  quad_term <- (1/n) * rot_sqe/sum(w2)
+  quad_term <- (1 / n) * rot_sqe / sum(w2)
 
   # put all the pieces together -- evaluate the **negative** log likelihood
   # NB: keep constant here to be consistent with log_lik.lm() method
   nLL <- 0.5 * (constant + n * log(quad_term) + sum_det_log + n)
 
   drop(nLL)
-
 }

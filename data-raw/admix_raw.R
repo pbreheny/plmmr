@@ -3,10 +3,11 @@
 library(dplyr)
 library(plmmr)
 # read in data for examples
-admix_raw <- read.csv("https://hastie.su.domains/CASI_files/DATA/haplotype.csv") |>
+admix_raw <- read.csv(
+  "https://hastie.su.domains/CASI_files/DATA/haplotype.csv"
+) |>
   select(-X) # remove individual id column
 # str(admix_raw) # includes 197 obs., 100 SNPs, and racial category
-
 
 # Simulate Y, an outcome representing a continuous phenotype
 # Note: Y will depend on race as well as some SNP information, in order to illustrate
@@ -42,9 +43,6 @@ X <- admix_raw |>
 
 # create a list with the data needed for analyses
 # note: 'ancestry' is a more appropriate word choice than 'race'
-admix <- list(X = X,
-              y = y,
-              ancestry = admix_raw$race
-)
+admix <- list(X = X, y = y, ancestry = admix_raw$race)
 
 usethis::use_data(admix, overwrite = TRUE)

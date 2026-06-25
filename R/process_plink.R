@@ -41,22 +41,25 @@
 #'
 #' @export
 #'
-process_plink <- function(data_dir,
-                          data_prefix,
-                          rds_dir = data_dir,
-                          rds_prefix = NULL,
-                          logfile = NULL,
-                          impute = TRUE,
-                          impute_method = "mode",
-                          id_var = "IID",
-                          parallel = TRUE,
-                          quiet = FALSE,
-                          overwrite = FALSE,
-                          ...) {
-
+process_plink <- function(
+  data_dir,
+  data_prefix,
+  rds_dir = data_dir,
+  rds_prefix = NULL,
+  logfile = NULL,
+  impute = TRUE,
+  impute_method = "mode",
+  id_var = "IID",
+  parallel = TRUE,
+  quiet = FALSE,
+  overwrite = FALSE,
+  ...
+) {
   if (identical(rds_prefix, data_prefix)) {
-    stop("rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
-         call. = FALSE)
+    stop(
+      "rds_prefix cannot be the same as data_prefix. You need to change your choice of argument to rds_prefix.\n",
+      call. = FALSE
+    )
   }
 
   # start log -----------------------------------------
@@ -73,60 +76,86 @@ process_plink <- function(data_dir,
   # remove old data backing files --------------------
 
   gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
-  list.files(rds_dir, pattern = paste0("^", data_prefix, "\\.(bk|rds)"), full.names = TRUE) |>
+  list.files(
+    rds_dir,
+    pattern = paste0("^", data_prefix, "\\.(bk|rds)"),
+    full.names = TRUE
+  ) |>
     unlink(force = TRUE)
 
   # read in PLINK files --------------------------------
-  step1 <- read_plink_files(data_dir = data_dir,
-                            data_prefix = data_prefix,
-                            rds_dir = rds_dir,
-                            rds_prefix = rds_prefix,
-                            outfile = logfile,
-                            parallel = parallel,
-                            overwrite = overwrite,
-                            quiet = quiet)
+  step1 <- read_plink_files(
+    data_dir = data_dir,
+    data_prefix = data_prefix,
+    rds_dir = rds_dir,
+    rds_prefix = rds_prefix,
+    outfile = logfile,
+    parallel = parallel,
+    overwrite = overwrite,
+    quiet = quiet
+  )
 
   # name and count ------------------------------------
-  step2 <- name_and_count_bigsnp(obj = step1,
-                                 id_var = id_var,
-                                 quiet = quiet,
-                                 outfile = logfile)
+  step2 <- name_and_count_bigsnp(
+    obj = step1,
+    id_var = id_var,
+    quiet = quiet,
+    outfile = logfile
+  )
 
   # chromosome check ---------------------------------
   # only consider SNPs on chromosomes 1-22
   if (step2$chr_range[1] < 1 || step2$chr_range[2] > 22) {
-    stop("plmmr only analyzes autosomes -- please remove variants on
+    stop(
+      "plmmr only analyzes autosomes -- please remove variants on
          chromosomes outside 1-22.
          This can be done in PLINK 1.9; see the documentation in
-         https://www.cog-genomics.org/plink/1.9/filter#chr \n")
+         https://www.cog-genomics.org/plink/1.9/filter#chr \n"
+    )
   }
 
   # notify about missing (genotype) values ------------------------------
   na_idx <- step2$na_counts > 0
   prop_na <- step2$na_counts / nrow(step2$X)
 
-  cat("There are a total of", sum(na_idx), "SNPs with missing values.\n",
-      file = logfile, append = TRUE)
-  cat("Of these,", sum(prop_na > 0.5),
-      "are missing in at least 50% of the samples.\n",
-      file = logfile, append = TRUE)
+  cat(
+    "There are a total of",
+    sum(na_idx),
+    "SNPs with missing values.\n",
+    file = logfile,
+    append = TRUE
+  )
+  cat(
+    "Of these,",
+    sum(prop_na > 0.5),
+    "are missing in at least 50% of the samples.\n",
+    file = logfile,
+    append = TRUE
+  )
   if (!quiet) {
     cat("There are a total of", sum(na_idx), "SNPs with missing values.\n")
-    cat("Of these,", sum(prop_na > 0.5), "are missing in at least 50% of the samples.\n")
+    cat(
+      "Of these,",
+      sum(prop_na > 0.5),
+      "are missing in at least 50% of the samples.\n"
+    )
   }
 
   # imputation -------------------------------------------------
-  step3 <- impute_snp_data(step2$obj,
-                           step2$X,
-                           step2$chr,
-                           impute = impute,
-                           impute_method = impute_method,
-                           parallel = parallel,
-                           outfile = logfile,
-                           quiet = quiet, ...)
+  step3 <- impute_snp_data(
+    step2$obj,
+    step2$X,
+    step2$chr,
+    impute = impute,
+    impute_method = impute_method,
+    parallel = parallel,
+    outfile = logfile,
+    quiet = quiet,
+    ...
+  )
 
   # format return object ----------------------------------------
-  X  <- bigmemory::deepcopy(
+  X <- bigmemory::deepcopy(
     x = step3$genotypes,
     row = seq_len(nrow(step3$genotypes)),
     col = seq_len(ncol(step3$genotypes)),
@@ -136,11 +165,16 @@ process_plink <- function(data_dir,
     descriptorfile = paste0(rds_prefix, ".desc")
   )
 
-  ret <- structure(list(X = bigmemory::describe(X),
-                        map = step3$map,
-                        fam = step3$fam,
-                        n = step3$n,
-                        p = step3$p), class = "processed_plink")
+  ret <- structure(
+    list(
+      X = bigmemory::describe(X),
+      map = step3$map,
+      fam = step3$fam,
+      n = step3$n,
+      p = step3$p
+    ),
+    class = "processed_plink"
+  )
 
   # handle return format -----------------------------------
 
@@ -153,21 +187,32 @@ process_plink <- function(data_dir,
 
     on.exit({
       gc()
-      list.files(rds_dir, pattern = paste0("^", rds_prefix, "\\.(bk|desc)"),
-               full.names = TRUE) |>
-      unlink(force = TRUE)
+      list.files(
+        rds_dir,
+        pattern = paste0("^", rds_prefix, "\\.(bk|desc)"),
+        full.names = TRUE
+      ) |>
+        unlink(force = TRUE)
     })
   }
 
-  if (!quiet) cat("process_plink() completed.")
+  if (!quiet) {
+    cat("process_plink() completed.")
+  }
 
   cat("process_plink() completed.", file = logfile, append = TRUE)
 
   if (!is.null(rds_prefix)) {
     cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename))
 
-    cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename),
-        "at", pretty_time(), file = logfile, append = TRUE)
+    cat(
+      "\nProcessed files now saved as",
+      file.path(rds_dir, rds_filename),
+      "at",
+      pretty_time(),
+      file = logfile,
+      append = TRUE
+    )
 
     file.path(rds_dir, rds_filename)
   } else {

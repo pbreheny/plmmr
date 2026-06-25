@@ -27,11 +27,7 @@
 #'
 #' @keywords internal
 #'
-predict_within_cv <- function(fit,
-                              testX,
-                              type,
-                              fbm = FALSE,
-                              Sigma_21 = NULL) {
+predict_within_cv <- function(fit, testX, type, fbm = FALSE, Sigma_21 = NULL) {
   # format dim. names
   if (is.null(dim(fit$beta_vals))) {
     # case 1: fit$beta_vals is a vector
@@ -53,5 +49,4 @@ predict_within_cv <- function(fit,
     # for blup, will incorporate the estimated variance
     compute_blup(fit, Xb, Sigma_21, idx = seq_along(fit$lambda))
   }
-
 }

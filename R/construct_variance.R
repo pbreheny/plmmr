@@ -14,8 +14,11 @@ construct_variance <- function(fit, K = NULL, eta = NULL) {
     K <- fit$K
     eta <- fit$eta
   } else if (is.null(K) || is.null(eta)) {
-    stop("\nOptions to construct_variance must be either: \n(1) supply a plmm object to
-         fit or \n(2) supply both K and eta arguments.", call. = FALSE)
+    stop(
+      "\nOptions to construct_variance must be either: \n(1) supply a plmm object to
+         fit or \n(2) supply both K and eta arguments.",
+      call. = FALSE
+    )
   }
 
   # case 1: K is a matrix

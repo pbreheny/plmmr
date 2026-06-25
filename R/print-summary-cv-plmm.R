@@ -18,14 +18,38 @@
 print.summary.cv_plmm <- function(x, digits, ...) {
   n <- nrow(x$fit$std_Xbeta)
   p <- nrow(x$fit$beta_vals)
-  digits <- if (missing(digits)) digits <- c(2, 4, 2, 2, 3) else rep_len(digits, 5)
-  cat(x$fit$penalty, "-penalized model with n=", n, " and p=", p, "\n", sep = "")
-  cat("At minimum cross-validation error (lambda=", formatC(x$lambda_min, digits[2], format = "f"),
-      "):\n", sep = "")
+  digits <- if (missing(digits)) {
+    digits <- c(2, 4, 2, 2, 3)
+  } else {
+    rep_len(digits, 5)
+  }
+  cat(
+    x$fit$penalty,
+    "-penalized model with n=",
+    n,
+    " and p=",
+    p,
+    "\n",
+    sep = ""
+  )
+  cat(
+    "At minimum cross-validation error (lambda=",
+    formatC(x$lambda_min, digits[2], format = "f"),
+    "):\n",
+    sep = ""
+  )
   cat("-------------------------------------------------\n")
   cat("  Nonzero coefficients: ", x$nvars, "\n", sep = "")
-  cat("  Cross-validation error (deviance): ", formatC(min(x$cve), digits[1], format = "f"),
-      "\n", sep = "")
-  cat("  Scale estimate (sigma): ", formatC(sqrt(x$cve[x$min]), digits[5], format = "f"),
-      "\n", sep = "")
+  cat(
+    "  Cross-validation error (deviance): ",
+    formatC(min(x$cve), digits[1], format = "f"),
+    "\n",
+    sep = ""
+  )
+  cat(
+    "  Scale estimate (sigma): ",
+    formatC(sqrt(x$cve[x$min]), digits[5], format = "f"),
+    "\n",
+    sep = ""
+  )
 }

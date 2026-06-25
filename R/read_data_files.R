@@ -16,41 +16,58 @@
 #'
 #' @keywords internal
 #'
-read_data_files <- function(data_file,
-                            data_dir,
-                            rds_dir,
-                            rds_prefix,
-                            outfile,
-                            overwrite,
-                            quiet, ...) {
-
+read_data_files <- function(
+  data_file,
+  data_dir,
+  rds_dir,
+  rds_prefix,
+  outfile,
+  overwrite,
+  quiet,
+  ...
+) {
   to_remove <- paste0(file.path(rds_dir, rds_prefix), c(".rds", ".desc", ".bk"))
 
   # check for overwrite:
   if (any(file.exists(to_remove))) {
     if (overwrite) {
       # notify
-      cat("Overwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n",
-          sep = "", file = outfile, append = TRUE)
+      cat(
+        "Overwriting existing files: ",
+        rds_prefix,
+        ".bk/.rds/.desc\n",
+        sep = "",
+        file = outfile,
+        append = TRUE
+      )
 
       if (!quiet) {
-        cat("Overwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n", sep = "")
+        cat(
+          "Overwriting existing files: ",
+          rds_prefix,
+          ".bk/.rds/.desc\n",
+          sep = ""
+        )
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise
       unlink(to_remove, force = TRUE)
     } else {
-      stop("\nThere are existing .rds and .bk files in the specified directory with the given prefix.
+      stop(
+        "\nThere are existing .rds and .bk files in the specified directory with the given prefix.
            \nIf you want to overwrite these existing files, set 'overwrite = TRUE'.
-           \nOtherwise, choose a different prefix.")
+           \nOtherwise, choose a different prefix."
+      )
     }
   }
 
   # create the bk file ------------------------
-  bigmemory::read.big.matrix(filename = file.path(data_dir, data_file),
-                             backingfile = paste0(rds_prefix, ".bk"),
-                             backingpath = rds_dir,
-                             descriptorfile = paste0(rds_prefix, ".desc"),
-                             type = "double",
-                             ...)
+  bigmemory::read.big.matrix(
+    filename = file.path(data_dir, data_file),
+    backingfile = paste0(rds_prefix, ".bk"),
+    backingpath = rds_dir,
+    descriptorfile = paste0(rds_prefix, ".desc"),
+    type = "double",
+    ...
+  )
 }

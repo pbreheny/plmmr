@@ -27,10 +27,7 @@ relatedness_mat <- function(X, std = TRUE) {
       p <- p - sum(Xdesc$std_X_scale < 1e-3) # Don't count singular columns
     }
 
-    XX <- bigalgebra::dgemm(TRANSA = "N",
-                            TRANSB = "T",
-                            A = X,
-                            B = X)[,]
+    XX <- bigalgebra::dgemm(TRANSA = "N", TRANSB = "T", A = X, B = X)[,]
   } else if (std) {
     std_X <- ncvreg::std(X)
     XX <- tcrossprod(std_X)

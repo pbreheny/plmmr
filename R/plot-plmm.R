@@ -20,15 +20,26 @@
 #' plot(fit, log.l = TRUE)
 ## from ncvreg
 plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
-  if (length(x$lambda) == 1) stop("Model was fit with only a single lambda value; there is no path to plot", call. = FALSE)
-  YY <- if (length(x$penalty_factor) == nrow(x$beta_vals)) coef(x) else coef(x)[-1, , drop = FALSE]
+  if (length(x$lambda) == 1) {
+    stop(
+      "Model was fit with only a single lambda value; there is no path to plot",
+      call. = FALSE
+    )
+  }
+  YY <- if (length(x$penalty_factor) == nrow(x$beta_vals)) {
+    coef(x)
+  } else {
+    coef(x)[-1, , drop = FALSE]
+  }
   penalized <- which(x$penalty_factor != 0)
   nonzero <- which(apply(abs(YY), 1, sum) != 0)
   ind <- intersect(penalized, nonzero)
 
   # check for null model
   if (length(ind) == 0) {
-    stop("\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here...")
+    stop(
+      "\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here..."
+    )
   }
 
   Y <- YY[ind, , drop = FALSE]
@@ -42,8 +53,16 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
     xlab <- expression(lambda)
   }
 
-  plot.args <- list(x = l, y = seq_along(l), ylim = range(Y), xlab = xlab, ylab = "",
-                    type = "n", xlim = rev(range(l)), las = 1)
+  plot.args <- list(
+    x = l,
+    y = seq_along(l),
+    ylim = range(Y),
+    xlab = xlab,
+    ylab = "",
+    type = "n",
+    xlim = rev(range(l)),
+    las = 1
+  )
   new.args <- list(...)
   if (length(new.args)) {
     plot.args[names(new.args)] <- new.args
@@ -51,26 +70,47 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   do.call("plot", plot.args)
 
   if (!is.element("ylab", names(new.args))) {
-    graphics::mtext(expression(hat(beta)), side = 2,
-                    cex = graphics::par("cex"), line = 3, las = 1)
+    graphics::mtext(
+      expression(hat(beta)),
+      side = 2,
+      cex = graphics::par("cex"),
+      line = 3,
+      las = 1
+    )
   }
 
   if (shade && !is.null(x$convex.min)) {
     l1 <- l[x$convex.min]
     l2 <- min(l)
-    graphics::polygon(x = c(l1, l2, l2, l1), y = c(plot.args$ylim[1], plot.args$ylim[1], plot.args$ylim[2], plot.args$ylim[2]),
-                      col = "gray85", border = FALSE)
+    graphics::polygon(
+      x = c(l1, l2, l2, l1),
+      y = c(
+        plot.args$ylim[1],
+        plot.args$ylim[1],
+        plot.args$ylim[2],
+        plot.args$ylim[2]
+      ),
+      col = "gray85",
+      border = FALSE
+    )
   }
 
   if (missing(col)) {
-    col <- grDevices::hcl(h = seq(15, 375, len = max(4, p + 1)), l = 60, c = 150, alpha = alpha)
+    col <- grDevices::hcl(
+      h = seq(15, 375, len = max(4, p + 1)),
+      l = 60,
+      c = 150,
+      alpha = alpha
+    )
     col <- if (p == 2) col[c(1, 3)] else col[1:p]
   } else {
     col <- col[ind]
   }
 
-  line.args <- list(col = col, lwd = 1 + 2 * exp(-p/20), lty = 1)
-  if (length(new.args)) line.args[names(new.args)] <- new.args
+  line.args <- list(col = col, lwd = 1 + 2 * exp(-p / 20), lty = 1)
+  if (length(new.args)) {
+    line.args[names(new.args)] <- new.args
+  }
   line.args$x <- l
 
   # check types: Y may be filebacked, but in most cases it isn't that big...

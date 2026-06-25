@@ -17,16 +17,17 @@
 #'
 #' @keywords internal
 #'
-index_samples <- function(obj,
-                          rds_dir,
-                          indiv_id,
-                          add_outcome,
-                          outcome_id,
-                          outcome_col,
-                          na_outcome_vals,
-                          outfile,
-                          quiet) {
-
+index_samples <- function(
+  obj,
+  rds_dir,
+  indiv_id,
+  add_outcome,
+  outcome_id,
+  outcome_col,
+  na_outcome_vals,
+  outfile,
+  quiet
+) {
   # first, determine which IDs have both feature data and outcome data ---------
   if (inherits(add_outcome, "matrix") || inherits(add_outcome, "data.frame")) {
     overlap <- intersect(indiv_id, add_outcome[, outcome_id])
@@ -36,38 +37,48 @@ index_samples <- function(obj,
 
   # check to make sure IDs overlap
   if (length(overlap) < 10) {
-    stop("\nThe amount of overlap between the supplied IDs is less than 10 observations.
-         This seems really small -- are you sure you chose the right variable names?")
+    stop(
+      "\nThe amount of overlap between the supplied IDs is less than 10 observations.
+         This seems really small -- are you sure you chose the right variable names?"
+    )
   }
 
   id_in_both <- which(indiv_id %in% overlap)
 
   if (length(id_in_both) < nrow(obj$X)) {
-
     if (!quiet) {
-      cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
-          "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n")
+      cat(
+        "Based on the 'id_var' argument you supplied, a total of",
+        length(overlap),
+        "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n"
+      )
     }
 
-    cat("Based on the 'id_var' argument you supplied, a total of", length(overlap),
-        "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n",
-        file = outfile, append = TRUE)
-
+    cat(
+      "Based on the 'id_var' argument you supplied, a total of",
+      length(overlap),
+      "samples are in both your processed data and your outcome data. We will subset our analysis to include only these samples.\n",
+      file = outfile,
+      append = TRUE
+    )
   }
 
   # finally, subset & sort add_outcome -----------------------------------------
   indiv_id_df <- data.table::as.data.table(as.character(indiv_id))
   colnames(indiv_id_df) <- "ID"
-  complete_samples <- data.table::merge.data.table(x = indiv_id_df,
-                                                   by.x = "ID",
-                                                   y = data.table::as.data.table(add_outcome),
-                                                   by.y = outcome_id,
-                                                   sort = FALSE)
+  complete_samples <- data.table::merge.data.table(
+    x = indiv_id_df,
+    by.x = "ID",
+    y = data.table::as.data.table(add_outcome),
+    by.y = outcome_id,
+    sort = FALSE
+  )
   # NB: here, 'complete samples' means samples that appear in both the outcome data
   # *and* the feature data
 
   # keep the indices
-  list(complete_samples = complete_samples,
-       outcome_idx = which(indiv_id %in% add_outcome[, outcome_id]))
-
+  list(
+    complete_samples = complete_samples,
+    outcome_idx = which(indiv_id %in% add_outcome[, outcome_id])
+  )
 }
