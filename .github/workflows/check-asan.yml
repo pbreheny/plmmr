@@ -10,7 +10,7 @@ jobs:
       image: ghcr.io/r-hub/containers/gcc-asan:latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Install dependencies
       run: |
         R -q -e 'pak::pkg_install(c("deps::.", "any::rcmdcheck"), dependencies = TRUE)'
