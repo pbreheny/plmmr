@@ -130,7 +130,7 @@ cv_plmm <- function(
     stop(
       "If you are supplying a plmm_design object or filepath to the 'design'
       argument, that design already has a 'y' -- do not specify a 'y' argument
-      here in plmm()",
+      cv_plmm()",
       call. = FALSE
     )
   }
@@ -308,7 +308,6 @@ cv_plmm <- function(
       cl = cluster,
       X = 1:max(fold),
       fun = cvf,
-      design = design,
       fold = fold,
       type = type,
       cv_args = cv_args

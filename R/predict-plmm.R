@@ -118,13 +118,11 @@ predict.plmm <- function(
     }
 
     # Check for singularity -- this keeps us from scaling by a 0 value
-    # Note: singular values have estimated coefficients of 0 at all values of lambda,
-    #  so these columns are not included in the predictions
     singular <- setdiff(
       seq_along(object$std_X_details$center),
       object$std_X_details$ns
     )
-    if (length(singular) >= 1) {
+    if (length(singular) > 1) {
       object$std_X_details$scale[singular] <- 1
     }
 
@@ -142,7 +140,7 @@ predict.plmm <- function(
         object$std_X_details$scale,
         PACKAGE = "plmmr"
       )
-      newX@address <- std_test_info$std_X # now, newX is standardized
+      newX@address <- std_test_info$std_X
     } else {
       std_X <- scale(
         X,
@@ -156,13 +154,14 @@ predict.plmm <- function(
       )
     }
 
+    p_nonsingular <- length(object$std_X_details$ns)
     if (fbm_flag) {
-      const <- (object$eta / ncol(newX))
+      const <- (object$eta / p_nonsingular)
       XXt <- bigalgebra::dgemm(TRANSA = "N", TRANSB = "T", A = newX, B = std_X)
       Sigma_21 <- const * XXt
-      Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
+      Sigma_21 <- Sigma_21[,]
     } else {
-      Sigma_21 <- object$eta * (1 / p) * tcrossprod(std_newX, std_X)
+      Sigma_21 <- object$eta * (1 / p_nonsingular) * tcrossprod(std_newX, std_X)
     }
     compute_blup(object, Xb, Sigma_21, idx)
   }

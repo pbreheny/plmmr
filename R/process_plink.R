@@ -2,9 +2,9 @@
 #'
 #' @param data_dir              The path to the bed/bim/fam data files, *without* a trailing "/" (e.g., use `data_dir = '~/my_dir'`, **not** `data_dir = '~/my_dir/'`)
 #' @param data_prefix           The prefix (as a character string) of the bed/fam data files (e.g., `data_prefix = 'mydata'`)
-#' @param rds_dir               The path to the directory in which you want to create the new `.rds` and `.bk` files. Defaults to `data_dir`
 #' @param rds_prefix            String specifying the user's preferred filename for the to-be-created .rds file (will be create inside `rds_dir` folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 #'                              Note: `rds_prefix` cannot be the same as `data_prefix`
+#' @param rds_dir               The path to the directory in which you want to create the new `.rds` and `.bk` files. Defaults to `data_dir`
 #' @param logfile               Optional: the name (character string) of the prefix of the logfile to be written in `rds_dir`. Default to NULL (no log file written). **Note:** do not append a `.log` to the filename; this is done automatically.
 #' @param impute                Logical: should data be imputed? Default to TRUE.
 #' @param impute_method         If `impute = TRUE`, this argument will specify the kind of imputation desired. Options are:
@@ -44,8 +44,8 @@
 process_plink <- function(
   data_dir,
   data_prefix,
+  rds_prefix,
   rds_dir = data_dir,
-  rds_prefix = NULL,
   logfile = NULL,
   impute = TRUE,
   impute_method = "mode",

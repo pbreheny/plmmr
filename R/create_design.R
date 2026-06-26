@@ -144,23 +144,10 @@ create_design <- function(
 ) {
   if (is.null(data_file)) {
     # case 1: in-memory matrix
-    processed_matrix = create_design_in_memory(X, y, ...)
+    processed_matrix <- create_design_in_memory(X, y, ...)
   } else {
     # case 2: filebacked data
     obj <- readRDS(data_file)
-    switch(
-      class(obj),
-      processed_plink = create_design_filebacked(
-        obj = obj,
-        rds_dir = rds_dir,
-        ...
-      ),
-
-      processed_delim = create_design_filebacked(
-        obj = obj,
-        rds_dir = rds_dir,
-        ...
-      )
-    )
+    create_design_filebacked(obj = obj, rds_dir = rds_dir, ...)
   }
 }

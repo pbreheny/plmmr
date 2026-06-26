@@ -61,9 +61,7 @@ name_and_count_bigsnp <- function(obj, id_var, outfile, quiet) {
     append = TRUE
   )
 
-  # save these counts
-  counts <- bigstatsr::big_counts(X) # NB: this is a matrix
-
+  counts <- bigstatsr::big_counts(X)
   list(
     na_counts = counts[4, ],
     obj = obj,

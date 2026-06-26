@@ -28,12 +28,7 @@ index_samples <- function(
   outfile,
   quiet
 ) {
-  # first, determine which IDs have both feature data and outcome data ---------
-  if (inherits(add_outcome, "matrix") || inherits(add_outcome, "data.frame")) {
-    overlap <- intersect(indiv_id, add_outcome[, outcome_id])
-  } else if (inherits(add_outcome, "numeric")) {
-    overlap <- intersect(indiv_id, add_outcome[[outcome_id]])
-  }
+  overlap <- intersect(indiv_id, add_outcome[, outcome_id])
 
   # check to make sure IDs overlap
   if (length(overlap) < 10) {

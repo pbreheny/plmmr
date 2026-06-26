@@ -76,6 +76,6 @@ add_predictors <- function(
   # adjust colnames if applicable
   if (!is.null(colnames(add_predictor))) {
     ret$colnames <- c(colnames(add_predictor), obj$colnames)
-    ret
   }
+  ret
 }
