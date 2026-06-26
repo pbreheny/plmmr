@@ -18,9 +18,5 @@ eigen_K <- function(std_X) {
   # take eigendecomposition
   decomp <- eigen(K, symmetric = TRUE)
   nz <- decomp$values > 1e-4
-  list(
-    s = decomp$values[nz],
-    U = decomp$vectors[, nz, drop = FALSE],
-    K = K
-  )
+  list(s = decomp$values[nz], U = decomp$vectors[, nz, drop = FALSE], K = K)
 }

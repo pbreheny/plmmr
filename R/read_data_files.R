@@ -42,12 +42,7 @@ read_data_files <- function(
       )
 
       if (!quiet) {
-        cat(
-          "Overwriting existing files: ",
-          rds_prefix,
-          ".bk/.rds/.desc\n",
-          sep = ""
-        )
+        cat("Overwriting existing files: ", rds_prefix, ".bk/.rds/.desc\n", sep = "")
       }
 
       gc() # DO NOT REMOVE - unlink will fail on .bk files otherwise

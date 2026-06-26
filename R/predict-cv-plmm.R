@@ -55,13 +55,5 @@ predict.cv_plmm <- function(
   idx = object$min,
   ...
 ) {
-  predict(
-    object$fit,
-    newX = newX,
-    type = type,
-    X = X,
-    lambda = lambda,
-    idx = idx,
-    ...
-  )
+  predict(object$fit, newX = newX, type = type, X = X, lambda = lambda, idx = idx, ...)
 }

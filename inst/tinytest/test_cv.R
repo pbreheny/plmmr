@@ -41,12 +41,7 @@ local({
     overwrite = TRUE
   )
 
-  fb_fit <- cv_plmm(
-    design = fb_design,
-    return_fit = TRUE,
-    seed = 1,
-    warn = FALSE
-  ) # need for small epsilon
+  fb_fit <- cv_plmm(design = fb_design, return_fit = TRUE, seed = 1, warn = FALSE) # need for small epsilon
 
   # in-memory
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)

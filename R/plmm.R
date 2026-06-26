@@ -138,13 +138,7 @@ plmm <- function(
   if (trace) {
     cat("Input data passed all checks at ", pretty_time())
   }
-  cat(
-    "Input data passed all checks at ",
-    pretty_time(),
-    "\n",
-    file = logfile,
-    append = TRUE
-  )
+  cat("Input data passed all checks at ", pretty_time(), "\n", file = logfile, append = TRUE)
 
   the_prep <- plmm_prep(
     std_X = checked_data$std_X,
@@ -162,13 +156,7 @@ plmm <- function(
     (cat("Eigendecomposition finished at ", pretty_time()))
   }
 
-  cat(
-    "Eigendecomposition finished at ",
-    pretty_time(),
-    "\n",
-    file = logfile,
-    append = TRUE
-  )
+  cat("Eigendecomposition finished at ", pretty_time(), "\n", file = logfile, append = TRUE)
 
   # rotate & fit -------------------------------------------------------------
   the_fit <- plmm_fit(
@@ -213,10 +201,7 @@ plmm <- function(
 
   # handle output
   if (!is.null(save_rds)) {
-    saveRDS(
-      the_final_product[names(the_final_product) != "std_X"],
-      paste0(save_rds, ".rds")
-    )
+    saveRDS(the_final_product[names(the_final_product) != "std_X"], paste0(save_rds, ".rds"))
     if (trace) {
       cat("Results saved to:", paste0(save_rds, ".rds"))
     }

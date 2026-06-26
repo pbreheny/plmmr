@@ -10,16 +10,11 @@ local({
   penncath_pheno <- read.csv(file.path(extdata, "penncath_clinical.csv"))
 
   predictors <- penncath_pheno[, c("FamID", "age", "tg")]
-  predictors$tg <- ifelse(
-    is.na(predictors$tg),
-    mean(predictors$tg, na.rm = TRUE),
-    predictors$tg
-  )
+  predictors$tg <- ifelse(is.na(predictors$tg), mean(predictors$tg, na.rm = TRUE), predictors$tg)
   predictors$FamID <- as.character(predictors$FamID)
 
   # note: CAD has no missing values in phen file
-  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |>
-    as.data.frame()
+  phen <- cbind(penncath_pheno$FamID, penncath_pheno$CAD) |> as.data.frame()
 
   colnames(phen) <- c("FamID", "CAD")
   phen$FamID <- as.character(phen$FamID)
@@ -56,14 +51,8 @@ local({
   expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
 
   # are row & column names aligned?
-  expect_identical(
-    c(res$unpen_colnames, res$X_colnames)[res$ns],
-    res$std_X_colnames
-  )
-  expect_identical(
-    as.character(plink$fam$family.ID[res$outcome_idx]),
-    res$std_X_rownames
-  )
+  expect_identical(c(res$unpen_colnames, res$X_colnames)[res$ns], res$std_X_colnames)
+  expect_identical(as.character(plink$fam$family.ID[res$outcome_idx]), res$std_X_rownames)
 
   # test 2: is alignment working? -----------------------------
   # shuffle the IDs here, to test alignment
@@ -92,14 +81,8 @@ local({
   expect_identical(as.character(plink$fam$family.ID), res$X_rownames)
 
   # are row & column names (IDs) aligned?
-  expect_identical(
-    c(res$unpen_colnames, res$X_colnames)[res$ns],
-    res$std_X_colnames
-  )
-  expect_identical(
-    as.character(plink$fam$family.ID[res$outcome_idx]),
-    res$std_X_rownames
-  )
+  expect_identical(c(res$unpen_colnames, res$X_colnames)[res$ns], res$std_X_colnames)
+  expect_identical(as.character(plink$fam$family.ID[res$outcome_idx]), res$std_X_rownames)
 
   # test 3: more obs. in pheno than geno ------------------------------------------
 
@@ -107,11 +90,7 @@ local({
 
   # subset geno data - take just 1000 samples
   imputed_dat <- readRDS(file.path(temp_dir, "process_penncath.rds"))
-  imputed_dat$X <- bigmemory::sub.big.matrix(
-    imputed_dat$X,
-    firstRow = 1,
-    lastRow = 1000
-  ) |>
+  imputed_dat$X <- bigmemory::sub.big.matrix(imputed_dat$X, firstRow = 1, lastRow = 1000) |>
     bigmemory::describe()
   imputed_dat$fam <- imputed_dat$fam[1:1000, ]
   saveRDS(imputed_dat, file.path(temp_dir, 'imputed_data_n1000.rds'))
@@ -138,10 +117,7 @@ local({
 
   # are row & column names (IDs) aligned?
   expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
-  expect_identical(
-    res$std_X_colnames,
-    c(res$unpen_colnames, res$X_colnames)[res$ns]
-  )
+  expect_identical(res$std_X_colnames, c(res$unpen_colnames, res$X_colnames)[res$ns])
 
   # test 4: handle the case with no unpenalized predictors ----------------------------
 
@@ -164,10 +140,7 @@ local({
 
   # are row & column names (IDs) aligned?
   expect_identical(res$std_X_rownames, res$X_rownames[res$outcome_idx])
-  expect_identical(
-    res$std_X_colnames,
-    c(res$unpen_colnames, res$X_colnames)[res$ns]
-  )
+  expect_identical(res$std_X_colnames, c(res$unpen_colnames, res$X_colnames)[res$ns])
 
   # test 5: confirm model runs without error -------------------------------------
 

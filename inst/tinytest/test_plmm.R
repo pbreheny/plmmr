@@ -147,21 +147,12 @@ local({
     overwrite = TRUE
   )
 
-  fb_fit <- plmm(
-    design = fb_design,
-    trace = TRUE,
-    return_fit = TRUE
-  )
+  fb_fit <- plmm(design = fb_design, trace = TRUE, return_fit = TRUE)
 
   # in-memory
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
 
-  fit <- plmm(
-    design = in_mem_design,
-    lambda = fb_fit$lambda,
-    trace = TRUE,
-    return_fit = TRUE
-  )
+  fit <- plmm(design = in_mem_design, lambda = fb_fit$lambda, trace = TRUE, return_fit = TRUE)
 
   # check: these results match
   b1 <- coef(fb_fit) |> as.matrix()

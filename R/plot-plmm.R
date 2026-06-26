@@ -21,10 +21,7 @@
 ## from ncvreg
 plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   if (length(x$lambda) == 1) {
-    stop(
-      "Model was fit with only a single lambda value; there is no path to plot",
-      call. = FALSE
-    )
+    stop("Model was fit with only a single lambda value; there is no path to plot", call. = FALSE)
   }
   YY <- if (length(x$penalty_factor) == nrow(x$beta_vals)) {
     coef(x)
@@ -37,9 +34,7 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
 
   # check for null model
   if (length(ind) == 0) {
-    stop(
-      "\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here..."
-    )
+    stop("\nNone of the penalized covariates ever take on nonzero values. Nothing to plot here...")
   }
 
   Y <- YY[ind, , drop = FALSE]
@@ -70,13 +65,7 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
   do.call("plot", plot.args)
 
   if (!is.element("ylab", names(new.args))) {
-    graphics::mtext(
-      expression(hat(beta)),
-      side = 2,
-      cex = graphics::par("cex"),
-      line = 3,
-      las = 1
-    )
+    graphics::mtext(expression(hat(beta)), side = 2, cex = graphics::par("cex"), line = 3, las = 1)
   }
 
   if (shade && !is.null(x$convex.min)) {
@@ -84,24 +73,14 @@ plot.plmm <- function(x, alpha = 1, log.l = FALSE, shade = TRUE, col, ...) {
     l2 <- min(l)
     graphics::polygon(
       x = c(l1, l2, l2, l1),
-      y = c(
-        plot.args$ylim[1],
-        plot.args$ylim[1],
-        plot.args$ylim[2],
-        plot.args$ylim[2]
-      ),
+      y = c(plot.args$ylim[1], plot.args$ylim[1], plot.args$ylim[2], plot.args$ylim[2]),
       col = "gray85",
       border = FALSE
     )
   }
 
   if (missing(col)) {
-    col <- grDevices::hcl(
-      h = seq(15, 375, len = max(4, p + 1)),
-      l = 60,
-      c = 150,
-      alpha = alpha
-    )
+    col <- grDevices::hcl(h = seq(15, 375, len = max(4, p + 1)), l = 60, c = 150, alpha = alpha)
     col <- if (p == 2) col[c(1, 3)] else col[1:p]
   } else {
     col <- col[ind]

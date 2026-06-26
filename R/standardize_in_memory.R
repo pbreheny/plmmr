@@ -22,10 +22,7 @@ standardize_in_memory <- function(X, tocenter = TRUE) {
     } else {
       tmp <- try(X <- stats::model.matrix(~ 0 + ., data = X), silent = TRUE)
       if (inherits(tmp, "try-error")) {
-        stop(
-          "X must be a matrix or able to be coerced to a matrix",
-          call. = FALSE
-        )
+        stop("X must be a matrix or able to be coerced to a matrix", call. = FALSE)
       }
     }
   }

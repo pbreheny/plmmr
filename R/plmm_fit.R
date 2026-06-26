@@ -73,10 +73,7 @@ plmm_fit <- function(
     stop("nlambda must be at least 2", call. = FALSE)
   }
   if (alpha <= 0) {
-    stop(
-      "alpha must be greater than 0; choose a small positive number instead",
-      call. = FALSE
-    )
+    stop("alpha must be greater than 0; choose a small positive number instead", call. = FALSE)
   }
 
   if (prep$trace) {
@@ -102,17 +99,11 @@ plmm_fit <- function(
     rot_res <- rotate_filebacked(prep, tocenter = FALSE)
     stdrot_X <- rot_res$stdrot_X
     rot_y <- rot_res$rot_y
-    stdrot_X_details <- list(
-      center = rot_res$stdrot_X_center,
-      scale = rot_res$stdrot_X_scale
-    )
+    stdrot_X_details <- list(center = rot_res$stdrot_X_center, scale = rot_res$stdrot_X_scale)
   }
 
   if (prep$trace) {
-    (cat(
-      "Rotation (preconditioning) finished at ",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")
-    ))
+    (cat("Rotation (preconditioning) finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S\n")))
   }
 
   # set up lambda -------------------------------------------------------
@@ -131,9 +122,7 @@ plmm_fit <- function(
   } else {
     # make sure (if user-supplied sequence) is in DESCENDING order
     if (length(lambda) > 1 && max(diff(lambda)) > 0) {
-      stop(
-        "\nUser-supplied lambda sequence must be in descending (largest -> smallest) order"
-      )
+      stop("\nUser-supplied lambda sequence must be in descending (largest -> smallest) order")
     }
     nlambda <- length(lambda)
   }
@@ -246,11 +235,7 @@ plmm_fit <- function(
   }
 
   # reverse the POST-ROTATION standardization on estimated betas
-  stdrot_unscale <- ifelse(
-    stdrot_X_details$scale < 1e-3,
-    1,
-    stdrot_X_details$scale
-  )
+  stdrot_unscale <- ifelse(stdrot_X_details$scale < 1e-3, 1, stdrot_X_details$scale)
   bb <- stdrot_scale_beta / stdrot_unscale
 
   if (prep$incpt_flag) {
@@ -267,11 +252,7 @@ plmm_fit <- function(
   }
 
   if (prep$trace) {
-    cat(
-      "Model fitting finished at ",
-      format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
-      "\n"
-    )
+    cat("Model fitting finished at ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
   }
 
   # eliminate saturated lambda values, if any

@@ -18,20 +18,11 @@
 #' admix_design <- create_design(X = admix$X, y = admix$y)
 #' fit <- plmm(design = admix_design)
 #' coef(fit)[1:10, 41:45]
-coef.plmm <- function(
-  object,
-  lambda,
-  which = seq_along(object$lambda),
-  drop = TRUE,
-  ...
-) {
+coef.plmm <- function(object, lambda, which = seq_along(object$lambda), drop = TRUE, ...) {
   # error check for supplied lambda value
   if (!missing(lambda)) {
     if (max(lambda) > max(object$lambda) || min(lambda) < min(object$lambda)) {
-      stop(
-        "Supplied lambda value(s) are outside the range of the model fit.",
-        call. = FALSE
-      )
+      stop("Supplied lambda value(s) are outside the range of the model fit.", call. = FALSE)
     }
 
     ind <- stats::approx(object$lambda, seq(object$lambda), lambda)$y

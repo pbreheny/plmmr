@@ -148,12 +148,7 @@ cv_plmm <- function(
     ...
   )
 
-  cat(
-    "\nInput data passed all checks at ",
-    pretty_time(),
-    file = logfile,
-    append = TRUE
-  )
+  cat("\nInput data passed all checks at ", pretty_time(), file = logfile, append = TRUE)
 
   # prep  ------------------------
   prep_args <- c(list(
@@ -170,12 +165,7 @@ cv_plmm <- function(
 
   prep <- do.call("plmm_prep", prep_args)
 
-  cat(
-    "\nEigendecomposition finished at ",
-    pretty_time(),
-    file = logfile,
-    append = TRUE
-  )
+  cat("\nEigendecomposition finished at ", pretty_time(), file = logfile, append = TRUE)
 
   # full model fit ----------------------------------
   fit_args <- c(list(
@@ -201,12 +191,7 @@ cv_plmm <- function(
 
   fit <- do.call("plmm_fit", fit_args)
 
-  cat(
-    "\nFull model fit finished at",
-    pretty_time(),
-    file = logfile,
-    append = TRUE
-  )
+  cat("\nFull model fit finished at", pretty_time(), file = logfile, append = TRUE)
 
   fit_to_return <- plmm_format(
     fit = fit,
@@ -216,12 +201,7 @@ cv_plmm <- function(
     plink_flag = checked_data$plink_flag
   )
 
-  cat(
-    "\nFormatting for full model finished at",
-    pretty_time(),
-    file = logfile,
-    append = TRUE
-  )
+  cat("\nFormatting for full model finished at", pretty_time(), file = logfile, append = TRUE)
 
   if (!is.null(save_rds)) {
     saveRDS(fit_to_return, paste0(save_rds, ".rds"))
@@ -322,12 +302,7 @@ cv_plmm <- function(
     cat("\nStarting cross validation\n")
   }
 
-  cat(
-    "\nCross validation started at: ",
-    pretty_time(),
-    file = logfile,
-    append = TRUE
-  )
+  cat("\nCross validation started at: ", pretty_time(), file = logfile, append = TRUE)
 
   for (i in 1:nfolds) {
     # case 1: user-specified cluster

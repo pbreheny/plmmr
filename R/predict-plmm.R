@@ -118,10 +118,7 @@ predict.plmm <- function(
     }
 
     # Check for singularity -- this keeps us from scaling by a 0 value
-    singular <- setdiff(
-      seq_along(object$std_X_details$center),
-      object$std_X_details$ns
-    )
+    singular <- setdiff(seq_along(object$std_X_details$center), object$std_X_details$ns)
     if (length(singular) > 1) {
       object$std_X_details$scale[singular] <- 1
     }
@@ -142,11 +139,7 @@ predict.plmm <- function(
       )
       newX@address <- std_test_info$std_X
     } else {
-      std_X <- scale(
-        X,
-        center = object$std_X_details$center,
-        scale = object$std_X_details$scale
-      )
+      std_X <- scale(X, center = object$std_X_details$center, scale = object$std_X_details$scale)
       std_newX <- scale(
         newX,
         center = object$std_X_details$center,

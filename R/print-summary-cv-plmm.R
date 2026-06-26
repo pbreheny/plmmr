@@ -23,15 +23,7 @@ print.summary.cv_plmm <- function(x, digits, ...) {
   } else {
     rep_len(digits, 5)
   }
-  cat(
-    x$fit$penalty,
-    "-penalized model with n=",
-    n,
-    " and p=",
-    p,
-    "\n",
-    sep = ""
-  )
+  cat(x$fit$penalty, "-penalized model with n=", n, " and p=", p, "\n", sep = "")
   cat(
     "At minimum cross-validation error (lambda=",
     formatC(x$lambda_min, digits[2], format = "f"),
