@@ -10,8 +10,6 @@
 \item{object}{A \code{cv_plmm} object}
 
 \item{...}{Not used}
-
-\item{lambda}{The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min'.}
 }
 \value{
 The return value is an object with S3 class \code{summary.cv_plmm}. The class has its own print method and contains the following list elements:
