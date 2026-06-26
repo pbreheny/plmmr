@@ -7,8 +7,8 @@
 process_plink(
   data_dir,
   data_prefix,
+  rds_prefix,
   rds_dir = data_dir,
-  rds_prefix = NULL,
   logfile = NULL,
   impute = TRUE,
   impute_method = "mode",
@@ -24,10 +24,10 @@ process_plink(
 
 \item{data_prefix}{The prefix (as a character string) of the bed/fam data files (e.g., \code{data_prefix = 'mydata'})}
 
-\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
-
 \item{rds_prefix}{String specifying the user's preferred filename for the to-be-created .rds file (will be create inside \code{rds_dir} folder). If no rds_prefix is provided, the processed data files will be returned in memory.
 Note: \code{rds_prefix} cannot be the same as \code{data_prefix}}
+
+\item{rds_dir}{The path to the directory in which you want to create the new \code{.rds} and \code{.bk} files. Defaults to \code{data_dir}}
 
 \item{logfile}{Optional: the name (character string) of the prefix of the logfile to be written in \code{rds_dir}. Default to NULL (no log file written). \strong{Note:} do not append a \code{.log} to the filename; this is done automatically.}
 

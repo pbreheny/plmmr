@@ -9,7 +9,7 @@ impute_snp_data(
   X,
   chr,
   impute,
-  impute_method,
+  impute_method = c("mode", "random", "mean0", "mean2", "xgboost"),
   parallel,
   outfile,
   quiet,

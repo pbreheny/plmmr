@@ -23,7 +23,7 @@ get_data <- function(path, returnX = FALSE, trace = TRUE) {
   obj <- readRDS(rds)
 
   # attach std_X
-  std_X_bm <- attach.big.matrix(obj$std_X)
+  std_X_bm <- bigmemory::attach.big.matrix(obj$std_X)
 
   if (returnX) {
     obj$std_X <- std_X_bm[,]

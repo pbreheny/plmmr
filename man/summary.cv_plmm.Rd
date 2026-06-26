@@ -4,22 +4,22 @@
 \alias{summary.cv_plmm}
 \title{A summary function for \code{cv_plmm} objects}
 \usage{
-\method{summary}{cv_plmm}(object, lambda = "min", ...)
+\method{summary}{cv_plmm}(object, ...)
 }
 \arguments{
 \item{object}{A \code{cv_plmm} object}
 
-\item{lambda}{The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min'.}
-
 \item{...}{Not used}
+
+\item{lambda}{The regularization parameter value at which inference should be reported. Can choose a numeric value, 'min', or '1se'. Defaults to 'min'.}
 }
 \value{
 The return value is an object with S3 class \code{summary.cv_plmm}. The class has its own print method and contains the following list elements:
 \itemize{
 \item \code{lambda_min}: The lambda value at the minimum cross validation error
-\item \code{lambda.1se}: The maximum lambda value within 1 standard error of the minimum cross validation error
+\item \code{lambda_1se}: The maximum lambda value within 1 standard error of the minimum cross validation error
 \item \code{penalty}: The penalty applied to the fitted model
-\item \code{nvars}: The number of non-zero coefficients at the selected lambda value
+\item \code{nvars}: The number of variables selected at lambda_min
 \item \code{cve}: The cross validation error at all folds
 \item \code{min}: The minimum cross validation error
 \item \code{fit}: The \code{plmm} fit used in the cross validation

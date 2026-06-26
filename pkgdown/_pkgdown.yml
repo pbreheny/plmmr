@@ -113,6 +113,3 @@ reference:
     - standardize_in_memory
     - subset_filebacked
     - untransform
-    - untransform_in_memory
-    - untransform_delim
-    - untransform_plink

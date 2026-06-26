@@ -4,7 +4,7 @@
 \alias{big_cbind}
 \title{A version of \code{cbind()} for file-backed matrices}
 \usage{
-big_cbind(A, B, C, quiet)
+big_cbind(A, B, C)
 }
 \arguments{
 \item{A}{in-memory data}
@@ -12,8 +12,6 @@ big_cbind(A, B, C, quiet)
 \item{B}{file-backed data}
 
 \item{C}{file-backed placeholder for combined data}
-
-\item{quiet}{Logical: should console messages be silenced? Defaults to FALSE}
 }
 \value{
 C, filled in with all column values of A and B combined
