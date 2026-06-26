@@ -88,8 +88,8 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> There are 62 observations and 2001 features in the specified data files.
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
-#> process_plink() completed. 
-#> Processed files now saved as /tmp/RtmpkLAzwJ/processed_colon2.rds
+#> process_delim() completed. 
+#> Processed files now saved as /tmp/RtmpuBgpBA/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -98,7 +98,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpkLAzwJ/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpuBgpBA/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62

@@ -156,8 +156,8 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> There are 62 observations and 2001 features in the specified data files.
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
-#> process_plink() completed. 
-#> Processed files now saved as /tmp/RtmpkLAzwJ/processed_colon2.rds
+#> process_delim() completed. 
+#> Processed files now saved as /tmp/RtmpuBgpBA/processed_colon2.rds
 
 # prepare outcome data
 colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
@@ -170,10 +170,10 @@ overwrite = TRUE, logfile = "test.log")
 #> There are 0 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-06-25 23:19:09
+#> Standardization completed at 2026-06-26 04:35:33
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/RtmpkLAzwJ/std_colon2.rds
+#> Processed files now saved as /tmp/RtmpuBgpBA/std_colon2.rds
 
 # look at the results
 colon_rds <- readRDS(colon_design)
@@ -195,7 +195,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/RtmpkLAzwJ/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpuBgpBA/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -218,7 +218,7 @@ str(colon_rds)
 # process PLINK data
 temp_dir <- tempdir()
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/RtmpkLAzwJ
+#> Unzipped files are saved in /tmp/RtmpuBgpBA
 
 plink_data <- process_plink(data_dir = temp_dir,
   data_prefix = "penncath_lite",
@@ -236,10 +236,9 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> There are 1401 observations and 4367 genomic features in the specified data files, representing chromosomes 1 - 22 .
 #> There are a total of 3514 SNPs with missing values.
 #> Of these, 13 are missing in at least 50% of the samples.
-#> Imputing the missing (genotype) values using mode method...
 #> Done with imputation.
 #> process_plink() completed.
-#> Processed files now saved as /tmp/RtmpkLAzwJ/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpuBgpBA/imputed_penncath_lite.rds
 
 # get outcome data
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
@@ -273,10 +272,10 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 124 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-06-25 23:19:13
+#> Standardization completed at 2026-06-26 04:35:37
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/RtmpkLAzwJ/std_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpuBgpBA/std_penncath_lite.rds
 
 # examine the design - notice the components of this object
 pen_design_rds <- readRDS(pen_design)
