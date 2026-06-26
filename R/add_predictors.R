@@ -55,7 +55,7 @@ add_predictors <- function(
   # save unpen: an index marking added columns as *unpenalized* predictors
   unpen <- seq_len(ncol(add_predictor))
 
-  design_matrix <- big.matrix(
+  design_matrix <- bigmemory::big.matrix(
     nrow = nrow(obj$X),
     ncol = ncol(obj$X) + length(unpen),
     type = "double",
@@ -67,8 +67,7 @@ add_predictors <- function(
   design_matrix <- big_cbind(
     A = add_predictor,
     B = obj$X,
-    C = design_matrix,
-    quiet = quiet
+    C = design_matrix
   )
 
   ret <- list(design_matrix = design_matrix, unpen = unpen)

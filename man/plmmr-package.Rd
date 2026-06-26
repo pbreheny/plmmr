@@ -22,7 +22,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Patrick J. Breheny \email{patrick-breheny@uiowa.edu} (\href{https://orcid.org/0000-0002-0650-1119}{ORCID})
   \item Tabitha K. Peter \email{tabitha.peter15@gmail.com} (\href{https://orcid.org/0009-0005-2524-4751}{ORCID})
   \item Anna C. Reisetter \email{anna-reisetter@uiowa.edu} (\href{https://orcid.org/0000-0001-8332-4585}{ORCID})
   \item Yujing Lu
