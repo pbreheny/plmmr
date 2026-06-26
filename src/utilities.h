@@ -1,7 +1,5 @@
 #include <RcppArmadillo.h>
 #include "bigmemory/BigMatrix.h"
-#include <time.h>
-#include "bigmemory/BigMatrix.h"
 #include "bigmemory/MatrixAccessor.hpp"
 #include "bigmemory/bigmemoryDefines.h"
 

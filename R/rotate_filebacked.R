@@ -33,12 +33,12 @@ rotate_filebacked <- function(prep, tocenter = TRUE, ...) {
     NULL,
     PACKAGE = "plmmr"
   )
-  stdrot_X@address <- std_rot[[1]]
+  stdrot_X@address <- std_rot$std_X
 
   list(
     stdrot_X = stdrot_X,
     rot_y = rot_y,
-    stdrot_X_center = std_rot[[2]],
-    stdrot_X_scale = std_rot[[3]]
+    stdrot_X_center = std_rot$std_center,
+    stdrot_X_scale = std_rot$std_scale
   )
 }
