@@ -157,7 +157,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
 #> process_delim() completed. 
-#> Processed files now saved as /tmp/Rtmp9lzTON/processed_colon2.rds
+#> Processed files now saved as /tmp/Rtmpsp4gkh/processed_colon2.rds
 
 # prepare outcome data
 colon_outcome <- read.delim(find_example_data(path = "colon2_outcome.txt"))
@@ -170,10 +170,10 @@ overwrite = TRUE, logfile = "test.log")
 #> There are 0 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-06-26 14:54:09
+#> Standardization completed at 2026-06-26 18:07:26
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmp9lzTON/std_colon2.rds
+#> Processed files now saved as /tmp/Rtmpsp4gkh/std_colon2.rds
 
 # look at the results
 colon_rds <- readRDS(colon_design)
@@ -195,7 +195,7 @@ str(colon_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp9lzTON/"
+#>   .. .. ..$ dirname   : chr "/tmp/Rtmpsp4gkh/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
@@ -218,7 +218,7 @@ str(colon_rds)
 # process PLINK data
 temp_dir <- tempdir()
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/Rtmp9lzTON
+#> Unzipped files are saved in /tmp/Rtmpsp4gkh
 
 plink_data <- process_plink(data_dir = temp_dir,
   data_prefix = "penncath_lite",
@@ -238,7 +238,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Of these, 13 are missing in at least 50% of the samples.
 #> Done with imputation.
 #> process_plink() completed.
-#> Processed files now saved as /tmp/Rtmp9lzTON/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/Rtmpsp4gkh/imputed_penncath_lite.rds
 
 # get outcome data
 penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
@@ -270,10 +270,10 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 124 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-06-26 14:54:13
+#> Standardization completed at 2026-06-26 18:07:30
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmp9lzTON/std_penncath_lite.rds
+#> Processed files now saved as /tmp/Rtmpsp4gkh/std_penncath_lite.rds
 
 # examine the design - notice the components of this object
 pen_design_rds <- readRDS(pen_design)

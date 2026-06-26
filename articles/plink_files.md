@@ -42,7 +42,7 @@ command to unzip:
 
 temp_dir <- tempdir() # using a temp dir -- change to fit your preference
 unzip_example_data(outdir = temp_dir)
-#> Unzipped files are saved in /tmp/Rtmp4ErL1s
+#> Unzipped files are saved in /tmp/RtmpUiS7MJ
 ```
 
 For GWAS data, we have to tell `plmmr` how to combine information across
@@ -76,7 +76,7 @@ plink_data <- process_plink(data_dir = temp_dir,
 #> Of these, 13 are missing in at least 50% of the samples.
 #> Done with imputation.
 #> process_plink() completed.
-#> Processed files now saved as /tmp/Rtmp4ErL1s/imputed_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpUiS7MJ/imputed_penncath_lite.rds
 ```
 
 You’ll see a lot of messages printed to the console here … the result of
@@ -101,7 +101,7 @@ str(pen) # note: genotype data is *not* in memory
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "imputed_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp4ErL1s/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpUiS7MJ/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4367
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -182,10 +182,10 @@ pen_design <- create_design(data_file = plink_data,
 #> There are 124 constant features in the data.
 #> Subsetting data to exclude constant features (e.g., monomorphic SNPs)
 #> Column-standardizing the design matrix...
-#> Standardization completed at 2026-06-26 14:54:46
+#> Standardization completed at 2026-06-26 18:08:10
 #> Done with standardization. File formatting in progress...
 #> create_design() completed. 
-#> Processed files now saved as /tmp/Rtmp4ErL1s/std_penncath_lite.rds
+#> Processed files now saved as /tmp/RtmpUiS7MJ/std_penncath_lite.rds
 
 # examine the design - notice the components of this object 
 pen_design_rds <- readRDS(pen_design)
@@ -222,7 +222,7 @@ str(pen_design_rds)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "std_penncath_lite.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmp4ErL1s/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpUiS7MJ/"
 #>   .. .. ..$ totalRows : int 1401
 #>   .. .. ..$ totalCols : int 4245
 #>   .. .. ..$ rowOffset : num [1:2] 0 1401
@@ -273,18 +273,18 @@ pen_fit <- plmm(design = pen_design,
                 return_fit = TRUE)
 #> Note: The design matrix is being returned as a file-backed big.matrix object -- see bigmemory::big.matrix() documentation for details.
 #> Reminder: the X that is returned here is column-standardized
-#> Input data passed all checks at  2026-06-26 14:54:48
+#> Input data passed all checks at  2026-06-26 18:08:11
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
-#> Eigendecomposition finished at  2026-06-26 14:54:49
+#> Eigendecomposition finished at  2026-06-26 18:08:13
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:54:49
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:13
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:54:52 
+#> Model fitting finished at  2026-06-26 18:08:16 
 #> Beta values are estimated -- almost done!
 #> Formatting results (backtransforming coefs. to original scale).
-#> Model ready at  2026-06-26 14:54:52
+#> Model ready at  2026-06-26 18:08:16
 ```
 
 We examine our model results below:
@@ -319,10 +319,10 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:54:54
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:19
 #> Setting up lambda/preparing for model fitting.
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:54:57 
+#> Model fitting finished at  2026-06-26 18:08:22 
 #> 'Fold' argument is either NULL or missing; assigning folds randomly (by default).
 #>           
 #> To specify folds for each observation, supply a vector with fold assignments.
@@ -333,41 +333,41 @@ cv_fit <- cv_plmm(design = pen_design,
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 1
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:54:58
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:23
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:55:00 
+#> Model fitting finished at  2026-06-26 18:08:25 
 #> Beginning eigendecomposition in fold  2 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 2
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:55:01
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:27
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:55:03 
+#> Model fitting finished at  2026-06-26 18:08:29 
 #> Beginning eigendecomposition in fold  3 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 3
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:55:04
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:30
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:55:06 
+#> Model fitting finished at  2026-06-26 18:08:32 
 #> Beginning eigendecomposition in fold  4 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 4
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:55:07
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:34
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:55:09 
+#> Model fitting finished at  2026-06-26 18:08:36 
 #> Beginning eigendecomposition in fold  5 :
 #> Starting decomposition.
 #> Calculating the eigendecomposition of K
 #> ** Fitting model in fold 5
 #> Beginning rotation ('preconditioning').
-#> Rotation (preconditioning) finished at  2026-06-26 14:55:10
+#> Rotation (preconditioning) finished at  2026-06-26 18:08:37
 #> Beginning model fitting.
-#> Model fitting finished at  2026-06-26 14:55:12
+#> Model fitting finished at  2026-06-26 18:08:40
 ```
 
 There are plot and summary methods for CV models as well:
