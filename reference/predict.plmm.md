@@ -109,7 +109,7 @@ min(mspe)
 
 mspe_blup <- apply(pred2, 2, function(c){crossprod(test$y - c)/length(c)})
 min(mspe_blup) # BLUP is better
-#> [1] 2.126016
+#> [1] 2.104942
 
 # compare the MSPE of our model to a null model, for reference
 # null model = intercept only -> y_hat is always mean(y)

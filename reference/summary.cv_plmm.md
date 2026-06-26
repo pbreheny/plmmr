@@ -6,7 +6,7 @@ A summary function for `cv_plmm` objects
 
 ``` r
 # S3 method for class 'cv_plmm'
-summary(object, lambda = "min", ...)
+summary(object, ...)
 ```
 
 ## Arguments
@@ -15,15 +15,15 @@ summary(object, lambda = "min", ...)
 
   A `cv_plmm` object
 
+- ...:
+
+  Not used
+
 - lambda:
 
   The regularization parameter value at which inference should be
   reported. Can choose a numeric value, 'min', or '1se'. Defaults to
   'min'.
-
-- ...:
-
-  Not used
 
 ## Value
 
@@ -32,13 +32,12 @@ has its own print method and contains the following list elements:
 
 - `lambda_min`: The lambda value at the minimum cross validation error
 
-- `lambda.1se`: The maximum lambda value within 1 standard error of the
+- `lambda_1se`: The maximum lambda value within 1 standard error of the
   minimum cross validation error
 
 - `penalty`: The penalty applied to the fitted model
 
-- `nvars`: The number of non-zero coefficients at the selected lambda
-  value
+- `nvars`: The number of variables selected at lambda_min
 
 - `cve`: The cross validation error at all folds
 

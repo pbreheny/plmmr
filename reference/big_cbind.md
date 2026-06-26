@@ -6,7 +6,7 @@ file-backed matrices
 ## Usage
 
 ``` r
-big_cbind(A, B, C, quiet)
+big_cbind(A, B, C)
 ```
 
 ## Arguments
@@ -22,10 +22,6 @@ big_cbind(A, B, C, quiet)
 - C:
 
   file-backed placeholder for combined data
-
-- quiet:
-
-  Logical: should console messages be silenced? Defaults to FALSE
 
 ## Value
 

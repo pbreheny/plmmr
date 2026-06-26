@@ -29,9 +29,6 @@ Useful links:
 
 Authors:
 
-- Patrick J. Breheny <patrick-breheny@uiowa.edu>
-  ([ORCID](https://orcid.org/0000-0002-0650-1119))
-
 - Tabitha K. Peter <tabitha.peter15@gmail.com>
   ([ORCID](https://orcid.org/0009-0005-2524-4751))
 

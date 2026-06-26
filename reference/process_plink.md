@@ -8,8 +8,8 @@ Preprocess PLINK files using the `bigsnpr` package
 process_plink(
   data_dir,
   data_prefix,
+  rds_prefix,
   rds_dir = data_dir,
-  rds_prefix = NULL,
   logfile = NULL,
   impute = TRUE,
   impute_method = "mode",
@@ -33,17 +33,17 @@ process_plink(
   The prefix (as a character string) of the bed/fam data files (e.g.,
   `data_prefix = 'mydata'`)
 
-- rds_dir:
-
-  The path to the directory in which you want to create the new `.rds`
-  and `.bk` files. Defaults to `data_dir`
-
 - rds_prefix:
 
   String specifying the user's preferred filename for the to-be-created
   .rds file (will be create inside `rds_dir` folder). If no rds_prefix
   is provided, the processed data files will be returned in memory.
   Note: `rds_prefix` cannot be the same as `data_prefix`
+
+- rds_dir:
+
+  The path to the directory in which you want to create the new `.rds`
+  and `.bk` files. Defaults to `data_dir`
 
 - logfile:
 

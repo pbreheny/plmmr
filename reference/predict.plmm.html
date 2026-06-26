@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plmmr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.3.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,7 +132,7 @@ the estimated correlation structure of the data into our prediction of the outco
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mspe_blup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">pred2</span>, <span class="fl">2</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mspe_blup</span><span class="op">)</span> <span class="co"># BLUP is better</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.126016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.104942</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare the MSPE of our model to a null model, for reference</span></span></span>
 <span class="r-in"><span><span class="co"># null model = intercept only -&gt; y_hat is always mean(y)</span></span></span>
