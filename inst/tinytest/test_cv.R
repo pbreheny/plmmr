@@ -43,7 +43,6 @@ local({
 
   fb_fit <- cv_plmm(
     design = fb_design,
-    trace = TRUE,
     return_fit = TRUE,
     seed = 1,
     warn = FALSE
@@ -55,7 +54,6 @@ local({
   fit <- cv_plmm(
     design = in_mem_design,
     lambda = fb_fit$lambda,
-    trace = TRUE,
     return_fit = TRUE,
     seed = 1,
     warn = FALSE
