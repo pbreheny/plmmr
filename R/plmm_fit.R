@@ -91,7 +91,7 @@ plmm_fit <- function(
     if (prep$incpt_flag) {
       rot_y <- prep$U %*% wUt %*% y
     } else {
-      rot_y <- prep$U %*% wUt %*% prep$centered_y # remember: we're using the centered outcome vector
+      rot_y <- prep$U %*% wUt %*% prep$centered_y
     }
 
     # re-standardize rot_X
@@ -138,9 +138,6 @@ plmm_fit <- function(
     nlambda <- length(lambda)
   }
 
-  # placeholders for results ---------------------------------
-  # setting up 'init' as below is not needed when this is called from plmm or cv_plmm
-  # as those user-facing functions set up 'init' as a vector of zeroes
   if (is.null(init)) {
     init <- rep(0, ncol(stdrot_X))
   }
@@ -158,12 +155,10 @@ plmm_fit <- function(
   # population var is 1 since we re-standardized (pass this arg to fit function)
   xtx <- rep(1, ncol(stdrot_X))
 
-  # main attraction -----------------------------------------------------------
   if (prep$trace) {
     cat("Beginning model fitting.\n")
   }
   if (!fbm_flag) {
-    # set up progress bar -- this can take a while
     if (prep$trace) {
       pb <- utils::txtProgressBar(min = 0, max = nlambda, style = 3)
     }
@@ -251,7 +246,6 @@ plmm_fit <- function(
   }
 
   # reverse the POST-ROTATION standardization on estimated betas
-  # NB: the intercept of a PLMM is always the mean of y. We prove this in our methods work.
   stdrot_unscale <- ifelse(
     stdrot_X_details$scale < 1e-3,
     1,

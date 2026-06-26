@@ -298,14 +298,6 @@ cv_plmm <- function(
       stop("cluster is not of class 'cluster'; see ?makeCluster", call. = FALSE)
     }
 
-    # check if variables are defined
-    if (!exists("fold") || !exists("type") || !exists("cv_args")) {
-      stop(
-        "One or more required variables (fold, type, cv_args) are not defined",
-        call. = FALSE
-      )
-    }
-
     parallel::clusterExport(
       cl = cluster,
       varlist = c("fold", "type", "cv_args"),

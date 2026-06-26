@@ -12,7 +12,6 @@
 #' @keywords internal
 #'
 eigen_K <- function(std_X) {
-  # Note: std_X has already been scaled, so no need to do that here
   # calculate K (which will be stored in memory regardless of how std_X is stored)
   K <- relatedness_mat(std_X, std = FALSE)
 

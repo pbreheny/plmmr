@@ -26,30 +26,13 @@ impute_snp_data <- function(
   X,
   chr,
   impute,
-  impute_method,
+  impute_method = c("mode", "random", "mean0", "mean2", "xgboost"),
   parallel,
   outfile,
   quiet,
   seed = as.numeric(Sys.Date()),
   ...
 ) {
-  if (!quiet && impute) {
-    # catch for misspellings
-    if (
-      !(impute_method %in% c("mode", "random", "mean0", "mean2", "xgboost"))
-    ) {
-      stop(
-        "\nImpute method is misspecified or misspelled. Please use one of the
-           \n5 options listed in the documentation."
-      )
-    }
-    cat(
-      "Imputing the missing (genotype) values using",
-      impute_method,
-      "method...\n"
-    )
-  }
-
   if (impute) {
     cat(
       "Imputing the missing values using",

@@ -41,7 +41,6 @@ plmm_prep <- function(
   trace = NULL,
   ...
 ) {
-  ## coercion
   U <- s <- NULL
 
   # First: handle the cases where no decomposition is needed ------------------

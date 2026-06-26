@@ -7,9 +7,7 @@ double crossprod(XPtr<BigMatrix> X_, double *y_, int j, int n) {
   double val=0.0;
   int i;
 
-// #pragma omp parallel for private(i) schedule(static)
-
-  for (i=0;i < n;i++) {
+  for (i=0; i < n; i++) {
     val += xCol[i]*y_[i];
   }
 
@@ -24,7 +22,7 @@ NumericVector col_means(XPtr<BigMatrix> X_, int n, int p){
 
 #pragma omp parallel for private(j) schedule(static)
 
-  for (j=0;j<p;j++) {
+  for (j=0; j<p; j++) {
     double *xCol = X[j];
     double sum_j = 0;
     for (int i=0;i<n;i++) sum_j += xCol[i];
@@ -95,8 +93,6 @@ NumericVector sd(XPtr<BigMatrix> centered_X_, int n, int p){
   MatrixAccessor<double> X(*centered_X_);
   NumericVector sd_vals(p);
   int j;
-
-//#pragma omp parallel for private(j) schedule(static)
 
   for (j=0;j<p;j++) {
     double *xCol = X[j];

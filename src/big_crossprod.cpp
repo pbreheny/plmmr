@@ -13,7 +13,6 @@ RcppExport SEXP big_crossprod(SEXP X_,
   NumericVector res(p);
 
   // set up omp
-  //Rprintf("\n set up OpenMP");
   int useCores = INTEGER(ncore_)[0];
 #ifdef PLMMR_OMP_H_
   int haveCores = omp_get_num_procs();
@@ -26,9 +25,7 @@ RcppExport SEXP big_crossprod(SEXP X_,
 
   // multiplication
   for (int j=0;j<p;j++){ // looping over rows of t(X) [columns of X]
-    // Rprintf("multiplication with column %d\n", j);
     res[j] = crossprod(X, y, j, n);
-    // Rprintf("crossprod's res is %f\n", res[j]);
   }
   Rcpp::List result;
   result["cp"] = res; // cp = 'cross product'

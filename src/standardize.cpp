@@ -33,8 +33,14 @@ RcppExport SEXP in_mem_std(SEXP X_,
       s[j] += pow(XX(i, j), 2);
     }
     s[j] = sqrt(s[j] / n);
-    for (int i = 0; i < n; i++) {
-      XX(i, j) = XX(i, j) / s[j];
+    if (s[j] < 1e-3) {
+      for (int i = 0; i < n; i++) {
+        XX(i, j) = 0;
+      }
+    } else {
+      for (int i = 0; i < n; i++) {
+        XX(i, j) = XX(i, j) / s[j];
+      }
     }
   }
 

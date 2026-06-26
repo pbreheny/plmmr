@@ -14,7 +14,6 @@ RcppExport SEXP big_std(SEXP X_,
 
 
   // declarations
-  // Rprintf("\nDeclarations in big_std()");
   XPtr<BigMatrix> X(X_); // points to the filebacked matrix of rotated data
   // MatrixAccessor<double> X_acc(*X);
   int n = X->nrow();
@@ -22,7 +21,6 @@ RcppExport SEXP big_std(SEXP X_,
   bool tocenter = LOGICAL(tocenter_)[0];
 
   // set up omp
-  // Rprintf("\n set up OpenMP");
   int useCores = INTEGER(ncore_)[0];
 #ifdef PLMMR_OMP_H_
   int haveCores = omp_get_num_procs();
@@ -34,7 +32,6 @@ RcppExport SEXP big_std(SEXP X_,
 #endif
 
   // re-center
-  // Rprintf("\nCalling col_means()");
   // If tocenter == false, just use zero-initialized center_vals
   NumericVector center_vals(p);
   if(tocenter == true) {
@@ -47,7 +44,6 @@ RcppExport SEXP big_std(SEXP X_,
   }
 
   // re-scale
-  // Rprintf("\nCalling scaling functions");
   NumericVector scale_vals;
   if (Rf_isNull(scale_)) {
     scale_vals = colwise_l2mean(X, n, p);
