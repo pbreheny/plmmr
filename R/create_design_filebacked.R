@@ -276,8 +276,8 @@ create_design_filebacked <- function(
   }
 
   if (is_plink) {
-    design$fam <- unstd_X$obj$fam
-    design$map <- unstd_X$obj$map
+    design$fam <- obj$fam
+    design$map <- obj$map
   }
 
   # again, clean up to save space

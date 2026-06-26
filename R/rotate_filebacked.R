@@ -38,7 +38,7 @@ rotate_filebacked <- function(prep, tocenter = TRUE, ...) {
   list(
     stdrot_X = stdrot_X,
     rot_y = rot_y,
-    stdrot_X_center = std_rot$std_center,
-    stdrot_X_scale = std_rot$std_scale
+    stdrot_X_center = std_rot$std_X_center,
+    stdrot_X_scale = std_rot$std_X_scale
   )
 }

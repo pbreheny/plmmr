@@ -94,7 +94,7 @@ plmm_fit <- function(
       rot_y <- prep$U %*% wUt %*% prep$centered_y
     }
 
-    # re-standardize rot_X
+    # scale rot_X
     stdrot_info <- standardize_in_memory(rot_X, tocenter = FALSE)
     stdrot_X <- stdrot_info$std_X
     stdrot_X_details <- stdrot_info$std_X_details
