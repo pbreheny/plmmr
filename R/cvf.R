@@ -77,8 +77,9 @@ cvf <- function(i, fold, type, cv_args, ...) {
     fold_args$std_X_details$ns <- which(std_trainX_info$std_X_scale > 1e-3)
     singular <- std_trainX_info$std_X_scale < 1e-3
 
-    # do not fit a model on singular features!
-    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
+    if (any(singular)) {
+      fold_args$penalty_factor[singular] <- Inf
+    }
   } else {
     # subset training data
     train_X <- full_cv_prep$std_X[fold != i, , drop = FALSE]
@@ -93,7 +94,9 @@ cvf <- function(i, fold, type, cv_args, ...) {
 
     # do not fit a model on these (near) singular features!
     singular <- fold_args$std_X_details$scale < 1e-3
-    if (sum(singular) >= 1) fold_args$penalty_factor[singular] <- Inf
+    if (any(singular)) {
+      fold_args$penalty_factor[singular] <- Inf
+    }
   }
 
   # subset outcome vector to include outcomes for training data only
@@ -193,7 +196,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
       )
 
       # use center/scale values from train_X to standardize test_X
-      if (length(singular) >= 1) {
+      if (any(singular)) {
         fold_args$std_X_details$scale[singular] <- 1
       }
       std_test_info <- .Call(
@@ -219,7 +222,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
     } else if (!exists("Sigma_21")) {
       # don't rescale columns that were singular features in std_train_X;
       #   these features will have an estimated beta of 0 anyway
-      if (length(singular) >= 1) {
+      if (any(singular)) {
         fold_args$std_X_details$scale[singular] <- 1
       }
       # use center/scale values from train_X to standardize test_X

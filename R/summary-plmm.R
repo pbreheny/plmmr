@@ -58,10 +58,8 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...) {
 
   lambda_char <- colnames(object$beta_vals)[idx]
 
-  # tells WHICH variables have non-zero coefficients
-  nz <- which(object$beta_vals[, lambda_char] > .Machine$double.eps)
+  nz <- which(abs(object$beta_vals[, lambda_char]) > .Machine$double.eps)
   nonzero <- rownames(object$beta_vals[nz, lambda_char, drop = FALSE])
-  # don't drop, because we need the dimnames here ^
 
   structure(
     list(

@@ -28,12 +28,14 @@ read_plink_files <- function(
   # check for compressed files
   if (!file.exists(file.path(data_dir, paste0(data_prefix, ".bed")))) {
     if (file.exists(file.path(data_dir, paste0(data_prefix, ".bed.gz")))) {
-      cat(
-        "\nIt looks like your files are zipped -- please unzip them before calling process_plink()."
+      stop(
+        "It looks like your files are zipped -- please unzip them before calling process_plink().",
+        call. = FALSE
       )
     } else {
-      cat(
-        "\nThe PLINK files with the specified prefix do not appear in the provided data_dir folder."
+      stop(
+        "The PLINK files with the specified prefix do not appear in the provided data_dir folder.",
+        call. = FALSE
       )
     }
   }

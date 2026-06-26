@@ -46,9 +46,7 @@ log_lik <- function(eta, n, s, U, y, incpt_flag) {
   rot_sqe <- crossprod(rot_e) # mse = sq. error
   quad_term <- (1 / n) * rot_sqe / sum(w2)
 
-  # put all the pieces together -- evaluate the **negative** log likelihood
-  # NB: keep constant here to be consistent with log_lik.lm() method
+  # Return the negative log-likelihood
   nLL <- 0.5 * (constant + n * log(quad_term) + sum_det_log + n)
-
   drop(nLL)
 }

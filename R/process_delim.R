@@ -113,13 +113,13 @@ process_delim <- function(
 
   if (!quiet) {
     cat(
-      "process_plink() completed. \nProcessed files now saved as",
+      "process_delim() completed. \nProcessed files now saved as",
       file.path(rds_dir, rds_filename)
     )
   }
 
   cat(
-    "process_plink() completed. \nProcessed files now saved as",
+    "process_delim() completed. \nProcessed files now saved as",
     file.path(rds_dir, rds_filename),
     "at",
     pretty_time(),

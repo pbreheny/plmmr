@@ -149,8 +149,8 @@ plmm_checks <- function(
       }
     }
     if (typeof(K) == "integer") {
-      storage.mode(std_X) <- "double"
-    } # change K to X
+      storage.mode(K) <- "double"
+    }
     if (typeof(K) == "character") {
       stop("K must be a numeric matrix", call. = FALSE)
     }

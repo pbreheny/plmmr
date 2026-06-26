@@ -261,20 +261,12 @@ create_design_filebacked <- function(
     design$unpen_colnames <- setdiff(colnames(add_predictor), predictor_id)
     gc()
   } else {
-    # make sure 'unpen' was not specified by mistake
-    if (is_plink && !is_plink) {
-      stop(
-        "The 'unpen' argument is only for matrix data or delimited file data.
-                                   To create unpenalized covariates with PLINK file data,
-                                   see the documentation for the 'add_predictor' argument."
-      )
-    }
-
     if (is.null(unpen)) {
       design$unpen <- NULL
       design$unpen_colnames <- NULL
     } else {
-      design$unpen <- which(design$X_colnames %in% unpen) # this will be used to index the columns which are unpenalized
+      # this will be used to index the columns which are unpenalized
+      design$unpen <- which(design$X_colnames %in% unpen)
       design$unpen_colnames <- unpen
     }
 

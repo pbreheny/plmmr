@@ -216,8 +216,10 @@ plmm <- function(
 
   # handle output
   if (!is.null(save_rds)) {
-    # save all output in one file (default); *not* including std_X
-    saveRDS(the_final_product[c(1:3, 5:19)], paste0(save_rds, ".rds"))
+    saveRDS(
+      the_final_product[names(the_final_product) != "std_X"],
+      paste0(save_rds, ".rds")
+    )
     if (trace) {
       cat("Results saved to:", paste0(save_rds, ".rds"))
     }
