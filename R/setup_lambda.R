@@ -37,16 +37,11 @@ setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor) {
 
   # determine the maximum value for lambda
   if ("matrix" %in% class(X)) {
-    decomp_backsolve <- abs(crossprod(X[, ind], fit$residuals)) /
-      penalty_factor[ind]
+    decomp_backsolve <- abs(crossprod(X[, ind], fit$residuals)) / penalty_factor[ind]
   } else {
     # NOTE: the following line is the reason that the penalized columns must be a
     # *contiguous* submatrix! We checked for this back in plmm_checks()
-    pen_X <- bigmemory::sub.big.matrix(
-      X,
-      firstCol = ind[1],
-      lastCol = ind[length(ind)]
-    )
+    pen_X <- bigmemory::sub.big.matrix(X, firstCol = ind[1], lastCol = ind[length(ind)])
     cprod_res <- .Call(
       "big_crossprod",
       pen_X@address,
@@ -70,21 +65,13 @@ setup_lambda <- function(X, y, alpha, lambda_min, nlambda, penalty_factor) {
   if (missing(lambda_min)) {
     # case 1: if the user does not specify a lambda_min value...
     if (n > p) {
-      lambda <- exp(seq(
-        log(lambda.max),
-        log(0.001 * lambda.max),
-        len = nlambda
-      ))
+      lambda <- exp(seq(log(lambda.max), log(0.001 * lambda.max), len = nlambda))
     } else {
       lambda <- exp(seq(log(lambda.max), log(0.05 * lambda.max), len = nlambda))
     }
   } else {
     # case 2: the user specifies a (nonzero) lambda_min value
-    lambda <- exp(seq(
-      log(lambda.max),
-      log(lambda_min * lambda.max),
-      len = nlambda
-    ))
+    lambda <- exp(seq(log(lambda.max), log(lambda_min * lambda.max), len = nlambda))
   }
 
   lambda

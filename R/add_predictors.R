@@ -13,14 +13,7 @@
 #'
 #' @keywords internal
 #'
-add_predictors <- function(
-  obj,
-  add_predictor,
-  id_var,
-  rds_dir,
-  outfile,
-  quiet
-) {
+add_predictors <- function(obj, add_predictor, id_var, rds_dir, outfile, quiet) {
   # add additional covariates -----------------------
   # first, set up some indices; even if no additional args are used, these NULL
   #   values are important for checks downstream
@@ -64,11 +57,7 @@ add_predictors <- function(
     descriptorfile = "unstd_design_matrix.desc"
   )
 
-  design_matrix <- big_cbind(
-    A = add_predictor,
-    B = obj$X,
-    C = design_matrix
-  )
+  design_matrix <- big_cbind(A = add_predictor, B = obj$X, C = design_matrix)
 
   ret <- list(design_matrix = design_matrix, unpen = unpen)
 

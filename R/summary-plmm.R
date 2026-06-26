@@ -50,10 +50,7 @@ summary.plmm <- function(object, lambda, idx, eps = 1e-5, ...) {
 
   # error checking
   if (length(nvars) > 1) {
-    stop(
-      "You must specify a single model (i.e., a single value of lambda)",
-      call. = FALSE
-    )
+    stop("You must specify a single model (i.e., a single value of lambda)", call. = FALSE)
   }
 
   lambda_char <- colnames(object$beta_vals)[idx]

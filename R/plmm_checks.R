@@ -142,10 +142,7 @@ plmm_checks <- function(
     if (!inherits(K, "matrix") && !is.list(K)) {
       tmp <- try(K <- stats::model.matrix(~ 0 + ., data = K), silent = TRUE)
       if (inherits(tmp, "try-error")) {
-        stop(
-          "K must be either (1) able to be coerced to a matrix or (2) be a list.",
-          call. = FALSE
-        )
+        stop("K must be either (1) able to be coerced to a matrix or (2) be a list.", call. = FALSE)
       }
     }
     if (typeof(K) == "integer") {

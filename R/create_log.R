@@ -9,9 +9,7 @@
 #'
 create_log <- function(outfile) {
   if (missing(outfile)) {
-    stop(
-      "You must specify a name for the output file(s) via the outfile argument."
-    )
+    stop("You must specify a name for the output file(s) via the outfile argument.")
   }
 
   if (is.null(outfile)) {
@@ -29,19 +27,8 @@ create_log <- function(outfile) {
   cat("### plmmr log file ###\n", file = logfile)
   cat("Logging to", logfile, "\n", file = logfile, append = TRUE)
   cat("Host:", hostname, "\n", file = logfile, append = TRUE)
-  cat(
-    "Current working directory:",
-    getwd(),
-    "\n",
-    file = logfile,
-    append = TRUE
-  )
-  cat(
-    "Start log at:",
-    format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"),
-    file = logfile,
-    append = TRUE
-  )
+  cat("Current working directory:", getwd(), "\n", file = logfile, append = TRUE)
+  cat("Start log at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S\n"), file = logfile, append = TRUE)
 
   # get the name of the calling function
   syscall <- sys.calls()

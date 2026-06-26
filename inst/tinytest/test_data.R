@@ -21,10 +21,7 @@ expect_silent(local({
   # get outcome data
   penncath_pheno <- read.csv(find_example_data(path = 'penncath_clinical.csv'))
 
-  phen <- data.frame(
-    FamID = as.character(penncath_pheno$FamID),
-    CAD = penncath_pheno$CAD
-  )
+  phen <- data.frame(FamID = as.character(penncath_pheno$FamID), CAD = penncath_pheno$CAD)
 
   # prepare a data.frame of the predictors for which we want to adjust:
   other_predictors <- penncath_pheno[, c('FamID', 'sex', 'age')]

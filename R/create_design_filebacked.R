@@ -68,9 +68,7 @@ create_design_filebacked <- function(
   # additional checks for case where add_predictor is specified
   if (!is.null(add_predictor)) {
     if (is.null(predictor_id)) {
-      stop(
-        "If add_predictor is specified, the user must also specify predictor_id."
-      )
+      stop("If add_predictor is specified, the user must also specify predictor_id.")
     }
 
     if (is.null(colnames(add_predictor))) {
@@ -143,9 +141,7 @@ create_design_filebacked <- function(
   # determine which IDs to use ---------------------------------
   if (is.null(feature_id)) {
     if (!quiet) {
-      cat(
-        "No feature_id supplied; will assume data X are in same row-order as add_outcome.\n"
-      )
+      cat("No feature_id supplied; will assume data X are in same row-order as add_outcome.\n")
     }
     cat(
       "No feature_id supplied; will assume data X are in same row-order as add_outcome.\n",
@@ -166,9 +162,7 @@ create_design_filebacked <- function(
     }
     og_ids <- feature_id
   } else {
-    stop(
-      "The feature_id argument is misspecified (see documentation for options)."
-    )
+    stop("The feature_id argument is misspecified (see documentation for options).")
   }
 
   # check for any duplicated row IDs, if applicable
@@ -220,8 +214,7 @@ create_design_filebacked <- function(
 
     # save items to return
     design$outcome_idx <- sample_idx$outcome_idx # save indices of which rows in the feature data should be included in the design
-    design$y <- sample_idx$complete_samples[, outcome_col, with = FALSE] |>
-      unlist()
+    design$y <- sample_idx$complete_samples[, outcome_col, with = FALSE] |> unlist()
     design$std_X_rownames <- sample_idx$complete_samples$ID
   } else {
     # save items to return
@@ -235,9 +228,7 @@ create_design_filebacked <- function(
   # align IDs between feature data and external data -------------------------
   if (!is.null(add_predictor)) {
     if (is.null(predictor_id)) {
-      stop(
-        "If add_predictor is supplied, the predictor_id argument must also be supplied"
-      )
+      stop("If add_predictor is supplied, the predictor_id argument must also be supplied")
     }
     aligned_add_predictor <- align_ids(
       id_var = predictor_id,
@@ -306,11 +297,7 @@ create_design_filebacked <- function(
   rm(unstd_X)
   gc()
   # standardization ------------------------------------------------------------
-  std_res <- standardize_filebacked(
-    X = subset_res$subset_X,
-    outfile = logfile,
-    quiet = quiet
-  )
+  std_res <- standardize_filebacked(X = subset_res$subset_X, outfile = logfile, quiet = quiet)
   rm(subset_res)
   gc()
 
@@ -341,19 +328,12 @@ create_design_filebacked <- function(
   # }
 
   # cleanup -------------------------------------------------------------------
-  list.files(
-    rds_dir,
-    pattern = paste0("^unstd_design_matrix\\.(bk|desc)"),
-    full.names = TRUE
-  ) |>
+  list.files(rds_dir, pattern = paste0("^unstd_design_matrix\\.(bk|desc)"), full.names = TRUE) |>
     unlink(force = TRUE)
   gc()
 
   # return -------------------------------------------------------------
-  saveRDS(
-    structure(design, class = "plmm_design"),
-    file.path(rds_dir, paste0(new_file, ".rds"))
-  )
+  saveRDS(structure(design, class = "plmm_design"), file.path(rds_dir, paste0(new_file, ".rds")))
 
   if (!quiet) {
     cat(

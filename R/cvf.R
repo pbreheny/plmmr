@@ -103,9 +103,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   fold_args$y <- cv_args$y[fold != i]
 
   # center the training outcome
-  fold_args$centered_y <- fold_args$y |>
-    scale(scale = FALSE) |>
-    drop()
+  fold_args$centered_y <- fold_args$y |> scale(scale = FALSE) |> drop()
   # extract test set --------------------------------------
   # this comes from cv prep on full data
   if (cv_args$fbm_flag) {
@@ -175,12 +173,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
   # prediction ---------------------------------------------------
   # note: predictions are on the scale of the standardized training data
   if (type == "lp") {
-    yhat <- predict_within_cv(
-      fit = format.i,
-      testX = test_X,
-      type = "lp",
-      fbm = cv_args$fbm_flag
-    )
+    yhat <- predict_within_cv(fit = format.i, testX = test_X, type = "lp", fbm = cv_args$fbm_flag)
   }
 
   if (type == "blup") {
@@ -211,12 +204,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
       std_test_X@address <- std_test_info$std_X
 
       const <- (fit.i$eta / ncol(fold_args$std_X))
-      XXt <- bigalgebra::dgemm(
-        TRANSA = "N",
-        TRANSB = "T",
-        A = std_test_X,
-        B = fold_args$std_X
-      )
+      XXt <- bigalgebra::dgemm(TRANSA = "N", TRANSB = "T", A = std_test_X, B = fold_args$std_X)
       Sigma_21 <- const * XXt
       Sigma_21 <- Sigma_21[,] # convert to in-memory matrix
     } else if (!exists("Sigma_21")) {
@@ -231,8 +219,7 @@ cvf <- function(i, fold, type, cv_args, ...) {
         center = fold_args$std_X_details$center,
         scale = fold_args$std_X_details$scale
       )
-      Sigma_21 <- (fit.i$eta / ncol(fold_args$std_X)) *
-        tcrossprod(std_test_X, fold_args$std_X)
+      Sigma_21 <- (fit.i$eta / ncol(fold_args$std_X)) * tcrossprod(std_test_X, fold_args$std_X)
     }
 
     yhat <- predict_within_cv(

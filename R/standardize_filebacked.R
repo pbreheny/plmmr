@@ -16,11 +16,7 @@ standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
     cat("Column-standardizing the design matrix...\n")
   }
 
-  cat(
-    "Column-standardizing the design matrix...\n",
-    file = outfile,
-    append = TRUE
-  )
+  cat("Column-standardizing the design matrix...\n", file = outfile, append = TRUE)
   # centering & scaling
   # NOTE: this C++ call will change the .bk file so that its data are column-standardized
   std_res <- .Call(
@@ -38,23 +34,14 @@ standardize_filebacked <- function(X, outfile, quiet, tocenter = TRUE) {
     cat("Standardization completed at", pretty_time())
   }
 
-  cat(
-    "Standardization completed at",
-    pretty_time(),
-    file = outfile,
-    append = TRUE
-  )
+  cat("Standardization completed at", pretty_time(), file = outfile, append = TRUE)
 
   # label return object ------------------------------------------------
   if (!quiet) {
     cat("Done with standardization. File formatting in progress...\n")
   }
 
-  cat(
-    "Done with standardization. File formatting in progress...\n",
-    file = outfile,
-    append = TRUE
-  )
+  cat("Done with standardization. File formatting in progress...\n", file = outfile, append = TRUE)
 
   list(
     std_X = bigmemory::describe(X),

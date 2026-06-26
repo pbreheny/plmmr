@@ -50,10 +50,7 @@ impute_snp_data <- function(
           method = impute_method
         )
       } else {
-        obj$genotypes <- bigsnpr::snp_fastImputeSimple(
-          Gna = X,
-          method = impute_method
-        )
+        obj$genotypes <- bigsnpr::snp_fastImputeSimple(Gna = X, method = impute_method)
       }
     } else if (impute_method == "xgboost") {
       withCallingHandlers(

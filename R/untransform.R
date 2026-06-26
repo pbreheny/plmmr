@@ -20,20 +20,13 @@
 #'
 #' @keywords internal
 #'
-untransform <- function(
-  std_scale_beta,
-  p,
-  std_X_details,
-  fbm_flag,
-  plink_flag,
-  use_names = TRUE
-) {
+untransform <- function(std_scale_beta, p, std_X_details, fbm_flag, plink_flag, use_names = TRUE) {
   if (is.null(std_X_details$X_colnames)) {
     use_names <- FALSE
   }
 
-  ns     <- std_X_details$ns
-  scale  <- std_X_details$scale
+  ns <- std_X_details$ns
+  scale <- std_X_details$scale
   center <- std_X_details$center
 
   a <- std_scale_beta[1, , drop = FALSE]
@@ -42,19 +35,24 @@ untransform <- function(
   nrow_out <- p + 1L + if (plink_flag) length(std_X_details$unpen) else 0L
 
   if (fbm_flag) {
-    untransformed_beta <- Matrix::Matrix(0, nrow = nrow_out, ncol = ncol(std_scale_beta), sparse = TRUE)
+    untransformed_beta <- Matrix::Matrix(
+      0,
+      nrow = nrow_out,
+      ncol = ncol(std_scale_beta),
+      sparse = TRUE
+    )
   } else {
     untransformed_beta <- matrix(0, nrow = nrow_out, ncol = ncol(std_scale_beta))
   }
 
   # When scale has more entries than ns (e.g. CV folds where some columns became
   # constant), index scale/center to ns. When b has more rows than ns, subset b.
-  s   <- if (length(scale) == length(ns)) scale  else scale[ns]
+  s <- if (length(scale) == length(ns)) scale else scale[ns]
   ctr <- if (length(scale) == length(ns)) center else center[ns]
-  b2  <- sweep(if (nrow(b) == length(ns)) b else b[ns, , drop = FALSE], 1, s, "/")
+  b2 <- sweep(if (nrow(b) == length(ns)) b else b[ns, , drop = FALSE], 1, s, "/")
 
   untransformed_beta[ns + 1L, ] <- b2
-  untransformed_beta[1L, ]      <- a - crossprod(ctr, b2)
+  untransformed_beta[1L, ] <- a - crossprod(ctr, b2)
 
   if (use_names) {
     unpen_names <- if (plink_flag) std_X_details$unpen_colnames else NULL

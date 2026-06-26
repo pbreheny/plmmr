@@ -23,3 +23,5 @@
 ^doc$
 ^\.positai$
 ^\.claude$
+^\CLAUDE.md$
+^\.air.toml$

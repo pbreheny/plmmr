@@ -47,16 +47,10 @@ plmm_prep <- function(
 
   # case 1: K is user-supplied diagonal matrix (like a weighted lm())
   flag1 <- !is.null(K) &
-    ifelse(
-      !(inherits(K, "matrix") || inherits(K, "dcGMatrix")),
-      FALSE,
-      Matrix::isDiagonal(K)
-    )
+    ifelse(!(inherits(K, "matrix") || inherits(K, "dcGMatrix")), FALSE, Matrix::isDiagonal(K))
   if (flag1) {
     if (trace) {
-      cat(
-        "Using supplied diagonal matrix for K, similar to a lm() with weights.\n"
-      )
+      cat("Using supplied diagonal matrix for K, similar to a lm() with weights.\n")
     }
     s <- sort(diag(K), decreasing = TRUE)
     U <- diag(nrow = std_X_n)[, order(diag(K), decreasing = TRUE)]
@@ -117,13 +111,7 @@ plmm_prep <- function(
 
   # estimate eta if needed; otherwise, use the user-supplied value (this option is mainly used for simulation studies)
   if (is.null(eta)) {
-    eta <- estimate_eta(
-      n = std_X_n,
-      s = s,
-      U = U,
-      y = centered_y,
-      incpt_flag = incpt_flag
-    )
+    eta <- estimate_eta(n = std_X_n, s = s, U = U, y = centered_y, incpt_flag = incpt_flag)
   }
 
   # return values to be passed into plmm_fit():

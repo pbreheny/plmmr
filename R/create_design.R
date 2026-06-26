@@ -135,13 +135,7 @@
 #' # examine the design - notice the components of this object
 #' pen_design_rds <- readRDS(pen_design)
 #'}
-create_design <- function(
-  data_file = NULL,
-  rds_dir = NULL,
-  X = NULL,
-  y = NULL,
-  ...
-) {
+create_design <- function(data_file = NULL, rds_dir = NULL, X = NULL, y = NULL, ...) {
   if (is.null(data_file)) {
     # case 1: in-memory matrix
     processed_matrix <- create_design_in_memory(X, y, ...)

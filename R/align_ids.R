@@ -62,10 +62,7 @@ align_ids <- function(id_var, add_predictor, og_ids, outfile, quiet) {
 
   # for downstream calls, output *must* be a numeric matrix
   new_add_predictor_mat <- as.matrix(new_add_predictor[, -1])
-  rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[,
-    "ID",
-    with = FALSE
-  ]) |>
+  rownames(new_add_predictor_mat) <- as.matrix(new_add_predictor[, "ID", with = FALSE]) |>
     as.character()
 
   new_add_predictor_mat
