@@ -89,7 +89,7 @@ colon_dat <- process_delim(data_file = "colon2.txt",
 #> At this time, plmmr::process_delim() does not not handle missing values in delimited data.
 #>       Please make sure you have addressed missingness before you proceed.
 #> process_delim() completed. 
-#> Processed files now saved as /tmp/Rtmpsp4gkh/processed_colon2.rds
+#> Processed files now saved as /tmp/RtmpoOrTnZ/processed_colon2.rds
 
 colon2 <- readRDS(colon_dat)
 str(colon2)
@@ -98,7 +98,7 @@ str(colon2)
 #>   .. ..@ description:List of 13
 #>   .. .. ..$ sharedType: chr "FileBacked"
 #>   .. .. ..$ filename  : chr "processed_colon2.bk"
-#>   .. .. ..$ dirname   : chr "/tmp/Rtmpsp4gkh/"
+#>   .. .. ..$ dirname   : chr "/tmp/RtmpoOrTnZ/"
 #>   .. .. ..$ totalRows : int 62
 #>   .. .. ..$ totalCols : int 2001
 #>   .. .. ..$ rowOffset : num [1:2] 0 62
