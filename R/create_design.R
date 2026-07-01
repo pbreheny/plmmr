@@ -9,7 +9,7 @@
 #' @param y             For **in-memory data**, this is the numeric vector representing the outcome. Defaults to NULL (this argument does not apply for filebacked data).
 #'                      **Note**: it is the responsibility of the user to ensure that the rows in X and the corresponding elements of y have the same row order,
 #'                      i.e., observations must be in the same order in both the design matrix and in the outcome vector.
-#' @param ...           Additional arguments to pass to `create_design_filebacked()` or `create_design_in_memory()`.
+#' @param ...           Additional arguments to pass to [create_design_filebacked()] or [create_design_in_memory()].
 #'                      See the documentation for those helper functions for details.
 #'
 #' @return A filepath to an object of class `plmm_design`, which is a named list with the design matrix,

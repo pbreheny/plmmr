@@ -180,7 +180,9 @@ process_plink <- function(
   cat("process_plink() completed.", file = logfile, append = TRUE)
 
   if (!is.null(rds_prefix)) {
-    cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename))
+    if (!quiet) {
+      cat("\nProcessed files now saved as", file.path(rds_dir, rds_filename))
+    }
 
     cat(
       "\nProcessed files now saved as",

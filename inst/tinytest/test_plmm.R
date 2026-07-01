@@ -8,7 +8,6 @@ plmm0 <- plmm(
   K = diag(nrow(admix$X)),
   lambda = lambda0,
   penalty = "lasso",
-  trace = TRUE,
   eps = 1e-15
 )
 
@@ -44,7 +43,7 @@ plmm1 <- plmm(
 )
 
 v1 <- diag(K_diagonal) * plmm1$eta + (1 - plmm1$eta)
-print(summary(plmm1, lambda = 0))
+summary(plmm1, lambda = 0)
 
 A1 <- plmm1$beta_vals[, "0.0000"]
 names(A1) <- NULL
@@ -129,7 +128,8 @@ local({
     rds_prefix = "processed_colon2",
     sep = "\t",
     overwrite = TRUE,
-    header = TRUE
+    header = TRUE,
+    quiet = TRUE
   )
 
   # prepare outcome data
@@ -144,15 +144,16 @@ local({
     outcome_id = "ID",
     outcome_col = "y",
     logfile = "fb_design",
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
-  fb_fit <- plmm(design = fb_design, trace = TRUE, return_fit = TRUE)
+  fb_fit <- plmm(design = fb_design, return_fit = TRUE)
 
   # in-memory
   in_mem_design <- create_design(X = colon_X, y = colon_outcome$y)
 
-  fit <- plmm(design = in_mem_design, lambda = fb_fit$lambda, trace = TRUE, return_fit = TRUE)
+  fit <- plmm(design = in_mem_design, lambda = fb_fit$lambda, return_fit = TRUE)
 
   # check: these results match
   b1 <- coef(fb_fit) |> as.matrix()

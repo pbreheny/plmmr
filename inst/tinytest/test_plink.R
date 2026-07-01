@@ -1,13 +1,12 @@
 local({
   temp_dir <- withr::local_tempdir()
-  extdata <- file.path("..", "extdata")
-  unzip_example_data(outdir = extdata)
+  unzip_example_data(outdir = temp_dir)
 
   # test 1: can all 3 pieces be combined correctly?  ----------------------
   # use external pheno and predictor files, no NAs
 
   ## create design matrix-------------------------------------------------------
-  penncath_pheno <- read.csv(file.path(extdata, "penncath_clinical.csv"))
+  penncath_pheno <- read.csv(find_example_data(path = "penncath_clinical.csv"))
 
   predictors <- penncath_pheno[, c("FamID", "age", "tg")]
   predictors$tg <- ifelse(is.na(predictors$tg), mean(predictors$tg, na.rm = TRUE), predictors$tg)
@@ -20,12 +19,12 @@ local({
   phen$FamID <- as.character(phen$FamID)
 
   penncath_lite <- process_plink(
-    data_dir = extdata,
+    data_dir = temp_dir,
     data_prefix = "penncath_lite",
     rds_dir = temp_dir,
     rds_prefix = "process_penncath",
     id_var = "FID",
-    quiet = FALSE,
+    quiet = TRUE,
     overwrite = TRUE,
     parallel = FALSE
   )
@@ -33,14 +32,15 @@ local({
   X <- create_design(
     data_file = penncath_lite,
     feature_id = "FID",
-    rds_dir = extdata,
+    rds_dir = temp_dir,
     new_file = "std_penncath_lite",
     add_outcome = phen,
     outcome_id = "FamID",
     outcome_col = "CAD",
     add_predictor = predictors,
     predictor_id = 'FamID',
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
   res <- readRDS(X)
@@ -71,7 +71,8 @@ local({
     add_predictor = predictors_shuff,
     predictor_id = 'FamID',
     feature_id = "FID",
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
   res <- readRDS(X)
@@ -86,7 +87,7 @@ local({
 
   # test 3: more obs. in pheno than geno ------------------------------------------
 
-  penncath_pheno <- read.csv(file.path(extdata, "penncath_clinical.csv"))
+  penncath_pheno <- read.csv(find_example_data(path = "penncath_clinical.csv"))
 
   # subset geno data - take just 1000 samples
   imputed_dat <- readRDS(file.path(temp_dir, "process_penncath.rds"))
@@ -106,7 +107,8 @@ local({
     outcome_col = "CAD",
     add_predictor = predictors,
     predictor_id = 'FamID',
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
   res <- readRDS(X)
@@ -129,7 +131,8 @@ local({
     add_outcome = phen,
     outcome_id = "FamID",
     outcome_col = "CAD",
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
   res <- readRDS(X)
