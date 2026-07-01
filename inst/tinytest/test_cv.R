@@ -22,7 +22,8 @@ local({
     rds_prefix = "processed_colon2",
     sep = "\t",
     overwrite = TRUE,
-    header = TRUE
+    header = TRUE,
+    quiet = TRUE
   )
 
   # prepare outcome data
@@ -38,7 +39,8 @@ local({
     outcome_id = "ID",
     outcome_col = "y",
     logfile = "fb_design",
-    overwrite = TRUE
+    overwrite = TRUE,
+    quiet = TRUE
   )
 
   fb_fit <- cv_plmm(design = fb_design, return_fit = TRUE, seed = 1, warn = FALSE) # need for small epsilon

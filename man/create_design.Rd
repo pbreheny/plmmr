@@ -20,7 +20,7 @@ passed to \code{create_design_filebacked()}. Defaults to NULL (this argument doe
 \strong{Note}: it is the responsibility of the user to ensure that the rows in X and the corresponding elements of y have the same row order,
 i.e., observations must be in the same order in both the design matrix and in the outcome vector.}
 
-\item{...}{Additional arguments to pass to \code{create_design_filebacked()} or \code{create_design_in_memory()}.
+\item{...}{Additional arguments to pass to \code{\link[=create_design_filebacked]{create_design_filebacked()}} or \code{\link[=create_design_in_memory]{create_design_in_memory()}}.
 See the documentation for those helper functions for details.}
 }
 \value{
