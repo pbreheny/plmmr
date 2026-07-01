@@ -44,6 +44,7 @@ jobs:
         with:
           cache: true
           extra-packages: |
+            any::glmnet
             any::rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v2
